@@ -1,9 +1,19 @@
 package com.eurodyn.qlack.fuse.crypto.dto;
 
+import javax.validation.constraints.NotNull;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A request to create a key pair.
@@ -13,22 +23,34 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CreateKeyPairDTO {
+  // JUL reference.
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
+  private static final Logger LOGGER = Logger.getLogger(CreateKeyPairDTO.class.getName());
 
-  // The name of the provider to use while generating the key-pair. If left empty, a provider
-  // implementing the requested generatorAlgorithm  will be picked up by the JVM.
-  private String generatorProvider;
+  // The algorithm to use while generating the key-pair, e.g. RSA.
+  @NotNull
+  private String keyPairGeneratorAlgorithm;
 
-  // The algorithm to use while generating the key-pair.
-  private String generatorAlgorithm;
+  // The name of algorithm to use while initialising the key-pair generator, e.g. NativePRNG.
+  // If you leave this field empty, a system default strong random algorithm will be chosen via
+  // SecureRandom.getInstanceStrong().
+  private String secureRandomAlgorithm;
 
-  // The name of provider to use while initialising the key-pair generator. If left empty,
-  // a default SecureRandom.getInstanceStrong() will be used.
-  private String secretProvider;
-
-  // The name of algorithm to use while initialising the key-pair generator. If left empty,
-  // a default SecureRandom.getInstanceStrong() will be used.
-  private String secretAlgorithm;
-
-  // The default bits of the key.
+  // The default bits of the key, e.g. 2048.
+  @NotNull
   private int keySize;
+
+  public String getSecureRandomAlgorithm() {
+    if (StringUtils.isBlank(secureRandomAlgorithm)) {
+      try {
+        return SecureRandom.getInstanceStrong().getAlgorithm();
+      } catch (NoSuchAlgorithmException e) {
+        LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        return secureRandomAlgorithm;
+      }
+    } else {
+      return secureRandomAlgorithm;
+    }
+  }
 }

@@ -2,7 +2,6 @@ package com.eurodyn.qlack.fuse.crypto.dto;
 
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -15,9 +14,8 @@ import java.util.Locale;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Accessors(chain = true)
-public class SignDTO {
+public class CertificateSignDTO {
   @NotNull
   private PrivateKey privateKey;
   @NotNull
@@ -36,8 +34,6 @@ public class SignDTO {
   private String subjectCN;
   @NotNull
   private String signatureAlgorithm;
-  @NotNull
-  private String signatureProvider;
 
   private boolean ca;
 }

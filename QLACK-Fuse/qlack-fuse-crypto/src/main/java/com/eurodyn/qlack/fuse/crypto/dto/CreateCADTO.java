@@ -23,8 +23,6 @@ public class CreateCADTO {
   @NotNull
   private String signatureAlgorithm;
   @NotNull
-  private String signatureProvider;
-  @NotNull
   private BigInteger serial;
   @NotNull
   private Instant validFrom;
@@ -35,6 +33,5 @@ public class CreateCADTO {
 
   private String issuerCN;
   private String issuerPrivateKey;
-  private String issuerPrivateKeyProvider;
   private String issuerPrivateKeyAlgorithm;
 }

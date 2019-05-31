@@ -32,20 +32,13 @@ public class CryptoKeystoreService {
    * @param keyPassword The key's password.
    * @param keystoreType The type of the keystore.
    * @param keystoreProvider The security provider generated the keystore.
-   *
-   * @return CPPHolderDTO
-   * @throws KeyStoreException KeyStoreException
-   * @throws IOException IOException
-   * @throws CertificateException CertificateException
-   * @throws NoSuchAlgorithmException NoSuchAlgorithmException
-   * @throws UnrecoverableKeyException UnrecoverableKeyException
-   * @throws NoSuchProviderException NoSuchProviderException
    */
-  public CPPHolderDTO readKeyFromKeystore(InputStream keystore, String keystorePassword, String keyName,
-      String keyPassword, String keystoreType, String keystoreProvider)
-      throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException,
-      UnrecoverableKeyException, NoSuchProviderException {
-    KeyStore ks;
+  public CPPHolderDTO readKeyFromKeystore(final InputStream keystore, final String keystorePassword,
+    final String keyName, final String keyPassword, final String keystoreType,
+    final String keystoreProvider)
+  throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException,
+         UnrecoverableKeyException, NoSuchProviderException {
+    final KeyStore ks;
     if (StringUtils.isBlank(keystoreType) || StringUtils.isBlank(keystoreType)) {
       ks = KeyStore.getInstance(KeyStore.getDefaultType());
     } else {
@@ -53,31 +46,25 @@ public class CryptoKeystoreService {
     }
     try (InputStream fis = new BufferedInputStream(keystore)) {
       ks.load(fis, keystorePassword.toCharArray());
-      Key key = ks.getKey(keyName, keyPassword.toCharArray());
-      Certificate certificate = ks.getCertificate(keyName);
+      final Key key = ks.getKey(keyName, keyPassword.toCharArray());
+      final Certificate certificate = ks.getCertificate(keyName);
       return new CPPHolderDTO(certificate, certificate.getPublicKey(), (PrivateKey) key);
     }
   }
 
   /**
-   * Reads a key from the given keystore utilising the system's default keystore type and security provider.
+   * Reads a key from the given keystore utilising the system's default keystore type and security
+   * provider.
    *
    * @param keystore The keystore to read from.
    * @param keystorePassword The keystore password.
    * @param keyName The name of the key to read.
    * @param keyPassword The key's password.
-   * @return CPPHolderDTO
-   * @throws KeyStoreException KeyStoreException
-   * @throws IOException IOException
-   * @throws CertificateException CertificateException
-   * @throws NoSuchAlgorithmException NoSuchAlgorithmException
-   * @throws UnrecoverableKeyException UnrecoverableKeyException
-   * @throws NoSuchProviderException NoSuchProviderException
    */
-  public CPPHolderDTO readKeyFromKeystore(InputStream keystore, String keystorePassword, String keyName,
-      String keyPassword)
-      throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException,
-      UnrecoverableKeyException, NoSuchProviderException {
+  public CPPHolderDTO readKeyFromKeystore(final InputStream keystore, final String keystorePassword,
+    final String keyName, final String keyPassword)
+  throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException,
+         UnrecoverableKeyException, NoSuchProviderException {
     return readKeyFromKeystore(keystore, keystorePassword, keyName, keyPassword, null, null);
   }
 

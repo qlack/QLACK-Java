@@ -39,7 +39,7 @@ public class EncryptDecryptAspect {
     ENCRYPT, DECRYPT
   }
 
-  @Autowired
+  @Autowired(required = false)
   private EncryptorDecryptor encryptorDecryptor;
 
   /**

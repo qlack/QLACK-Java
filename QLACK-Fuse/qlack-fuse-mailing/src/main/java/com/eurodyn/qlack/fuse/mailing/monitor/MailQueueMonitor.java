@@ -61,7 +61,7 @@ public class MailQueueMonitor {
 
 	private void send(Email email) {
 		/** Create a DTO for the email about to be sent */
-		EmailDTO dto = emailMapper.mapToDTOyWithRecipilents(email, true) ;
+		EmailDTO dto = emailMapper.mapToDTOyWithRecipilents(email, true);
 
 		/**
 		 * Update email's tries and date sent in the database, irrespectively of the
@@ -121,16 +121,16 @@ public class MailQueueMonitor {
 	 * @return distribution list contacts mails in CSV format
 	 * @throws MailingException Indicating no distributionListId was provided or no recipients in the distribution list
 	 */
-	private String getContactEmailsFromDistributionList(String distributionListId) throws MailingException {
+	private String getContactEmailsFromDistributionList(String distributionListId) {
       if(distributionListId==null || distributionListId.isEmpty()) {
           throw new MailingException("No distribution list was provided. The email cannot be sent.");
       }
 
       DistributionList dlist = distributionListRepository.fetchById(distributionListId);
 
-      return dlist.getContacts().stream()
-          .map(Contact::getEmail).reduce((t, u) -> t + ", " + u).orElseThrow(() -> new MailingException(
-              String.format("The distribution list \"%s\" has no recipients. Please add recipients first, then try again",
+    return dlist.getContacts().parallelStream()
+                .map(Contact::getEmail).reduce((t, u) -> t + ", " + u).orElseThrow(() -> new MailingException(
+        String.format("The distribution list \"%s\" has no recipients. Please add recipients first, then try again",
                   dlist.getName())));
   }
 

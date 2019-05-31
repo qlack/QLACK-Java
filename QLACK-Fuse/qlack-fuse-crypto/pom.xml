@@ -3,21 +3,13 @@
   <parent>
     <artifactId>qlack-fuse</artifactId>
     <groupId>com.eurodyn.qlack.fuse</groupId>
-    <version>3.0.0</version>
+    <version>3.0.1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>qlack-fuse-crypto</artifactId>
 
   <dependencies>
-    <!-- SPRING dependencies -->
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-crypto</artifactId>
-      <!--<version></version>-->
-    </dependency>
-
-    <!-- OTHER dependencies -->
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
@@ -43,6 +35,17 @@
     <dependency>
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.eurodyn.qlack.common</groupId>
+      <artifactId>qlack-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

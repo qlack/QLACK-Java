@@ -54,9 +54,7 @@ public class DistributionListService {
 	 * Edit an existing distribution list.
 	 */
 	public void editDistributionList(DistributionListDTO dto) {
-		// String id = dto.getId();
 		DistributionList dlist = distributionListMapper.mapToEntity(dto);
-		// dlist.setId(id);
 		distributionListRepository.save(dlist);
 	}
 
@@ -64,7 +62,7 @@ public class DistributionListService {
 	 * Delete a distribution list.
 	 */
 	public void deleteDistributionList(String id) {
-		DistributionList dlist = findById(id);
+		DistributionList dlist = distributionListRepository.fetchById(id);
 		distributionListRepository.delete(dlist);
 
 	}
@@ -72,18 +70,9 @@ public class DistributionListService {
 	/**
 	 * Find a specific distribution list.
 	 */
-	public DistributionListDTO find(Object id) {
-		DistributionList dlist = findById(id);
+	public DistributionListDTO find(String id) {
+		DistributionList dlist = distributionListRepository.fetchById(id);
 		return distributionListMapper.mapToDTO(dlist);
-	}
-
-	/**
-	 * Find DistributionList Entity object for provided id.
-	 *
-	 * @return DistributionList
-	 */
-	private DistributionList findById(Object id) {
-		return distributionListRepository.fetchById(id.toString());
 	}
 
 	/**
@@ -121,21 +110,21 @@ public class DistributionListService {
 	 * Add a contact to a distribution list.
 	 */
 	public void addContactToDistributionList(String distributionId, String contactId) {
-		DistributionList dlist = findById(distributionId);
+		DistributionList dlist = distributionListRepository.fetchById(distributionId);
 		Contact contact = findContactById(contactId);
 		dlist.getContacts().add(contact);
-	}
-
-	/**
-	 * Remove a contact from a distribution list.
-	 */
-	public void removeContactFromDistributionList(String distributionId, String contactId) {
-		DistributionList dlist = findById(distributionId);
-		Contact contact = findContactById(contactId);
-		dlist.getContacts().remove(contact);
 	}
 
 	private Contact findContactById(String contactId) {
 		return contactRepository.fetchById(contactId);
 	}
+
+  /**
+   * Remove a contact from a distribution list.
+   */
+  public void removeContactFromDistributionList(String distributionId, String contactId) {
+    DistributionList dlist = distributionListRepository.fetchById(distributionId);
+    Contact contact = findContactById(contactId);
+    dlist.getContacts().remove(contact);
+  }
 }

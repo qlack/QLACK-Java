@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * A generic {@link ControllerAdvice} to prevent low-level error messages leaking to the callers of
  * your REST API.
@@ -18,6 +21,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
+
+  // JUL reference.
+  private static final Logger LOGGER = Logger.getLogger(RestExceptionHandler.class.getName());
 
   @ExceptionHandler
   protected ResponseEntity<Object> handle(RuntimeException ex, WebRequest request) {
@@ -28,6 +34,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     if (ex instanceof QExceptionWrapper) {
       errorMessage = ex.getMessage();
     } else {
+      // If the exception is not one wrapped by QLACK then it was generated higher up the stack, so
+      // we should log it (and provide a generic error message to not leak the actual message of
+      // the exception.
+      LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
       errorMessage = "There was a problem with this request, please try again later.";
     }
 

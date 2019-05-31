@@ -129,18 +129,16 @@ public class MailService {
 	public void updateStatus(String emailId, EMAIL_STATUS status) {
 		Email email = emailRepository.fetchById(emailId);
 		email.setStatus(status.toString());
+		emailRepository.save(email);
 	}
 
 	public EmailDTO getMail(String emailId) {
 		Email email = emailRepository.fetchById(emailId);
-		if (email == null) {
-			return null;
-		}
 		return emailMapper.mapToDTO(email);
 	}
 
 	public List<EmailDTO> getByStatus(EMAIL_STATUS status) {
-		return  emailRepository.findByAddedOnDateAndStatus(null, status).stream().map(o ->
+		return emailRepository.findByAddedOnDateAndStatus(null, status).stream().map(o ->
 		emailMapper.mapToDTO(o)).collect(Collectors.toList());
 	}
 

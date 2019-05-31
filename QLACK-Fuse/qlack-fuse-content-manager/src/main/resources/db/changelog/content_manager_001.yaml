@@ -1,0 +1,315 @@
+databaseChangeLog:
+  - changeSet:
+      id: content_manager_001
+      author: European Dynamics SA
+      changes:
+        - createTable:
+            tableName: cm_node
+            columns:
+              - column:
+                  name: id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: type
+                  type: tinyint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: parent
+                  type: varchar(36)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: lock_token
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: created_on
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: mimetype
+                  type: varchar(36)
+              - column:
+                  name: size
+                  type: bigint
+              - column:
+                  name: dbversion
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            constraintName: fk_cm_node_cm_node
+            baseTableName: cm_node
+            baseColumnNames: parent
+            referencedTableName: cm_node
+            referencedColumnNames: id
+            onDelete: cascade
+            onUpdate: cascade
+        - createTable:
+            tableName: cm_node_attribute
+            columns:
+              - column:
+                  name: id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: value
+                  type: varchar(1024)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: node
+                  type: varchar(36)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: dbversion
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            constraintName: fk_cm_node_attribute_cm_node
+            baseTableName: cm_node_attribute
+            baseColumnNames: node
+            referencedTableName: cm_node
+            referencedColumnNames: id
+            onDelete: cascade
+            onUpdate: cascade
+        - addUniqueConstraint:
+            tableName: cm_node_attribute
+            columnNames: name, node
+            constraintName: uq_cm_node_attribute_name_node
+        - createTable:
+            tableName: cm_version
+            columns:
+              - column:
+                  name: id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: node
+                  type: varchar(36)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_on
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: filename
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: mimetype
+                  type: varchar(255)
+              - column:
+                  name: content
+                  type: longblob
+                  constraints:
+                    nullable: true
+              - column:
+                  name: size
+                  type: bigint
+              - column:
+                  name: dbversion
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            constraintName: fk_cm_version_cm_node
+            baseTableName: cm_version
+            baseColumnNames: node
+            referencedTableName: cm_node
+            referencedColumnNames: id
+            onDelete: cascade
+            onUpdate: cascade
+        - addUniqueConstraint:
+            tableName: cm_version
+            columnNames: name, node
+            constraintName: uq_cm_version_name_node
+        - createTable:
+            tableName: cm_version_attribute
+            columns:
+              - column:
+                  name: id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: value
+                  type: varchar(1024)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: node_version
+                  type: varchar(36)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: dbversion
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            constraintName: fk_cm_version_attr_cm_version
+            baseTableName: cm_version_attribute
+            baseColumnNames: node_version
+            referencedTableName: cm_version
+            referencedColumnNames: id
+            onDelete: cascade
+            onUpdate: cascade
+        - addUniqueConstraint:
+            tableName: cm_version_attribute
+            columnNames: name, node_version
+            constraintName: name_version
+        - createTable:
+            tableName: cm_version_bin
+            columns:
+              - column:
+                  name: id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: version_id
+                  type: varchar(36)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: chunk_index
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: bin_content
+                  type: longblob
+                  constraints:
+                    nullable: false
+              - column:
+                  name: chunk_size
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: dbversion
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - addForeignKeyConstraint:
+                  constraintName: fk_cm_vbin_v1
+                  baseTableName: cm_version_bin
+                  baseColumnNames: version_id
+                  referencedTableName: cm_version
+                  referencedColumnNames: id
+                  onDelete: cascade
+                  onUpdate: cascade
+        - createTable:
+            tableName: cm_version_deleted
+            columns:
+              - column:
+                  name: version_id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+  - changeSet:
+      id: content_manager_1_MYSQL
+      author: European Dynamics SA
+      preConditions:
+        - onFail: MARK_RAN
+        - dbms:
+            type: mysql
+      changes:
+        - sql:
+            endDelimiter: //
+            sql: CREATE TRIGGER cm_version_deleted AFTER DELETE on cm_version
+              FOR EACH ROW
+              BEGIN
+              INSERT INTO cm_version_deleted(version_id) VALUES (old.id);
+              END;//
+        - sql:
+            endDelimiter: //
+            sql: |-
+              CREATE PROCEDURE flu_to_version_bin(flu_file_ID varchar(36), version_ID varchar(36)) BEGIN DECLARE c_id varchar(36); DECLARE c_order bigint(20); DECLARE c_data longblob;DECLARE c_size bigint(20); DECLARE c_dbv bigint(20); DECLARE done INT DEFAULT FALSE; DECLARE cur CURSOR FOR SELECT id, chunk_order, chunk_data, chunk_size, dbversion FROM flu_file f WHERE f.id = flu_file_ID; DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE; OPEN cur; read_loop: LOOP FETCH cur INTO c_id, c_order, c_data, c_size, c_dbv ; IF done THEN LEAVE read_loop; END IF; INSERT INTO cm_version_bin (id, version_id, chunk_index, bin_content, chunk_size, dbversion) VALUES ((uuid()), version_ID, c_order, c_data, c_size, c_dbv); END LOOP; CLOSE cur; END;//
+  - changeSet:
+      id: content_manager_1_ORACLE
+      author: European Dynamics SA
+      preConditions:
+        - onFail: MARK_RAN
+        - dbms:
+            type: oracle
+      changes:
+        - sql:
+            endDelimiter: //
+            sql: CREATE TRIGGER cm_version_deleted AFTER DELETE on cm_version
+              FOR EACH ROW
+              BEGIN
+              INSERT INTO cm_version_deleted(version_id) VALUES (old.id);
+              END;//
+        - sql:
+            endDelimiter: //
+            sql: CREATE PROCEDURE flu_to_version_bin( flu_file_ID VARCHAR2, version_ID  VARCHAR2 ) AS CURSOR cur IS SELECT id, f.chunk_order, f.chunk_data, f.chunk_size FROM flu_file f WHERE f.id = flu_file_ID; BEGIN FOR flu_rec IN cur LOOP INSERT INTO cm_version_bin ( id, version_id, chunk_index, bin_content, chunk_size ) VALUES ( ( sys_guid() ) , version_ID, flu_rec.chunk_order, flu_rec.chunk_data, flu_rec.chunk_size ); END LOOP; END;//
+  - changeSet:
+      id: content_manager_1_HSQLDB
+      author: European Dynamics SA
+      preConditions:
+        - onFail: MARK_RAN
+        - dbms:
+            type: hsqldb
+      changes:
+        - sql:
+            endDelimiter: //
+            sql: CREATE TRIGGER cm_version_deleted AFTER DELETE on cm_version
+              REFERENCING OLD ROW AS OLD
+              FOR EACH ROW
+              BEGIN ATOMIC
+              INSERT INTO cm_version_deleted(version_id) VALUES (old.id);
+              END;//
+        - sql:
+            endDelimiter: //
+            sql: |-
+              CREATE PROCEDURE flu_to_version_bin(flu_file_ID varchar(36), version_ID varchar(36)) BEGIN ATOMIC DECLARE c_id varchar(36); DECLARE c_order integer; DECLARE c_data binary; DECLARE c_size integer; DECLARE c_dbv integer; DECLARE done integer; DECLARE cur CURSOR FOR SELECT id, chunk_order, chunk_data, chunk_size, dbversion FROM flu_file f WHERE f.id = flu_file_ID; DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1; OPEN cur; read_loop: LOOP FETCH cur INTO c_id, c_order, c_data, c_size, c_dbv ; IF done THEN LEAVE read_loop; END IF; INSERT INTO cm_version_bin (id, version_id, chunk_index, bin_content, chunk_size, dbversion) VALUES ((uuid()), version_ID, c_order, c_data, c_size, c_dbv); END LOOP; CLOSE cur; END;//
+  - changeSet:
+      id: content_manager_1_POSTGRESQL
+      author: European Dynamics SA
+      preConditions:
+        - onFail: MARK_RAN
+        - dbms:
+            type: postgresql
+      changes:
+        - sql:
+            endDelimiter: //
+            sql: CREATE FUNCTION cm_version_deleted() RETURNS trigger AS $cm_version_deleted$
+              BEGIN
+              INSERT INTO cm_version_deleted(version_id) VALUES (old.id);
+              RETURN NEW;
+              END;
+              $cm_version_deleted$ LANGUAGE plpgsql;
+              CREATE TRIGGER cm_version_deleted BEFORE DELETE ON cm_version
+              FOR EACH ROW EXECUTE PROCEDURE cm_version_deleted();//
+        - sql:
+            endDelimiter: //
+            sql:  CREATE OR REPLACE FUNCTION flu_to_version_bin(_flu_file_id VARCHAR(36), _version_id VARCHAR(36)) RETURNS integer AS $BODY$ BEGIN INSERT INTO cm_version_bin ( id, version_id, chunk_index, bin_content, chunk_size, dbversion ) SELECT uuid_generate_v1mc(), _version_id, chunk_order, chunk_data, chunk_size, dbversion FROM flu_file f WHERE f.id = flu_file_id; return 1; end; $BODY$ LANGUAGE plpgsql VOLATILE COST 100; \\

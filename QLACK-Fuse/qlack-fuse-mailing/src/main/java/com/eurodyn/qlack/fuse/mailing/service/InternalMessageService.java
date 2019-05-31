@@ -150,6 +150,7 @@ public class InternalMessageService {
 	public void markMessageAsRead(String messageId) {
 		InternalMessage internalMessage = internalMessagesRepository.fetchById(messageId);
 		internalMessage.setStatus(MailConstants.MARK_READ);
+    internalMessagesRepository.save(internalMessage);
 	}
 
 	/**
@@ -161,6 +162,7 @@ public class InternalMessageService {
 	public void markMessageAsReplied(String messageId) {
 		InternalMessage internalMessage = internalMessagesRepository.fetchById(messageId);
 		internalMessage.setStatus(MailConstants.MARK_REPLIED);
+    internalMessagesRepository.save(internalMessage);
 	}
 
 	/**
@@ -172,6 +174,7 @@ public class InternalMessageService {
 	public void markMessageAsUnread(String messageId) {
 		InternalMessage internalMessage = internalMessagesRepository.fetchById(messageId);
 		internalMessage.setStatus(MailConstants.MARK_UNREAD);
+    internalMessagesRepository.save(internalMessage);
 	}
 
 	/**
@@ -204,7 +207,7 @@ public class InternalMessageService {
 		if (MailConstants.INBOX_FOLDER_TYPE.equals(folderType)) {
 			if ("S".equals(internalMessage.getDeleteType())) {
 				internalMessagesRepository.delete(internalMessage);
-
+				return;
 			} else {
 				internalMessage.setDeleteType("I");
 			}
@@ -212,10 +215,12 @@ public class InternalMessageService {
 		if (MailConstants.SENT_FOLDER_TYPE.equals(folderType)) {
 			if ("I".equals(internalMessage.getDeleteType())) {
 				internalMessagesRepository.delete(internalMessage);
+				return;
 			} else {
 				internalMessage.setDeleteType("S");
 			}
 		}
+    internalMessagesRepository.save(internalMessage);
 	}
 
 	/**
