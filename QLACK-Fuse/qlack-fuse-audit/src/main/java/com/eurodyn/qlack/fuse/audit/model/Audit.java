@@ -38,7 +38,7 @@ public class Audit extends QlackBaseModel {
   private AuditTrace trace;
 
   /**
-   * the id of the web session
+   * the id of the web session‘
    */
   @Column(name = "prin_session_id")
   private String prinSessionId;

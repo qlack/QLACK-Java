@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: aaa_002
+      author: European Dynamics SA
+      changes:
+        - dropNotNullConstraint:
+            columnDataType: varchar(60)
+            columnName: pswd
+            tableName: aaa_user

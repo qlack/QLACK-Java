@@ -1,6 +1,7 @@
 package com.eurodyn.qlack.fuse.cm.storage;
 
 import com.eurodyn.qlack.fuse.cm.dto.BinChunkDTO;
+import com.eurodyn.qlack.fuse.cm.mappers.BinChunkDTOMapper;
 import com.eurodyn.qlack.fuse.cm.model.QVersionBin;
 import com.eurodyn.qlack.fuse.cm.model.Version;
 import com.eurodyn.qlack.fuse.cm.model.VersionBin;
@@ -10,6 +11,7 @@ import com.querydsl.core.types.Predicate;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -17,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -30,8 +33,11 @@ public class DBStorage implements StorageEngine {
   private VersionRepository versionRepository;
   @Autowired
   private VersionBinRepository versionBinRepository;
-  //@Value("${chunkSize}")
-  private int chunkSize = 4096000;
+  @Autowired
+  private BinChunkDTOMapper mapper;
+  @Value("${qlack.fuse.cm.chunkSize:4096000}")
+  private int chunkSize;
+
 
   private String persistBinChunk(Version version, byte[] content, int chunkIndex) {
 
@@ -88,15 +94,12 @@ public class DBStorage implements StorageEngine {
   public BinChunkDTO getBinChunk(String versionID, int chunkIndex) {
     BinChunkDTO binChunkDTO = null;
     Version version = versionRepository.fetchById(versionID);
-
-    Predicate predicate = qVersionBin.version.eq(version)
-      .and(qVersionBin.chunkIndex.in(Arrays.asList(chunkIndex, chunkIndex + 1)));
-
+    Predicate predicate = qVersionBin.version.eq(version).and(qVersionBin.chunkIndex.in(Arrays.asList(chunkIndex, chunkIndex + 1)));
     List<VersionBin> versionBins = versionBinRepository.findAll(predicate, Sort.by("chunkIndex").descending());
 
     if (versionBins.size() > 0) {
-      // binChunkDTO = mapper.map(resultList.get(0));
-      // binChunkDTO.setHasMoreChunks(resultList.size() == 2);
+      binChunkDTO = mapper.mapToDTO(versionBins.get(0));
+      binChunkDTO.setHasMoreChunks(versionBins.size() == 2);
     }
 
     return binChunkDTO;
@@ -104,25 +107,14 @@ public class DBStorage implements StorageEngine {
 
   @Override
   public boolean deleteVersion(String versionID) {
-    try {
-
-      Version version = versionRepository.fetchById(versionID);
-
-      if (version != null) {
-        version.getVersionBins().clear();
-
-        // em.persist(version);
-        // em.flush();
-
-        return true;
-      } else {
-        return true;
-      }
-    } catch (Exception e) {
-      LOGGER.log(Level.WARNING,
-        MessageFormat.format("Could not delete content for version: {0}", versionID), e);
-      return false;
+    Version version = versionRepository.fetchById(versionID);
+    if (version != null) {
+      version.setVersionBins(new ArrayList<>());
+      versionRepository.save(version);
+      return true;
     }
+    LOGGER.log(Level.WARNING, MessageFormat.format("Could not find version: {0}", versionID));
+    return false;
   }
 
 }

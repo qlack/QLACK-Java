@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.eurodyn.qlack</groupId>
     <artifactId>qlack</artifactId>
-    <version>3.0.1</version>
+    <version>3.1.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -19,5 +19,6 @@
     <module>qlack-util-data-mongo</module>
     <module>qlack-util-hibernate</module>
     <module>qlack-util-logger</module>
+    <module>qlack-util-clam-av</module>
   </modules>
 </project>

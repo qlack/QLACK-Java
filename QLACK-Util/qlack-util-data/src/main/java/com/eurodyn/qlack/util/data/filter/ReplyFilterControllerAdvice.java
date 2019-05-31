@@ -17,11 +17,13 @@ import org.springframework.web.servlet.mvc.method.annotation.AbstractMappingJack
  */
 @ControllerAdvice
 public class ReplyFilterControllerAdvice extends AbstractMappingJacksonResponseBodyAdvice {
-  private final static String SPRING_PAGE_DEFAULT_FIELDS = "first,last,number,numberOfElements,pageable,size,sort,totalElements,totalPages";
+
+  private final static String SPRING_PAGE_DEFAULT_FIELDS =
+    "first,last,number,numberOfElements,pageable,size,sort,totalElements,totalPages";
 
   @Override
   protected void beforeBodyWriteInternal(MappingJacksonValue bodyContainer, MediaType contentType,
-      MethodParameter returnType, ServerHttpRequest req, ServerHttpResponse res) {
+    MethodParameter returnType, ServerHttpRequest req, ServerHttpResponse res) {
     // The value of the filter to apply.
     String filterValue = null;
 
@@ -30,17 +32,17 @@ public class ReplyFilterControllerAdvice extends AbstractMappingJacksonResponseB
       filterValue = returnType.getMethodAnnotation(ReplyFilter.class).value();
     } else if (returnType.getMethodAnnotation(ReplyPageableFilter.class) != null) {
       filterValue =
-          SPRING_PAGE_DEFAULT_FIELDS + ",content["
-              + returnType.getMethodAnnotation(ReplyPageableFilter.class).value()
-              + "]";
+        SPRING_PAGE_DEFAULT_FIELDS + ",content["
+          + returnType.getMethodAnnotation(ReplyPageableFilter.class).value()
+          + "]";
     }
 
     // If a filter annotation was found apply the filter.
     if (filterValue != null) {
       SquigglyPropertyFilter propertyFilter = new SquigglyPropertyFilter(
-          new SimpleSquigglyContextProvider(new SquigglyParser(), filterValue));
+        new SimpleSquigglyContextProvider(new SquigglyParser(), filterValue));
       final SimpleFilterProvider filters = new SimpleFilterProvider()
-          .addFilter(SquigglyPropertyFilter.FILTER_ID, propertyFilter);
+        .addFilter(SquigglyPropertyFilter.FILTER_ID, propertyFilter);
       bodyContainer.setFilters(filters);
     }
   }

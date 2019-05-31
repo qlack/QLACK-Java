@@ -2,6 +2,7 @@ package com.eurodyn.qlack.fuse.cm.service;
 
 import com.eurodyn.qlack.fuse.cm.dto.FolderDTO;
 import com.eurodyn.qlack.fuse.cm.dto.NodeDTO;
+import com.eurodyn.qlack.fuse.cm.enums.NodeType;
 import com.eurodyn.qlack.fuse.cm.enums.RelativesType;
 import com.eurodyn.qlack.fuse.cm.exception.QAncestorFolderLockException;
 import com.eurodyn.qlack.fuse.cm.exception.QDescendantNodeLockException;
@@ -10,14 +11,14 @@ import com.eurodyn.qlack.fuse.cm.exception.QNodeLockException;
 import com.eurodyn.qlack.fuse.cm.exception.QSelectedNodeLockException;
 import com.eurodyn.qlack.fuse.cm.mappers.NodeMapper;
 import com.eurodyn.qlack.fuse.cm.model.Node;
+import com.eurodyn.qlack.fuse.cm.model.NodeAttribute;
 import com.eurodyn.qlack.fuse.cm.repository.NodeRepository;
 import com.eurodyn.qlack.fuse.cm.util.CMConstants;
 import java.util.Calendar;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-// import com.eurodyn.qlack.fuse.cm.util.ConverterUtil;
+import org.springframework.util.CollectionUtils;
 
 /**
  * @author European Dynamics
@@ -27,8 +28,8 @@ import org.springframework.stereotype.Service;
 public class ConcurrencyControlService {
 
   private final NodeMapper nodeMapper;
-  private NodeRepository nodeRepository;
-  private String commonInvalidLockTokenMsg = "is locked and an invalid lock token was passed; the folder cannot be locked.";
+  private final NodeRepository nodeRepository;
+  private final String commonInvalidLockTokenMsg = "is locked and an invalid lock token was passed; the folder cannot be locked.";
 
   @Autowired
   public ConcurrencyControlService(NodeMapper nodeMapper, NodeRepository nodeRepository) {
@@ -50,16 +51,28 @@ public class ConcurrencyControlService {
   public void lock(String nodeID, String lockToken, boolean lockChildren, String userID) throws QNodeLockException {
     Node node = fetchNode(nodeID, "The folder/file you want to lock does not exist");
 
-    // Check whether there is a lock conflict with the current node.
-    isSelectedNodeLocked(nodeID, lockToken, "The selected folder " + commonInvalidLockTokenMsg);
+    checkIfLockable(node);
 
-    // Check for ancestor node (folder) lock conflicts.
-    if (node.getParent() != null) {
-      isParentNodeLocked(node.getParent().getId(), lockToken, "An ancestor folder " + commonInvalidLockTokenMsg);
+    NodeDTO selConflict = getSelectedNodeWithLockConflict(nodeID, lockToken);
+    if (selConflict != null && selConflict.getName() != null) {
+      throw new QSelectedNodeLockException("The selected folder " + commonInvalidLockTokenMsg, selConflict.getId(), selConflict.getName());
     }
 
-    // Check for descendant node lock conflicts
-    isDescendantNodeLocked(nodeID, lockToken, "An descendant node " + commonInvalidLockTokenMsg);
+    if (node.getParent() != null) {
+      NodeDTO ancConflict = getAncestorFolderWithLockConflict(nodeID, lockToken);
+      if (ancConflict != null && ancConflict.getId() != null) {
+        throw new QAncestorFolderLockException("An ancestor folder " + commonInvalidLockTokenMsg, ancConflict.getId(),
+          ancConflict.getName());
+      }
+    }
+
+    if (!CollectionUtils.isEmpty(node.getChildren())) {
+      NodeDTO desConflict = getDescendantNodeWithLockConflict(nodeID, lockToken);
+      if (desConflict != null && desConflict.getId() != null) {
+        throw new QDescendantNodeLockException("An descendant node " + commonInvalidLockTokenMsg, desConflict.getId(),
+          desConflict.getName());
+      }
+    }
 
     node.setLockToken(lockToken);
     node.setAttribute(CMConstants.ATTR_LOCKED_ON, String.valueOf(Calendar.getInstance().getTimeInMillis()));
@@ -89,9 +102,15 @@ public class ConcurrencyControlService {
   public void unlock(String nodeID, String lockToken, boolean overrideLock, String userID) throws QNodeLockException {
     Node node = fetchNode(nodeID, "The folder/file you want to unlock does not exist");
 
-    // Check whether there is a lock conflict with the current node.
-    isSelectedNodeLocked(nodeID, lockToken, "The selected folder is locked and an invalid lock token was passed; the folder "
-      + "cannot be unlocked.");
+    if (!overrideLock) {
+      // Check whether there is a lock conflict with the current node.
+      NodeDTO selConflict = getSelectedNodeWithLockConflict(nodeID, lockToken);
+      if (selConflict != null && selConflict.getName() != null) {
+        throw new QSelectedNodeLockException(
+          "The selected folder is locked and an invalid lock token was passed; the folder cannot be unlocked.",
+          selConflict.getId(), selConflict.getName());
+      }
+    }
 
     node.setLockToken(null);
     // remove the attribute itself
@@ -113,13 +132,13 @@ public class ConcurrencyControlService {
    * @return The NodeDTO with the conflict or null.
    */
   public NodeDTO getSelectedNodeWithLockConflict(String nodeID, String lockToken) {
-    Node node = nodeRepository.fetchById(nodeID);
+    Node node = fetchNode(nodeID, "The folder/file you want to unlock does not exist");
     return commonLockConflictCheck(node, lockToken);
   }
 
   /**
-   * Checks the whether an ancestor folder has lock conflict and returns the first one it will find. A lock conflict in this case happens
-   * when the provided lock token, is different from the lockTocken of a specific ascendant folder.
+   * Checks whether an ancestor folder has lock conflict and returns the first one it will find. A lock conflict in this case happens when
+   * the provided lock token, is different from the lockTocken of a specific ascendant folder.
    *
    * @param nodeID The UUID of the node to check.
    * @return The FolderDTO of the first locked ancestor folders with which there is a conflict
@@ -130,8 +149,9 @@ public class ConcurrencyControlService {
 
     // Check whether the current node has lock and is conflicting.
     // Returns the first folder it will find with conflict.
+
+    commonLockConflictCheck(node, lockToken);
     if (node.getLockToken() != null && !node.getLockToken().equals(lockToken)) {
-      //return folderDTOMapper.mapToDTO(node, true);
       return nodeMapper.mapToFolderDTO(node, RelativesType.LAZY, false);
     }
 
@@ -141,7 +161,7 @@ public class ConcurrencyControlService {
   }
 
   /**
-   * Checks the whether a descendant node has lock conflict  and returns the first one it will find.  A lock conflict in this case happens
+   * Checks whether a descendant node has lock conflict  and returns the first one it will find.  A lock conflict in this case happens
    * when the provided lock token, is different from the lockTocken of a descendant node.
    *
    * @param nodeID The UUID of the node to check.
@@ -155,7 +175,7 @@ public class ConcurrencyControlService {
        Check whether the current node has a conflicting lock.
        Returns the first node it will find with conflict, otherwise recursively look for conflicts with descendant nodes.
       */
-      NodeDTO nodeDTO = commonLockConflictCheck(node, lockToken);
+      NodeDTO nodeDTO = commonLockConflictCheck(child, lockToken);
       return nodeDTO != null ? nodeDTO : getDescendantNodeWithLockConflict(child.getId(), lockToken);
     }
     return null;
@@ -169,33 +189,22 @@ public class ConcurrencyControlService {
     return node;
   }
 
-  public void isSelectedNodeLocked(String nodeID, String lockToken, String errorMsg) {
-    NodeDTO selConflict = getSelectedNodeWithLockConflict(nodeID, lockToken);
-    if (selConflict != null && selConflict.getName() != null) {
-      throw new QSelectedNodeLockException(errorMsg, selConflict.getId(), selConflict.getName());
-    }
-  }
-
-  public void isParentNodeLocked(String nodeID, String lockToken, String errorMsg) {
-    NodeDTO ancConflict = getAncestorFolderWithLockConflict(nodeID, lockToken);
-    // In case a conflict was found an exception is thrown
-    if (ancConflict != null && ancConflict.getId() != null) {
-      throw new QAncestorFolderLockException(errorMsg, ancConflict.getId(), ancConflict.getName());
-    }
-  }
-
-  public void isDescendantNodeLocked(String nodeID, String lockToken, String errorMsg) {
-    NodeDTO desConflict = getDescendantNodeWithLockConflict(nodeID, lockToken);
-    // In case a conflict was found an exception is thrown
-    if (desConflict != null && desConflict.getId() != null) {
-      throw new QDescendantNodeLockException(errorMsg, desConflict.getId(), desConflict.getName());
-    }
-  }
-
   private NodeDTO commonLockConflictCheck(Node node, String lockToken) {
     if (node.getLockToken() != null && !node.getLockToken().equals(lockToken)) {
-      return nodeMapper.mapToDTO(node, true);
+      if (node.getType().equals(NodeType.FOLDER)) {
+        return nodeMapper.mapToFolderDTO(node, RelativesType.LAZY, false);
+      } else if (node.getType().equals(NodeType.FILE)) {
+        return nodeMapper.mapToFileDTO(node, false);
+      }
     }
     return null;
+  }
+
+  private void checkIfLockable(Node node) throws QNodeLockException {
+    NodeAttribute lockable = node.getAttribute(CMConstants.LOCKABLE);
+
+    if (!Boolean.valueOf(lockable.getValue())) {
+      throw new QNodeLockException("Folder is not lockable");
+    }
   }
 }

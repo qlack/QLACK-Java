@@ -7,6 +7,7 @@ import java.util.List;
 import com.eurodyn.qlack.fuse.fileupload.dto.DBFileDTO;
 import com.eurodyn.qlack.fuse.fileupload.model.DBFile;
 import com.eurodyn.qlack.fuse.fileupload.model.DBFilePK;
+import com.eurodyn.qlack.util.clamav.dto.VirusScanDTO;
 
 /**
  * @author European Dynamics
@@ -134,4 +135,10 @@ public class InitTestValues {
     return dbFileDTOs;
   }
 
+  public VirusScanDTO createVirusScanVirusFreeDTO() {
+    VirusScanDTO virusScanDTO = new VirusScanDTO();
+    virusScanDTO.setVirusFree(true);
+    virusScanDTO.setVirusScanDescription("OK");
+    return virusScanDTO;
+  }
 }

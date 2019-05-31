@@ -10,11 +10,6 @@ import com.eurodyn.qlack.fuse.audit.repository.AuditRepository;
 import com.eurodyn.qlack.fuse.audit.util.AuditProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.types.Predicate;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +18,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
+
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 @Service
 @Transactional
@@ -57,6 +58,32 @@ public class AuditService {
   }
 
   /**
+   * Adds an audit of an event with minimal information.
+   *
+   * @param level the audit level
+   * @param event the audit event
+   * @param description the audit description
+   */
+  public void audit(String level, String event, String description) {
+    log.trace("Adding audit.");
+    audit(level, event, null, description, null, null, null);
+  }
+
+  /**
+   * Adds an audit of an event with minimal information.
+   *
+   * @param level the audit level
+   * @param event the audit event
+   * @param description the audit description
+   * @param args the arguments to be passed on a {@link MessageFormat} for the description
+   * argument.
+   */
+  public void audit(String level, String event, String description, Object... args) {
+    log.trace("Adding audit.");
+    audit(level, event, null, MessageFormat.format(description, args), null, null, null);
+  }
+
+  /**
    * Adds an audit of an event that occurred in the application
    *
    * @param level the audit level
@@ -67,7 +94,7 @@ public class AuditService {
    * @param traceData an object containing the trace of the audit
    */
   public void audit(String level, String event, String groupName, String description, String sessionID, Object traceData) {
-    log.info("Adding audit from params and trace data as an object ");
+    log.trace("Adding audit from params and trace data as an object ");
     audit(level, event, groupName, description, sessionID, traceData, null);
   }
 
@@ -82,7 +109,7 @@ public class AuditService {
    * @param traceData a String containing the trace of the audit
    */
   public void audit(String level, String event, String groupName, String description, String sessionID, String traceData) {
-    log.info("Adding audit from params and trace data as a String ");
+    log.trace("Adding audit from params and trace data as a String ");
     audit(level, event, groupName, description, sessionID, traceData, null);
   }
 
@@ -103,7 +130,7 @@ public class AuditService {
     String referenceId) {
     AuditDTO dto = new AuditDTO(level, event, groupName, description, sessionID);
     if (referenceId != null) {
-      log.info(MessageFormat.format("Adding audit with referenceId: {0} ", referenceId));
+      log.trace(MessageFormat.format("Adding audit with referenceId: {0} ", referenceId));
       dto.setReferenceId(referenceId);
     }
     if (auditProperties.isTraceData() && !StringUtils.isEmpty(traceData)) {
@@ -120,7 +147,7 @@ public class AuditService {
    * @return the id of the created audit
    */
   public String audit(AuditDTO audit) {
-    log.info(MessageFormat.format("Adding audit ''{0}''.", audit));
+    log.trace(MessageFormat.format("Adding audit ''{0}''.", audit));
     if (audit.getCreatedOn() == null) {
       audit.setCreatedOn(Calendar.getInstance().getTimeInMillis());
     }
@@ -139,7 +166,7 @@ public class AuditService {
    * @return a list containing the ids of the created audits
    */
   public List<String> audits(List<AuditDTO> auditList, String correlationId) {
-    log.info(MessageFormat.format("Adding audits ''{0}''.", auditList));
+    log.trace(MessageFormat.format("Adding audits ''{0}''.", auditList));
 
     List<String> uuids = new ArrayList<>();
     auditList.forEach(newAudit -> {
@@ -156,7 +183,7 @@ public class AuditService {
    * @param id the id of the audit to delete
    */
   public void deleteAudit(String id) {
-    log.info(MessageFormat.format("Deleting audit ''{0}''.", id));
+    log.trace(MessageFormat.format("Deleting audit ''{0}''.", id));
     auditRepository.delete(auditRepository.fetchById(id));
   }
 
@@ -164,7 +191,7 @@ public class AuditService {
    * Deletes all persisted audits
    */
   public void truncateAudits() {
-    log.info("Clearing all audit log data.");
+    log.trace("Clearing all audit log data.");
     auditRepository.deleteAll();
   }
 
@@ -174,7 +201,7 @@ public class AuditService {
    * @param createdOn the date before which all audits will be deleted
    */
   public void truncateAudits(Date createdOn) {
-    log.info(MessageFormat.format("Clearing audit log data before {0}", createdOn));
+    log.trace(MessageFormat.format("Clearing audit log data before {0}", createdOn));
     auditRepository.deleteByCreatedOnBefore(createdOn.toInstant().toEpochMilli());
   }
 
@@ -184,7 +211,8 @@ public class AuditService {
    * @param retentionPeriod the period that audits should be kept
    */
   public void truncateAudits(long retentionPeriod) {
-    log.info(MessageFormat.format("Clearing audit log data older than {0}", String.valueOf(retentionPeriod)));
+    log.trace(MessageFormat.format("Clearing audit log data older than {0}",
+      String.valueOf(retentionPeriod)));
     auditRepository.deleteByCreatedOnBefore(Calendar.getInstance().getTimeInMillis() - retentionPeriod);
   }
 
@@ -195,7 +223,7 @@ public class AuditService {
    * @return the audit that matches the specific id
    */
   public AuditDTO getAuditById(String auditId) {
-    log.info(MessageFormat.format("Fetching audit with id: {0} ", auditId));
+    log.trace(MessageFormat.format("Fetching audit with id: {0} ", auditId));
     Audit audit = auditRepository.fetchById(auditId);
     return auditMapper.mapToDTO(audit);
   }
@@ -208,7 +236,7 @@ public class AuditService {
    * @return a page containing X number of audits matching the specific expression
    */
   public Page<AuditDTO> getAuditLogs(Pageable pageable, Predicate predicate) {
-    log.info(MessageFormat.format("Searching for audits matching the expression: {0}", predicate));
+    log.trace(MessageFormat.format("Searching for audits matching the expression: {0}", predicate));
     return auditMapper.toAuditDTO(auditRepository.findAll(predicate, pageable));
   }
 
@@ -220,7 +248,7 @@ public class AuditService {
    */
 
   public List<String> getDistinctEventsForReferenceId(String referenceId) {
-    log.info(MessageFormat.format("Fetching distinct events for id: {0}", referenceId));
+    log.trace(MessageFormat.format("Fetching distinct events for id: {0}", referenceId));
     return auditRepository.findDistinctEventsByReferenceId(referenceId);
   }
 }

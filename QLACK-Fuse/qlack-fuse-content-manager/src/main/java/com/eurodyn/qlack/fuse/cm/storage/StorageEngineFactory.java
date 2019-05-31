@@ -1,6 +1,7 @@
 package com.eurodyn.qlack.fuse.cm.storage;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,8 +13,8 @@ public class StorageEngineFactory {
   @Autowired
   private FSStorage fsStorage;
 
-  //@Value("${storageStrategy}")
-  private String defaultStorageStrategy = "DBStorage";
+  @Value("${storageStrategy:DBStorage}")
+  private String defaultStorageStrategy;
 
   /**
    * @param dbStorage the dbStorage to set

@@ -19,10 +19,18 @@ import com.eurodyn.qlack.fuse.aaa.model.QSession;
 import com.eurodyn.qlack.fuse.aaa.model.QUser;
 import com.eurodyn.qlack.fuse.aaa.model.Session;
 import com.eurodyn.qlack.fuse.aaa.model.User;
-import com.eurodyn.qlack.fuse.aaa.model.UserAttribute;
 import com.eurodyn.qlack.fuse.aaa.repository.SessionRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserAttributeRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,14 +40,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.data.domain.Sort;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest {
@@ -100,12 +100,12 @@ public class UserServiceTest {
     @Test
     public void testCreateUserWithoutUserAttributes(){
         UserDTO userDTO = initTestValues.createUserDTO();
-        userDTO.setUserAttributes(new HashSet<>());
+//        userDTO.setUserAttributes(new HashSet<>());
         User user = initTestValues.createUser();
         user.setUserAttributes(new ArrayList<>());
         when(userMapper.mapToEntity(userDTO)).thenReturn(user);
 
-        String userId = userService.createUser(userDTO);
+        String userId = userService.createUser(userDTO, null);
         assertEquals(user.getId(), userId);
         verify(userRepository, times(1)).save(user);
     }
@@ -114,7 +114,7 @@ public class UserServiceTest {
     public void testCreateUser(){
         when(userMapper.mapToEntity(userDTO)).thenReturn(user);
 
-        String userId = userService.createUser(userDTO);
+        String userId = userService.createUser(userDTO, null);
         assertEquals(user.getId(), userId);
         verify(userRepository, times(1)).save(user);
     }

@@ -38,6 +38,8 @@ qlack.fuse.fileupload.cleanupEnabled=false
 qlack.fuse.fileupload.cleanupThreshold=300000
 # Interval between the re-execution of the cleanup. Default (5 minutes)
 qlack.fuse.fileupload.cleanupInterval=300000
+# Enable file virus scanning. Default (false). Requires a running AV server instance
+qlack.fuse.fileupload.virusScanEnabled=false
 
 ```
 

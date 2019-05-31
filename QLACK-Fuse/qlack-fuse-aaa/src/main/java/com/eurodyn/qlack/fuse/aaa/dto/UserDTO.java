@@ -1,11 +1,14 @@
 package com.eurodyn.qlack.fuse.aaa.dto;
 
-import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
+
+import java.util.Set;
 
 @Getter
 @Setter
+@Accessors(chain = true)
 public class UserDTO extends BaseDTO {
 
   private String username;

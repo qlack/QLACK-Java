@@ -31,6 +31,7 @@ public interface NodeMapper extends CMBaseMapper<Node, NodeDTO> {
   @Mapping(source = "attributes", target = "lastModifiedBy", qualifiedByName = "mapLastModifiedBy")
   @Mapping(source = "attributes", target = "lockedOn", qualifiedByName = "mapLockedOn")
   @Mapping(source = "attributes", target = "lockedBy", qualifiedByName = "mapLockedBy")
+  @Mapping(source = "parent.id", target = "parentId")
   NodeDTO mapToDTO(Node node, @Context boolean findPath);
 
   @Mapping(source = "attributes", target = "name", qualifiedByName = "mapName")
@@ -42,6 +43,7 @@ public interface NodeMapper extends CMBaseMapper<Node, NodeDTO> {
   @Mapping(source = "attributes", target = "lockedOn", qualifiedByName = "mapLockedOn")
   @Mapping(source = "attributes", target = "lockedBy", qualifiedByName = "mapLockedBy")
   @Mapping(target = "children", qualifiedByName = "mapChildren")
+  @Mapping(source = "parent.id", target = "parentId")
   FolderDTO mapToFolderDTO(Node node, @Context RelativesType relativesType, @Context boolean findPath);
 
   @Mapping(source = "attributes", target = "name", qualifiedByName = "mapName")
@@ -52,10 +54,17 @@ public interface NodeMapper extends CMBaseMapper<Node, NodeDTO> {
   @Mapping(source = "attributes", target = "lastModifiedBy", qualifiedByName = "mapLastModifiedBy")
   @Mapping(source = "attributes", target = "lockedOn", qualifiedByName = "mapLockedOn")
   @Mapping(source = "attributes", target = "lockedBy", qualifiedByName = "mapLockedBy")
+  @Mapping(source = "parent.id", target = "parentId")
   FileDTO mapToFileDTO(Node node, @Context boolean findPath);
 
   @Mapping(target = "parent", ignore = true)
   Node mapToEntity(NodeDTO nodeDTO, @Context Node parent);
+
+  default List<NodeDTO> mapToDTO(List<Node> nodes) {
+    List<NodeDTO> nodesDTO = new ArrayList<>();
+    nodes.forEach(node -> nodesDTO.add(this.mapToDTO(node, false)));
+    return nodesDTO;
+  }
 
   @AfterMapping
   default void setType(NodeDTO dto, @MappingTarget Node entity) {

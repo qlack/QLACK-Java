@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: workflow_001
+      author: European Dynamics SA
+      changes:
+        - createTable:
+            tableName: wor_process_file
+            columns:
+              - column:
+                  name: filename
+                  type: varchar(255)
+                  remarks: the filename in the resources folder
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: checksum
+                  type: varchar(255)
+                  remarks: the MD5 chechsum of the file
+                  constraints:
+                    nullable: false

@@ -1,7 +1,6 @@
 package com.eurodyn.qlack.fuse.cm.repository;
 
 import com.eurodyn.qlack.common.repository.QlackBaseRepository;
-import com.eurodyn.qlack.fuse.cm.enums.NodeType;
 import com.eurodyn.qlack.fuse.cm.model.Node;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +10,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface NodeRepository extends QlackBaseRepository<Node, String> {
-
-  Node findByIdAndType(String id, NodeType type);
-
 }

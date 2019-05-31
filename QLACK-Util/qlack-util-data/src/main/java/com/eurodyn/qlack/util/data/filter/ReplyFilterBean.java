@@ -23,7 +23,7 @@ public class ReplyFilterBean {
    * https://github.com/bohnman/squiggly-java filters.
    */
   @Bean
-  public Jackson2ObjectMapperBuilderCustomizer addCustomBigDecimalDeserialization() {
+  public Jackson2ObjectMapperBuilderCustomizer addCustomSquigglyDeserialization() {
     return jacksonObjectMapperBuilder -> {
       jacksonObjectMapperBuilder.mixIn(Object.class, SquigglyPropertyFilterMixin.class);
       jacksonObjectMapperBuilder.filters(new SimpleFilterProvider()

@@ -1,11 +1,14 @@
 package com.eurodyn.qlack.fuse.cm.service;
 
 import com.eurodyn.qlack.fuse.cm.dto.BinChunkDTO;
+import com.eurodyn.qlack.fuse.cm.dto.NodeDTO;
 import com.eurodyn.qlack.fuse.cm.dto.VersionAttributeDTO;
 import com.eurodyn.qlack.fuse.cm.dto.VersionDTO;
-import com.eurodyn.qlack.fuse.cm.enums.NodeType;
+import com.eurodyn.qlack.fuse.cm.exception.QAncestorFolderLockException;
+import com.eurodyn.qlack.fuse.cm.exception.QFileNotFoundException;
 import com.eurodyn.qlack.fuse.cm.exception.QIOException;
 import com.eurodyn.qlack.fuse.cm.exception.QNodeLockException;
+import com.eurodyn.qlack.fuse.cm.exception.QSelectedNodeLockException;
 import com.eurodyn.qlack.fuse.cm.mappers.VersionMapper;
 import com.eurodyn.qlack.fuse.cm.model.Node;
 import com.eurodyn.qlack.fuse.cm.model.QVersion;
@@ -50,6 +53,8 @@ import org.apache.tika.exception.TikaException;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -65,9 +70,9 @@ public class VersionService {
   private static final String DEFAULT_MIME_TYPE = "application/octet-stream";
   @PersistenceContext
   EntityManager em;
-  @Autowired
+
   private ConcurrencyControlService concurrencyControlService;
-  @Autowired
+
   private StorageEngineFactory storageEngineFactory;
   private StorageEngine storageEngine;
   private NodeRepository nodeRepository;
@@ -76,9 +81,16 @@ public class VersionService {
   private TikaConfig tika;
   private QVersion qVersion = QVersion.version;
 
+  @Value("${qlack.fuse.cm.cycleLength:10000}")
+  private int cycleLength;
+
   @Autowired
-  public VersionService(NodeRepository nodeRepository, VersionRepository versionRepository,
+  public VersionService(ConcurrencyControlService concurrencyControlService,
+    StorageEngineFactory storageEngineFactory, NodeRepository nodeRepository,
+    VersionRepository versionRepository,
     VersionMapper versionMapper) {
+    this.concurrencyControlService = concurrencyControlService;
+    this.storageEngineFactory = storageEngineFactory;
     this.nodeRepository = nodeRepository;
     this.versionRepository = versionRepository;
     this.versionMapper = versionMapper;
@@ -94,6 +106,13 @@ public class VersionService {
     tika = new TikaConfig();
   }
 
+  private void checkNodeConflict(String fileID, String lockToken, String errorMsg) throws QNodeLockException {
+    NodeDTO selConflict = concurrencyControlService.getSelectedNodeWithLockConflict(fileID, lockToken);
+    if (selConflict != null && selConflict.getName() != null) {
+      throw new QSelectedNodeLockException(errorMsg, selConflict.getId(), selConflict.getName());
+    }
+  }
+
   /**
    * Creates the version.
    *
@@ -107,17 +126,23 @@ public class VersionService {
    * @throws QNodeLockException the q node lock exception
    */
   public String createVersion(String fileID, VersionDTO cmVersion, String filename, byte[] content, String userID, String lockToken)
-    throws QNodeLockException {
-    Node file = nodeRepository.findByIdAndType(fileID, NodeType.FILE);
+    throws QFileNotFoundException, QNodeLockException {
+    Node file = nodeRepository.fetchById(fileID);
 
-    // Check whether there is a lock conflict with the current node.
-    concurrencyControlService.isSelectedNodeLocked(fileID, lockToken,
+    if (file == null) {
+      throw new QFileNotFoundException("The file does not exist. Cannot create a version of a non existing file.");
+    }
+
+    checkNodeConflict(fileID, lockToken,
       "The selected file is locked and an invalid lock token was passed; A new version cannot be created for this file.");
 
-    // Check for ancestor node (folder) lock conflicts.
     if (file.getParent() != null) {
-      concurrencyControlService.isParentNodeLocked(file.getParent().getId(), lockToken,
-        "An ancestor folder is locked and an invalid lock token was passed; the folder cannot be created.");
+      NodeDTO ancConflict = concurrencyControlService.getAncestorFolderWithLockConflict(file.getParent().getId(), lockToken);
+      if (ancConflict != null && ancConflict.getId() != null) {
+        throw new QAncestorFolderLockException(
+          "An ancestor folder is locked and an invalid lock token was passed; the folder cannot be created.",
+          ancConflict.getId(), ancConflict.getName());
+      }
     }
 
     Version version = new Version();
@@ -138,7 +163,7 @@ public class VersionService {
     }
 
     // Set created / last modified information
-    version.setAttributes(new ArrayList<VersionAttribute>());
+    version.setAttributes(new ArrayList<>());
     long dateInMillis = Calendar.getInstance().getTimeInMillis();
     version.setCreatedOn(dateInMillis);
     version.getAttributes().add(new VersionAttribute(CMConstants.ATTR_CREATED_BY, userID, version));
@@ -172,11 +197,12 @@ public class VersionService {
    * allowed to be deleted. A false value updates only the mandatory attribute values
    * @param lockToken the lock token
    */
-  void updateVersion(String fileID, VersionDTO versionDTO, byte[] content, String userID, boolean updateAllAttributes, String lockToken) {
+  void updateVersion(String fileID, VersionDTO versionDTO, byte[] content, String userID, boolean updateAllAttributes, String lockToken)
+    throws QNodeLockException {
     Node file = nodeRepository.fetchById(fileID);
 
-    concurrencyControlService.isSelectedNodeLocked(fileID, lockToken,
-      "File with ID " + file + " is locked and an invalid lock token was passed; the file version attributes cannot be updated.");
+    checkNodeConflict(fileID, lockToken,
+      "File is locked and an invalid lock token was passed; the file version attributes cannot be updated.");
 
     Version version = versionRepository.findByNameAndNode(versionDTO.getName(), file);
 
@@ -242,12 +268,12 @@ public class VersionService {
    * @param versionId the version id
    * @param lockToken the lock token
    */
-  public void deleteVersion(String versionId, String lockToken) {
+  public void deleteVersion(String versionId, String lockToken) throws QNodeLockException {
     Version version = versionRepository.fetchById(versionId);
     Node file = version.getNode();
 
-    concurrencyControlService.isSelectedNodeLocked(file.getId(), lockToken, "File with ID " + file + " is locked and an "
-      + "invalid lock token was passed; the file version attributes cannot be deleted.");
+    checkNodeConflict(file.getId(), lockToken,
+      "File is locked and an invalid lock token was passed; the file version attributes cannot be deleted.");
 
     versionRepository.delete(version);
   }
@@ -447,8 +473,8 @@ public class VersionService {
     Node file = nodeRepository.fetchById(fileID);
     Version version = versionRepository.findByNameAndNode(versionName, file);
 
-    concurrencyControlService.isSelectedNodeLocked(fileID, lockToken,
-      "File with ID " + file + " is locked and an invalid lock token was passed; the file version attributes cannot be updated.");
+    checkNodeConflict(file.getId(), lockToken,
+      "File is locked and an invalid lock token was passed; the file version attributes cannot be updated.");
 
     version.setAttribute(attributeName, attributeValue);
 
@@ -489,8 +515,8 @@ public class VersionService {
     Node file = nodeRepository.fetchById(fileID);
     Version version = versionRepository.findByNameAndNode(versionName, file);
 
-    concurrencyControlService.isSelectedNodeLocked(fileID, lockToken,
-      "File with ID " + file + " is locked and an invalid lock token was passed; the file version attributes cannot be updated.");
+    checkNodeConflict(file.getId(), lockToken,
+      "File is locked and an invalid lock token was passed; the file version attributes cannot be updated.");
 
     for (String attributeName : attributes.keySet()) {
       version.setAttribute(attributeName, attributes.get(attributeName));
@@ -533,8 +559,8 @@ public class VersionService {
     Node file = nodeRepository.fetchById(fileID);
     Version version = versionRepository.findByNameAndNode(versionName, file);
 
-    concurrencyControlService.isSelectedNodeLocked(fileID, lockToken,
-      "File with ID " + file + " is locked and an invalid lock token was passed; the file version attributes cannot be deleted.");
+    checkNodeConflict(file.getId(), lockToken,
+      "File is locked and an invalid lock token was passed; the file version attributes cannot be deleted.");
 
     version.removeAttribute(attributeName);
 
@@ -551,6 +577,8 @@ public class VersionService {
    *
    * @param cycleLength the cycle length
    */
+
+  @Scheduled(fixedDelayString = "${qlack.fuse.cm.cleanupInterval:60000}")
   public void cleanupFS(int cycleLength) {
     QVersionDeleted qVersionDeleted = QVersionDeleted.versionDeleted;
     List<VersionDeleted> vdList = new JPAQueryFactory(em).selectFrom(qVersionDeleted).limit(cycleLength)
@@ -601,7 +629,6 @@ public class VersionService {
     return retVal;
   }
 
-
   /**
    * Sets the version content.
    *
@@ -631,6 +658,4 @@ public class VersionService {
     Predicate predicate = qVersion.filename.in(filenameList).and(qVersion.node.parent.id.eq(fileId));
     return versionMapper.mapToDTO(versionRepository.findAll(predicate));
   }
-
-
 }

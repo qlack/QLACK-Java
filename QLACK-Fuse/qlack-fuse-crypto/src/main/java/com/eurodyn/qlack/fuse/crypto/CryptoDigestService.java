@@ -2,6 +2,7 @@ package com.eurodyn.qlack.fuse.crypto;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 /**
  * Message digest algorithms.
@@ -75,5 +77,15 @@ public class CryptoDigestService {
    */
   public String sha256(final InputStream inputStream) throws IOException {
     return DigestUtils.sha256Hex(inputStream);
+  }
+
+  /**
+   * Generates a random seed.
+   * @param length The number of bytes of the seed. Note that this is *not* the length of the
+   * return value as the return value is Base64 encoded.
+   * @return A Base64 encoded version of the generated seed.
+   */
+  public String generateSecureRandom(int length) throws NoSuchAlgorithmException {
+    return Base64.encodeBase64String(SecureRandom.getInstanceStrong().generateSeed(length));
   }
 }

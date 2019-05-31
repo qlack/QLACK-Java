@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,15 +23,15 @@ public class FSStorage implements StorageEngine {
   private static final Logger LOGGER = Logger.getLogger(FSStorage.class.getName());
   // The number of available buckets in powers of 10. Make sure you do not
   // change this value on a running system as buckets will be misaligned.
-  //@Value("${buckets}")
-  private int numberOfBuckets = 10;
+  @Value("${qlack.fuse.cm.buckets:10}")
+  private int numberOfBuckets;
 
-  //@Value("${chunkSize}")
+  @Value("${qlack.fuse.cm.chunkSize:4096000}")
   private int chunkSize = 4096000;
 
-  // The root of the filesystem (set in Blueprint).
-  //@Value("${rootFS}")
-  private String rootFS = "\"/tmp\"";
+  // The root of the filesystem
+  @Value("${qlack.fuse.cm.rootFS:/tmp}")
+  private String rootFS;
 
   /**
    * Converts a uuid to a file-system path using a bucketing algorithm.

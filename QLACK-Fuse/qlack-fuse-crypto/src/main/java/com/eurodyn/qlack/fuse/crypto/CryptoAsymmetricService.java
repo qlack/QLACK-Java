@@ -193,7 +193,7 @@ public class CryptoAsymmetricService {
    *
    * @param publicKeyPEM The public key to verify the signature with.
    * @param payload The signed content.
-   * @param signature The signature to verify.
+   * @param signature The signature to verify in Base64 format.
    * @param signatureAlgorithm The algorithm with which the signature was created, e.g.
    * SHA256withRSA.
    * @param keyAlgorithm The algorithm with which the key was generated, e.g. RSA.

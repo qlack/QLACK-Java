@@ -27,6 +27,7 @@ import com.eurodyn.qlack.fuse.fileupload.exception.QFileNotFoundException;
 import com.eurodyn.qlack.fuse.fileupload.model.DBFile;
 import com.eurodyn.qlack.fuse.fileupload.repository.DBFileRepository;
 import com.eurodyn.qlack.fuse.fileupload.service.impl.FileUploadImpl;
+import com.eurodyn.qlack.util.clamav.service.ClamAvService;
 import com.querydsl.core.types.Predicate;
 
 /**
@@ -39,6 +40,7 @@ public class FileUploadImplTest {
   private FileUploadImpl fileUploadImpl;
 
   private DBFileRepository dbFileRepository = mock(DBFileRepository.class);
+  private ClamAvService clamAvService = mock(ClamAvService.class);
   private InitTestValues initTestValues;
   private DBFile chunk;
   private DBFileDTO dbFileDTO;
@@ -51,7 +53,7 @@ public class FileUploadImplTest {
 
   @Before
   public void init() {
-    fileUploadImpl = new FileUploadImpl(dbFileRepository);
+    fileUploadImpl = new FileUploadImpl(dbFileRepository, clamAvService);
     initTestValues = new InitTestValues();
     dbFileDTO = initTestValues.createDBFileDTO();
     dbFiles = initTestValues.createDBFiles();
@@ -73,31 +75,6 @@ public class FileUploadImplTest {
     assertFalse(checkChunk);
   }
 
-  @Test
-  public void testUpload() {
-    when(dbFileRepository.getChunk("ad1f5bb0-e1a9-4960-b0ca-1998fa5a1d6c", 1L)).thenReturn(chunk);
-    boolean b = fileUploadImpl.upload(dbFileDTO);
-    verify(dbFileRepository, times(1)).save(any(DBFile.class));
-    assertTrue(b);
-  }
-
-  @Test
-  public void testUploadTotalSizeZero() {
-    when(dbFileRepository.getChunk("ad1f5bb0-e1a9-4960-b0ca-1998fa5a1d6c", 1L)).thenReturn(chunk);
-    dbFileDTO.setTotalSize(0L);
-    boolean b = fileUploadImpl.upload(dbFileDTO);
-    verify(dbFileRepository, times(1)).save(any(DBFile.class));
-    assertTrue(b);
-  }
-
-  @Test
-  public void testUploadFileIsNull() {
-    when(dbFileRepository.getChunk("ad1f5bb0-e1a9-4960-b0ca-1998fa5a1d6c", 1L)).thenReturn(null);
-    dbFileDTO.setTotalSize(0L);
-    boolean b = fileUploadImpl.upload(dbFileDTO);
-    verify(dbFileRepository, times(1)).save(any(DBFile.class));
-    assertFalse(b);
-  }
 
   @Test
   public void deleteByID() {

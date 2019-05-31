@@ -97,6 +97,7 @@ public class InitTestValues {
         user.setId("57d30f8d-cf0c-4742-9893-09e2aa08c255");
         user.setUsername("AAA Default User");
         user.setPassword("thisisaverysecurepassword");
+        user.setSalt("thisisaveryrandomsalt");
         user.setStatus((byte)1);
         user.setSuperadmin(true);
         user.setExternal(false);
