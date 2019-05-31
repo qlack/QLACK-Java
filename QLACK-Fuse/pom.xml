@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.eurodyn.qlack</groupId>
+    <artifactId>qlack</artifactId>
+    <version>3.0.0</version>
+    <relativePath>../</relativePath>
+  </parent>
+
+  <groupId>com.eurodyn.qlack.fuse</groupId>
+  <artifactId>qlack-fuse</artifactId>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>qlack-fuse-aaa</module>
+    <module>qlack-fuse-aaa-annotations</module>
+    <module>qlack-fuse-acv</module>
+    <module>qlack-fuse-audit</module>
+    <module>qlack-fuse-crypto</module>
+    <module>qlack-fuse-fileupload</module>
+    <module>qlack-fuse-imaging</module>
+    <module>qlack-fuse-lexicon</module>
+    <module>qlack-fuse-mailing</module>
+    <module>qlack-fuse-rules</module>
+    <module>qlack-fuse-scheduler</module>
+    <module>qlack-fuse-search</module>
+    <module>qlack-fuse-security</module>
+    <module>qlack-fuse-settings</module>
+  </modules>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+    </dependency>
+  </dependencies>
+
+</project>

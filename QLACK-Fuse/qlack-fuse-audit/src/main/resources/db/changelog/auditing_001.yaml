@@ -1,0 +1,146 @@
+databaseChangeLog:
+  - changeSet:
+      id: auditing_001
+      author: European Dynamics SA
+      changes:
+        - createTable:
+            tableName: al_audit_level
+            columns:
+              - column:
+                  name: id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(45)
+              - column:
+                  name: prin_session_id
+                  type: varchar(40)
+              - column:
+                  name: created_on
+                  type: bigint
+        - createTable:
+            tableName: al_audit_trace
+            columns:
+              - column:
+                  name: id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: trace_data
+                  type: text
+                  constraints:
+                    nullable: false
+        - createTable:
+             tableName: al_audit
+             columns:
+               - column:
+                   name: id
+                   type: varchar(36)
+                   constraints:
+                     primaryKey: true
+                     nullable: false
+               - column:
+                   name: prin_session_id
+                   type: varchar(255)
+               - column:
+                   name: short_description
+                   type: varchar(2048)
+               - column:
+                   name: reference_id
+                   type: varchar(36)
+               - column:
+                   name: group_name
+                   type: varchar(255)
+               - column:
+                   name: level_id
+                   type: varchar(36)
+                   constraints:
+                     nullable: false
+                     defaultValueNumeric: '3'
+               - column:
+                   name: event
+                   type: varchar(40)
+                   constraints:
+                     nullable: false
+               - column:
+                   name: created_on
+                   type: bigint
+               - column:
+                   name: trace_id
+                   type: varchar(36)
+               - column:
+                   name: opt1
+                   type: varchar(255)
+               - column:
+                   name: opt2
+                   type: varchar(255)
+               - column:
+                   name: opt3
+                   type: varchar(255)
+               - column:
+                   name: correlation_id
+                   type: varchar(36)
+        - createIndex:
+              indexName: fk_audit_levelId
+              tableName: al_audit
+              columns:
+                - column:
+                   name: level_id
+                   type: varchar(36)
+
+        - createIndex:
+             indexName: fk_audit_eventId
+             tableName: al_audit
+             columns:
+             - column:
+                 name: event
+                 type: varchar(40)
+
+        - createIndex:
+             indexName: fk_al_audit_traceId
+             tableName: al_audit
+             columns:
+             - column:
+                 name: trace_id
+                 type: varchar(36)
+
+        - addForeignKeyConstraint:
+              constraintName: fk_al_audit_levelId
+              baseTableName: al_audit
+              baseColumnNames: level_id
+              referencedTableName: al_audit_level
+              referencedColumnNames: id
+              onDelete: cascade
+              onUpdate: cascade
+        - addForeignKeyConstraint:
+              constraintName: fk_al_audit_traceId
+              baseTableName: al_audit
+              baseColumnNames: trace_id
+              referencedTableName: al_audit_trace
+              referencedColumnNames: id
+              onDelete: cascade
+              onUpdate: cascade
+        - createIndex:
+              indexName: name_unique
+              tableName: al_audit_level
+              columns:
+                - column:
+                   name: name
+              unique: true
+        - createIndex:
+            indexName: fk_audit_createdOn
+            tableName: al_audit
+            columns:
+              - column:
+                  name: created_on
+                  type: bigint

@@ -1,0 +1,58 @@
+databaseChangeLog:
+  - changeSet:
+      id: fileupload_1
+      author: European Dynamics SA (qlack2-dev@eurodyn.com)
+      changes:
+        - createTable:
+            tableName: flu_file
+            columns:
+              - column:
+                  name: id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: chunk_order
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: uploaded_by
+                  type: varchar(36)
+              - column:
+                  name: file_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: uploaded_at
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: expected_chunks
+                  type: bigint
+                  constraints:
+                    nullable: true
+              - column:
+                  name: file_size
+                  type: bigint
+              - column:
+                  name: chunk_data
+                  type: longblob
+              - column:
+                  name: dbversion
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: chunk_size
+                  type: bigint
+        - createIndex:
+            tableName: flu_file
+            indexName: idx_flu_file1
+            columns:
+              - column:
+                  name: id

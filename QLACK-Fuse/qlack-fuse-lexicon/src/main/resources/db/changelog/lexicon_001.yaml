@@ -1,0 +1,217 @@
+databaseChangeLog:
+  - changeSet:
+      id: lexicon_001
+      author: European Dynamics SA
+      changes:
+        - createTable:
+            tableName: lex_group
+            columns:
+              - column:
+                  name: id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: title
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(1024)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: dbversion
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: lex_language
+            columns:
+              - column:
+                  name: id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: locale
+                  type: varchar(5)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: active
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: dbversion
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: lex_key
+            columns:
+              - column:
+                  name: id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: group_id
+                  type: varchar(36)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: dbversion
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            constraintName: fk_lex_key_lex_group
+            baseTableName: lex_key
+            baseColumnNames: group_id
+            referencedTableName: lex_group
+            referencedColumnNames: id
+            onDelete: restrict
+            onUpdate: cascade
+        - addUniqueConstraint:
+            tableName: lex_key
+            columnNames: name, group_id
+            constraintName: name_group
+        - createTable:
+            tableName: lex_data
+            columns:
+              - column:
+                  name: id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: key_id
+                  type: varchar(36)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: value
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: language_id
+                  type: varchar(36)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_updated_on
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: dbversion
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            constraintName: fk_lex_data_lex_key
+            baseTableName: lex_data
+            baseColumnNames: key_id
+            referencedTableName: lex_key
+            referencedColumnNames: id
+            onDelete: cascade
+            onUpdate: cascade
+        - addForeignKeyConstraint:
+            constraintName: fk_lex_data_lex_language
+            baseTableName: lex_data
+            baseColumnNames: language_id
+            referencedTableName: lex_language
+            referencedColumnNames: id
+            onDelete: cascade
+            onUpdate: cascade
+        - createTable:
+            tableName: lex_template
+            columns:
+              - column:
+                  name: id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: content
+                  type: text
+                  constraints:
+                    nullable: true
+              - column:
+                  name: language_id
+                  type: varchar(36)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: dbversion
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            constraintName: fk_lex_template_lex_language
+            baseTableName: lex_template
+            baseColumnNames: language_id
+            referencedTableName: lex_language
+            referencedColumnNames: id
+            onDelete: cascade
+            onUpdate: cascade
+        - addUniqueConstraint:
+            tableName: lex_template
+            columnNames: name, language_id
+            constraintName: name_language
+        - createTable:
+            tableName: lex_application
+            columns:
+              - column:
+                  name: id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: symbolic_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: checksum
+                  type: varchar(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: executed_on
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: dbversion
+                  type: bigint
+                  constraints:
+                    nullable: false

@@ -1,0 +1,318 @@
+databaseChangeLog:
+  - changeSet:
+      id: mailing_001
+      author: European Dynamics SA
+      changes:
+        - createTable:
+            tableName: mai_email
+            columns:
+              - column:
+                  name: id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: subject
+                  type: varchar(254)
+              - column:
+                  name: body
+                  type: text
+              - column:
+                  name: from_email
+                  type: varchar(255)
+              - column:
+                  name: to_emails
+                  type: varchar(1024)
+              - column:
+                  name: cc_emails
+                  type: varchar(1024)
+              - column:
+                  name: bcc_emails
+                  type: varchar(1024)
+              - column:
+                  name: status
+                  type: varchar(32)
+              - column:
+                  name: server_response
+                  type: varchar(1024)
+              - column:
+                  name: email_type
+                  type: varchar(64)
+              - column:
+                  name: date_sent
+                  type: bigint(20)
+              - column:
+                  name: server_response_date
+                  type: bigint(20)
+              - column:
+                  name: added_on_date
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: reply_to_emails
+                  type: varchar(1024)
+              - column:
+                  name: tries
+                  type: tinyint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: charset
+                  type: varchar(20)
+              - column:
+                  name: db_version
+                  type: bigint
+        - createIndex:
+            indexName: idx_me_datesent
+            tableName: mai_email
+            columns:
+              - column:
+                  name: date_sent
+        - createIndex:
+            indexName: tries_status_index
+            tableName: mai_email
+            columns:
+              - column:
+                  name: tries
+              - column:
+                  name: status
+        - createTable:
+            tableName: mai_attachment
+            columns:
+              - column:
+                  name: id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: email_id
+                  type: varchar(36)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: filename
+                  type: varchar(254)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: content_type
+                  type: varchar(254)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: data
+                  type: longblob
+                  constraints:
+                    nullable: false
+              - column:
+                  name: attachment_size
+                  type: bigint
+        - createIndex:
+            indexName: idx_attachment_mai_email1
+            tableName: mai_attachment
+            columns:
+              - column:
+                  name: email_id
+        - addForeignKeyConstraint:
+            constraintName: fk_mai_attachment_mai_email1
+            baseTableName: mai_attachment
+            baseColumnNames: email_id
+            referencedTableName: mai_email
+            referencedColumnNames: id
+            onDelete: cascade
+            onUpdate: cascade
+        - createTable:
+            tableName: mai_distribution_list
+            columns:
+              - column:
+                  name: id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: list_name
+                  type: varchar(45)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(45)
+              - column:
+                  name: created_on
+                  type: bigint
+              - column:
+                  name: created_by
+                  type: varchar(254)
+        - createTable:
+            tableName: mai_contact
+            columns:
+              - column:
+                  name: id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: varchar(36)
+              - column:
+                  name: email
+                  type: varchar(45)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: varchar(254)
+              - column:
+                  name: last_name
+                  type: varchar(254)
+              - column:
+                  name: locale
+                  type: varchar(5)
+        - createTable:
+            tableName: mai_distr_list_has_contact
+            columns:
+              - column:
+                  name: distribution_list_id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: contact_id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+        - createIndex:
+            indexName: idx_distr_list_has_ct_ct_id1
+            tableName: mai_distr_list_has_contact
+            columns:
+              - column:
+                  name: contact_id
+        - createIndex:
+            indexName: idx_distr_list_has_ct_list_id1
+            tableName: mai_distr_list_has_contact
+            columns:
+              - column:
+                  name: distribution_list_id
+        - addForeignKeyConstraint:
+            constraintName: fk_mai_dis_list_has_ct_mai_ct1
+            baseTableName: mai_distr_list_has_contact
+            baseColumnNames: contact_id
+            referencedTableName: mai_contact
+            referencedColumnNames: id
+            onDelete: cascade
+            onUpdate: no action
+        - addForeignKeyConstraint:
+            constraintName: fk_mai_dist_ls_has_ct_dist_ls1
+            baseTableName: mai_distr_list_has_contact
+            baseColumnNames: distribution_list_id
+            referencedTableName: mai_distribution_list
+            referencedColumnNames: id
+            onDelete: cascade
+            onUpdate: no action
+        - createTable:
+            tableName: mai_internal_message
+            columns:
+              - column:
+                  name: id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: message
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: mail_from
+                  type: varchar(36)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: mail_to
+                  type: varchar(36)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: date_sent
+                  type: bigint
+              - column:
+                  name: date_received
+                  type: bigint
+              - column:
+                  name: status
+                  type: varchar(7)
+              - column:
+                  name: subject
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: delete_type
+                  type: varchar(1)
+                  constraints:
+                    nullable: false
+        - createIndex:
+            indexName: idx_mim_mailtotype
+            tableName: mai_internal_message
+            columns:
+              - column:
+                  name: mail_to
+              - column:
+                  name: delete_type
+        - createIndex:
+            indexName: idx_mim_mf_dt
+            tableName: mai_internal_message
+            columns:
+              - column:
+                  name: mail_from
+              - column:
+                  name: delete_type
+        - createTable:
+            tableName: mai_internal_attachment
+            columns:
+              - column:
+                  name: id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: messages_id
+                  type: varchar(36)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: filename
+                  type: varchar(254)
+              - column:
+                  name: content_type
+                  type: varchar(254)
+              - column:
+                  name: data
+                  type: longblob
+              - column:
+                  name: format
+                  type: varchar(45)
+                  remarks: "binary or text"
+        - createIndex:
+            indexName: idx_int_attachment_mai_msg1
+            tableName: mai_internal_attachment
+            columns:
+              - column:
+                  name: messages_id
+        - addForeignKeyConstraint:
+            constraintName: fk_mai_int_attachment_mai_msg1
+            baseTableName: mai_internal_attachment
+            baseColumnNames: messages_id
+            referencedTableName: mai_internal_message
+            referencedColumnNames: id
+            onDelete: cascade
+            onUpdate: cascade

@@ -1,0 +1,89 @@
+databaseChangeLog:
+  - changeSet:
+      id: settings_001
+      author: European Dynamics SA
+      changes:
+        - createTable:
+            tableName: set_setting
+            columns:
+              - column:
+                  name: id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: owner  
+                  type: varchar(254)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: group_name
+                  type: varchar(254)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: key_name
+                  type: varchar(254)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: psswrd
+                  type: boolean
+              - column:
+                  name: val
+                  type: varchar(2048)
+                  constraints:
+                    nullable: true     
+              - column:
+                  name: created_on
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: sensitivity
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: dbversion
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - createIndex:
+              indexName: IDX_owner
+              tableName: set_setting
+              columns:
+                - column:
+                   name: owner
+              unique: false
+        - createIndex:
+              indexName: IDX_owner_group
+              tableName: set_setting
+              columns:
+                - column:
+                   name: owner
+                - column:
+                   name: group_name
+              unique: false
+        - createIndex:
+              indexName: IDX_owner_key
+              tableName: set_setting
+              columns:
+                - column:
+                   name: owner
+                - column:
+                   name: key_name
+              unique: false
+        - createIndex:
+              indexName: IDX_owner_key_group
+              tableName: set_setting
+              columns:
+                - column:
+                   name: owner
+                - column:
+                   name: key_name
+                - column:
+                   name: group_name
+              unique: true
+              
