@@ -231,7 +231,7 @@ databaseChangeLog:
             tableName: cm_version_deleted
             columns:
               - column:
-                  name: version_id
+                  name: id
                   type: varchar(36)
                   constraints:
                     primaryKey: true
@@ -248,7 +248,7 @@ databaseChangeLog:
             sql: CREATE TRIGGER cm_version_deleted AFTER DELETE on cm_version
               FOR EACH ROW
               BEGIN
-              INSERT INTO cm_version_deleted(version_id) VALUES (old.id);
+              INSERT INTO cm_version_deleted(id) VALUES (old.id);
               END;//
         - sql:
             endDelimiter: //
@@ -267,7 +267,7 @@ databaseChangeLog:
             sql: CREATE TRIGGER cm_version_deleted AFTER DELETE on cm_version
               FOR EACH ROW
               BEGIN
-              INSERT INTO cm_version_deleted(version_id) VALUES (old.id);
+              INSERT INTO cm_version_deleted(id) VALUES (old.id);
               END;//
         - sql:
             endDelimiter: //
@@ -286,7 +286,7 @@ databaseChangeLog:
               REFERENCING OLD ROW AS OLD
               FOR EACH ROW
               BEGIN ATOMIC
-              INSERT INTO cm_version_deleted(version_id) VALUES (old.id);
+              INSERT INTO cm_version_deleted(id) VALUES (old.id);
               END;//
         - sql:
             endDelimiter: //
@@ -304,7 +304,7 @@ databaseChangeLog:
             endDelimiter: //
             sql: CREATE FUNCTION cm_version_deleted() RETURNS trigger AS $cm_version_deleted$
               BEGIN
-              INSERT INTO cm_version_deleted(version_id) VALUES (old.id);
+              INSERT INTO cm_version_deleted(id) VALUES (old.id);
               RETURN NEW;
               END;
               $cm_version_deleted$ LANGUAGE plpgsql;

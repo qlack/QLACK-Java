@@ -1,6 +1,7 @@
 package com.eurodyn.qlack.fuse.cm.storage;
 
 import com.eurodyn.qlack.fuse.cm.dto.BinChunkDTO;
+
 import java.io.IOException;
 
 public interface StorageEngine {
@@ -13,6 +14,6 @@ public interface StorageEngine {
 
   BinChunkDTO getBinChunk(String versionID, int chunkIndex);
 
-  boolean deleteVersion(String versionID);
+  void deleteVersionBinaries(String versionID);
 
 }

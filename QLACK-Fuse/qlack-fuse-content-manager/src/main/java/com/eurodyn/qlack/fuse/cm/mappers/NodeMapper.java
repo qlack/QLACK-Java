@@ -9,16 +9,17 @@ import com.eurodyn.qlack.fuse.cm.enums.RelativesType;
 import com.eurodyn.qlack.fuse.cm.model.Node;
 import com.eurodyn.qlack.fuse.cm.model.NodeAttribute;
 import com.eurodyn.qlack.fuse.cm.util.CMConstants;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Mapper(componentModel = "spring")
 public interface NodeMapper extends CMBaseMapper<Node, NodeDTO> {
@@ -44,7 +45,8 @@ public interface NodeMapper extends CMBaseMapper<Node, NodeDTO> {
   @Mapping(source = "attributes", target = "lockedBy", qualifiedByName = "mapLockedBy")
   @Mapping(target = "children", qualifiedByName = "mapChildren")
   @Mapping(source = "parent.id", target = "parentId")
-  FolderDTO mapToFolderDTO(Node node, @Context RelativesType relativesType, @Context boolean findPath);
+  FolderDTO mapToFolderDTO(Node node, @Context RelativesType relativesType,
+      @Context boolean findPath);
 
   @Mapping(source = "attributes", target = "name", qualifiedByName = "mapName")
   @Mapping(source = "attributes", target = "lockable", qualifiedByName = "mapLockable")
@@ -83,7 +85,8 @@ public interface NodeMapper extends CMBaseMapper<Node, NodeDTO> {
   }
 
   @AfterMapping
-  default <T extends NodeDTO> void mapPath(Node node, @MappingTarget T dto, @Context boolean findPath) {
+  default <T extends NodeDTO> void mapPath(Node node, @MappingTarget T dto,
+      @Context boolean findPath) {
 
     List<BreadcrumbPartDTO> path = new ArrayList<>();
 

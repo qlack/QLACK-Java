@@ -2,7 +2,6 @@ package com.eurodyn.qlack.fuse.cm.model;
 
 import com.eurodyn.qlack.common.model.QlackBaseModel;
 import com.eurodyn.qlack.fuse.cm.enums.NodeType;
-import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +16,8 @@ import javax.persistence.Version;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Table(name = "cm_node")
@@ -40,7 +41,7 @@ public class Node extends QlackBaseModel {
   private List<Node> children;
   @Column(name = "lock_token")
   private String lockToken;
-  @OneToMany(mappedBy = "node", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "node", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<NodeAttribute> attributes;
   // The media type of the latest version.
   private String mimetype;

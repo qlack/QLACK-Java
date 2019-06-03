@@ -6,7 +6,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface VersionAttributeMapper extends CMBaseMapper<VersionAttribute, VersionAttributeDTO> {
+public interface VersionAttributeMapper extends
+    CMBaseMapper<VersionAttribute, VersionAttributeDTO> {
 
   @Override
   @Mapping(source = "version.id", target = "versionId")

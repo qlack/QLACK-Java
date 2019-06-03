@@ -18,7 +18,7 @@
     <module>qlack-fuse-acv</module>
     <module>qlack-fuse-audit</module>
     <module>qlack-fuse-crypto</module>
-    <!--    <module>qlack-fuse-content-manager</module>-->
+    <module>qlack-fuse-content-manager</module>
     <module>qlack-fuse-fileupload</module>
     <module>qlack-fuse-imaging</module>
     <module>qlack-fuse-lexicon</module>

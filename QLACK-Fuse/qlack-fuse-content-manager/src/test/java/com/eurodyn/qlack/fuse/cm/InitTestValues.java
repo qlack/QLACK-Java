@@ -6,7 +6,10 @@ import com.eurodyn.qlack.fuse.cm.dto.VersionDTO;
 import com.eurodyn.qlack.fuse.cm.enums.NodeType;
 import com.eurodyn.qlack.fuse.cm.model.Node;
 import com.eurodyn.qlack.fuse.cm.model.NodeAttribute;
+import com.eurodyn.qlack.fuse.cm.model.Version;
+import com.eurodyn.qlack.fuse.cm.model.VersionAttribute;
 import com.eurodyn.qlack.fuse.cm.util.CMConstants;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +31,8 @@ public class InitTestValues {
   public List<NodeAttribute> createAttributes(Node node) {
     List<NodeAttribute> attributes = new ArrayList<>();
 
-    NodeAttribute name = new NodeAttribute(CMConstants.ATTR_NAME, "test folder" + node.getId(), node);
+    NodeAttribute name = new NodeAttribute(CMConstants.ATTR_NAME, "test folder" + node.getId(),
+        node);
     NodeAttribute lockable = new NodeAttribute(CMConstants.LOCKABLE, "true", node);
     NodeAttribute createdBy = new NodeAttribute(CMConstants.ATTR_CREATED_BY, "User#1", node);
 
@@ -61,8 +65,62 @@ public class InitTestValues {
 
   public VersionDTO createVersionDTO() {
     VersionDTO versionDTO = new VersionDTO();
-    versionDTO.setFilename("TEST_NAME");
-    versionDTO.setId("fab6cd60-b078-4eb5-852a-d96565206584 ");
+    versionDTO.setFilename("test file");
+    versionDTO.setId("fab6cd60-b078-4eb5-852a-d96565206584");
+    versionDTO.setAttributes(new HashSet<>());
+    versionDTO.setName("First Version");
+    versionDTO.setLastModifiedOn(1559030049171L);
     return versionDTO;
   }
+
+  public Version createVersion() {
+    Version version = new Version();
+    version.setFilename("test file");
+    version.setId("fab6cd60-b078-4eb5-852a-d96565206584 ");
+    version.setAttributes(new ArrayList<>());
+    version.setName("First Version");
+    version.setFilename("test file");
+    return version;
+  }
+
+  public List<Version> createVersions() {
+    List<Version> versions = new ArrayList<>();
+
+    Version version = createVersion();
+    version.setName("Second Version");
+    version.setId("afb6cd60-a134-1c11-112b-d96565207870");
+
+    versions.add(createVersion());
+    versions.add(version);
+
+    return versions;
+  }
+
+  public List<VersionDTO> createVersionsDTO() {
+    List<VersionDTO> versionsDTO = new ArrayList<>();
+
+    VersionDTO versionDTO = createVersionDTO();
+    versionDTO.setName("Second Version");
+    versionDTO.setId("afb6cd60-a134-1c11-112b-d96565207870");
+    versionDTO.setLastModifiedOn(1559031149171L);
+
+    versionsDTO.add(createVersionDTO());
+    versionsDTO.add(versionDTO);
+
+    return versionsDTO;
+  }
+
+  public List<VersionAttribute> createVersionAttributes(Version version) {
+    List<VersionAttribute> versionAttributes = new ArrayList<>();
+
+    VersionAttribute attribute = new VersionAttribute();
+    attribute.setName(CMConstants.LOCKABLE);
+    attribute.setValue("false");
+    attribute.setVersion(version);
+
+    versionAttributes.add(attribute);
+
+    return versionAttributes;
+  }
+
 }

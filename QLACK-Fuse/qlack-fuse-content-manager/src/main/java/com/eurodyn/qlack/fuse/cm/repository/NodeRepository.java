@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface NodeRepository extends QlackBaseRepository<Node, String> {
+
 }

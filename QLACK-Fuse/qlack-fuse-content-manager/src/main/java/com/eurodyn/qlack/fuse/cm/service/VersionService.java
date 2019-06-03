@@ -5,25 +5,44 @@ import com.eurodyn.qlack.fuse.cm.dto.NodeDTO;
 import com.eurodyn.qlack.fuse.cm.dto.VersionAttributeDTO;
 import com.eurodyn.qlack.fuse.cm.dto.VersionDTO;
 import com.eurodyn.qlack.fuse.cm.exception.QAncestorFolderLockException;
-import com.eurodyn.qlack.fuse.cm.exception.QFileNotFoundException;
 import com.eurodyn.qlack.fuse.cm.exception.QIOException;
 import com.eurodyn.qlack.fuse.cm.exception.QNodeLockException;
 import com.eurodyn.qlack.fuse.cm.exception.QSelectedNodeLockException;
+import com.eurodyn.qlack.fuse.cm.exception.QVersionNotFoundException;
 import com.eurodyn.qlack.fuse.cm.mappers.VersionMapper;
 import com.eurodyn.qlack.fuse.cm.model.Node;
 import com.eurodyn.qlack.fuse.cm.model.QVersion;
-import com.eurodyn.qlack.fuse.cm.model.QVersionDeleted;
 import com.eurodyn.qlack.fuse.cm.model.Version;
 import com.eurodyn.qlack.fuse.cm.model.VersionAttribute;
 import com.eurodyn.qlack.fuse.cm.model.VersionDeleted;
 import com.eurodyn.qlack.fuse.cm.repository.NodeRepository;
+import com.eurodyn.qlack.fuse.cm.repository.VersionBinRepository;
+import com.eurodyn.qlack.fuse.cm.repository.VersionDeletedRepository;
 import com.eurodyn.qlack.fuse.cm.repository.VersionRepository;
 import com.eurodyn.qlack.fuse.cm.storage.StorageEngine;
 import com.eurodyn.qlack.fuse.cm.storage.StorageEngineFactory;
 import com.eurodyn.qlack.fuse.cm.util.CMConstants;
 import com.eurodyn.qlack.fuse.cm.util.NodeAttributeStringBuilder;
 import com.querydsl.core.types.Predicate;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.persistence.ParameterMode;
+import javax.persistence.PersistenceContext;
+import javax.persistence.StoredProcedureQuery;
+import javax.transaction.Transactional;
+import lombok.extern.java.Log;
+import org.apache.tika.config.TikaConfig;
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.TikaInputStream;
+import org.apache.tika.metadata.Metadata;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -40,23 +59,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
-import javax.persistence.LockModeType;
-import javax.persistence.ParameterMode;
-import javax.persistence.PersistenceContext;
-import javax.persistence.StoredProcedureQuery;
-import javax.transaction.Transactional;
-import lombok.extern.java.Log;
-import org.apache.tika.config.TikaConfig;
-import org.apache.tika.exception.TikaException;
-import org.apache.tika.io.TikaInputStream;
-import org.apache.tika.metadata.Metadata;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 /**
  * @author European Dynamics
@@ -77,6 +79,8 @@ public class VersionService {
   private StorageEngine storageEngine;
   private NodeRepository nodeRepository;
   private VersionRepository versionRepository;
+  private VersionBinRepository versionBinRepository;
+  private VersionDeletedRepository versionDeletedRepository;
   private VersionMapper versionMapper;
   private TikaConfig tika;
   private QVersion qVersion = QVersion.version;
@@ -86,13 +90,16 @@ public class VersionService {
 
   @Autowired
   public VersionService(ConcurrencyControlService concurrencyControlService,
-    StorageEngineFactory storageEngineFactory, NodeRepository nodeRepository,
-    VersionRepository versionRepository,
-    VersionMapper versionMapper) {
+      StorageEngineFactory storageEngineFactory, NodeRepository nodeRepository,
+      VersionRepository versionRepository,
+      VersionBinRepository versionBinRepository, VersionDeletedRepository versionDeletedRepository,
+      VersionMapper versionMapper) {
     this.concurrencyControlService = concurrencyControlService;
     this.storageEngineFactory = storageEngineFactory;
     this.nodeRepository = nodeRepository;
     this.versionRepository = versionRepository;
+    this.versionBinRepository = versionBinRepository;
+    this.versionDeletedRepository = versionDeletedRepository;
     this.versionMapper = versionMapper;
   }
 
@@ -103,14 +110,31 @@ public class VersionService {
     if (storageEngine == null) {
       storageEngine = storageEngineFactory.getEngine();
     }
+
     tika = new TikaConfig();
   }
 
-  private void checkNodeConflict(String fileID, String lockToken, String errorMsg) throws QNodeLockException {
-    NodeDTO selConflict = concurrencyControlService.getSelectedNodeWithLockConflict(fileID, lockToken);
+  private void checkNodeConflict(String fileID, String lockToken, String errorMsg)
+      throws QNodeLockException {
+    NodeDTO selConflict = concurrencyControlService
+        .getSelectedNodeWithLockConflict(fileID, lockToken);
     if (selConflict != null && selConflict.getName() != null) {
       throw new QSelectedNodeLockException(errorMsg, selConflict.getId(), selConflict.getName());
     }
+  }
+
+  private Version getVersion(String versionName, Node file) {
+    if (versionName == null) {
+      return versionMapper.mapToEntity(getFileLatestVersion(file.getId()));
+    } else {
+      return getVersionByName(versionName, file);
+    }
+  }
+
+  private Version getVersionByName(String name, Node file) throws QVersionNotFoundException {
+    Predicate predicate = qVersion.name.eq(name).and(qVersion.node.id.eq(file.getId()));
+    return versionRepository.findOne(predicate).orElseThrow(() ->
+        new QVersionNotFoundException("No version found matching the given name and file id"));
   }
 
   /**
@@ -125,23 +149,21 @@ public class VersionService {
    * @return the string
    * @throws QNodeLockException the q node lock exception
    */
-  public String createVersion(String fileID, VersionDTO cmVersion, String filename, byte[] content, String userID, String lockToken)
-    throws QFileNotFoundException, QNodeLockException {
+  public String createVersion(String fileID, VersionDTO cmVersion, String filename, byte[] content,
+      String userID, String lockToken)
+      throws QNodeLockException {
     Node file = nodeRepository.fetchById(fileID);
 
-    if (file == null) {
-      throw new QFileNotFoundException("The file does not exist. Cannot create a version of a non existing file.");
-    }
-
     checkNodeConflict(fileID, lockToken,
-      "The selected file is locked and an invalid lock token was passed; A new version cannot be created for this file.");
+        "The selected file is locked and an invalid lock token was passed; A new version cannot be created for this file.");
 
     if (file.getParent() != null) {
-      NodeDTO ancConflict = concurrencyControlService.getAncestorFolderWithLockConflict(file.getParent().getId(), lockToken);
+      NodeDTO ancConflict = concurrencyControlService
+          .getAncestorFolderWithLockConflict(file.getParent().getId(), lockToken);
       if (ancConflict != null && ancConflict.getId() != null) {
         throw new QAncestorFolderLockException(
-          "An ancestor folder is locked and an invalid lock token was passed; the folder cannot be created.",
-          ancConflict.getId(), ancConflict.getName());
+            "An ancestor folder is locked and an invalid lock token was passed; the folder cannot be created.",
+            ancConflict.getId(), ancConflict.getName());
       }
     }
 
@@ -167,13 +189,18 @@ public class VersionService {
     long dateInMillis = Calendar.getInstance().getTimeInMillis();
     version.setCreatedOn(dateInMillis);
     version.getAttributes().add(new VersionAttribute(CMConstants.ATTR_CREATED_BY, userID, version));
-    version.getAttributes().add(new VersionAttribute(CMConstants.ATTR_LAST_MODIFIED_ON, String.valueOf(dateInMillis), version));
-    version.getAttributes().add(new VersionAttribute(CMConstants.ATTR_LAST_MODIFIED_BY, userID, version));
+    version.getAttributes().add(
+        new VersionAttribute(CMConstants.ATTR_LAST_MODIFIED_ON, String.valueOf(dateInMillis),
+            version));
+    version.getAttributes()
+        .add(new VersionAttribute(CMConstants.ATTR_LAST_MODIFIED_BY, userID, version));
 
     // Set custom created version attributes
     if (cmVersion.getAttributes() != null) {
       for (VersionAttributeDTO versionAttributeDTO : cmVersion.getAttributes()) {
-        version.getAttributes().add(new VersionAttribute(versionAttributeDTO.getName(), versionAttributeDTO.getValue(), version));
+        version.getAttributes().add(
+            new VersionAttribute(versionAttributeDTO.getName(), versionAttributeDTO.getValue(),
+                version));
       }
     }
 
@@ -193,18 +220,20 @@ public class VersionService {
    * @param versionDTO the version DTO
    * @param content the content
    * @param userID the user ID
-   * @param updateAllAttributes A true value defines that all attributes should be updated/deleted. Only the custom created attributes are
-   * allowed to be deleted. A false value updates only the mandatory attribute values
+   * @param updateAllAttributes A true value defines that all attributes should be updated/deleted.
+   * Only the custom created attributes are allowed to be deleted. A false value updates only the
+   * mandatory attribute values
    * @param lockToken the lock token
    */
-  void updateVersion(String fileID, VersionDTO versionDTO, byte[] content, String userID, boolean updateAllAttributes, String lockToken)
-    throws QNodeLockException {
+  public void updateVersion(String fileID, VersionDTO versionDTO, byte[] content, String userID,
+      boolean updateAllAttributes, String lockToken)
+      throws QNodeLockException {
     Node file = nodeRepository.fetchById(fileID);
 
     checkNodeConflict(fileID, lockToken,
-      "File is locked and an invalid lock token was passed; the file version attributes cannot be updated.");
+        "File is locked and an invalid lock token was passed; the file version attributes cannot be updated.");
 
-    Version version = versionRepository.findByNameAndNode(versionDTO.getName(), file);
+    Version version = getVersion(versionDTO.getName(), file);
 
     version.setName(versionDTO.getName());
     version.setNode(file);
@@ -226,12 +255,14 @@ public class VersionService {
     if (updateAllAttributes) {
       for (VersionAttribute attrEntity : version.getAttributes()) {
         if (!attrEntity.getName().equals(CMConstants.ATTR_LAST_MODIFIED_ON)
-          && !attrEntity.getName().equals(CMConstants.ATTR_LAST_MODIFIED_BY)
-          && !attrEntity.getName().equals(CMConstants.ATTR_CREATED_BY)) {
+            && !attrEntity.getName().equals(CMConstants.ATTR_LAST_MODIFIED_BY)
+            && !attrEntity.getName().equals(CMConstants.ATTR_CREATED_BY)) {
           if (versionDTO.getAttributes() != null) {
             if (
-              versionDTO.getAttributes().stream().filter(versionAttributeDTO -> versionAttributeDTO.getName().equals(attrEntity.getName()))
-                .findFirst().orElse(null) != null) {
+                versionDTO.getAttributes().stream().filter(
+                    versionAttributeDTO -> versionAttributeDTO.getName()
+                        .equals(attrEntity.getName()))
+                    .findFirst().orElse(null) != null) {
               attributeToRemove.add(version.getAttribute(attrEntity.getName()));
               version.removeAttribute(attrEntity.getName());
             }
@@ -252,14 +283,17 @@ public class VersionService {
     // Set values to the existing custom created attributes or create new attributes
     if (versionDTO.getAttributes() != null) {
       Set<String> excludedAttributeNames = Stream
-        .of(CMConstants.ATTR_LAST_MODIFIED_ON, CMConstants.ATTR_LAST_MODIFIED_BY, CMConstants.ATTR_CREATED_BY)
-        .collect(Collectors.toSet());
+          .of(CMConstants.ATTR_LAST_MODIFIED_ON, CMConstants.ATTR_LAST_MODIFIED_BY,
+              CMConstants.ATTR_CREATED_BY)
+          .collect(Collectors.toSet());
       versionDTO.getAttributes().forEach(versionAttributeDTO -> {
         if (!excludedAttributeNames.contains(versionAttributeDTO.getName())) {
           version.setAttribute(versionAttributeDTO.getName(), versionAttributeDTO.getValue());
         }
       });
     }
+
+    versionRepository.save(version);
   }
 
   /**
@@ -273,7 +307,10 @@ public class VersionService {
     Node file = version.getNode();
 
     checkNodeConflict(file.getId(), lockToken,
-      "File is locked and an invalid lock token was passed; the file version attributes cannot be deleted.");
+        "File is locked and an invalid lock token was passed; the file version attributes cannot be deleted.");
+
+    VersionDeleted versionDeleted = new VersionDeleted();
+    versionDeleted.setId(versionId);
 
     versionRepository.delete(version);
   }
@@ -296,7 +333,10 @@ public class VersionService {
    */
   public List<VersionDTO> getFileVersions(String fileID) {
     Node node = nodeRepository.fetchById(fileID);
-    return versionMapper.mapToDTO(versionRepository.findByNode(node));
+
+    Predicate predicate = qVersion.node.eq(node);
+    List<Version> versions = versionRepository.findAll(predicate);
+    return versionMapper.mapToDTO(versions);
   }
 
   /**
@@ -307,7 +347,8 @@ public class VersionService {
    */
   public VersionDTO getFileLatestVersion(String fileID) {
     List<VersionDTO> fileVersions = getFileVersions(fileID);
-    return fileVersions.stream().max(Comparator.comparing(VersionDTO::getLastModifiedOn)).orElse(null);
+    return fileVersions.stream().max(Comparator.comparing(VersionDTO::getLastModifiedOn))
+        .orElse(null);
   }
 
   /**
@@ -329,12 +370,21 @@ public class VersionService {
    */
   public byte[] getBinContent(String fileID, String versionName) {
     Node file = nodeRepository.fetchById(fileID);
-    Version version = versionRepository.findByNameAndNode(versionName, file);
+
+    Version version;
+
+    if (versionName == null) {
+      version = versionMapper.mapToEntity(getFileLatestVersion(fileID));
+      versionName = version.getName();
+    } else {
+      version = getVersion(versionName, file);
+    }
 
     try {
       return storageEngine.getVersionContent(version.getId());
     } catch (IOException e) {
-      throw new QIOException(MessageFormat.format("Could not obtain content for file " + "{0}, version {1}", fileID, versionName));
+      throw new QIOException(MessageFormat
+          .format("Could not obtain content for file " + "{0}, version {1}", fileID, versionName));
     }
   }
 
@@ -360,7 +410,14 @@ public class VersionService {
   public byte[] getFileAsZip(String fileID, String versionName, boolean includeProperties) {
 
     Node file = nodeRepository.fetchById(fileID);
-    Version version = versionRepository.findByNameAndNode(versionName, file);
+    Version version;
+
+    if (versionName == null) {
+      version = versionMapper.mapToEntity(getFileLatestVersion(fileID));
+      versionName = version.getName();
+    } else {
+      version = getVersion(versionName, file);
+    }
 
     ByteArrayOutputStream outStream = new ByteArrayOutputStream();
     ZipOutputStream zipFile = new ZipOutputStream(outStream);
@@ -401,7 +458,7 @@ public class VersionService {
     } catch (IOException ex) {
       log.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       throw new QIOException(
-        "Error writing ZIP for version " + versionName + " of file  with ID " + fileID);
+          "Error writing ZIP for version " + versionName + " of file  with ID " + fileID);
     }
 
     return outStream.toByteArray();
@@ -451,8 +508,9 @@ public class VersionService {
    * @param lockToken the lock token
    * @throws QNodeLockException the q node lock exception
    */
-  public void updateAttribute(String fileID, String attributeName, String attributeValue, String userID, String lockToken)
-    throws QNodeLockException {
+  public void updateAttribute(String fileID, String attributeName, String attributeValue,
+      String userID, String lockToken)
+      throws QNodeLockException {
     updateAttribute(fileID, attributeName, attributeValue, userID, lockToken, null);
   }
 
@@ -467,15 +525,15 @@ public class VersionService {
    * @param lockToken the lock token
    * @throws QNodeLockException the q node lock exception
    */
-  public void updateAttribute(String fileID, String attributeName, String attributeValue, String userID, String lockToken,
-    String versionName)
-    throws QNodeLockException {
+  public void updateAttribute(String fileID, String attributeName, String attributeValue,
+      String userID, String lockToken,
+      String versionName) throws QNodeLockException {
     Node file = nodeRepository.fetchById(fileID);
-    Version version = versionRepository.findByNameAndNode(versionName, file);
 
     checkNodeConflict(file.getId(), lockToken,
-      "File is locked and an invalid lock token was passed; the file version attributes cannot be updated.");
+        "File is locked and an invalid lock token was passed; the file version attributes cannot be updated.");
 
+    Version version = getVersion(versionName, file);
     version.setAttribute(attributeName, attributeValue);
 
     if (userID != null) {
@@ -496,7 +554,8 @@ public class VersionService {
    * @param lockToken the lock token
    * @throws QNodeLockException the q node lock exception
    */
-  public void updateAttributes(String fileID, Map<String, String> attributes, String userID, String lockToken) throws QNodeLockException {
+  public void updateAttributes(String fileID, Map<String, String> attributes, String userID,
+      String lockToken) throws QNodeLockException {
     updateAttributes(fileID, attributes, userID, lockToken, null);
   }
 
@@ -510,25 +569,21 @@ public class VersionService {
    * @param lockToken the lock token
    * @throws QNodeLockException the q node lock exception
    */
-  void updateAttributes(String fileID, Map<String, String> attributes, String userID, String lockToken, String versionName)
-    throws QNodeLockException {
+  void updateAttributes(String fileID, Map<String, String> attributes, String userID,
+      String lockToken, String versionName)
+      throws QNodeLockException {
     Node file = nodeRepository.fetchById(fileID);
-    Version version = versionRepository.findByNameAndNode(versionName, file);
 
     checkNodeConflict(file.getId(), lockToken,
-      "File is locked and an invalid lock token was passed; the file version attributes cannot be updated.");
+        "File is locked and an invalid lock token was passed; the file version attributes cannot be updated.");
+
+    Version version = getVersion(versionName, file);
 
     for (String attributeName : attributes.keySet()) {
       version.setAttribute(attributeName, attributes.get(attributeName));
     }
 
-    if (userID != null) {
-      Long timeInMillis = Calendar.getInstance().getTimeInMillis();
-      version.setAttribute(CMConstants.ATTR_LAST_MODIFIED_ON, String.valueOf(timeInMillis));
-      version.setAttribute(CMConstants.ATTR_LAST_MODIFIED_BY, userID);
-    }
-
-    versionRepository.save(version);
+    updateAttributesAndSave(version, userID);
   }
 
   /**
@@ -540,7 +595,8 @@ public class VersionService {
    * @param lockToken the lock token
    * @throws QNodeLockException the q node lock exception
    */
-  public void deleteAttribute(String fileID, String attributeName, String userID, String lockToken) throws QNodeLockException {
+  public void deleteAttribute(String fileID, String attributeName, String userID, String lockToken)
+      throws QNodeLockException {
     deleteAttribute(fileID, attributeName, userID, lockToken, null);
   }
 
@@ -554,57 +610,44 @@ public class VersionService {
    * @param lockToken the lock token
    * @throws QNodeLockException the q node lock exception
    */
-  public void deleteAttribute(String fileID, String attributeName, String userID, String lockToken, String versionName)
-    throws QNodeLockException {
+  public void deleteAttribute(String fileID, String attributeName, String userID, String lockToken,
+      String versionName)
+      throws QNodeLockException {
     Node file = nodeRepository.fetchById(fileID);
-    Version version = versionRepository.findByNameAndNode(versionName, file);
 
     checkNodeConflict(file.getId(), lockToken,
-      "File is locked and an invalid lock token was passed; the file version attributes cannot be deleted.");
+        "File is locked and an invalid lock token was passed; the file version attributes cannot be deleted.");
 
+    Version version = getVersion(versionName, file);
     version.removeAttribute(attributeName);
 
+    updateAttributesAndSave(version, userID);
+
+  }
+
+  private void updateAttributesAndSave(Version version, String userID) {
     // Update last modified information
     if (userID != null) {
       long timeInMillis = Calendar.getInstance().getTimeInMillis();
       version.setAttribute(CMConstants.ATTR_LAST_MODIFIED_ON, String.valueOf(timeInMillis));
       version.setAttribute(CMConstants.ATTR_LAST_MODIFIED_BY, userID);
     }
+
+    versionRepository.save(version);
   }
 
   /**
-   * Cleanup FS.
+   * Retrieves the latest version by a given filename list under a node
    *
-   * @param cycleLength the cycle length
+   * @param fileId the file id
+   * @param filenameList the filename list
+   * @return the versions by filename for file
    */
-
-  @Scheduled(fixedDelayString = "${qlack.fuse.cm.cleanupInterval:60000}")
-  public void cleanupFS(int cycleLength) {
-    QVersionDeleted qVersionDeleted = QVersionDeleted.versionDeleted;
-    List<VersionDeleted> vdList = new JPAQueryFactory(em).selectFrom(qVersionDeleted).limit(cycleLength)
-      .setLockMode(LockModeType.PESSIMISTIC_WRITE).fetch();
-
-    for (VersionDeleted vd : vdList) {
-      storageEngine.deleteVersion(vd.getId());
-      em.remove(vd);
-    }
+  public List<VersionDTO> getVersionsByFilenameForFile(String fileId, List<String> filenameList) {
+    Predicate predicate = qVersion.filename.in(filenameList).and(qVersion.node.id.eq(fileId));
+    return versionMapper.mapToDTO(versionRepository.findAll(predicate));
   }
 
-  /**
-   * Transfers the binary content from the flu_file temporary table to the cm_version_bin.
-   *
-   * @param attachmentID the ID of the chunks in the flu_file table. All the chunks of the same file have the same ID.
-   * @param versionID The ID of the version to which is related with the binary content to be transfered.
-   */
-  public void transferFromFluToVersionBin(String attachmentID, String versionID) {
-    StoredProcedureQuery query = em.createStoredProcedureQuery("flu_to_version_bin");
-    query.registerStoredProcedureParameter("flu_file_ID", String.class, ParameterMode.IN);
-    query.registerStoredProcedureParameter("version_ID", String.class, ParameterMode.IN);
-
-    query.setParameter("flu_file_ID", attachmentID);
-    query.setParameter("version_ID", versionID);
-    query.executeUpdate();
-  }
 
   /**
    * Retrieves the mime type of a provided binary content.
@@ -636,26 +679,44 @@ public class VersionService {
    * @param content the content
    */
   public void replaceVersionContent(String versionID, byte[] content) {
-    try {
-      boolean deleted = storageEngine.deleteVersion(versionID);
-
-      if (deleted) {
-        storageEngine.setVersionContent(versionID, content);
-      }
-    } catch (Exception e) {
-      log.log(Level.SEVERE, "Could not delete versionBin for version:" + versionID, e);
-    }
+    Version version = versionRepository.fetchById(versionID);
+    version.getVersionBins().clear();
+    version.getVersionBins().addAll(new ArrayList<>());
+    storageEngine.setVersionContent(versionID, content);
+    versionRepository.save(version);
   }
 
   /**
-   * Retrieves the latest version by a given filename list under a node
+   * Transfers the binary content from the flu_file temporary table to the cm_version_bin.
    *
-   * @param fileId the file id
-   * @param filenameList the filename list
-   * @return the versions by filename for file
+   * @param attachmentID the ID of the chunks in the flu_file table. All the chunks of the same file
+   * have the same ID.
+   * @param versionID The ID of the version to which is related with the binary content to be
+   * transfered.
    */
-  public List<VersionDTO> getVersionsByFilenameForFile(String fileId, List<String> filenameList) {
-    Predicate predicate = qVersion.filename.in(filenameList).and(qVersion.node.parent.id.eq(fileId));
-    return versionMapper.mapToDTO(versionRepository.findAll(predicate));
+  public void transferFromFluToVersionBin(String attachmentID, String versionID) {
+    StoredProcedureQuery query = em.createStoredProcedureQuery("flu_to_version_bin");
+    query.registerStoredProcedureParameter("flu_file_ID", String.class, ParameterMode.IN);
+    query.registerStoredProcedureParameter("version_ID", String.class, ParameterMode.IN);
+
+    query.setParameter("flu_file_ID", attachmentID);
+    query.setParameter("version_ID", versionID);
+    query.executeUpdate();
+  }
+
+  /**
+   * Cleanup FS.
+   *
+   */
+
+  @Scheduled(fixedDelayString = "${qlack.fuse.cm.cleanupInterval:60000}")
+  public void cleanupFS() {
+    Pageable limit = PageRequest.of(0, cycleLength);
+
+    List<VersionDeleted> all = versionDeletedRepository.findAll(limit).getContent();
+    all.forEach(versionDeleted -> {
+      storageEngine.deleteVersionBinaries(versionDeleted.getId());
+      versionDeletedRepository.delete(versionDeleted);
+    });
   }
 }

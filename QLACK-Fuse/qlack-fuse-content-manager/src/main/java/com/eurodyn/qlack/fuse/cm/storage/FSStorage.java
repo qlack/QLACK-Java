@@ -2,6 +2,11 @@ package com.eurodyn.qlack.fuse.cm.storage;
 
 import com.eurodyn.qlack.fuse.cm.dto.BinChunkDTO;
 import com.eurodyn.qlack.fuse.cm.exception.QStorageException;
+import javax.transaction.Transactional;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -11,10 +16,6 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.transaction.Transactional;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 @Service
 @Transactional
@@ -38,7 +39,7 @@ public class FSStorage implements StorageEngine {
    */
   private String bucketise(String uuid) {
     return StringUtils.join(new String[]{rootFS, String.valueOf(Math.abs(uuid.hashCode()))
-      .substring(0, (int) Math.log10(numberOfBuckets)), uuid + ".bin"}, File.separator);
+        .substring(0, (int) Math.log10(numberOfBuckets)), uuid + ".bin"}, File.separator);
   }
 
   @Override
@@ -76,8 +77,7 @@ public class FSStorage implements StorageEngine {
       f.createNewFile();
       Files.write(f.toPath(), content, StandardOpenOption.APPEND);
     } catch (IOException ex) {
-      throw new QStorageException("Could not persist file into "
-        + f.getAbsolutePath(), ex);
+      throw new QStorageException("Could not persist file into " + f.getAbsolutePath(), ex);
     }
 
     return f.getAbsolutePath();
@@ -116,14 +116,13 @@ public class FSStorage implements StorageEngine {
   }
 
   @Override
-  public boolean deleteVersion(String versionID) {
+  public void deleteVersionBinaries(String versionID) {
     String fileLocation = bucketise(versionID);
     try {
-      return Files.deleteIfExists(new File(fileLocation).toPath());
+      Files.deleteIfExists(new File(fileLocation).toPath());
     } catch (IOException e) {
       LOGGER.log(Level.WARNING, MessageFormat.format(
-        "Could not delete file {0}.", fileLocation), e);
-      return false;
+          "Could not delete file {0}.", fileLocation), e);
     }
   }
 

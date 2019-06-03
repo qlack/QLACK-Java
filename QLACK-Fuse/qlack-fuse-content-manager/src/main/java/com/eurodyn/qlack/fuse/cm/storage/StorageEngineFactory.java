@@ -13,7 +13,7 @@ public class StorageEngineFactory {
   @Autowired
   private FSStorage fsStorage;
 
-  @Value("${storageStrategy:DBStorage}")
+  @Value("${qlack.fuse.cm.storageStrategy:DBStorage}")
   private String defaultStorageStrategy;
 
   /**

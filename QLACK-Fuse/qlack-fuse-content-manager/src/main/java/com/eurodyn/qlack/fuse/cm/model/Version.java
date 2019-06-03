@@ -1,7 +1,6 @@
 package com.eurodyn.qlack.fuse.cm.model;
 
 import com.eurodyn.qlack.common.model.QlackBaseModel;
-import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +10,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Table(name = "cm_version")
@@ -52,17 +53,14 @@ public class Version extends QlackBaseModel {
       attribute = new VersionAttribute();
       attribute.setVersion(this);
       attribute.setName(name);
+      attributes.add(attribute);
     }
     attribute.setValue(value);
   }
 
   public void removeAttribute(String name) {
-    for (VersionAttribute versionAttribute : attributes) {
-      if (versionAttribute.getName().equals(name)) {
-        attributes.remove(versionAttribute);
-        versionAttribute.setVersion(null);
-      }
-    }
+    VersionAttribute attribute = getAttribute(name);
+    getAttributes().remove(attribute);
+    attribute.setVersion(null);
   }
-
 }

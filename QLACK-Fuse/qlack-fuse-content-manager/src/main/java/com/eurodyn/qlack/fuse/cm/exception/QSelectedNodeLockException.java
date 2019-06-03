@@ -22,7 +22,8 @@ public class QSelectedNodeLockException extends QNodeLockException {
     super(message);
   }
 
-  public QSelectedNodeLockException(String message, String conflictNodeID, String conflictNodeName) {
+  public QSelectedNodeLockException(String message, String conflictNodeID,
+      String conflictNodeName) {
     super(message, conflictNodeID, conflictNodeName);
   }
 

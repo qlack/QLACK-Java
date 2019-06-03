@@ -8,7 +8,8 @@ public class QAncestorFolderLockException extends QNodeLockException {
     super(message);
   }
 
-  public QAncestorFolderLockException(String message, String conflictNodeID, String conflictNodeName) {
+  public QAncestorFolderLockException(String message, String conflictNodeID,
+      String conflictNodeName) {
     super(message, conflictNodeID, conflictNodeName);
   }
 
