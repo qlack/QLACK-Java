@@ -26,12 +26,12 @@ import com.eurodyn.qlack.fuse.fileupload.model.DBFilePK;
 import com.eurodyn.qlack.fuse.fileupload.model.QDBFile;
 import com.eurodyn.qlack.fuse.fileupload.repository.DBFileRepository;
 import com.eurodyn.qlack.fuse.fileupload.service.FileUpload;
-import com.eurodyn.qlack.util.clamav.dto.VirusScanDTO;
-import com.eurodyn.qlack.util.clamav.exception.VirusFoundException;
-import com.eurodyn.qlack.util.clamav.service.ClamAvService;
+import com.eurodyn.qlack.util.av.api.dto.VirusScanDTO;
+import com.eurodyn.qlack.util.av.api.exception.VirusFoundException;
+import com.eurodyn.qlack.util.av.api.exception.VirusScanException;
+import com.eurodyn.qlack.util.av.api.service.AvService;
 import com.querydsl.core.types.Predicate;
 
-import io.sensesecure.clamav4j.ClamAVException;
 import lombok.extern.java.Log;
 
 @Log
@@ -47,13 +47,13 @@ public class FileUploadImpl implements FileUpload {
   @Value("${qlack.fuse.fileupload.cleanupThreshold:300000}")
   private long cleanupThreshold;
 
-  private ClamAvService clamAvService;
+  private AvService clamAvService;
 
   private final String SECURITY_RISK_MESSAGE = "The file you are trying to upload was flagged as malicious. "
     + "Please review the file.";
 
   @Autowired
-  public FileUploadImpl(DBFileRepository dbFileRepository, ClamAvService clamAvService) {
+  public FileUploadImpl(DBFileRepository dbFileRepository, AvService clamAvService) {
     this.dbFileRepository = dbFileRepository;
     this.clamAvService = clamAvService;
   }
@@ -204,7 +204,7 @@ public class FileUploadImpl implements FileUpload {
       VirusScanDTO result = null;
       try {
         result = clamAvService.virusScan(dbFileDTO.getFileData());
-      } catch (ClamAVException e) {
+      } catch (VirusScanException e) {
         log.log(Level.WARNING, e.getMessage());
       }
 

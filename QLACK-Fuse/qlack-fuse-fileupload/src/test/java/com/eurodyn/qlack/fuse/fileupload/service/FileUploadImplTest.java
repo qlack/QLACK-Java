@@ -27,7 +27,7 @@ import com.eurodyn.qlack.fuse.fileupload.exception.QFileNotFoundException;
 import com.eurodyn.qlack.fuse.fileupload.model.DBFile;
 import com.eurodyn.qlack.fuse.fileupload.repository.DBFileRepository;
 import com.eurodyn.qlack.fuse.fileupload.service.impl.FileUploadImpl;
-import com.eurodyn.qlack.util.clamav.service.ClamAvService;
+import com.eurodyn.qlack.util.av.api.service.AvService;
 import com.querydsl.core.types.Predicate;
 
 /**
@@ -40,7 +40,7 @@ public class FileUploadImplTest {
   private FileUploadImpl fileUploadImpl;
 
   private DBFileRepository dbFileRepository = mock(DBFileRepository.class);
-  private ClamAvService clamAvService = mock(ClamAvService.class);
+  private AvService clamAvService = mock(AvService.class);
   private InitTestValues initTestValues;
   private DBFile chunk;
   private DBFileDTO dbFileDTO;

@@ -7,7 +7,7 @@ import java.util.List;
 import com.eurodyn.qlack.fuse.fileupload.dto.DBFileDTO;
 import com.eurodyn.qlack.fuse.fileupload.model.DBFile;
 import com.eurodyn.qlack.fuse.fileupload.model.DBFilePK;
-import com.eurodyn.qlack.util.clamav.dto.VirusScanDTO;
+import com.eurodyn.qlack.util.av.api.dto.VirusScanDTO;
 
 /**
  * @author European Dynamics

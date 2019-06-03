@@ -18,7 +18,7 @@
     </dependency>
     <dependency>
       <groupId>com.eurodyn.qlack.util</groupId>
-      <artifactId>qlack-util-clam-av</artifactId>
+      <artifactId>qlack-util-av-api</artifactId>
       <version>${project.version}</version>
     </dependency>
 
