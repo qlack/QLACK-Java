@@ -1,4 +1,4 @@
-package com.eurodyn.qlack.util.clamav.dto;
+package com.eurodyn.qlack.util.av.api.dto;
 
 import lombok.Getter;
 import lombok.Setter;

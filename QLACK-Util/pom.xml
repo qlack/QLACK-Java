@@ -18,7 +18,8 @@
     <module>qlack-util-data</module>
     <module>qlack-util-data-mongo</module>
     <module>qlack-util-hibernate</module>
-    <module>qlack-util-logger</module>
+    <module>qlack-util-logger</module>       
+    <module>qlack-util-av-api</module>
     <module>qlack-util-clam-av</module>
   </modules>
 </project>

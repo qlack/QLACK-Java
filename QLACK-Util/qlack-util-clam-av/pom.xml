@@ -19,6 +19,12 @@
     </dependency>
 
     <dependency>
+      <groupId>com.eurodyn.qlack.util</groupId>
+      <artifactId>qlack-util-av-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
     </dependency>

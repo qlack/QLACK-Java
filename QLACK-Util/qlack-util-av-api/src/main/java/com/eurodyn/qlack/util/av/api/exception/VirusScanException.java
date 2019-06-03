@@ -1,4 +1,5 @@
-package com.eurodyn.qlack.util.clamav.exception;
+package com.eurodyn.qlack.util.av.api.exception;
+
 
 import com.eurodyn.qlack.common.exception.QException;
 

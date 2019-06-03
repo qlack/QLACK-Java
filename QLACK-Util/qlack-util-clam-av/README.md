@@ -51,3 +51,19 @@ qlack.util.clamav.socket.timeout=100000
       fileRepository.save(file);
     }
 ```
+
+### Setup a running Clam AV instance using Docker
+
+There are many Clam AV images available on the docker hub. You can use for example the following:
+
+* https://hub.docker.com/r/mailu/clamav
+
+Open a command line and type:
+
+```docker pull mailu/clamav```
+
+When downloading has finished run the container:
+
+```docker run -p 3310:3310 mailu/clamav```
+
+The antivirus should be up and running in `localhost:3310`
