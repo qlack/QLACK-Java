@@ -5,7 +5,7 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
 
-    <changeSet author="European Dynamics SA (georgios.sapountzis@eurodyn.com)" id="scheduler_1">
+    <changeSet author="European Dynamics SA" id="scheduler_001">
 
         <createTable tableName="sch_BLOB_TRIGGERS">
             <column name="SCHED_NAME" type="VARCHAR(120)">
