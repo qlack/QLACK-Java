@@ -7,9 +7,9 @@
   <version>3.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>QLACK</name>
-  <description>QLACK project</description>
-  <url>https://github.com/eurodyn/QLACK</url>
+  <name>QLACK-Java</name>
+  <description>QLACK project (Java modules)</description>
+  <url>https://github.com/qlack/QLACK-Java</url>
   <licenses>
     <license>
       <name>European Union Public Licence (EUPL v.1.1)</name>
