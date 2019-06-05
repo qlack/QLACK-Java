@@ -6,7 +6,14 @@ jdk:
   - oraclejdk8
   - openjdk8
 
-script: "mvn clean install"
+addons:
+  sonarcloud:
+    organization: "qlack"
+    token:
+      secure: "fc1da1a86f867610c3caf501d93df47e30b07808"
+
+script:
+  - mvn clean install -Pcoverage sonar:sonar
 
 notifications:
   email:
