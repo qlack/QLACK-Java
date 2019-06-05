@@ -2,10 +2,6 @@ language: java
 
 sudo: false
 
-jdk:
-  - oraclejdk8
-  - openjdk8
-
 addons:
   sonarcloud:
     organization: "qlack"
@@ -13,6 +9,9 @@ addons:
       secure: "fc1da1a86f867610c3caf501d93df47e30b07808"
 
 script:
+  - jdk_switcher use openjdk8
+  - mvn clean install
+  - jdk_switcher use oraclejdk8
   - mvn clean install -Pcoverage sonar:sonar
 
 notifications:
