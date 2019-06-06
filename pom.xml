@@ -30,7 +30,7 @@
     <connection>scm:git:git@github.com:eurodyn/QLACK.git</connection>
     <developerConnection>scm:git:git@github.com:eurodyn/QLACK.git
     </developerConnection>
-    <url>https://github.com/eurodyn/QLACK</url>
+    <url>https://github.com/qlack</url>
     <tag>3.0.0</tag>
   </scm>
   <distributionManagement>
