@@ -21,5 +21,6 @@
     <module>qlack-util-logger</module>       
     <module>qlack-util-av-api</module>
     <module>qlack-util-clam-av</module>
+    <module>qlack-util-fileutils</module>
   </modules>
 </project>
