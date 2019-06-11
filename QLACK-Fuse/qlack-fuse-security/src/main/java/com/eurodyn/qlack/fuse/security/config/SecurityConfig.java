@@ -1,5 +1,6 @@
 package com.eurodyn.qlack.fuse.security.config;
 
+import com.eurodyn.qlack.fuse.aaa.service.AuthenticateService;
 import com.eurodyn.qlack.fuse.aaa.service.UserService;
 import com.eurodyn.qlack.fuse.security.access.AAAPermissionEvaluator;
 import com.eurodyn.qlack.fuse.security.filters.JwtTokenAuthenticationFilter;
@@ -23,14 +24,14 @@ import org.springframework.security.web.authentication.logout.HttpStatusReturnin
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserService userService;
+    private final AuthenticateService authenticateService;
 
     @Value("${qlack.fuse.security.authenticated.paths:/}")
     private String authenicatedPaths;
 
     @Autowired
-    public SecurityConfig(UserService userService) {
-        this.userService = userService;
+    public SecurityConfig(AuthenticateService authenticateService) {
+        this.authenticateService = authenticateService;
     }
 
     @Override
@@ -86,7 +87,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public AAAUsernamePasswordProvider authenticationProvider() {
         AAAUsernamePasswordProvider authProvider = new AAAUsernamePasswordProvider();
-        authProvider.setUserDetailsService(userService);
+        authProvider.setUserDetailsService(authenticateService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }

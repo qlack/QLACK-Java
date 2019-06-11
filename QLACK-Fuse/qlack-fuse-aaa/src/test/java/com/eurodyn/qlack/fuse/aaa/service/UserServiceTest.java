@@ -22,15 +22,6 @@ import com.eurodyn.qlack.fuse.aaa.model.User;
 import com.eurodyn.qlack.fuse.aaa.repository.SessionRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserAttributeRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.data.domain.Sort;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -40,6 +31,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest {
@@ -83,12 +82,12 @@ public class UserServiceTest {
     private List<UserDTO> usersDTO;
 
     @Before
-    public void init(){
+    public void init() {
         initTestValues = new InitTestValues();
         userService = new UserService(accountingService, ldapUserUtil,
-                userRepository, userAttributeRepository,
-                sessionRepository, null, userMapper,
-                sessionMapper, userAttributeMapper, null, passwordEncoder, null);
+            userRepository, userAttributeRepository,
+            sessionRepository, null, userMapper,
+            sessionMapper, userAttributeMapper, passwordEncoder);
         qUser = new QUser("user");
         qSession = new QSession(("session"));
         user = initTestValues.createUser();
@@ -98,7 +97,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testCreateUserWithoutUserAttributes(){
+    public void testCreateUserWithoutUserAttributes() {
         UserDTO userDTO = initTestValues.createUserDTO();
 //        userDTO.setUserAttributes(new HashSet<>());
         User user = initTestValues.createUser();
@@ -111,7 +110,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testCreateUser(){
+    public void testCreateUser() {
         when(userMapper.mapToEntity(userDTO)).thenReturn(user);
 
         String userId = userService.createUser(userDTO, null);
@@ -120,7 +119,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testUpdateUserWithoutUserAttibutes(){
+    public void testUpdateUserWithoutUserAttibutes() {
         UserDTO userDTO = initTestValues.createUserDTO();
         userDTO.setUserAttributes(new HashSet<>());
         User user = initTestValues.createUser();
@@ -133,13 +132,13 @@ public class UserServiceTest {
         verify(userAttributeRepository, never()).findByUserIdAndName(any(), any());
     }
 
-    private void testUpdateUserWithUserAttributes(boolean createIfMissing){
+    private void testUpdateUserWithUserAttributes(boolean createIfMissing) {
         UserDTO userDTO = initTestValues.createUserDTO();
 
         userDTO.setUsername("updated username");
 
         int index = 0;
-        for (Iterator<UserAttributeDTO> iter = userDTO.getUserAttributes().iterator(); iter.hasNext();) {
+        for (Iterator<UserAttributeDTO> iter = userDTO.getUserAttributes().iterator(); iter.hasNext(); ) {
             UserAttributeDTO u = iter.next();
             u.setData("updated " + u.getData());
 
@@ -161,19 +160,19 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testUpdateUserWithoutNewUserAttributes(){
+    public void testUpdateUserWithoutNewUserAttributes() {
         testUpdateUserWithUserAttributes(false);
         verify(userAttributeRepository, times(2)).save(any());
     }
 
     @Test
-    public void testUpdateUserWithNewUserAttributes(){
+    public void testUpdateUserWithNewUserAttributes() {
         testUpdateUserWithUserAttributes(true);
         verify(userAttributeRepository, times(3)).save(any());
     }
 
     @Test
-    public void testDeleteUser(){
+    public void testDeleteUser() {
         User user2 = initTestValues.createUser();
 
         when(userRepository.fetchById(user.getId())).thenReturn(user2);
@@ -183,16 +182,16 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testGetUserById(){
+    public void testGetUserById() {
         when(userRepository.fetchById(userDTO.getId())).thenReturn(user);
         when(userMapper.mapToDTO(user)).thenReturn(userDTO);
         UserDTO foundUser = userService.getUserById(userDTO.getId());
         assertEquals(userDTO, foundUser);
     }
 
-    public Collection<String> getUsersById(){
+    public Collection<String> getUsersById() {
         Collection<String> userIds = new ArrayList<>();
-        for(int i=0; i<users.size(); i++){
+        for (int i = 0; i < users.size(); i++) {
             userIds.add(users.get(i).getId());
             when(userMapper.mapToDTO(users.get(i))).thenReturn(usersDTO.get(i));
         }
@@ -203,7 +202,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testGetUsersById(){
+    public void testGetUsersById() {
         Collection<String> userIds = getUsersById();
         Set<UserDTO> foundUsers = userService.getUsersById(userIds);
 
@@ -211,11 +210,11 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testGetUsersByIdAsHash(){
+    public void testGetUsersByIdAsHash() {
         Collection<String> userIds = getUsersById();
         Map<String, UserDTO> foundUsers = userService.getUsersByIdAsHash(userIds);
         Map<String, UserDTO> userHashMap = new HashMap<>();
-        for (UserDTO u: usersDTO){
+        for (UserDTO u : usersDTO) {
             userHashMap.put(u.getId(), u);
         }
 
@@ -223,7 +222,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testGetUserByName(){
+    public void testGetUserByName() {
         when(userRepository.findByUsername(user.getUsername())).thenReturn(user);
         when(userMapper.mapToDTO(user)).thenReturn(userDTO);
 
@@ -232,15 +231,15 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testUpdateUserStatus(){
+    public void testUpdateUserStatus() {
         when(userRepository.fetchById(user.getId())).thenReturn(user);
-        userService.updateUserStatus(user.getId(), (byte)0);
+        userService.updateUserStatus(user.getId(), (byte) 0);
 
         verify(userRepository, times(1)).fetchById(user.getId());
     }
 
     @Test
-    public void testGetUserStatus(){
+    public void testGetUserStatus() {
         when(userRepository.fetchById(user.getId())).thenReturn(user);
         userService.getUserStatus(user.getId());
 
@@ -248,7 +247,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testIsSuperAdmin(){
+    public void testIsSuperAdmin() {
         when(userRepository.fetchById(user.getId())).thenReturn(user);
         boolean isSuperAdmin = userService.isSuperadmin(user.getId());
 
@@ -256,7 +255,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testIsExternal(){
+    public void testIsExternal() {
         when(userRepository.fetchById(user.getId())).thenReturn(user);
         boolean isExternal = userService.isExternal(user.getId());
 
@@ -264,7 +263,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testLogin(){
+    public void testLogin() {
         when(userRepository.fetchById(user.getId())).thenReturn(user);
         when(userMapper.mapToDTO(user)).thenReturn(userDTO);
 
@@ -274,7 +273,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testLoginAndTerminateSessions(){
+    public void testLoginAndTerminateSessions() {
         when(userRepository.fetchById(user.getId())).thenReturn(user);
         when(userMapper.mapToDTO(user)).thenReturn(userDTO);
 
@@ -284,16 +283,16 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testLogout(){
+    public void testLogout() {
         when(userRepository.fetchById(user.getId())).thenReturn(user);
-        for (Session s: user.getSessions()){
+        for (Session s : user.getSessions()) {
             userService.logout(user.getId(), s.getApplicationSessionId());
             verify(accountingService, times(1)).terminateSession(s.getId());
         }
     }
 
     @Test
-    public void testLogoutAll(){
+    public void testLogoutAll() {
         when(sessionRepository.findAll(qSession.terminatedOn.isNull())).thenReturn(user.getSessions());
         when(userRepository.fetchById(user.getId())).thenReturn(user);
         userService.logoutAll();
@@ -301,10 +300,10 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testIsUserAlreadyLoggedIn(){
+    public void testIsUserAlreadyLoggedIn() {
         List<SessionDTO> sessionsDTO = initTestValues.createSessionsDTO(user.getId());
         when(sessionRepository.findAll(qSession.user.id.eq(user.getId()).and(qSession.terminatedOn.isNull()),
-                Sort.by("createdOn").ascending())).thenReturn(user.getSessions());
+            Sort.by("createdOn").ascending())).thenReturn(user.getSessions());
         when(sessionMapper.mapToDTO(user.getSessions())).thenReturn(sessionsDTO);
 
         List<SessionDTO> foundSessionsDTO = userService.isUserAlreadyLoggedIn(user.getId());
