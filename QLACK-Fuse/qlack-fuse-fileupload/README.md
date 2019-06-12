@@ -53,7 +53,8 @@ qlack.fuse.fileupload.virusScanEnabled=false
 @ComponentScan(basePackages = {
     "com.eurodyn.qlack.fuse.fileupload",
     "com.eurodyn.qlack.fuse.fileupload.service",
-    "com.eurodyn.qlack.fuse.fileupload.service.impl"
+    "com.eurodyn.qlack.fuse.fileupload.service.impl",
+    ...
 })
 ```
 
@@ -151,4 +152,36 @@ app.config(["flowFactoryProvider",
             }
           };
     
+```
+### Antivirus support
+
+The `qlack-fuse-fileupload` module provides antivirus file scanning for the uploaded files. To enable it you need to 
+provide in your application an implementation of the `AvService` of the `qlack-util-av-api` module. Such an 
+implementation is already included in the `qlack-util-clam-av` module. 
+
+To enable antivirus support follow these steps: 
+
+1) Add the dependency for a module containing an implementation of the AvService in the Spring boot 
+application
+
+```xml
+<dependency>
+      <groupId>com.eurodyn.qlack.util</groupId>
+      <artifactId>qlack-util-clam-av</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+```
+
+2) Add the package of an implementation class for AvService in the Spring boot application main class declaration:
+
+```java
+@EnableScheduling
+@SpringBootApplication
+@EnableJpaRepositories("com.eurodyn.qlack.fuse.fileupload.repository")
+@EntityScan("com.eurodyn.qlack.fuse.fileupload.model")
+@ComponentScan(basePackages = {
+   ...
+    ,"com.eurodyn.qlack.util.clamav" // package of the qlack-util-clam-av module 
+                                    // containing an implementation of AvService class
+})
 ```

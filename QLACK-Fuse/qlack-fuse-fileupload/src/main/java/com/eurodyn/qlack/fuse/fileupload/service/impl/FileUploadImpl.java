@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -47,13 +48,13 @@ public class FileUploadImpl implements FileUpload {
   @Value("${qlack.fuse.fileupload.cleanupThreshold:300000}")
   private long cleanupThreshold;
 
-  private AvService clamAvService;
+  private Optional<AvService> clamAvService;
 
   private final String SECURITY_RISK_MESSAGE = "The file you are trying to upload was flagged as malicious. "
     + "Please review the file.";
 
   @Autowired
-  public FileUploadImpl(DBFileRepository dbFileRepository, AvService clamAvService) {
+  public FileUploadImpl(DBFileRepository dbFileRepository, Optional<AvService> clamAvService) {
     this.dbFileRepository = dbFileRepository;
     this.clamAvService = clamAvService;
   }
@@ -199,29 +200,28 @@ public class FileUploadImpl implements FileUpload {
     file.setUploadedAt(System.currentTimeMillis());
     file.setUploadedBy(dbFileDTO.getUploadedBy());
 
-    if (isVirusScanEnabled) {
-      log.log(Level.INFO, "File virus scanning is enabled. ");
-      VirusScanDTO result = null;
-      try {
-        result = clamAvService.virusScan(dbFileDTO.getFileData());
-      } catch (VirusScanException e) {
-        log.log(Level.WARNING, e.getMessage());
+      if (isVirusScanEnabled) {
+          log.log(Level.INFO, "Attempting to enable file virus scanning..");
+          VirusScanDTO result = null;
+          try {
+              result = clamAvService.map(cs -> cs.virusScan(dbFileDTO.getFileData())).orElse(null);
+          } catch (VirusScanException e) {
+              log.log(Level.WARNING, e.getMessage());
+          }
+
+          if (result != null && !result.isVirusFree()) {
+              throw new VirusFoundException(SECURITY_RISK_MESSAGE);
+          } else {
+              if (!clamAvService.isPresent()) {
+                  log.log(Level.WARNING, "Virus scanning is not enabled. No implementation provided.");
+              }
+          }
       }
 
-      if (result != null && !result.isVirusFree()) {
-        throw new VirusFoundException(SECURITY_RISK_MESSAGE);
-      } else {
-        file.setChunkData(dbFileDTO.getFileData());
-        file.setChunkSize(dbFileDTO.getFileData().length);
-
-        dbFileRepository.save(file);
-      }
-    } else {
       file.setChunkData(dbFileDTO.getFileData());
       file.setChunkSize(dbFileDTO.getFileData().length);
       dbFileRepository.save(file);
-    }
-    return chunkExists;
+      return chunkExists;
   }
 
   public void deleteByID(String fileID) {

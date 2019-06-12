@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +54,7 @@ public class FileUploadImplTest {
 
   @Before
   public void init() {
-    fileUploadImpl = new FileUploadImpl(dbFileRepository, clamAvService);
+    fileUploadImpl = new FileUploadImpl(dbFileRepository, Optional.of(clamAvService));
     initTestValues = new InitTestValues();
     dbFileDTO = initTestValues.createDBFileDTO();
     dbFiles = initTestValues.createDBFiles();
