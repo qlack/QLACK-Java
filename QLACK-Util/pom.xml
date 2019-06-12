@@ -22,5 +22,24 @@
     <module>qlack-util-av-api</module>
     <module>qlack-util-clam-av</module>
     <module>qlack-util-fileutils</module>
+    <module>qlack-util-documentation</module>
   </modules>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
