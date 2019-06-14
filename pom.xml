@@ -28,8 +28,8 @@
     </developer>
   </developers>
   <scm>
-    <connection>scm:git:git@github.com:eurodyn/QLACK.git</connection>
-    <developerConnection>scm:git:git@github.com:eurodyn/QLACK.git
+    <connection>scm:git:git@github.com:qlack/QLACK-Java.git</connection>
+    <developerConnection>scm:git:git@github.com:qlack/QLACK-Java.git
     </developerConnection>
     <url>https://github.com/qlack/QLACK-Java</url>
     <tag>3.0.0</tag>
@@ -305,7 +305,7 @@
             <version>${maven.release.plugin.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
-              <!--<arguments>-DskipTests</arguments>-->
+              <arguments>-DskipTests</arguments>
             </configuration>
           </plugin>
           <plugin>
