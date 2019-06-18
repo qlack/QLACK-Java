@@ -99,7 +99,7 @@ public class VersioningService {
       .filter(shadow -> shadow.getCommitId().getMajorId() == version)
       .map(shadow -> (T) shadow.get()).collect(Collectors.toList());
 
-    if (versions.size() != 1) {
+    if (versions.isEmpty()) {
       throw new QDoesNotExistException("version doesn't exist");
     }
 
