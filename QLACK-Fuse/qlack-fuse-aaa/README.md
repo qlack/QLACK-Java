@@ -20,7 +20,7 @@ This module provides custom Authentication, Authorization and Accounting operati
 
 ### Add qlack-fuse-aaa changelog in your application liquibase changelog:
 ```
-<include file="db/changelog/qlack.fuse.aaa.changelog.xml"/>
+<include file="db/changelog/qlack-fuse-aaa/qlack.fuse.aaa.changelog.xml"/>
 ```
 
 ### Add the packages in the Spring boot application main class declaration:

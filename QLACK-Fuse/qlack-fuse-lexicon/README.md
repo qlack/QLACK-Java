@@ -20,7 +20,7 @@ This module provides language translations for the system.
 
 ### Add qlack-fuse-lexicon changelog in your application liquibase changelog:
 ```
-<include file="db/changelog/qlack.fuse.lexicon.changelog.xml"/>
+<include file="db/changelog/qlack-fuse-lexicon/qlack.fuse.lexicon.changelog.xml"/>
 ```
 
 ### Add the packages in the Spring boot application main class declaration:

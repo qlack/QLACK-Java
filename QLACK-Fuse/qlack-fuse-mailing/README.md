@@ -21,7 +21,7 @@ This module is responsible for configuring, storing and sending internal/externa
 
 ### Add qlack-fuse-mailing changelog in your application liquibase changelog:
 ```
-<include file="db/changelog/qlack.fuse.mailing.changelog.xml"/>
+<include file="db/changelog/qlack-fuse-mailing/qlack.fuse.mailing.changelog.xml"/>
 ```
 
 ### Add the mail configuration properties in the Spring boot application.properties file:

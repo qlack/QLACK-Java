@@ -22,7 +22,7 @@ generation and file upload mechanism but could be integrated with other librarie
 
 ### Add qlack-fuse-fileupload changelog in your application liquibase changelog:
 ```
-<include file="db/changelog/qlack.fuse.fileupload.changelog.xml"/>
+<include file="db/changelog/qlack-fuse-fileupload/qlack.fuse.fileupload.changelog.xml"/>
 ```
 
 ### Add the fileupload configuration properties in the Spring boot application.properties file:

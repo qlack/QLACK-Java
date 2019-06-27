@@ -20,7 +20,7 @@ This module is responsible for storing and configuring internal settings of the 
 
 ### Add qlack-fuse-settings changelog in your application liquibase changelog
 ```
-<include file="db/changelog/qlack.fuse.settings.changelog.xml"/>
+<include file="db/changelog/qlack-fuse-settings/qlack.fuse.settings.changelog.xml"/>
 ```
 
 ### Add the packages in the Spring boot application main class declaration:

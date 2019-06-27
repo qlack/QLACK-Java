@@ -21,7 +21,7 @@ This module is responsible for creating and scheduling custom application jobs b
 
 ### Add qlack-fuse-scheduler changelog in your application liquibase changelog:
 ```
-<include file="db/changelog/qlack.fuse.scheduler.changelog.xml"/>
+<include file="db/changelog/qlack-fuse-scheduler/qlack.fuse.scheduler.changelog.xml"/>
 ```
 
 ### Add the packages in the Spring boot application main class declaration:

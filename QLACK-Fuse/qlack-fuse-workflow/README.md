@@ -20,7 +20,7 @@ This module uses the Activiti BPM tool and provides functionalities for creating
 
 ### Add qlack-fuse-workflow changelog in your application liquibase changelog:
 ```
-<include file="db/changelog/qlack.fuse.workflow.changelog.xml"/>
+<include file="db/changelog/qlack-fuse-workflow/qlack.fuse.workflow.changelog.xml"/>
 ```
 
 ### Add the packages in the Spring boot application main class declaration:

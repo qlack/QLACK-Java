@@ -20,7 +20,7 @@ This module provides standard operations for system audit actions.
 
 ### Add qlack-fuse-audit changelog in your application liquibase changelog:
 ```
-<include file="db/changelog/qlack.fuse.audit.changelog.xml"/>
+<include file="db/changelog/qlack-fuse-audit/qlack.fuse.audit.changelog.xml"/>
 ```
 
 ### If you wish to store audit trace data, add the following property in application.properties
