@@ -26,7 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AuthenticateService authenticateService;
 
-    @Value("${qlack.fuse.security.authenticated.paths:/}")
+    @Value("${qlack.fuse.security.authenticated.paths:/qlack/secured/*}")
     private String authenicatedPaths;
 
     @Autowired
