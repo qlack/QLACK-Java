@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
  * Representation of a security service.
  */
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class SecurityServiceDTO {
 
   // The name of the provider for this service.
