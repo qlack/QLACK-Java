@@ -458,7 +458,7 @@ public class UserService {
         } else {
             if (salt != null && salt.isPresent()) {
                 user.setSalt(salt.get());
-                user.setPassword(passwordEncoder.encode(salt + dto.getPassword()));
+                user.setPassword(passwordEncoder.encode(salt.get() + dto.getPassword()));
             } else {
                 user.setPassword(passwordEncoder.encode(dto.getPassword()));
             }
