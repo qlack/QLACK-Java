@@ -28,13 +28,13 @@ public class LogoutService {
     @Autowired
     private NonceCachingService nonceCachingService;
 
-    @Value("${security.jwt.secret:aqlacksecret}")
+    @Value("${qlack.security.jwt.secret:aqlacksecret}")
     private String jwtSecret;
 
     /**
      * Default expiration set at 24 hours.
      */
-    @Value("${security.jwt.expiration:#{24*60*60}}")
+    @Value("${qlack.security.jwt.expiration:#{24*60*60}}")
     private int jwtExpiration;
 
     public void performLogout(HttpServletRequest req){

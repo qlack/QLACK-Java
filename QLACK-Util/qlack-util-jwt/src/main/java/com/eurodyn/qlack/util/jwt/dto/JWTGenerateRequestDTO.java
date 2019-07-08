@@ -53,4 +53,11 @@ public class JWTGenerateRequestDTO {
     this.ttl = ttl;
   }
 
+  public JWTGenerateRequestDTO(String secret, String subject, Map<String, Object> claims, long ttl) {
+    this.secret = secret;
+    this.subject = subject;
+    this.claims = claims;
+    this.ttl = ttl;
+  }
+
 }

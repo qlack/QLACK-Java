@@ -1,9 +1,12 @@
 package com.eurodyn.qlack.fuse.security.service;
 
 import com.eurodyn.qlack.fuse.aaa.dto.UserDetailsDTO;
+import com.eurodyn.qlack.fuse.aaa.dto.UserGroupDTO;
 import com.eurodyn.qlack.fuse.aaa.service.UserService;
 import com.eurodyn.qlack.util.jwt.JWTUtil;
 import com.eurodyn.qlack.util.jwt.dto.JWTGenerateRequestDTO;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -25,14 +28,20 @@ public class AuthenticationService {
     @Autowired
     private UserService userService;
 
-    @Value("${security.jwt.secret:qlackjwtsecret}")
+    @Value("${qlack.security.jwt.secret:qlackjwtsecret}")
     private String jwtSecret;
 
     /**
      * Default expiration set at 24 hours.
      */
-    @Value("${security.jwt.expiration:#{24*60*60}}")
+    @Value("${qlack.security.jwt.expiration:#{24*60*60}}")
     private int jwtExpiration;
+
+    /**
+     * Define if roles should be added in the JWT claims
+     */
+    @Value("#{new Boolean('${qlack.security.jwt.include.roles:false}')}")
+    private boolean jwtIncludeRoles;
 
     /**
      * Provides access to Spring's authentication method.
@@ -42,7 +51,7 @@ public class AuthenticationService {
      * @return generated jwt
      * @throws AuthenticationException If authentication fails
      */
-    public String authenticate(Authentication authentication, String applicationSessionId) throws AuthenticationException{
+    public String authenticate(Authentication authentication, String applicationSessionId) throws AuthenticationException {
         return generateJWT(authenticationProvider.authenticate(authentication), applicationSessionId);
     }
 
@@ -53,20 +62,32 @@ public class AuthenticationService {
      * @return generated jwt
      * @throws AuthenticationException If authentication fails
      */
-    public String authenticate(UserDetailsDTO user) throws AuthenticationException{
-        return generateJWT(authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())),
-                user.getSessionId());
+    public String authenticate(UserDetailsDTO user) throws AuthenticationException {
+        return generateJWT(
+            authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())),
+            user.getSessionId());
     }
 
-    private String generateJWT(Authentication authentication, String applicationSessionId){
+    private String generateJWT(Authentication authentication, String applicationSessionId) {
         UserDetailsDTO authenticatedUser = (UserDetailsDTO) authentication.getPrincipal();
 
         String userId = authenticatedUser.getId();
         String sessionId = userService.login(userId, applicationSessionId, true).getSessionId();
         authenticatedUser.setSessionId(sessionId);
 
-        return JWTUtil.generateToken(new JWTGenerateRequestDTO(jwtSecret, authenticatedUser.getUsername(), jwtExpiration));
+        if (jwtIncludeRoles) {
+            Map<String, Object> claims = new HashMap<>();
 
+            int idx = 1;
+            for (UserGroupDTO u : authenticatedUser.getUserGroups()) {
+                claims.put("role" + idx, u.getName());
+                idx++;
+            }
+
+            return JWTUtil.generateToken(new JWTGenerateRequestDTO(jwtSecret, authenticatedUser.getUsername(), claims, jwtExpiration));
+        } else {
+            return JWTUtil.generateToken(new JWTGenerateRequestDTO(jwtSecret, authenticatedUser.getUsername(), jwtExpiration));
+        }
     }
 
 }
