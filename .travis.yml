@@ -8,15 +8,13 @@ addons:
     token:
       secure: "fc1da1a86f867610c3caf501d93df47e30b07808"
 
-script:
-  - jdk_switcher use openjdk8
-  - mvn clean install
-  - jdk_switcher use oraclejdk8
-  - mvn clean install -Pcoverage sonar:sonar
+jdk: openjdk8
+
+script: mvn clean install -Pcoverage sonar:sonar
 
 notifications:
   email:
     recipients:
       - qlack@eurodyn.com
     on_success: change
-    on_failure: always
+    on_failure: change
