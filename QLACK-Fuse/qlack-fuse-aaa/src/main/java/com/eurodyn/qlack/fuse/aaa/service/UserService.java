@@ -23,15 +23,6 @@ import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import lombok.extern.java.Log;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -44,6 +35,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Log
 @Primary
@@ -115,7 +116,9 @@ public class UserService {
         userMapper.mapToExistingEntity(dto, user);
 
         if (updatePassword) {
-            setUserPassword(dto, user, Optional.of(user.getSalt()));
+          Optional<String> salt = user.getSalt() != null ? Optional.of(user.getSalt()) :
+              Optional.empty();
+          setUserPassword(dto, user, salt);
         }
         if (CollectionUtils.isNotEmpty(dto.getUserAttributes())) {
             for (UserAttributeDTO attribute : dto.getUserAttributes()) {

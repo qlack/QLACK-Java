@@ -2,7 +2,6 @@ package com.eurodyn.qlack.fuse.security.providers;
 
 import com.eurodyn.qlack.fuse.aaa.dto.UserDetailsDTO;
 import com.eurodyn.qlack.fuse.security.cache.AAAUserCaching;
-import com.eurodyn.qlack.fuse.aaa.util.Md5PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,12 +37,12 @@ public class AAAUsernamePasswordProvider extends DaoAuthenticationProvider {
         }
 
         String presentedPassword;
+      UserDetailsDTO user = (UserDetailsDTO) userDetails;
 
-        if (getPasswordEncoder() instanceof Md5PasswordEncoder) {
-            UserDetailsDTO user = (UserDetailsDTO) userDetails;
-            presentedPassword = user.getSalt() + authentication.getCredentials().toString();
+      if (user.getSalt() != null) {
+        presentedPassword = user.getSalt() + authentication.getCredentials().toString();
         } else {
-            presentedPassword = authentication.getCredentials().toString();
+        presentedPassword = authentication.getCredentials().toString();
         }
 
         if (!getPasswordEncoder().matches(presentedPassword, userDetails.getPassword())) {
