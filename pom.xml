@@ -78,6 +78,7 @@
     <jacoco.version>0.8.4</jacoco.version>
     <enunciate.version>2.11.1</enunciate.version>
     <!--<sonar.coverage.exclusions>com/eurodyn/qlack/**/**/exception/**</sonar.coverage.exclusions>-->
+    <sonar.coverage.jacoco.xmlReportsPath>Qlack-Fuse/**/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportsPath>
   </properties>
 
   <dependencyManagement>
@@ -345,10 +346,18 @@
                 </goals>
                 <configuration>
                   <excludes>
+                    <exclude>com/eurodyn/qlack/**/repository/**/*</exclude>
+                    <exclude>com/eurodyn/qlack/**/exception/**/*</exclude>
+                    <exclude>com/eurodyn/qlack/**/dto/**/*</exclude>
+                    <exclude>com/eurodyn/qlack/**/model/**/*</exclude>
                     <exclude>com/eurodyn/qlack/**/**/repository/**/*</exclude>
                     <exclude>com/eurodyn/qlack/**/**/exception/**/*</exclude>
                     <exclude>com/eurodyn/qlack/**/**/dto/**/*</exclude>
                     <exclude>com/eurodyn/qlack/**/**/model/**/*</exclude>
+                    <exclude>com/eurodyn/qlack/**/**/**/repository/**/*</exclude>
+                    <exclude>com/eurodyn/qlack/**/**/**/exception/**/*</exclude>
+                    <exclude>com/eurodyn/qlack/**/**/**/dto/**/*</exclude>
+                    <exclude>com/eurodyn/qlack/**/**/**/model/**/*</exclude>
                   </excludes>
                 </configuration>
               </execution>
