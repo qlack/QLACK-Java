@@ -77,8 +77,6 @@
     <commons.codec.version>1.7</commons.codec.version>
     <jacoco.version>0.8.4</jacoco.version>
     <enunciate.version>2.11.1</enunciate.version>
-    <!--<sonar.coverage.exclusions>com/eurodyn/qlack/**/**/exception/**</sonar.coverage.exclusions>-->
-    <sonar.coverage.jacoco.xmlReportsPath>Qlack-Fuse/**/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportsPath>
   </properties>
 
   <dependencyManagement>
