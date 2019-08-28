@@ -207,15 +207,15 @@ public class SearchService {
 
     // If no indices are defined then search them all
     if (indices.isEmpty()) {
-      indicesEndpoint.concat("_all");
+      indicesEndpoint = indicesEndpoint.concat("_all");
     }
 
     // append indices to the query
     for (String index : indices) {
       if (indices.indexOf(index) > 0) {
-        indicesEndpoint.concat(",");
+        indicesEndpoint = indicesEndpoint.concat(",");
       }
-      indicesEndpoint.concat(index);
+      indicesEndpoint = indicesEndpoint.concat(index);
     }
     return indicesEndpoint;
   }
@@ -227,15 +227,15 @@ public class SearchService {
 
     // if no types are defined then search them all
     if (!types.isEmpty()) {
-      typesEndpoint.concat("/");
+      typesEndpoint = typesEndpoint.concat("/");
     }
 
     // append types to the query
     for (String type : types) {
       if (types.indexOf(type) > 0) {
-        typesEndpoint.concat(",");
+        typesEndpoint = typesEndpoint.concat(",");
       }
-      typesEndpoint.concat(type);
+      typesEndpoint = typesEndpoint.concat(type);
     }
     return typesEndpoint;
   }
