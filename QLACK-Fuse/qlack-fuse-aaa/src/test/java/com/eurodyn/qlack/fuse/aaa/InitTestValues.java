@@ -260,14 +260,30 @@ public class InitTestValues {
 
         UserGroup userGroupFirstChild = new UserGroup();
         userGroupFirstChild.setId("35bd2469-fb3e-4137-af80-52692a765805");
+        userGroupFirstChild.setName("FirstChildName");
 
         UserGroup userGroupSecondChild = new UserGroup();
         userGroupSecondChild.setId("4a4f65ce-2ee2-42c0-ad92-2d98f25dd331");
+        userGroupSecondChild.setName("SecondChildName");
 
         List<UserGroup> children = new ArrayList<>();
         children.add(userGroupFirstChild);
         children.add(userGroupSecondChild);
 
+        userGroup.setChildren(children);
+
+        userGroup.setParent(userGroupParent);
+        return userGroup;
+    }
+
+    public UserGroup createUserGroupNoChildren() {
+        UserGroup userGroup = new UserGroup();
+        userGroup.setId("7ea962bc-1ea8-46b4-8b6d-588e3a8aae61");
+
+        UserGroup userGroupParent = new UserGroup();
+        userGroupParent.setId("aabba4fd-ce44-46ad-b2ed-cb9346e3e522");
+
+        List<UserGroup> children = new ArrayList<>();
         userGroup.setChildren(children);
 
         userGroup.setParent(userGroupParent);
@@ -285,9 +301,11 @@ public class InitTestValues {
 
         UserGroupDTO userGroupFirstChildDTO = new UserGroupDTO();
         userGroupFirstChildDTO.setId("35bd2469-fb3e-4137-af80-52692a765805");
+        userGroupFirstChildDTO.setName("FirstChildName");
 
         UserGroupDTO userGroupSecondChildDTO = new UserGroupDTO();
         userGroupSecondChildDTO.setId("4a4f65ce-2ee2-42c0-ad92-2d98f25dd331");
+        userGroupSecondChildDTO.setName("SecondChildName");
 
         List<UserGroupDTO> children = new ArrayList<>();
         children.add(userGroupFirstChildDTO);

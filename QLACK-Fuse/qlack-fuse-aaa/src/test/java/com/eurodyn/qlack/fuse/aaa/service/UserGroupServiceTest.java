@@ -48,6 +48,7 @@ public class UserGroupServiceTest {
   private QUserGroup qUserGroup;
   private InitTestValues initTestValues;
   private UserGroup userGroup;
+  private UserGroup userGroupNoChildren;
   private UserGroupDTO userGroupDTO;
   private List<UserGroup> userGroups;
   private List<UserGroupDTO> userGroupsDTO;
@@ -65,6 +66,7 @@ public class UserGroupServiceTest {
     userGroupsDTO = initTestValues.createUserGroupsDTO();
     user = initTestValues.createUser();
     users = initTestValues.createUsers();
+    userGroupNoChildren = initTestValues.createUserGroupNoChildren();
   }
 
   @Test
@@ -250,12 +252,14 @@ public class UserGroupServiceTest {
 
   @Test
   public void testGetGroupUsersIds(){
-//    when(userGroupRepository.fetchById(userGroup.getId())).thenReturn(userGroup);
-//    userGroup.setUsers(users);
-//    userGroup.getChildren().stream().forEach(ug -> ug.setUsers(users));
-//    userGroupService.getGroupUsersIds(userGroup.getId(), true);
-//    verify(userGroupRepository, times(1)).
-//        fetchById(userGroup.getId());
+    when(userGroupRepository.fetchById(userGroup.getId())).thenReturn(userGroup);
+    userGroup.setUsers(users);
+    userGroupNoChildren.setUsers(users);
+    when(userGroupRepository.fetchById(userGroup.getId())).thenReturn(userGroupNoChildren);
+    when(userGroupRepository.fetchById(userGroup.getId())).thenReturn(userGroupNoChildren);
+    userGroupService.getGroupUsersIds(userGroup.getId(), true);
+    verify(userGroupRepository, times(1)).
+        fetchById(userGroup.getId());
   }
 
   @Test

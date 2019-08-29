@@ -1,6 +1,8 @@
 package com.eurodyn.qlack.fuse.aaa.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -19,8 +21,10 @@ import com.eurodyn.qlack.fuse.aaa.model.QSession;
 import com.eurodyn.qlack.fuse.aaa.model.QUser;
 import com.eurodyn.qlack.fuse.aaa.model.Session;
 import com.eurodyn.qlack.fuse.aaa.model.User;
+import com.eurodyn.qlack.fuse.aaa.model.UserGroup;
 import com.eurodyn.qlack.fuse.aaa.repository.SessionRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserAttributeRepository;
+import com.eurodyn.qlack.fuse.aaa.repository.UserGroupRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,13 +35,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
+import com.querydsl.core.types.Predicate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -46,47 +54,36 @@ public class UserServiceTest {
     @InjectMocks
     private UserService userService;
 
+    @Spy private SessionMapper sessionMapper;
+    @Spy private UserMapper userMapper;
+    @Spy private UserAttributeMapper userAttributeMapper;
+    @Spy private UserGroup userGroup;
+    @Spy private UserGroup userGroupNoChildren;
+    @Mock private LdapUserUtil ldapUserUtil;
+    @Mock private UserGroupRepository userGroupRepository;
+
     private AccountingService accountingService = mock(AccountingService.class);
-
     private UserRepository userRepository = mock(UserRepository.class);
-
     private UserAttributeRepository userAttributeRepository = mock(UserAttributeRepository.class);
-
     private SessionRepository sessionRepository = mock(SessionRepository.class);
-
     private PasswordEncoder passwordEncoder = mock(PasswordEncoder.class);
-
-    @Spy
-    private SessionMapper sessionMapper;
-
-    @Spy
-    private UserMapper userMapper;
-
-    @Spy
-    private UserAttributeMapper userAttributeMapper;
-
-    private LdapUserUtil ldapUserUtil;
-
     private InitTestValues initTestValues;
-
     private QUser qUser;
-
     private QSession qSession;
-
     private User user;
-
     private UserDTO userDTO;
-
     private List<User> users;
-
     private List<UserDTO> usersDTO;
+    private UserAttributeDTO userAttributeDTO;
+    private List<UserAttributeDTO> userAttributeDTOList;
+
 
     @Before
     public void init() {
         initTestValues = new InitTestValues();
         userService = new UserService(accountingService, ldapUserUtil,
             userRepository, userAttributeRepository,
-            sessionRepository, null, userMapper,
+            sessionRepository, userGroupRepository, userMapper,
             sessionMapper, userAttributeMapper, passwordEncoder);
         qUser = new QUser("user");
         qSession = new QSession(("session"));
@@ -94,6 +91,10 @@ public class UserServiceTest {
         userDTO = initTestValues.createUserDTO();
         users = initTestValues.createUsers();
         usersDTO = initTestValues.createUsersDTO();
+        userGroup = initTestValues.createUserGroup();
+        userGroupNoChildren = initTestValues.createUserGroupNoChildren();
+        userAttributeDTO = initTestValues.createUserAttributeDTO(user.getId());
+        userAttributeDTOList = initTestValues.createUserAttributesDTO(user.getId());
     }
 
     @Test
@@ -255,11 +256,47 @@ public class UserServiceTest {
     }
 
     @Test
+    public void testIsSuperAdminNull() {
+        when(userRepository.fetchById(user.getId())).thenReturn(null);
+        boolean isSuperAdmin = userService.isSuperadmin(user.getId());
+
+        assertFalse(isSuperAdmin);
+    }
+
+    @Test
     public void testIsExternal() {
         when(userRepository.fetchById(user.getId())).thenReturn(user);
         boolean isExternal = userService.isExternal(user.getId());
 
         assertEquals(isExternal, user.isExternal());
+    }
+
+    @Test
+    public void testCanNotAuthenticate(){
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(user);
+        String userId = userService.canAuthenticate(user.getUsername(), user.getPassword());
+        verify(userRepository, times(1)).findByUsername(user.getUsername());
+        assertNotEquals(userId, user.getId());
+    }
+
+    @Test
+    public void testCanAuthenticate(){
+        when(passwordEncoder.matches(any(), any())).thenReturn(true);
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(user);
+        String userId = userService.canAuthenticate(user.getUsername(), user.getPassword());
+        verify(userRepository, times(1)).findByUsername(user.getUsername());
+        assertEquals(userId, user.getId());
+    }
+
+    @Test
+    public void testCanAuthenticateLdap(){
+        user.setExternal(true);
+        when(ldapUserUtil.isLdapEnable()).thenReturn(true);
+        when(ldapUserUtil.canAuthenticate(any(), any())).thenReturn(user.getId());
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(user);
+        String userId = userService.canAuthenticate(user.getUsername(), user.getPassword());
+        verify(userRepository, times(1)).findByUsername(user.getUsername());
+        assertEquals(userId, user.getId());
     }
 
     @Test
@@ -308,5 +345,65 @@ public class UserServiceTest {
 
         List<SessionDTO> foundSessionsDTO = userService.isUserAlreadyLoggedIn(user.getId());
         assertEquals(foundSessionsDTO, sessionsDTO);
+    }
+
+    @Test
+    public void testBelongsToGroupByNameNoChildren(){
+        userGroup.setName("groupName");
+        userGroup.setUsers(users);
+        when(userGroupRepository.findByName(any())).thenReturn(userGroup);
+        when(userRepository.fetchById(user.getId())).thenReturn(user);
+        userService.belongsToGroupByName(user.getId(), userGroup.getName(), false);
+        verify(userRepository, times(1)).fetchById(user.getId());
+    }
+
+    @Test
+    public void testBelongsToGroupByName(){
+        userGroup.setName("groupName");
+        userGroup.setUsers(users);
+        when(userGroupRepository.findByName(userGroup.getName())).thenReturn(userGroup);
+        when(userGroupRepository.findByName(userGroup.getChildren().get(0).getName())).thenReturn(userGroupNoChildren);
+        userGroupNoChildren.setUsers(users);
+        when(userGroupRepository.findByName(userGroup.getChildren().get(1).getName())).thenReturn(userGroupNoChildren);
+        when(userRepository.fetchById(user.getId())).thenReturn(user);
+        userService.belongsToGroupByName(user.getId(), userGroup.getName(), true);
+        verify(userRepository, times(3)).fetchById(user.getId());
+    }
+
+    @Test
+    public void testUpdateAttributes(){
+        userService.updateAttributes(userAttributeDTOList, false);
+        verify(userAttributeRepository, times(2)).
+            findByUserIdAndName(any(), any());
+    }
+
+    @Test
+    public void testDeleteAttributeNull(){
+        userService.deleteAttribute(user.getId(), user.getUserAttributes().get(0).getName());
+        verify(userAttributeRepository, times(1)).findByUserIdAndName(any(), any());
+    }
+
+    @Test
+    public void testDeleteAttribute(){
+        when(userAttributeRepository.findByUserIdAndName(any(), any())).thenReturn(user.getUserAttributes().get(0));
+        userService.deleteAttribute(user.getId(), user.getUserAttributes().get(0).getName());
+        verify(userAttributeRepository, times(1)).
+            findByUserIdAndName(user.getId(), user.getUserAttributes().get(0).getName());
+        verify(userAttributeRepository, times(1)).delete(user.getUserAttributes().get(0));
+    }
+
+    @Test
+    public void testGetAttribute(){
+        userService.getAttribute(user.getId(), user.getUserAttributes().get(0).getName());
+        verify(userAttributeRepository, times(1)).findByUserIdAndName(any(), any());
+    }
+
+    @Test
+    public void testGetUserIDsForAttribute(){
+        Collection<String> userIds = new ArrayList<>();
+        userIds.add(user.getId());
+        userIds.add(user.getId());
+        userService.getUserIDsForAttribute(userIds, user.getUserAttributes().get(0).getName(),user.getUserAttributes().get(0).getData());
+        verify(userRepository, times(1)).findAll((Predicate) any());
     }
 }
