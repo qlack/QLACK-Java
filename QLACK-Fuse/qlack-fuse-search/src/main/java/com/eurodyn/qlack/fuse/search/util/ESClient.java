@@ -71,7 +71,7 @@ public class ESClient {
             httpClientBuilder = httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
           }
 
-          if ("false".equals(properties.isVerifyHostname())) {
+          if (!properties.isVerifyHostname()) {
             httpClientBuilder = httpClientBuilder.setSSLHostnameVerifier(new HostnameVerifier() {
 
               @Override
