@@ -1,0 +1,32 @@
+{
+	"operations": [
+		{
+			"name": "USERMANAGEMENT_CONFIGURE", 
+			"description": "Configure the User Manager application including access management of the application"
+		},
+		{
+			"name": "USERMANAGEMENT_MANAGED",
+			"description": "User or group managed (in terms of access rights) by the User Manager application"
+		}
+	],
+	"groups": [
+		{
+			"name": "USERMANAGEMENT_CONFIGURE",
+			"description": "Configure the User Manager application including access management of the application"
+		},
+		{
+			"name": "USERMANAGEMENT_MANAGED",
+			"description": "User or group managed (in terms of access rights) by the User Manager application"
+		}
+	],
+	"templates": [
+		{
+			"name": "USERMANAGEMENT_CONFIGURE",
+			"description": "Configure the User Manager application including access management of the application"
+		},
+		{
+			"name": "USERMANAGEMENT_MANAGED",
+			"description": "User or group managed (in terms of access rights) by the User Manager application"
+		}
+	]
+}
