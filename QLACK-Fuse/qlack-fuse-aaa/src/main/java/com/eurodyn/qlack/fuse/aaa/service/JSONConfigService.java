@@ -59,9 +59,8 @@ public class JSONConfigService {
 
     // Calculate an MD5 for this file to know if it has changed in order to
     // avoid unnecessary database access.
-    String checksum = null;
     try {
-      checksum = DigestUtils.md5Hex(mapper.writeValueAsString(config));
+      DigestUtils.md5Hex(mapper.writeValueAsString(config));
     } catch (JsonProcessingException e) {
       LOGGER.log(Level.SEVERE, MessageFormat.format(
           "Could not calculate MD5 for file {0}.", configFileURL.toExternalForm()), e);

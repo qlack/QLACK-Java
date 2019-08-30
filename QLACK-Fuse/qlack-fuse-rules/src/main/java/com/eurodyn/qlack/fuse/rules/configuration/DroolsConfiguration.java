@@ -1,6 +1,5 @@
 package com.eurodyn.qlack.fuse.rules.configuration;
 
-import java.io.IOException;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
@@ -27,19 +26,19 @@ public class DroolsConfiguration {
 
   @Bean
   @ConditionalOnMissingBean(KieBase.class)
-  public KieBase kieBase() throws IOException {
+  public KieBase kieBase(){
     return kieContainer().getKieBase();
   }
 
   @Bean
   @ConditionalOnMissingBean(KieSession.class)
-  public KieSession kieSession() throws IOException {
+  public KieSession kieSession() {
     return kieContainer().newKieSession();
   }
 
   @Bean
   @ConditionalOnMissingBean(StatelessKieSession.class)
-  public StatelessKieSession statelessKieSession() throws IOException {
+  public StatelessKieSession statelessKieSession() {
     return kieContainer().newStatelessKieSession();
   }
 

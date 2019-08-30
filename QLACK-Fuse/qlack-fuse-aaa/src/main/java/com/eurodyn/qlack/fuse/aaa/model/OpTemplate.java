@@ -1,14 +1,10 @@
 package com.eurodyn.qlack.fuse.aaa.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import lombok.Getter;

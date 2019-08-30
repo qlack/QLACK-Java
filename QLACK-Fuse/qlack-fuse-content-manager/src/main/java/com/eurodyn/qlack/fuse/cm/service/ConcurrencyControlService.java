@@ -50,8 +50,7 @@ public class ConcurrencyControlService {
    * the lock and will not be taken into account when checking if a locked node can be edited.
    * @throws QNodeLockException If the specified node is already locked
    */
-  public void lock(String nodeID, String lockToken, boolean lockChildren, String userID)
-      throws QNodeLockException {
+  public void lock(String nodeID, String lockToken, boolean lockChildren, String userID) {
     Node node = fetchNode(nodeID, "The folder/file you want to lock does not exist");
 
     checkIfLockable(node);
@@ -108,8 +107,7 @@ public class ConcurrencyControlService {
    * the lock and will not be taken into account when checking if a locked node can be edited.
    * @throws QNodeLockException If the node cannot be unlocked with the passed token
    */
-  public void unlock(String nodeID, String lockToken, boolean overrideLock, String userID)
-      throws QNodeLockException {
+  public void unlock(String nodeID, String lockToken, boolean overrideLock, String userID) {
     Node node = fetchNode(nodeID, "The folder/file you want to unlock does not exist");
 
     if (!overrideLock) {

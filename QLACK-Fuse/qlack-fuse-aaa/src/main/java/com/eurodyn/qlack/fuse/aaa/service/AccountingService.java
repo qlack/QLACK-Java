@@ -202,7 +202,6 @@ public class AccountingService {
         attribute.setSession(findSession(attributeDTO.getSessionId()));
       }
       attribute.setValue(attributeDTO.getValue());
-//      em.merge(attribute);
       sessionAttributeRepository.save(attribute);
     }
   }
@@ -210,7 +209,6 @@ public class AccountingService {
   public void deleteAttribute(String sessionID, String attributeName) {
     SessionAttribute attribute = sessionAttributeRepository
         .findBySessionIdAndName(sessionID, attributeName);
-//    em.remove(attribute);
     sessionAttributeRepository.delete(attribute);
   }
 
