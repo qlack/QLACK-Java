@@ -12,7 +12,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,7 +26,6 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
@@ -102,7 +100,7 @@ public class ResourceAccessInterceptor {
         List<ResourceOperationDTO> resourceOperations = getResourceOperations(user, operation);
 
         // If no operations for current user, the user is not authorized
-        if (resourceOperations.size() == 0) {
+        if (resourceOperations.isEmpty()) {
             return false;
         }
 
@@ -160,7 +158,7 @@ public class ResourceAccessInterceptor {
      * @throws IllegalAccessException if a class field cannot be accessed through Java Reflection API
      */
     @Before("annotation() && @annotation(resourceAccess)")
-    public void authorize(JoinPoint joinPoint, ResourceAccess resourceAccess) throws AccessDeniedException, IllegalAccessException {
+    public void authorize(JoinPoint joinPoint, ResourceAccess resourceAccess) throws IllegalAccessException {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         //authorizeUserDetailsDTO method checks the fields of the com.eurodyn.qlack.fuse.aaa.dto.UserDetailsDTO
@@ -173,7 +171,7 @@ public class ResourceAccessInterceptor {
         }
     }
 
-    private void authorizeUserDetailsDTO(UserDetailsDTO user, JoinPoint joinPoint, ResourceAccess resourceAccess) throws AccessDeniedException, IllegalAccessException{
+    private void authorizeUserDetailsDTO(UserDetailsDTO user, JoinPoint joinPoint, ResourceAccess resourceAccess) throws IllegalAccessException{
 
         boolean allowAccess;
 

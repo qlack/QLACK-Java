@@ -109,8 +109,7 @@ public class LdapUserUtil {
           ldapUnbind(ctx);
           return userId;
         } else {
-          String userId = user.getId();
-          userId = updateUserFromLdap(user, ldap);
+          String userId = updateUserFromLdap(user, ldap);
           ldapUnbind(ctx);
           return userId;
         }
@@ -133,8 +132,7 @@ public class LdapUserUtil {
     env.put(Context.SECURITY_CREDENTIALS, password);
 
     try {
-      DirContext ctx = new InitialDirContext(env);
-      return ctx;
+      return  new InitialDirContext(env);
     } catch (AuthenticationException e) {
       LOGGER.log(Level.FINE, "Cannot bind user to ldap service", e);
       return null;
