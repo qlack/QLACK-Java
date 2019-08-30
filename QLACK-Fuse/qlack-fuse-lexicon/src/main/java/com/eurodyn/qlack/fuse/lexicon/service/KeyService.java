@@ -248,6 +248,27 @@ public class KeyService {
     return dtos;
   }
 
+  /**
+   * Finds the total number of  keys that match given criteria.
+   *
+   * @param criteria the criteria used to search the keys
+   * @return a Long type of the total number of Keys matching the given criteria
+   */
+    public Long findTotalKeys(KeySearchCriteria criteria) {
+      log.info(MessageFormat.format("Fetching the total number of keys matching the criteria: {0}", criteria));
+
+      Predicate predicate = new BooleanBuilder();
+
+      if (criteria.getKeyName() != null) {
+        predicate = ((BooleanBuilder) predicate).and(qKey.name.eq(criteria.getKeyName()));
+      }
+      if (criteria.getGroupId() != null) {
+        predicate = ((BooleanBuilder) predicate).and(qKey.group.id.eq(criteria.getGroupId()));
+      }
+
+      return keyRepository.count(predicate);
+    }
+
   private void update(Data data) {
     data.setLastUpdatedOn(Instant.now().toEpochMilli());
     dataRepository.save(data);

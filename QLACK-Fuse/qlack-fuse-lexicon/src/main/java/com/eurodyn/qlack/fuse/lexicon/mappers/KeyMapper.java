@@ -25,7 +25,7 @@ public interface KeyMapper extends LexiconMapper<Key, KeyDTO> {
   default Map<String, String> mapData(List<Data> data, @Context boolean addTranslations) {
     if (addTranslations) {
       if (Objects.nonNull(data)) {
-        return data.stream().collect(Collectors.toMap(a -> a.getLanguage().getId(), a -> a.getValue()));
+        return data.stream().collect(Collectors.toMap(a -> a.getLanguage().getLocale(), a -> a.getValue()));
       }
     }
     return new HashMap<>();

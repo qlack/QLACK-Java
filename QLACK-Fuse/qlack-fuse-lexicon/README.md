@@ -181,3 +181,63 @@ translations:
       - unexpected_error: Ocorreu um erro inesperado
       - login_failure: Falha no login devido a credenciais inválidas
 ```
+
+## Frontend Integration (AngularJS)
+
+### Include the required libraries in your index.html page:
+```html
+<script src="../js/angular-translate.js"></script> 
+<script src="../js/ngStorage.js"></script> 
+<script src="../js/angular-sanitize.js"></script> 
+<script src="../js/angular-translate-storage-local.js"></script> 
+<script src="../js/angular-loader-url.js"></script> 
+<script src="../js/angular-cookies.js"></script> 
+```
+
+### Include the modules pascalprecht.translate,  ngStorage  ,ngCookies  ,ngSanitize in your angularjs module:
+```javascript
+var app = angular.module('myApp', ['pascalprecht.translate', 'ngStorage', 'ngCookies','ngSanitize']);
+ ```
+
+### Include $translateProvider module in your AngularJS configuration:
+```javascript
+app.config(function ($translateProvider) {
+    ...
+});
+```
+
+### Example (using en and gr languages)
+
+```javascript
+app.config(function ($translateProvider) {
+    $translateProvider
+        .preferredLanguage("en")
+        .fallbackLanguage("gr")
+        .useLocalStorage()
+        .useSanitizeValueStrategy("escaped")
+        .useUrlLoader(".../translations");
+    });
+});
+```
+'useUrlLoader' is referring to the path of the bandend endpoint from which the keys/translations will be retrived. 
+
+```java
+@RequestMapping("/translations")
+public Map<String, String> getTranslations(@RequestParam String lang) {
+    return keyService.getTranslationsForLocale(lang);
+}
+``` 
+
+```html
+<span>{{ 'keyName' | translate }}</span>
+```
+
+If you need to switch languages while using the application, make use of the 'use' function
+```javascript
+$translate.use(locale);
+```
+
+In case you are using AngularJS veriosn 1.6.7 or higher, you have to add the following line at the beginning of your AngularJS configuration
+```javascript
+angular.lowercase = angular.$$lowercase;
+ ```
