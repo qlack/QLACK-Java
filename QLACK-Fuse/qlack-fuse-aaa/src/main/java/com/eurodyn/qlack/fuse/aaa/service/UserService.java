@@ -458,7 +458,7 @@ public class UserService {
         if (StringUtils.isBlank(dto.getPassword())) {
             LOGGER.log(Level.WARNING, "Password is empty.");
         } else {
-            if (salt.isPresent()) {
+            if (salt != null && salt.isPresent()) {
                 user.setSalt(salt.get());
                 user.setPassword(passwordEncoder.encode(salt.get() + dto.getPassword()));
             } else {
