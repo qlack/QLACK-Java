@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -21,23 +20,22 @@ import org.springframework.validation.annotation.Validated;
 @Transactional
 public class AuthenticateService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    private final UserDetailsMapper userDetailsMapper;
+  private final UserDetailsMapper userDetailsMapper;
 
-    private final UserGroupHasOperationMapper userGroupHasOperationMapper;
+  private final UserGroupHasOperationMapper userGroupHasOperationMapper;
 
-    @Autowired
-    public AuthenticateService(UserRepository userRepository, UserDetailsMapper userDetailsMapper,
-        UserGroupHasOperationMapper userGroupHasOperationMapper) {
-        this.userRepository = userRepository;
-        this.userDetailsMapper = userDetailsMapper;
-        this.userGroupHasOperationMapper = userGroupHasOperationMapper;
-    }
+  @Autowired
+  public AuthenticateService(UserRepository userRepository, UserDetailsMapper userDetailsMapper,
+      UserGroupHasOperationMapper userGroupHasOperationMapper) {
+    this.userRepository = userRepository;
+    this.userDetailsMapper = userDetailsMapper;
+    this.userGroupHasOperationMapper = userGroupHasOperationMapper;
+  }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
-        return userDetailsMapper.mapToDTO(user, userGroupHasOperationMapper);
-    }
+  @Override public UserDetails loadUserByUsername(String username) {
+    User user = userRepository.findByUsername(username);
+    return userDetailsMapper.mapToDTO(user, userGroupHasOperationMapper);
+  }
 }

@@ -185,10 +185,10 @@ public class UserService {
     public String canAuthenticate(final String username, String password) {
         String retVal = null;
 
-        /** Try to find this user in the database */
+        /* Try to find this user in the database */
         User user = userRepository.findByUsername(username);
 
-        /** If the user was found proceed trying to authenticate it. Otherwise, if LDAP integration is
+        /* If the user was found proceed trying to authenticate it. Otherwise, if LDAP integration is
          * enabled try to authenticate the user in LDAP. Note that if the user is successfully
          * authenticated with LDAP, a new user will also be created/duplicated in AAA as an external
          * user.
@@ -428,8 +428,7 @@ public class UserService {
         return userRepository.findAll(predicate).size();
     }
 
-    public boolean isAttributeValueUnique(String attributeValue,
-        String attributeName, String userID) {
+    public boolean isAttributeValueUnique(String attributeName, String userID) {
 
         boolean isAttributeValueUnique = false;
         QUserAttribute quserAttribute = QUserAttribute.userAttribute;
@@ -439,7 +438,7 @@ public class UserService {
         // convert Set to List
         List<UserAttributeDTO> qResult = userAttributeMapper
             .mapToDTO(userAttributeRepository.findAll(predicate));
-        ArrayList<UserAttributeDTO> list = new ArrayList<UserAttributeDTO>(qResult);
+        ArrayList<UserAttributeDTO> list = new ArrayList<>(qResult);
         //in case of no user exists with this user attribute value	or there is only the given user
         if ((list.size() == 1 && list.get(0).getUserId().equals(userID)) || (list.isEmpty())) {
             isAttributeValueUnique = true;
@@ -459,7 +458,7 @@ public class UserService {
         if (StringUtils.isBlank(dto.getPassword())) {
             LOGGER.log(Level.WARNING, "Password is empty.");
         } else {
-            if (salt != null && salt.isPresent()) {
+            if (salt.isPresent()) {
                 user.setSalt(salt.get());
                 user.setPassword(passwordEncoder.encode(salt.get() + dto.getPassword()));
             } else {

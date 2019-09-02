@@ -51,7 +51,7 @@ public class ConcurrencyControlService {
    * @throws QNodeLockException If the specified node is already locked
    */
   public void lock(String nodeID, String lockToken, boolean lockChildren, String userID) {
-    Node node = fetchNode(nodeID, "The folder/file you want to lock does not exist");
+    Node node = fetchNode(nodeID);
 
     checkIfLockable(node);
 
@@ -108,7 +108,7 @@ public class ConcurrencyControlService {
    * @throws QNodeLockException If the node cannot be unlocked with the passed token
    */
   public void unlock(String nodeID, String lockToken, boolean overrideLock, String userID) {
-    Node node = fetchNode(nodeID, "The folder/file you want to unlock does not exist");
+    Node node = fetchNode(nodeID);
 
     if (!overrideLock) {
       // Check whether there is a lock conflict with the current node.
@@ -140,7 +140,7 @@ public class ConcurrencyControlService {
    * @return The NodeDTO with the conflict or null.
    */
   public NodeDTO getSelectedNodeWithLockConflict(String nodeID, String lockToken) {
-    Node node = fetchNode(nodeID, "The folder/file you want to unlock does not exist");
+    Node node = fetchNode(nodeID);
     return commonLockConflictCheck(node, lockToken);
   }
 
@@ -193,7 +193,7 @@ public class ConcurrencyControlService {
     return null;
   }
 
-  private Node fetchNode(String nodeId, String errorMsg) throws QNodeLockException {
+  private Node fetchNode(String nodeId) {
     return nodeRepository.fetchById(nodeId);
   }
 
@@ -208,7 +208,7 @@ public class ConcurrencyControlService {
     return null;
   }
 
-  private void checkIfLockable(Node node) throws QNodeLockException {
+  private void checkIfLockable(Node node) {
     NodeAttribute lockable = node.getAttribute(CMConstants.LOCKABLE);
 
     if (!Boolean.valueOf(lockable.getValue())) {

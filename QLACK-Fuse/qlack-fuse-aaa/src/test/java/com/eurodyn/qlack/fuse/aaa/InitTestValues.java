@@ -311,7 +311,7 @@ public class InitTestValues {
         children.add(userGroupFirstChildDTO);
         children.add(userGroupSecondChildDTO);
 
-        userGroupDTO.setChildren(new HashSet(children));
+        userGroupDTO.setChildren(new HashSet<>(children));
 
         return userGroupDTO;
     }

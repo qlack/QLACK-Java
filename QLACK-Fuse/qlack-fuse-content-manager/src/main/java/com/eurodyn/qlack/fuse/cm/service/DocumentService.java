@@ -65,8 +65,7 @@ public class DocumentService {
   }
 
 
-  private void checkNodeConflict(String nodeId, String lockToken, String errorMsg)
-      throws QNodeLockException {
+  private void checkNodeConflict(String nodeId, String lockToken, String errorMsg) {
     NodeDTO selConflict = concurrencyControlService
         .getSelectedNodeWithLockConflict(nodeId, lockToken);
     if (selConflict != null && selConflict.getName() != null) {
@@ -76,8 +75,7 @@ public class DocumentService {
 
 
   private void renameNode(String nodeID, String newName, String userID, String lockToken,
-      NodeType nodeType)
-      throws QNodeLockException {
+      NodeType nodeType) {
     String type = nodeType.name().toLowerCase();
     Node node = nodeRepository.fetchById(nodeID);
 
@@ -132,8 +130,7 @@ public class DocumentService {
    * @throws QNodeLockException If the folder/node cannot be created under the specific hierarchy
    * since an ascendant is already locked
    */
-  public String createFolder(FolderDTO folder, String userID, String lockToken)
-      throws QNodeLockException {
+  public String createFolder(FolderDTO folder, String userID, String lockToken) {
     Node parent = null;
     if (folder.getParentId() != null) {
       parent = nodeRepository.fetchById(folder.getParentId());
@@ -206,8 +203,7 @@ public class DocumentService {
    * @param lockToken the lock token
    * @throws QNodeLockException the q node lock exception
    */
-  public void renameFolder(String folderID, String newName, String userID, String lockToken)
-      throws QNodeLockException {
+  public void renameFolder(String folderID, String newName, String userID, String lockToken) {
     renameNode(folderID, newName, userID, lockToken, NodeType.FOLDER);
   }
 
@@ -324,8 +320,7 @@ public class DocumentService {
    * @return the string
    * @throws QNodeLockException the q node lock exception
    */
-  public String createFile(FileDTO file, String userID, String lockToken)
-      throws QNodeLockException {
+  public String createFile(FileDTO file, String userID, String lockToken) {
     Node parent = null;
     if (file.getParentId() != null) {
       parent = nodeRepository.fetchById(file.getParentId());
@@ -359,7 +354,7 @@ public class DocumentService {
    * @throws QNodeLockException If the node cannot be deleted under the specific hierarchy since an
    * ascendant or the folder itself is already locked
    */
-  public void deleteFile(String fileID, String lockToken) throws QNodeLockException {
+  public void deleteFile(String fileID, String lockToken) {
     Node node = nodeRepository.fetchById(fileID);
 
     // Check whether there is a lock conflict with the current node.
@@ -388,8 +383,7 @@ public class DocumentService {
    * @param lockToken the lock token
    * @throws QNodeLockException the q node lock exception
    */
-  public void renameFile(String fileID, String newName, String userID, String lockToken)
-      throws QNodeLockException {
+  public void renameFile(String fileID, String newName, String userID, String lockToken) {
     renameNode(fileID, newName, userID, lockToken, NodeType.FILE);
   }
 
@@ -496,8 +490,7 @@ public class DocumentService {
    * @throws QNodeLockException the q node lock exception
    */
   public String createAttribute(String nodeId, String attributeName, String attributeValue,
-      String userId, String lockToken)
-      throws QNodeLockException {
+      String userId, String lockToken) {
     Node node = nodeRepository.fetchById(nodeId);
 
     checkNodeConflict(nodeId, lockToken,
@@ -532,8 +525,7 @@ public class DocumentService {
    * @throws QNodeLockException the q node lock exception
    */
   public void updateAttribute(String nodeID, String attributeName, String attributeValue,
-      String userID, String lockToken)
-      throws QNodeLockException {
+      String userID, String lockToken) {
     Node node = nodeRepository.fetchById(nodeID);
 
     checkNodeConflict(nodeID, lockToken,
@@ -561,7 +553,7 @@ public class DocumentService {
    * @throws QNodeLockException the q node lock exception
    */
   void updateAttributes(String nodeID, Map<String, String> attributes, String userID,
-      String lockToken) throws QNodeLockException {
+      String lockToken) {
     Node node = nodeRepository.fetchById(nodeID);
 
     checkNodeConflict(nodeID, lockToken,
@@ -591,8 +583,7 @@ public class DocumentService {
    * @param lockToken the lock token
    * @throws QNodeLockException the q node lock exception
    */
-  public void deleteAttribute(String nodeID, String attributeName, String userID, String lockToken)
-      throws QNodeLockException {
+  public void deleteAttribute(String nodeID, String attributeName, String userID, String lockToken) {
 
     Node node = nodeRepository.fetchById(nodeID);
 
@@ -621,8 +612,7 @@ public class DocumentService {
    * @param lockToken the lock token
    * @return the string
    */
-  public String copy(String nodeID, String newParentID, String userID, String lockToken)
-      throws QNodeLockException, QInvalidPathException {
+  public String copy(String nodeID, String newParentID, String userID, String lockToken) {
     Node node = nodeRepository.fetchById(nodeID);
 
     Node newParent = nodeRepository.fetchById(newParentID);

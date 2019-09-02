@@ -61,8 +61,7 @@ public class UserGroupService {
     userGroupRepository.delete(userGroupRepository.fetchById(groupID));
   }
 
-  public void moveGroup(String groupID, String newParentId)
-      throws InvalidGroupHierarchyException {
+  public void moveGroup(String groupID, String newParentId) {
     UserGroup userGroup = userGroupRepository.fetchById(groupID);
     UserGroup newParent = userGroupRepository.fetchById(newParentId);
 
@@ -95,7 +94,7 @@ public class UserGroupService {
 
   public UserGroupDTO getGroupByName(String groupName, boolean lazyRelatives) {
     return userGroupMapper.mapToDTO(
-        userGroupRepository.findByName(groupName), false);
+        userGroupRepository.findByName(groupName), lazyRelatives);
   }
 
   public List<UserGroupDTO> getGroupByNames(List<String> groupNames, boolean lazyRelatives) {

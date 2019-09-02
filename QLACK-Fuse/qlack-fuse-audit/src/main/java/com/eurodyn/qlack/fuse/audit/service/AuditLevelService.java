@@ -42,7 +42,7 @@ public class AuditLevelService {
     return alLevel.getId();
   }
 
-  public String addLevelIfNotExists(AuditLevelDTO level) throws QAlreadyExistsException {
+  public String addLevelIfNotExists(AuditLevelDTO level) {
     if (auditLevelRepository.findByName(level.getName()) == null) {
       return addLevel(level);
     } else {
