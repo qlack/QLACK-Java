@@ -290,6 +290,12 @@ public class InitTestValues {
         return userGroup;
     }
 
+    public UserGroup createUserGroupNoParent() {
+        UserGroup userGroup = new UserGroup();
+        userGroup.setId("7ea962bc-1ea8-46b4-8b6d-588e3a8aae61");
+        return userGroup;
+    }
+
     public UserGroupDTO createUserGroupDTO() {
         UserGroupDTO userGroupDTO = new UserGroupDTO();
         userGroupDTO.setId("7ea962bc-1ea8-46b4-8b6d-588e3a8aae60");
@@ -328,6 +334,13 @@ public class InitTestValues {
 
         userGroups.add(userGroup2);
         userGroups.add(userGroup3);
+
+        return userGroups;
+    }
+
+    public List<UserGroup> createUserGroupsOnlyOne() {
+        List<UserGroup> userGroups = new ArrayList<>();
+        userGroups.add(createUserGroup());
 
         return userGroups;
     }

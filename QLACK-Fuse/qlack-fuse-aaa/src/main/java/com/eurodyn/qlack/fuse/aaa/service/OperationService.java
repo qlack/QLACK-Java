@@ -80,6 +80,10 @@ public class OperationService {
 
   private boolean prioritisePositive;
 
+  public boolean getPrioritisePositive() {
+    return prioritisePositive;
+  }
+
   public void setPrioritisePositive(boolean prioritisePositive) {
     this.prioritisePositive = prioritisePositive;
   }
