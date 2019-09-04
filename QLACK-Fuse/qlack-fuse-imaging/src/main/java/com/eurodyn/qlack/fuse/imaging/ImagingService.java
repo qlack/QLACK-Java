@@ -52,15 +52,15 @@ public class ImagingService {
    * @param originalImage The image to resample.
    * @param width The new widht.
    * @param height The new height.
-   * @param QFIResamplingAlgorithm The resampling algorithm to use.
+   * @param qfiResamplingAlgorithm The resampling algorithm to use.
    * @param imageType The type of the image (so that the resulting image is of the same type).
    * @return Returns a resampled image.
    */
   private byte[] resample(BufferedImage originalImage, int width, int height,
-    ResamplingAlgorithm QFIResamplingAlgorithm, String imageType) throws IOException {
+    ResamplingAlgorithm qfiResamplingAlgorithm, String imageType) throws IOException {
 
     try (ByteArrayOutputStream resampledImageOutputStream = new ByteArrayOutputStream()) {
-      BufferedImageOp resampler = new ResampleOp(width, height, QFIResamplingAlgorithm.getVal());
+      BufferedImageOp resampler = new ResampleOp(width, height, qfiResamplingAlgorithm.getVal());
       ImageIO.write(resampler.filter(originalImage, null), imageType, resampledImageOutputStream);
       resampledImageOutputStream.flush();
       return resampledImageOutputStream.toByteArray();
@@ -237,12 +237,12 @@ public class ImagingService {
   }
 
   public byte[] resampleByPercent(byte[] image, int percent,
-    ResamplingAlgorithm QFIResamplingAlgorithm) {
+    ResamplingAlgorithm qfiResamplingAlgorithm) {
     try (InputStream originalImageInputStream = new ByteArrayInputStream(image)) {
       BufferedImage originalBufferedImage = ImageIO.read(originalImageInputStream);
       return resample(originalBufferedImage,
         (int) (originalBufferedImage.getWidth() * ((float) percent / 100f)),
-        (int) (originalBufferedImage.getHeight() * ((float) percent / 100f)), QFIResamplingAlgorithm,
+        (int) (originalBufferedImage.getHeight() * ((float) percent / 100f)), qfiResamplingAlgorithm,
         ImagingUtil.getType(image));
     } catch (IOException e) {
       throw new ImagingException("Could not resample image by percent.", e);
@@ -250,23 +250,23 @@ public class ImagingService {
   }
 
   public byte[] resampleByFactor(byte[] image, float factor,
-    ResamplingAlgorithm QFIResamplingAlgorithm) {
+    ResamplingAlgorithm qfiResamplingAlgorithm) {
     try (InputStream originalImageInputStream = new ByteArrayInputStream(image)) {
       BufferedImage originalBufferedImage = ImageIO.read(originalImageInputStream);
       return resample(originalBufferedImage, (int) (originalBufferedImage.getWidth() * factor),
-        (int) (originalBufferedImage.getHeight() * factor), QFIResamplingAlgorithm,
+        (int) (originalBufferedImage.getHeight() * factor), qfiResamplingAlgorithm,
         ImagingUtil.getType(image));
     } catch (IOException e) {
       throw new ImagingException("Could not resample image by factor.", e);
     }
   }
 
-  public byte[] resampleByWidth(byte[] image, int width, ResamplingAlgorithm QFIResamplingAlgorithm) {
+  public byte[] resampleByWidth(byte[] image, int width, ResamplingAlgorithm qfiResamplingAlgorithm) {
     try (InputStream originalImageInputStream = new ByteArrayInputStream(image)) {
       BufferedImage originalBufferedImage = ImageIO.read(originalImageInputStream);
       float newYRatio = (float) width / (float) originalBufferedImage.getWidth();
       return resample(originalBufferedImage, width,
-        (int) (originalBufferedImage.getHeight() * newYRatio), QFIResamplingAlgorithm,
+        (int) (originalBufferedImage.getHeight() * newYRatio), qfiResamplingAlgorithm,
         ImagingUtil.getType(image));
     } catch (IOException e) {
       throw new ImagingException("Could not resample image by width.", e);
@@ -274,22 +274,22 @@ public class ImagingService {
   }
 
   public byte[] resampleByHeight(byte[] image, int height,
-      ResamplingAlgorithm QFIResamplingAlgorithm) {
+      ResamplingAlgorithm qfiResamplingAlgorithm) {
     try (InputStream originalImageInputStream = new ByteArrayInputStream(image)) {
       BufferedImage originalBufferedImage = ImageIO.read(originalImageInputStream);
       float newXRatio = (float) height / (float) originalBufferedImage.getHeight();
       return resample(originalBufferedImage, (int) (originalBufferedImage.getWidth() * newXRatio),
-        height, QFIResamplingAlgorithm, ImagingUtil.getType(image));
+        height, qfiResamplingAlgorithm, ImagingUtil.getType(image));
     } catch (IOException e) {
       throw new ImagingException("Could not resample image by height.", e);
     }
   }
 
   public byte[] resample(byte[] image, int width, int height,
-      ResamplingAlgorithm QFIResamplingAlgorithm) {
+      ResamplingAlgorithm qfiResamplingAlgorithm) {
     try (InputStream originalImageInputStream = new ByteArrayInputStream(image)) {
       BufferedImage originalBufferedImage = ImageIO.read(originalImageInputStream);
-      return resample(originalBufferedImage, width, height, QFIResamplingAlgorithm,
+      return resample(originalBufferedImage, width, height, qfiResamplingAlgorithm,
         ImagingUtil.getType(image));
     } catch (IOException e) {
       throw new ImagingException("Could not resample image.", e);

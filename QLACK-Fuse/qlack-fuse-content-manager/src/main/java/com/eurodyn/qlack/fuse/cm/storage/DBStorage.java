@@ -101,7 +101,7 @@ public class DBStorage implements StorageEngine {
     List<VersionBin> versionBins = versionBinRepository
         .findAll(predicate, Sort.by("chunkIndex").descending());
 
-    if (versionBins.size() > 0) {
+    if (!versionBins.isEmpty()) {
       binChunkDTO = mapper.mapToDTO(versionBins.get(0));
       binChunkDTO.setHasMoreChunks(versionBins.size() == 2);
     }

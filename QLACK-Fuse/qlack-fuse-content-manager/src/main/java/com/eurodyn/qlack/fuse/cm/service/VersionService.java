@@ -114,8 +114,7 @@ public class VersionService {
     tika = new TikaConfig();
   }
 
-  private void checkNodeConflict(String fileID, String lockToken, String errorMsg)
-      throws QNodeLockException {
+  private void checkNodeConflict(String fileID, String lockToken, String errorMsg) {
     NodeDTO selConflict = concurrencyControlService
         .getSelectedNodeWithLockConflict(fileID, lockToken);
     if (selConflict != null && selConflict.getName() != null) {
@@ -131,7 +130,7 @@ public class VersionService {
     }
   }
 
-  private Version getVersionByName(String name, Node file) throws QVersionNotFoundException {
+  private Version getVersionByName(String name, Node file) {
     Predicate predicate = qVersion.name.eq(name).and(qVersion.node.id.eq(file.getId()));
     return versionRepository.findOne(predicate).orElseThrow(() ->
         new QVersionNotFoundException("No version found matching the given name and file id"));
@@ -150,8 +149,7 @@ public class VersionService {
    * @throws QNodeLockException the q node lock exception
    */
   public String createVersion(String fileID, VersionDTO cmVersion, String filename, byte[] content,
-      String userID, String lockToken)
-      throws QNodeLockException {
+      String userID, String lockToken) {
     Node file = nodeRepository.fetchById(fileID);
 
     checkNodeConflict(fileID, lockToken,
@@ -226,8 +224,7 @@ public class VersionService {
    * @param lockToken the lock token
    */
   public void updateVersion(String fileID, VersionDTO versionDTO, byte[] content, String userID,
-      boolean updateAllAttributes, String lockToken)
-      throws QNodeLockException {
+      boolean updateAllAttributes, String lockToken) {
     Node file = nodeRepository.fetchById(fileID);
 
     checkNodeConflict(fileID, lockToken,
@@ -302,7 +299,7 @@ public class VersionService {
    * @param versionId the version id
    * @param lockToken the lock token
    */
-  public void deleteVersion(String versionId, String lockToken) throws QNodeLockException {
+  public void deleteVersion(String versionId, String lockToken) {
     Version version = versionRepository.fetchById(versionId);
     Node file = version.getNode();
 
@@ -509,8 +506,7 @@ public class VersionService {
    * @throws QNodeLockException the q node lock exception
    */
   public void updateAttribute(String fileID, String attributeName, String attributeValue,
-      String userID, String lockToken)
-      throws QNodeLockException {
+      String userID, String lockToken) {
     updateAttribute(fileID, attributeName, attributeValue, userID, lockToken, null);
   }
 
@@ -527,7 +523,7 @@ public class VersionService {
    */
   public void updateAttribute(String fileID, String attributeName, String attributeValue,
       String userID, String lockToken,
-      String versionName) throws QNodeLockException {
+      String versionName) {
     Node file = nodeRepository.fetchById(fileID);
 
     checkNodeConflict(file.getId(), lockToken,
@@ -555,7 +551,7 @@ public class VersionService {
    * @throws QNodeLockException the q node lock exception
    */
   public void updateAttributes(String fileID, Map<String, String> attributes, String userID,
-      String lockToken) throws QNodeLockException {
+      String lockToken) {
     updateAttributes(fileID, attributes, userID, lockToken, null);
   }
 
@@ -570,8 +566,7 @@ public class VersionService {
    * @throws QNodeLockException the q node lock exception
    */
   void updateAttributes(String fileID, Map<String, String> attributes, String userID,
-      String lockToken, String versionName)
-      throws QNodeLockException {
+      String lockToken, String versionName) {
     Node file = nodeRepository.fetchById(fileID);
 
     checkNodeConflict(file.getId(), lockToken,
@@ -595,8 +590,7 @@ public class VersionService {
    * @param lockToken the lock token
    * @throws QNodeLockException the q node lock exception
    */
-  public void deleteAttribute(String fileID, String attributeName, String userID, String lockToken)
-      throws QNodeLockException {
+  public void deleteAttribute(String fileID, String attributeName, String userID, String lockToken) {
     deleteAttribute(fileID, attributeName, userID, lockToken, null);
   }
 
@@ -611,8 +605,7 @@ public class VersionService {
    * @throws QNodeLockException the q node lock exception
    */
   public void deleteAttribute(String fileID, String attributeName, String userID, String lockToken,
-      String versionName)
-      throws QNodeLockException {
+      String versionName) {
     Node file = nodeRepository.fetchById(fileID);
 
     checkNodeConflict(file.getId(), lockToken,
