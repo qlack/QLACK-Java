@@ -2,6 +2,8 @@ package com.eurodyn.qlack.fuse.cm;
 
 import com.eurodyn.qlack.fuse.cm.dto.FileDTO;
 import com.eurodyn.qlack.fuse.cm.dto.FolderDTO;
+import com.eurodyn.qlack.fuse.cm.dto.NodeAttributeDTO;
+import com.eurodyn.qlack.fuse.cm.dto.NodeDTO;
 import com.eurodyn.qlack.fuse.cm.dto.VersionDTO;
 import com.eurodyn.qlack.fuse.cm.enums.NodeType;
 import com.eurodyn.qlack.fuse.cm.model.Node;
@@ -13,6 +15,7 @@ import com.eurodyn.qlack.fuse.cm.util.CMConstants;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author European Dynamics
@@ -28,6 +31,13 @@ public class InitTestValues {
     return node;
   }
 
+  public NodeDTO createNodeDTO(String id) {
+    NodeDTO nodeDTO = new NodeDTO();
+    nodeDTO.setId(id == null ? "219d51f2-6f78-4de8-bbf6-92091b34a7e0" : id);
+    nodeDTO.setName("nodeName");
+    return nodeDTO;
+  }
+
   public List<NodeAttribute> createAttributes(Node node) {
     List<NodeAttribute> attributes = new ArrayList<>();
 
@@ -41,6 +51,21 @@ public class InitTestValues {
     attributes.add(createdBy);
 
     return attributes;
+  }
+
+  public Set<NodeAttributeDTO> createNodeAttributesDTOSet(NodeAttributeDTO nodeAttributeDTO){
+    Set<NodeAttributeDTO> nodeAttributeDTOSet = new HashSet<>();
+    nodeAttributeDTOSet.add(nodeAttributeDTO);
+    return nodeAttributeDTOSet;
+  }
+
+  public NodeAttributeDTO createNodeAttributeDTO() {
+
+    NodeAttributeDTO nodeAttributeDTO = new NodeAttributeDTO();
+    nodeAttributeDTO.setName("nodeName");
+    nodeAttributeDTO.setValue("Attribute#1");
+    nodeAttributeDTO.setNodeId("nodeAttributeId");
+    return nodeAttributeDTO;
   }
 
   public FolderDTO createFolderDTO(String nodeDTOId) {
@@ -121,6 +146,20 @@ public class InitTestValues {
     versionAttributes.add(attribute);
 
     return versionAttributes;
+  }
+
+  public List<NodeDTO> createListNodeDTO(){
+    List<NodeDTO> nodeDTOS = new ArrayList<>();
+    nodeDTOS.add(createNodeDTO("nodeDTOId"));
+
+    return nodeDTOS;
+  }
+
+  public List<Node> createListNode(){
+    List<Node> nodeList = new ArrayList<>();
+    nodeList.add(createNode("nodeId"));
+
+    return nodeList;
   }
 
 }
