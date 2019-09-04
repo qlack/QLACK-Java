@@ -48,7 +48,7 @@ public class EmailDTO implements Serializable {
 	}
 
 	public void setToContact(String toContact) {
-		List<String> l = new ArrayList<String>();
+		List<String> l = new ArrayList<>();
 		l.add(toContact);
 		setToContact(l);
 	}
@@ -72,7 +72,7 @@ public class EmailDTO implements Serializable {
 		this.bccEmails = null;
 	}
 
-	public static enum EMAIL_TYPE {
+	public enum EMAIL_TYPE {
 		TEXT, HTML
 	}
 }

@@ -46,8 +46,8 @@ public class CryptoCAService {
   private static final Logger LOGGER = Logger.getLogger(CryptoCAService.class.getName());
 
   private final CryptoAsymmetricService cryptoAsymmetricService;
-  private final String CN = "CN";
-  private final String CERTIFICATE = "CERTIFICATE";
+  private static final String CN = "CN";
+  private static final String CERTIFICATE = "CERTIFICATE";
 
   public CryptoCAService(
     CryptoAsymmetricService cryptoAsymmetricService) {

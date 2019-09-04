@@ -50,7 +50,7 @@ public class FileUploadImpl implements FileUpload {
 
   private Optional<AvService> clamAvService;
 
-  private final String SECURITY_RISK_MESSAGE = "The file you are trying to upload was flagged as malicious. "
+  private static final String SECURITY_RISK_MESSAGE = "The file you are trying to upload was flagged as malicious. "
     + "Please review the file.";
 
   @Autowired

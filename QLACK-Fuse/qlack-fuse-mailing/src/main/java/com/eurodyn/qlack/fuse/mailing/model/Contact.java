@@ -41,6 +41,6 @@ public class Contact extends MailingModel {
 	@JoinTable(name = "mai_distr_list_has_contact", joinColumns = {
 			@JoinColumn(name = "contact_id", nullable = false, updatable = false) }, inverseJoinColumns = {
 					@JoinColumn(name = "distribution_list_id", nullable = false, updatable = false) })
-	private Set<DistributionList> distributionLists = new HashSet<DistributionList>(0);
+	private Set<DistributionList> distributionLists = new HashSet<>(0);
 
 }

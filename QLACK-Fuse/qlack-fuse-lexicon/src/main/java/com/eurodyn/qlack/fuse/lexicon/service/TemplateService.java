@@ -179,10 +179,10 @@ public class TemplateService {
     String retVal = template.getContent();
     // 1st pass.
     if (retVal.contains("${")) {
-      retVal = _processTemplate(template.getContent(), template.getName(), templateData);
+      retVal = processTemplate(template.getContent(), template.getName(), templateData);
       // 2nd pass (to support variables in variables).
       if (retVal.contains("${")) {
-        retVal = _processTemplate(retVal, template.getName(), templateData);
+        retVal = processTemplate(retVal, template.getName(), templateData);
       }
     }
 
@@ -192,7 +192,7 @@ public class TemplateService {
   /**
    * Helper method to process a template as string.
    */
-  private String _processTemplate(String content, String templateName, Map<String, Object> templateData) {
+  private String processTemplate(String content, String templateName, Map<String, Object> templateData) {
     StringWriter retVal = new StringWriter();
     try {
       freemarker.template.Template fTemplate = new freemarker.template.Template(templateName, new StringReader(content), null);

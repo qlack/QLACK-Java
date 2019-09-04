@@ -112,10 +112,8 @@ public class JarClassLoaderBuilder {
         // org.apache.felix.framework.BundleWiringImpl
         // BundleClassLoaderJava5 extends BundleClassLoader extends
         // java.security.SecureClassLoader
-        ClassLoader parent = org.drools.core.common.ProjectClassLoader.class
+        return org.drools.core.common.ProjectClassLoader.class
             .getClassLoader();
-
-        return parent;
     }
 
 }

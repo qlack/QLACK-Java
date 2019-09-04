@@ -14,7 +14,7 @@ import lombok.Setter;
 public class AttributeDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private Map<String, Object> attribute = new HashMap<String, Object>();
+	private Map<String, Object> attribute = new HashMap<>();
 
 	public Object clearAttribute(String key) {
 		return this.getAttribute().remove(key);

@@ -34,7 +34,6 @@ import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 @Log
 public class LexiconConfigService {
 
-  //private static final Logger LOGGER = Logger.getLogger(LexiconConfigService.class.getName());
   //Holds groupId + key pairs of translations with forceDelete
   private static List<Map<String, String>> deletedGroupKeys = new ArrayList<>();
   private static List<Map<String, String>> skippedGroupKeys = new ArrayList<>();
@@ -118,7 +117,7 @@ public class LexiconConfigService {
             groupService.createGroup(groupDTO);
           }
           // Else check the value of the forceUpdate flag
-          else if ((group.get("forceUpdate") != null) && ((Boolean) group.get("forceUpdate") == true)) {
+          else if ((group.get("forceUpdate") != null) && ((Boolean) group.get("forceUpdate"))) {
             groupDTO.setDescription(groupDescription);
             groupService.updateGroup(groupDTO);
           }
@@ -143,7 +142,7 @@ public class LexiconConfigService {
             languageService.createLanguage(languageDTO, null);
           }
           // Else check the value of the forceUpdate flag
-          else if ((language.get("forceUpdate") != null) && ((Boolean) language.get("forceUpdate") == true)) {
+          else if ((language.get("forceUpdate") != null) && ((Boolean) language.get("forceUpdate"))) {
             languageDTO.setName(languageName);
             languageService.updateLanguage(languageDTO);
           }
@@ -198,7 +197,7 @@ public class LexiconConfigService {
     for (Map<String, Object> translation : translations) {
       String translationKey = translation.keySet().iterator().next();
       String translationValue = (String) translation.get(translationKey);
-      boolean shouldDelete = translation.get("forceDelete") != null && (Boolean) translation.get("forceDelete") == true;
+      boolean shouldDelete = translation.get("forceDelete") != null && (Boolean) translation.get("forceDelete");
       KeyDTO keyDTO = keyService.getKeyByName(translationKey, groupId, true);
 
       Map<String, String> candidate = new HashMap<>();
@@ -232,7 +231,7 @@ public class LexiconConfigService {
       else if ((keyDTO.getTranslations().get(languageId) == null)
         || (keyDTO.getTranslations().get(languageId).equals(translationKey))
         || ((translation.get("forceUpdate") != null)
-        && ((Boolean) translation.get("forceUpdate") == true))) {
+        && ((Boolean) translation.get("forceUpdate")))) {
         keyService.updateTranslation(keyDTO.getId(), languageId, translationValue);
       }
     }

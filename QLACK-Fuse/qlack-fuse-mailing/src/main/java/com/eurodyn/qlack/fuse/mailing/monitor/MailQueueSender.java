@@ -100,7 +100,7 @@ public class MailQueueSender {
     /**
      * Send the email.
      */
-    public void send(EmailDTO vo) throws MailingException {
+    public void send(EmailDTO vo) {
 
         try {
             //set email encoding

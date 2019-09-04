@@ -58,9 +58,7 @@ public class KnowledgeSessionService {
 
         KieBase kieBase = rulesUtil.createKieBaseFromBaseState(knowledgeBaseState).knowledgeBase;
 
-        KieSession newKieSession = kieBase.newKieSession();
-
-        return newKieSession;
+        return kieBase.newKieSession();
     }
 
     /**

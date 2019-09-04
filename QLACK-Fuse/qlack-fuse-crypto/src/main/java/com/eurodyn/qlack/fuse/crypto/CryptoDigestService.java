@@ -32,11 +32,11 @@ public class CryptoDigestService {
    */
   public String hmacSha256(final String secret, final String message)
   throws NoSuchAlgorithmException, InvalidKeyException {
-    final Mac sha256_HMAC = Mac.getInstance(HMACSHA256);
-    final SecretKeySpec secret_key = new SecretKeySpec(secret.getBytes(), HMACSHA256);
-    sha256_HMAC.init(secret_key);
+    final Mac sha256Hmac = Mac.getInstance(HMACSHA256);
+    final SecretKeySpec secretKey = new SecretKeySpec(secret.getBytes(), HMACSHA256);
+    sha256Hmac.init(secretKey);
 
-    return Hex.encodeHexString(sha256_HMAC.doFinal(message.getBytes(StandardCharsets.UTF_8)));
+    return Hex.encodeHexString(sha256Hmac.doFinal(message.getBytes(StandardCharsets.UTF_8)));
   }
 
   /**

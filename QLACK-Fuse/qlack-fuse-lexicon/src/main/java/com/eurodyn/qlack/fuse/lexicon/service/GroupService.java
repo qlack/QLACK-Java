@@ -149,7 +149,7 @@ public class GroupService {
    */
   public Set<GroupDTO> getGroups() {
     log.info("Fetching all groups");
-    return new HashSet<GroupDTO>(groupMapper.mapToDTO(groupRepository.findAll()));
+    return new HashSet<>(groupMapper.mapToDTO(groupRepository.findAll()));
   }
 
 

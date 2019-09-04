@@ -47,6 +47,6 @@ public class InternalMessage extends MailingModel {
 	private String deleteType;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "messages")
-	private Set<InternalAttachment> attachments = new HashSet<InternalAttachment>(0);
+	private Set<InternalAttachment> attachments = new HashSet<>(0);
 
 }

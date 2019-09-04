@@ -68,7 +68,7 @@ public class KeyService {
    * @param createDefaultTranslations a flag defining whether default translations should be created
    * @return the id of the created Key
    */
-  public String createKey(KeyDTO key, boolean createDefaultTranslations) throws QAlreadyExistsException {
+  public String createKey(KeyDTO key, boolean createDefaultTranslations) {
 
     log.info(MessageFormat.format("Creating key: {0}", key));
 

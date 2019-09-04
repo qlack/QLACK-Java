@@ -2,7 +2,6 @@ package com.eurodyn.qlack.fuse.rules.service;
 
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.fuse.rules.dto.KnowledgeBaseDTO;
-import com.eurodyn.qlack.fuse.rules.exception.QRulesException;
 import com.eurodyn.qlack.fuse.rules.mapper.KnowledgeBaseMapper;
 import com.eurodyn.qlack.fuse.rules.model.KnowledgeBase;
 import com.eurodyn.qlack.fuse.rules.model.KnowledgeBaseLibrary;
@@ -109,9 +108,7 @@ public class KnowledgeBaseService {
 
         List<KnowledgeBase> knowledgeBases = knowledgeBaseRepository.findAll();
 
-        List<KnowledgeBaseDTO> knowledgeBaseDTOs = knowledgeBaseMapper.mapToDTO(knowledgeBases);
-
-        return knowledgeBaseDTOs;
+        return knowledgeBaseMapper.mapToDTO(knowledgeBases);
     }
 
 }
