@@ -71,7 +71,7 @@ public class AccountingServiceTest {
     when(session.getCreatedOn()).thenReturn(2L);
     accountingService.createSession(sessionDTO);
     assertNotEquals(session.getCreatedOn(), Instant.now().toEpochMilli());
-    assertEquals(session.getCreatedOn(), 2L);
+    assertEquals(2L, session.getCreatedOn());
 
     listSessionAttributes = new ArrayList<>();
     listSessionAttributes.add(sessionAttribute);
