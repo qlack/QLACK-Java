@@ -181,6 +181,7 @@ public class InitTestValues {
 
   public VersionBin createVersionBin(){
     VersionBin versionBin = new VersionBin();
+    versionBin.setId("binId");
     versionBin.setVersion(createVersion());
     return versionBin;
   }

@@ -2,6 +2,7 @@ package com.eurodyn.qlack.fuse.cm.mappers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -28,7 +29,6 @@ import java.util.Set;
 /**
  * @author European Dynamics
  */
-
 @RunWith(MockitoJUnitRunner.class)
 public class NodeMapperTest {
 
@@ -65,15 +65,13 @@ public class NodeMapperTest {
 
   @Test
   public void mapToEntityNullTest() {
-    nodeDTO = null;
-    Node node = nodeMapper.mapToEntity(nodeDTO);
+    Node node = nodeMapper.mapToEntity((NodeDTO) null);
     assertNull(node);
   }
 
   @Test
   public void mapToEntityListNullTest() {
-    nodeDTOList = null;
-    List<Node> nodeList = nodeMapper.mapToEntity(nodeDTOList);
+    List<Node> nodeList = nodeMapper.mapToEntity((List<NodeDTO>) null);
     assertNull(nodeList);
   }
 
@@ -85,8 +83,7 @@ public class NodeMapperTest {
 
   @Test
   public void mapToEntityParentNullTest() {
-    nodeDTO = null;
-    Node node = nodeMapper.mapToEntity(nodeDTO, this.node);
+    Node node = nodeMapper.mapToEntity(null, this.node);
     assertNull(node);
   }
 
@@ -98,8 +95,7 @@ public class NodeMapperTest {
 
   @Test
   public void mapToDTOPathNullTest() {
-    node = null;
-    NodeDTO nodeDTO = nodeMapper.mapToDTO(node, false);
+    NodeDTO nodeDTO = nodeMapper.mapToDTO(null, false);
     assertNull(nodeDTO);
   }
 
@@ -117,15 +113,13 @@ public class NodeMapperTest {
 
   @Test
   public void mapToDTONullTest() {
-    node = null;
-    NodeDTO nodeDTO = nodeMapper.mapToDTO(node);
+    NodeDTO nodeDTO = nodeMapper.mapToDTO((Node) null);
     assertNull(nodeDTO);
   }
 
   @Test
   public void mapToFolderDTONullTest() {
-    node = null;
-    FolderDTO folderDTO = nodeMapper.mapToFolderDTO(node, RelativesType.LAZY, false);
+    FolderDTO folderDTO = nodeMapper.mapToFolderDTO(null, RelativesType.LAZY, false);
     assertNull(folderDTO);
   }
 
@@ -133,7 +127,7 @@ public class NodeMapperTest {
   public void mapToFolderDTOTest() {
     node.setParent(node);
     FolderDTO folderDTO = nodeMapper.mapToFolderDTO(node, RelativesType.LAZY, false);
-    assertNotNull(folderDTO);
+    assertEquals(node.getId(), folderDTO.getId());
   }
 
   @Test
@@ -142,42 +136,38 @@ public class NodeMapperTest {
     nodeParent.setId(null);
     node.setParent(nodeParent);
     FolderDTO folderDTO = nodeMapper.mapToFolderDTO(node, RelativesType.LAZY, false);
-    assertNotNull(folderDTO);
+    assertEquals(nodeParent.getId(), folderDTO.getParentId());
   }
 
   @Test
   public void mapToFileDTONullTest() {
-    node = null;
-    FileDTO fileDTO = nodeMapper.mapToFileDTO(node, false);
+    FileDTO fileDTO = nodeMapper.mapToFileDTO(null, false);
     assertNull(fileDTO);
   }
 
   @Test
   public void mapToFileDTOTest() {
     FileDTO fileDTO = nodeMapper.mapToFileDTO(node, false);
-    assertNotNull(fileDTO);
+    assertEquals(node.getId(), fileDTO.getId());
   }
 
   @Test
   public void nodeAttributeToNodeAttributeDTONullTest() {
-    nodeAttribute = null;
-    NodeAttributeDTO nodeAttributeDTO = nodeMapper.nodeAttributeToNodeAttributeDTO(nodeAttribute);
+    NodeAttributeDTO nodeAttributeDTO = nodeMapper.nodeAttributeToNodeAttributeDTO(null);
     assertNull(nodeAttributeDTO);
   }
 
   @Test
   public void nodeAttributeListToNodeAttributeDTOSetNullTest() {
-    nodeAttributeList = null;
     Set<NodeAttributeDTO> nodeAttributeDTOSet = nodeMapper.
-        nodeAttributeListToNodeAttributeDTOSet(nodeAttributeList);
+        nodeAttributeListToNodeAttributeDTOSet(null);
     assertNull(nodeAttributeDTOSet);
   }
 
   @Test
   public void nodeAttributeDTOToNodeAttributeNullTest() {
-    nodeAttributeDTO = null;
     NodeAttribute nodeAttribute = nodeMapper.
-        nodeAttributeDTOToNodeAttribute(nodeAttributeDTO);
+        nodeAttributeDTOToNodeAttribute(null);
     assertNull(nodeAttribute);
   }
 
@@ -185,70 +175,70 @@ public class NodeMapperTest {
   public void nodeAttributeDTOToNodeAttributeTest() {
     NodeAttribute nodeAttribute = nodeMapper.
         nodeAttributeDTOToNodeAttribute(nodeAttributeDTO);
-    assertNotNull(nodeAttribute);
+    assertEquals(nodeAttributeDTO.getName(), nodeAttribute.getName());
   }
 
   @Test
   public void nodeAttributeDTOSetToNodeAttributeListTest() {
     List<NodeAttribute> nodeAttributeList = nodeMapper.
         nodeAttributeDTOSetToNodeAttributeList(nodeAttributeDTOSet);
-    assertNotNull(nodeAttributeList);
+    assertEquals(nodeAttributeDTOSet.size(), nodeAttributeList.size());
   }
 
   @Test
   public void nodeAttributeToNodeAttributeDTO1NullTest() {
-    nodeAttribute = null;
     NodeAttributeDTO  nodeAttributeDTO = nodeMapper.
-        nodeAttributeToNodeAttributeDTO1(nodeAttribute, false);
+        nodeAttributeToNodeAttributeDTO1(null, false);
     assertNull(nodeAttributeDTO);
   }
 
   @Test
   public void nodeAttributeListToNodeAttributeDTOSet1NullTest() {
-    nodeAttributeList = null;
     Set<NodeAttributeDTO>  nodeAttributeDTOSet1 = nodeMapper.
-        nodeAttributeListToNodeAttributeDTOSet1(nodeAttributeList, false);
+        nodeAttributeListToNodeAttributeDTOSet1(null, false);
     assertNull(nodeAttributeDTOSet1);
   }
 
   @Test
   public void nodeAttributeToNodeAttributeDTO2NullTest() {
-    nodeAttribute = null;
     NodeAttributeDTO  nodeAttributeDTO2 = nodeMapper.
-        nodeAttributeToNodeAttributeDTO2(nodeAttribute, RelativesType.EAGER, false);
+        nodeAttributeToNodeAttributeDTO2(null, RelativesType.EAGER, false);
     assertNull(nodeAttributeDTO2);
   }
 
   @Test
   public void nodeAttributeListToNodeAttributeDTOSet2NullTest() {
-    nodeAttributeList = null;
     Set<NodeAttributeDTO>  nodeAttributeDTOSet2 = nodeMapper.
-        nodeAttributeListToNodeAttributeDTOSet2(nodeAttributeList, RelativesType.EAGER, false);
+        nodeAttributeListToNodeAttributeDTOSet2(null, RelativesType.EAGER, false);
     assertNull(nodeAttributeDTOSet2);
   }
 
   @Test
   public void nodeAttributeDTOToNodeAttribute1NullTest() {
-    nodeAttributeDTO = null;
     NodeAttribute nodeAttribute1 = nodeMapper.
-        nodeAttributeDTOToNodeAttribute1(nodeAttributeDTO, node);
+        nodeAttributeDTOToNodeAttribute1(null, node);
     assertNull(nodeAttribute1);
   }
 
   @Test
   public void nodeAttributeDTOToNodeAttribute1Test() {
-    nodeAttributeDTO = null;
     NodeAttribute nodeAttribute1 = nodeMapper.
         nodeAttributeDTOToNodeAttribute1(nodeAttributeDTO, node);
-    assertNull(nodeAttribute1);
+    assertEquals(nodeAttributeDTO.getName(), nodeAttribute1.getName());
+  }
+
+  @Test
+  public void nodeAttributeDTOSetToNodeAttributeList1NullTest() {
+    List<NodeAttribute> nodeAttributeList1 = nodeMapper.
+        nodeAttributeDTOSetToNodeAttributeList1(null, node);
+    assertNull(nodeAttributeList1);
   }
 
   @Test
   public void nodeAttributeDTOSetToNodeAttributeList1Test() {
-    nodeAttributeDTO = null;
     List<NodeAttribute> nodeAttributeList1 = nodeMapper.
         nodeAttributeDTOSetToNodeAttributeList1(nodeAttributeDTOSet, node);
-    assertNotNull(nodeAttributeList1);
+    assertEquals(nodeAttributeDTOSet.size(), nodeAttributeList1.size());
   }
 
   @Test
@@ -317,10 +307,14 @@ public class NodeMapperTest {
   }
 
   @Test
-  public void mapNameTest(){
+  public void mapNameNullTest(){
     nodeAttributeList = new ArrayList<>();
+    //expects different constant
     nodeAttributeList.add(new NodeAttribute(CMConstants.LOCKABLE, "true", node));
-    assertNull(nodeMapper.mapName(nodeAttributeList));
+    String result = nodeMapper.mapName(nodeAttributeList);
+    nodeAttributeList.forEach(node ->
+        assertNotEquals(node.getName(), result)
+    );
   }
 
   @Test
@@ -334,14 +328,16 @@ public class NodeMapperTest {
   public void mapCreatedByTest(){
     nodeAttributeList = new ArrayList<>();
     nodeAttributeList.add(new NodeAttribute(CMConstants.ATTR_NAME, "true", node));
-    nodeMapper.mapCreatedBy(nodeAttributeList);
-    assertNull(nodeMapper.mapCreatedBy(nodeAttributeList));
+    String result = nodeMapper.mapCreatedBy(nodeAttributeList);
+    nodeAttributeList.forEach(node ->
+        assertNotEquals(node.getName(), result)
+    );
   }
 
   @Test
   public void mapChildrenTest(){
     Set<NodeDTO> childrenDTO = nodeMapper.mapChildren(nodeList, RelativesType.EAGER);
-    assertNotNull(childrenDTO);
+    assertEquals(nodeList.size(), childrenDTO.size());
   }
 
   @Test
