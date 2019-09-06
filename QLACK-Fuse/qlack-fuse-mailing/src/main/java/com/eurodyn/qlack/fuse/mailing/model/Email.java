@@ -68,6 +68,6 @@ public class Email extends MailingModel {
 	private String charset;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "email")
-	private Set<Attachment> attachments = new HashSet<Attachment>(0);
+	private Set<Attachment> attachments = new HashSet<>(0);
 
 }

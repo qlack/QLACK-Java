@@ -430,7 +430,7 @@ public class SearchService {
 
     if (queryResponse.getAggregations() != null && queryResponse.getAggregations().getAgg() != null) {
       for (Bucket bucket : queryResponse.getAggregations().getAgg().getBuckets()) {
-        result.getAggregations().put(bucket.getKey_as_string(), bucket.getDoc_count());
+        result.getAggregations().put(bucket.getKeyAsString(), bucket.getDocCount());
       }
     }
 

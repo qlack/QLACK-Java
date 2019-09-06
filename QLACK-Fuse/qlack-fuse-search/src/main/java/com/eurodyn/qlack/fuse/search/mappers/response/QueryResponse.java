@@ -97,8 +97,8 @@ public class QueryResponse {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Agg {
 
-      private long doc_count_error_upper_bound;
-      private long sum_other_doc_count;
+      private long docCountErrorUpperBound;
+      private long sumOtherDocCount;
       private List<Bucket> buckets;
 
       public List<Bucket> getBuckets() {
@@ -111,8 +111,8 @@ public class QueryResponse {
       public static class Bucket {
 
         private long key;
-        private String key_as_string;
-        private long doc_count;
+        private String keyAsString;
+        private long docCount;
 
       }
     }

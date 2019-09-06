@@ -46,7 +46,7 @@ public class SearchResultDTO {
   private String scrollId;
 
   // The list of hits generated for this search.
-  private List<SearchHitDTO> hits = new ArrayList<SearchHitDTO>();
+  private List<SearchHitDTO> hits = new ArrayList<>();
 
   private Map<String, Long> aggregations = new LinkedHashMap<>();
 

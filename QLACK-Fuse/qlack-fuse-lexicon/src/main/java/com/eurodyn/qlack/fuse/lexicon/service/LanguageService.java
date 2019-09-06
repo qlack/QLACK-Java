@@ -80,7 +80,7 @@ public class LanguageService {
    * @param language a dto containing all needed language data
    * @return the id of persisted language
    */
-  public String createLanguageIfNotExists(LanguageDTO language) throws QAlreadyExistsException {
+  public String createLanguageIfNotExists(LanguageDTO language) {
     log.info(MessageFormat.format("Creating language: {0}", language));
     if (languageRepository.findByLocale(language.getLocale()) == null) {
       return createLanguage(language);

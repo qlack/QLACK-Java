@@ -67,7 +67,7 @@ public class SchedulerService {
    *
    * @return the name of the Quartz scheduler instance
    */
-  public String getSchedulerName() throws QSchedulerException {
+  public String getSchedulerName() {
     try {
       log.info("Fetching the name of the scheduler");
       return scheduler.getSchedulerName();
@@ -81,7 +81,7 @@ public class SchedulerService {
    *
    * @return the id of the Quartz scheduler instance
    */
-  public String getSchedulerInstanceID() throws QSchedulerException {
+  public String getSchedulerInstanceID() {
     try {
       log.info("Fetching the id of the scheduler instance");
       return scheduler.getSchedulerInstanceId();
@@ -93,7 +93,7 @@ public class SchedulerService {
   /**
    * Starts the Quartz scheduler instance
    */
-  public void start() throws QSchedulerException {
+  public void start() {
     try {
       log.info("Starting the scheduler");
       scheduler.start();
@@ -105,7 +105,7 @@ public class SchedulerService {
   /**
    * Terminates the Quartz scheduler instance
    */
-  public void shutdown() throws QSchedulerException {
+  public void shutdown() {
     try {
       log.info("Shutting down the scheduler");
       scheduler.shutdown();
@@ -117,7 +117,7 @@ public class SchedulerService {
   /**
    * Pauses the Quartz scheduler instance
    */
-  public void standby() throws QSchedulerException {
+  public void standby() {
     try {
       log.info("Pausing the scheduler");
       scheduler.standby();
@@ -131,7 +131,7 @@ public class SchedulerService {
    *
    * @return true if started, false otherwise
    */
-  public boolean isStarted() throws QSchedulerException {
+  public boolean isStarted() {
     try {
       log.info("Checking if the scheduler has started");
       return scheduler.isStarted();
@@ -145,7 +145,7 @@ public class SchedulerService {
    *
    * @return true if terminated, false otherwise
    */
-  public boolean isShutdown() throws QSchedulerException {
+  public boolean isShutdown() {
     try {
       log.info("Checking if the scheduler has been terminated");
       return scheduler.isShutdown();
@@ -159,7 +159,7 @@ public class SchedulerService {
    *
    * @return true if paused, false otherwise
    */
-  public boolean isInStandbyMode() throws QSchedulerException {
+  public boolean isInStandbyMode() {
     try {
       log.info("Checking if the scheduler is in standby mode");
       return scheduler.isInStandbyMode();
@@ -204,7 +204,7 @@ public class SchedulerService {
    * @param jobClass a class implementing the job interface
    * @param cronExpression a cron expression defining the execution interval of the job
    */
-  public <J extends Job> void scheduleJob(Class<J> jobClass, String cronExpression) throws QSchedulerException {
+  public <J extends Job> void scheduleJob(Class<J> jobClass, String cronExpression) {
     scheduleJob(jobClass, cronExpression, null);
   }
 
@@ -236,7 +236,7 @@ public class SchedulerService {
    * @param jobClass a class implementing the job interface
    * @param cronExpression a cron expression defining the execution interval of the job
    */
-  public <J extends Job> void rescheduleJob(Class<J> jobClass, String cronExpression) throws QSchedulerException {
+  public <J extends Job> void rescheduleJob(Class<J> jobClass, String cronExpression) {
     log.info(MessageFormat.format("Rescheduling job {0} ", getJobName(jobClass)));
     try {
       scheduler.rescheduleJob(TriggerKey.triggerKey(getTriggerName(jobClass)), buildTrigger(jobClass, cronExpression));
@@ -251,7 +251,7 @@ public class SchedulerService {
    * @param jobName The class name of the job to delete
    * @return true if job has been deleted, false otherwise
    */
-  public boolean deleteJob(String jobName) throws QSchedulerException {
+  public boolean deleteJob(String jobName) {
     log.info(MessageFormat.format("Deleting job {0} ", jobName));
     try {
       return scheduler.deleteJob(JobKey.jobKey(jobName));
@@ -281,7 +281,7 @@ public class SchedulerService {
    *
    * @param jobClass a class implementing the Job interface
    */
-  public <J extends Job> void triggerJob(Class<J> jobClass) throws QSchedulerException {
+  public <J extends Job> void triggerJob(Class<J> jobClass) {
     triggerJob(jobClass, null);
   }
 
@@ -291,7 +291,7 @@ public class SchedulerService {
    * @param jobClass a class implementing the Job interface
    * @param jobData a map containing any number of serializable objects, that the job will be able to access on execution
    */
-  public <J extends Job> void triggerJob(Class<J> jobClass, Map<String, Object> jobData) throws QSchedulerException {
+  public <J extends Job> void triggerJob(Class<J> jobClass, Map<String, Object> jobData) {
     log.info(MessageFormat.format("Triggering execution of job {0} ", getJobName(jobClass)));
     try {
       scheduler.triggerJob(JobKey.jobKey(getJobName(jobClass)), createJobDataMap(jobData));
@@ -305,7 +305,7 @@ public class SchedulerService {
    *
    * @param jobClass a class implementing the Job interface
    */
-  public <J extends Job> void pauseJob(Class<J> jobClass) throws QSchedulerException {
+  public <J extends Job> void pauseJob(Class<J> jobClass) {
     log.info(MessageFormat.format("Pausing all future executions of job {0}", getJobName(jobClass)));
     try {
       scheduler.pauseJob(JobKey.jobKey(getJobName(jobClass)));
@@ -317,7 +317,7 @@ public class SchedulerService {
   /**
    * Pauses all triggers
    */
-  public void pauseAllTriggers() throws QSchedulerException {
+  public void pauseAllTriggers() {
     log.info("Pausing all triggers");
     try {
       scheduler.pauseAll();
@@ -329,7 +329,7 @@ public class SchedulerService {
   /**
    * Resumes all triggers
    */
-  public void resumeAllTriggers() throws QSchedulerException {
+  public void resumeAllTriggers() {
     log.info("Resuming all triggers");
     try {
       scheduler.resumeAll();
@@ -341,7 +341,7 @@ public class SchedulerService {
   /**
    * Clears all scheduled jobs
    */
-  public void clear() throws QSchedulerException {
+  public void clear() {
     try {
       scheduler.clear();
     } catch (SchedulerException ex) {
@@ -355,7 +355,7 @@ public class SchedulerService {
    * @param jobClass a class implementing the Job interface
    * @return the job's next execution date
    */
-  public <J extends Job> Date getNextFireForJob(Class<J> jobClass) throws QSchedulerException {
+  public <J extends Job> Date getNextFireForJob(Class<J> jobClass) {
     log.info(MessageFormat.format("Finding the next execution of job {0} ", getJobName(jobClass)));
     try {
       return scheduler.getTrigger(TriggerKey.triggerKey(getTriggerName(jobClass))).getNextFireTime();

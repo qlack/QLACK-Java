@@ -138,9 +138,7 @@ public class RulesUtil {
     public KieBase deserializeKnowledgeBase(byte[] state, ClassLoader classLoader) {
         try {
             return (KieBase) DroolsStreamUtils.streamIn(state, classLoader);
-        } catch (IOException e) {
-            throw new QRulesException(e);
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             throw new QRulesException(e);
         }
     }
