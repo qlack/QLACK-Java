@@ -46,7 +46,7 @@ public class ClamAvServiceImpl implements AvService {
    *
    * @return {@link com.eurodyn.qlack.util.clamav.util.ClamAvProperties} the scanning result
    */
-  public VirusScanDTO virusScan(byte[] data) throws VirusScanException {
+  public VirusScanDTO virusScan(byte[] data) {
     Objects.requireNonNull(properties.getClamAvHost(), "The hostname can't be null. Please provide a valid antivirus "
       + "server hostname.");
 

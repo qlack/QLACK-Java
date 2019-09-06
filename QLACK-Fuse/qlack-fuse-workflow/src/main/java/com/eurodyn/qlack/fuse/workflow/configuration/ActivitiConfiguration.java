@@ -40,7 +40,6 @@ public class ActivitiConfiguration {
 
   @Bean
   public RepositoryService repositoryService() {
-    RepositoryService repositoryService = processEngine().getProcessEngineConfiguration().getRepositoryService();
-    return repositoryService;
+    return processEngine().getProcessEngineConfiguration().getRepositoryService();
   }
 }

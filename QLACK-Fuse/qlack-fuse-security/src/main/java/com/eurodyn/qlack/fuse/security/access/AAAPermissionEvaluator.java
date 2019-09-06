@@ -40,7 +40,7 @@ public class AAAPermissionEvaluator implements PermissionEvaluator {
 
         // If user has no such operation, check in group operations.
         return user.getUserGroupHasOperations().stream()
-                .anyMatch(gho -> gho.getOperationDTO().getName().toUpperCase().equals(permission.toUpperCase()) && !gho.isDeny());
+                .anyMatch(gho -> gho.getOperationDTO().getName().equalsIgnoreCase(permission.toUpperCase()) && !gho.isDeny());
     }
 
 }

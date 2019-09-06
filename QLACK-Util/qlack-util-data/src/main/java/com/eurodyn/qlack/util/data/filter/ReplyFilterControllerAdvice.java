@@ -18,7 +18,7 @@ import org.springframework.web.servlet.mvc.method.annotation.AbstractMappingJack
 @ControllerAdvice
 public class ReplyFilterControllerAdvice extends AbstractMappingJacksonResponseBodyAdvice {
 
-  private final static String SPRING_PAGE_DEFAULT_FIELDS =
+  private static final String SPRING_PAGE_DEFAULT_FIELDS =
     "first,last,number,numberOfElements,pageable,size,sort,totalElements,totalPages";
 
   @Override

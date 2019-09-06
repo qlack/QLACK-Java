@@ -91,9 +91,7 @@ public class SearchService {
     try {
       ContentType contentType = ContentType.APPLICATION_JSON.withCharset(Charset.forName("UTF-8"));
       Request request = new Request("GET", endpointBuilder.toString());
-      params.forEach((key, value) -> {
-        request.addParameter(key, value);
-      });
+      params.forEach((key, value) -> request.addParameter(key, value));
       request.setEntity(new NStringEntity(mapper.writeValueAsString(internalRequest), contentType));
       Response response = esClient.getClient().getLowLevelClient().performRequest(request);
       QueryResponse queryResponse = getQueryResponse(response);
@@ -449,8 +447,7 @@ public class SearchService {
 
   private QueryResponse getQueryResponse(Response response) {
     try {
-      QueryResponse queryResponse = mapper.readValue(response.getEntity().getContent(), QueryResponse.class);
-      return queryResponse;
+      return mapper.readValue(response.getEntity().getContent(), QueryResponse.class);
     } catch (UnsupportedOperationException | IOException e) {
       log.log(Level.SEVERE, "Could not deserialize response.", e);
       throw new SearchException("Could not deserialize response.", e);
