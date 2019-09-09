@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Vector;
 import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Test;
@@ -98,6 +99,14 @@ public class KeyServiceTest {
     dataList.add(data);
     language = initTestValues.createEnglishLanguage();
     language.setData(dataList);
+  }
+
+  private KeySearchCriteria getKeySearchCriteria() {
+    KeySearchCriteria criteria = new KeySearchCriteria();
+    criteria.setKeyName(key.getName());
+    criteria.setGroupId(group.getId());
+    criteria.setPageable(PageRequest.of(0, 10));
+    return criteria;
   }
 
   @Test
@@ -212,10 +221,7 @@ public class KeyServiceTest {
   @Test
   public void testGetFindKeys() {
     Page<Key> keyPages = new PageImpl<>(keys);
-    KeySearchCriteria criteria = new KeySearchCriteria();
-    criteria.setKeyName(key.getName());
-    criteria.setGroupId(group.getId());
-    criteria.setPageable(PageRequest.of(0, 10));
+    KeySearchCriteria criteria = getKeySearchCriteria();
 
     Predicate predicate = new BooleanBuilder();
     predicate = ((BooleanBuilder) predicate).and(qKey.name.eq(criteria.getKeyName()).and(qKey.group.id.eq(criteria.getGroupId())));
@@ -470,5 +476,19 @@ public class KeyServiceTest {
       .getKeysSortedByTranslation(group.getTitle(), language.getLocale(), SortType.DESCENDING);
 
     assertEquals(sortedKeys, keysSortedByTranslation);
+  }
+
+  @Test
+  public void testFindTotalKeys(){
+    Long countKeys = 2L;
+    KeySearchCriteria criteria = getKeySearchCriteria();
+
+    Predicate predicate = new BooleanBuilder();
+    predicate = ((BooleanBuilder) predicate).and(qKey.name.eq(criteria.getKeyName()).and(qKey.group.id.eq(criteria.getGroupId())));
+
+    when(keyRepository.count(predicate)).thenReturn(countKeys);
+    Long totalKeys = keyService.findTotalKeys(criteria);
+    assertEquals(keysDTO.size(), totalKeys.intValue());
+    verify(keyRepository, times(1)).count(predicate);
   }
 }
