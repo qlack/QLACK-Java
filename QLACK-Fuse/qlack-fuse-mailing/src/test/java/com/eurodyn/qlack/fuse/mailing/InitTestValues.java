@@ -225,6 +225,20 @@ public class InitTestValues {
     return attachment;
   }
 
+  public InternalAttachment createInternalAttachmentWIthMessages() {
+
+    InternalAttachment attachment = new InternalAttachment();
+    byte[] data = {80, 65, 78, 75, 65, 74};
+
+    attachment.setId("0f9a2472-cde0-44a6-ba3d-8e60992904fb");
+    attachment.setFilename("pic.jpg");
+    attachment.setContentType("image/jpeg");
+    attachment.setData(Arrays.copyOf(data, data.length));
+    attachment.setMessages(createInternalMessage());
+
+    return attachment;
+  }
+
   public InternalAttachmentDTO createFwdInternalAttachmentDTO() {
     InternalAttachmentDTO internalAttachmentDTO = new InternalAttachmentDTO();
     byte[] data = {80, 65, 78, 75, 65, 74};
@@ -240,6 +254,13 @@ public class InitTestValues {
   public Set<InternalAttachment> createInternalAttachments() {
     Set<InternalAttachment> internalAttachments = new HashSet<>();
     internalAttachments.add(createInternalAttachment());
+
+    return internalAttachments;
+  }
+
+  public Set<InternalAttachment> createInternalAttachmentsWithMessages() {
+    Set<InternalAttachment> internalAttachments = new HashSet<>();
+    internalAttachments.add(createInternalAttachmentWIthMessages());
 
     return internalAttachments;
   }
@@ -269,6 +290,23 @@ public class InitTestValues {
     return internalMessage;
   }
 
+  public InternalMessage createInternalMessageWithMessages() {
+    InternalMessage internalMessage = new InternalMessage();
+    internalMessage.setId("7087e822-c559-42a1-a328-598d490440de");
+    internalMessage.setSubject("Test Subject");
+    internalMessage.setStatus(EMAIL_STATUS.QUEUED.name());
+    internalMessage.setMessage("This is a test internal message");
+    internalMessage.setMailFrom("test@eurodyn.com");
+    internalMessage.setMailTo("test2@eurodyn.com");
+    internalMessage.setAttachments(createInternalAttachmentsWithMessages());
+    internalMessage.setDateReceived(new Long("2121545432165"));
+    internalMessage.setDateSent(new Long("2121545432165"));
+    internalMessage.setDeleteType("I");
+
+
+    return internalMessage;
+  }
+
   public InternalMessageDTO createInternalMessageDTO() {
     InternalMessageDTO internalMessageDTO = new InternalMessageDTO();
     internalMessageDTO.setId("7087e822-c559-42a1-a328-598d490440de");
@@ -288,6 +326,12 @@ public class InitTestValues {
   public List<InternalMessage> createInternalMessages() {
     List<InternalMessage> internalMessages = new ArrayList<>();
     internalMessages.add(createInternalMessage());
+    return internalMessages;
+  }
+
+  public List<InternalMessage> createInternalMessagesWithMessages() {
+    List<InternalMessage> internalMessages = new ArrayList<>();
+    internalMessages.add(createInternalMessageWithMessages());
     return internalMessages;
   }
 

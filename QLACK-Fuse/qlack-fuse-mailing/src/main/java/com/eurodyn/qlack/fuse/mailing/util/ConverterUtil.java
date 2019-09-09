@@ -89,7 +89,7 @@ public class ConverterUtil {
     StringTokenizer st = new StringTokenizer(emails, ",");
     while (st.hasMoreElements()) {
       String next = (String) st.nextElement();
-      contacts.add(next);
+      contacts.add(next.trim());
     }
 
     return contacts.isEmpty() ? null : contacts;
