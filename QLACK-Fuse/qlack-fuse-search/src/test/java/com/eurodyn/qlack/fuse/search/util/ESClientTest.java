@@ -1,12 +1,9 @@
 package com.eurodyn.qlack.fuse.search.util;
 
-import com.eurodyn.qlack.fuse.search.InitTestValues;
-import org.elasticsearch.client.RestClient;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
@@ -17,15 +14,19 @@ import static org.junit.Assert.assertNull;
 public class ESClientTest {
 
   @InjectMocks private ESClient esClient;
-  @Mock private RestClient restClient;
 
-  private Properties properties;
+  private Properties createProperties() {
+    Properties properties = new Properties();
+    properties.setEsHosts("http://localhost:9200");
+    properties.setEsPassword("password");
+    properties.setEsUsername("userName");
+    properties.setVerifyHostname(true);
+    return properties;
+  }
 
   @Before
   public void init(){
-    InitTestValues initTestValues = new InitTestValues();
-    properties = initTestValues.createProperties();
-    esClient = new ESClient(properties);
+    esClient = new ESClient(createProperties());
   }
 
   @Test
