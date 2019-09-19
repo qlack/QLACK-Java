@@ -2,6 +2,7 @@ package com.eurodyn.qlack.fuse.lexicon.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -145,6 +146,24 @@ public class KeyServiceTest {
   }
 
   @Test
+  public void testCreateKeyNoGroups() {
+    keyDTO.setGroupId(null);
+    keyDTO.setTranslations(null);
+    when(languageRepository.findAll()).thenReturn(languages);
+    keyService.createKey(keyDTO, true);
+    verify(keyRepository, times(1)).save(any());
+    verify(dataRepository, times(languages.size())).save(any());
+  }
+
+  @Test
+  public void testCreateKeyNoDeafaultTranslations() {
+    keyDTO.setTranslations(null);
+    when(groupRepository.fetchById(keyDTO.getGroupId())).thenReturn(group);
+    keyService.createKey(keyDTO, false);
+    verify(keyRepository, times(1)).save(any());
+  }
+
+  @Test
   public void testCreateKeys() {
     groups.forEach(group1 -> when(groupRepository.fetchById(group1.getId())).thenReturn(group1));
     List<String> createdKeys = keyService.createKeys(keysDTO, true);
@@ -234,6 +253,36 @@ public class KeyServiceTest {
 
     List<KeyDTO> foundKeys = keyService.findKeys(criteria, false);
     assertEquals(keysDTO, foundKeys);
+  }
+
+  @Test
+  public void testGetFindKeysNullKeyName() {
+    Page<Key> keyPages = new PageImpl<>(keys);
+    KeySearchCriteria criteria = getKeySearchCriteria();
+    criteria.setKeyName(null);
+
+    Predicate predicate = new BooleanBuilder();
+    predicate = ((BooleanBuilder) predicate).and(qKey.group.id.eq(criteria.getGroupId()));
+
+    when(keyRepository.findAll(predicate, criteria.getPageable())).thenReturn(keyPages);
+
+    List<KeyDTO> foundKeys = keyService.findKeys(criteria, false);
+    foundKeys.forEach(key -> assertNull(key));
+  }
+
+  @Test
+  public void testGetFindKeysNullGroupId() {
+    Page<Key> keyPages = new PageImpl<>(keys);
+    KeySearchCriteria criteria = getKeySearchCriteria();
+    criteria.setGroupId(null);
+
+    Predicate predicate = new BooleanBuilder();
+    predicate = ((BooleanBuilder) predicate).and(qKey.name.eq(criteria.getKeyName()));
+
+    when(keyRepository.findAll(predicate, criteria.getPageable())).thenReturn(keyPages);
+
+    List<KeyDTO> foundKeys = keyService.findKeys(criteria, false);
+    foundKeys.forEach(key -> assertNull(key));
   }
 
   @Test
@@ -485,6 +534,36 @@ public class KeyServiceTest {
 
     Predicate predicate = new BooleanBuilder();
     predicate = ((BooleanBuilder) predicate).and(qKey.name.eq(criteria.getKeyName()).and(qKey.group.id.eq(criteria.getGroupId())));
+
+    when(keyRepository.count(predicate)).thenReturn(countKeys);
+    Long totalKeys = keyService.findTotalKeys(criteria);
+    assertEquals(keysDTO.size(), totalKeys.intValue());
+    verify(keyRepository, times(1)).count(predicate);
+  }
+
+  @Test
+  public void testFindTotalKeysNullKeyName() {
+    Long countKeys = 2L;
+    KeySearchCriteria criteria = getKeySearchCriteria();
+    criteria.setKeyName(null);
+
+    Predicate predicate = new BooleanBuilder();
+    predicate = ((BooleanBuilder) predicate).and(qKey.group.id.eq(criteria.getGroupId()));
+
+    when(keyRepository.count(predicate)).thenReturn(countKeys);
+    Long totalKeys = keyService.findTotalKeys(criteria);
+    assertEquals(keysDTO.size(), totalKeys.intValue());
+    verify(keyRepository, times(1)).count(predicate);
+  }
+
+  @Test
+  public void testFindTotalKeysGroupId() {
+    Long countKeys = 2L;
+    KeySearchCriteria criteria = getKeySearchCriteria();
+    criteria.setGroupId(null);
+
+    Predicate predicate = new BooleanBuilder();
+    predicate = ((BooleanBuilder) predicate).and(qKey.name.eq(criteria.getKeyName()));
 
     when(keyRepository.count(predicate)).thenReturn(countKeys);
     Long totalKeys = keyService.findTotalKeys(criteria);
