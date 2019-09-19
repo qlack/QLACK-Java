@@ -1,14 +1,21 @@
 package com.eurodyn.qlack.fuse.search.util;
 
+import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSession;
 import java.io.IOException;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ESClientTest {
@@ -32,6 +39,26 @@ public class ESClientTest {
   @Test
   public void initTest(){
     esClient.init();
+    assertNotNull(esClient.getClient());
+  }
+
+  @Test
+  public void initTestEmptyUsername(){
+    Properties properties = createProperties();
+    properties.setEsUsername(null);
+    properties.setVerifyHostname(false);
+    esClient = new ESClient(properties);
+    esClient.init();
+    assertNotNull(esClient.getClient());
+  }
+
+  @Test
+  public void initTestEmptyPassword(){
+    Properties properties = createProperties();
+    properties.setEsPassword(null);
+    esClient = new ESClient(properties);
+    esClient.init();
+    assertNotNull(esClient.getClient());
   }
 
   @Test
