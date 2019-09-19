@@ -22,7 +22,7 @@ public class InitTestValues {
 
   public KnowledgeBase createKnowledgeBase(){
     knowledgeBase.setState(rulesUtil.serializeKnowledgeBase(createKieBase()));
-    knowledgeBase.setLibraries(createKnowledgeBaseLibrary());
+    knowledgeBase.setLibraries(createKnowledgeBaseLibraryList());
     knowledgeBase.setRules(createKnowledgeBaseRule());
     knowledgeBase.setId("knowledgeBaseId");
     return knowledgeBase;
@@ -68,7 +68,7 @@ public class InitTestValues {
     return rules;
   }
 
-  public List<KnowledgeBaseLibrary> createKnowledgeBaseLibrary(){
+  public List<KnowledgeBaseLibrary> createKnowledgeBaseLibraryList(){
     List<KnowledgeBaseLibrary> knowledgeBaseLibraries = new ArrayList<>();
     for (byte[] library : libraries) {
       KnowledgeBaseLibrary knowledgeBaseLibrary = new KnowledgeBaseLibrary();
@@ -102,5 +102,12 @@ public class InitTestValues {
       outputGlobals.put(id, bytes);
     }
     return outputGlobals;
+  }
+  
+  public KnowledgeBaseLibrary createKnowledgeBaseLibrary(){
+    KnowledgeBaseLibrary knowledgeBaseLibrary = new KnowledgeBaseLibrary();
+    knowledgeBaseLibrary.setBase(createKnowledgeBase());
+    knowledgeBaseLibrary.setLibrary(new byte[1024]);
+    return knowledgeBaseLibrary;
   }
 }
