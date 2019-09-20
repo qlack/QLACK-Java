@@ -22,7 +22,6 @@ import com.eurodyn.qlack.fuse.aaa.mappers.UserAttributeMapper;
 import com.eurodyn.qlack.fuse.aaa.mappers.UserMapper;
 import com.eurodyn.qlack.fuse.aaa.model.QSession;
 import com.eurodyn.qlack.fuse.aaa.model.QUser;
-import com.eurodyn.qlack.fuse.aaa.model.QUserAttribute;
 import com.eurodyn.qlack.fuse.aaa.model.Session;
 import com.eurodyn.qlack.fuse.aaa.model.User;
 import com.eurodyn.qlack.fuse.aaa.model.UserAttribute;
@@ -42,9 +41,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
-import javafx.animation.PauseTransitionBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,10 +49,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @RunWith(MockitoJUnitRunner.class)
