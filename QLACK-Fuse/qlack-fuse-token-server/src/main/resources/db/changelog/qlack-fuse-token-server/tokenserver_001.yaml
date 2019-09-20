@@ -1,0 +1,54 @@
+databaseChangeLog:
+  - changeSet:
+      id: tokenserver_001
+      author: European Dynamics SA
+      changes:
+        - createTable:
+            tableName: ts_token
+            columns:
+              - column:
+                  name: id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: payload
+                  type: varchar(1024)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: created_at
+                  type: datetime(6)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_at
+                  type: datetime(6)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: valid_until
+                  type: datetime(6)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: auto_extend_until
+                  type: datetime(6)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: auto_extend_duration
+                  type: bigint
+                  constraints:
+                    nullable: true
+              - column:
+                  name: created_by
+                  type: varchar(256)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: revoked
+                  type: boolean
+                  constraints:
+                    nullable: false

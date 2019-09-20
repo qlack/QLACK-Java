@@ -29,6 +29,7 @@
     <module>qlack-fuse-security</module>
     <module>qlack-fuse-settings</module>
     <module>qlack-fuse-workflow</module>
+    <module>qlack-fuse-token-server</module>
   </modules>
 
   <dependencies>
