@@ -3,6 +3,8 @@ package com.eurodyn.qlack.fuse.aaa.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -11,6 +13,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.eurodyn.qlack.fuse.aaa.InitTestValues;
+import com.eurodyn.qlack.fuse.aaa.criteria.UserSearchCriteria;
 import com.eurodyn.qlack.fuse.aaa.dto.SessionDTO;
 import com.eurodyn.qlack.fuse.aaa.dto.UserAttributeDTO;
 import com.eurodyn.qlack.fuse.aaa.dto.UserDTO;
@@ -19,14 +22,17 @@ import com.eurodyn.qlack.fuse.aaa.mappers.UserAttributeMapper;
 import com.eurodyn.qlack.fuse.aaa.mappers.UserMapper;
 import com.eurodyn.qlack.fuse.aaa.model.QSession;
 import com.eurodyn.qlack.fuse.aaa.model.QUser;
+import com.eurodyn.qlack.fuse.aaa.model.QUserAttribute;
 import com.eurodyn.qlack.fuse.aaa.model.Session;
 import com.eurodyn.qlack.fuse.aaa.model.User;
+import com.eurodyn.qlack.fuse.aaa.model.UserAttribute;
 import com.eurodyn.qlack.fuse.aaa.model.UserGroup;
 import com.eurodyn.qlack.fuse.aaa.repository.SessionRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserAttributeRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserGroupRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,7 +42,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
+import javafx.animation.PauseTransitionBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,6 +52,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -74,8 +84,9 @@ public class UserServiceTest {
     private UserDTO userDTO;
     private List<User> users;
     private List<UserDTO> usersDTO;
-    private UserAttributeDTO userAttributeDTO;
     private List<UserAttributeDTO> userAttributeDTOList;
+    private UserSearchCriteria.UserSearchCriteriaBuilder userSearchCriteriaBuilder;
+    private UserSearchCriteria userSearchCriteria;
 
 
     @Before
@@ -93,14 +104,14 @@ public class UserServiceTest {
         usersDTO = initTestValues.createUsersDTO();
         userGroup = initTestValues.createUserGroup();
         userGroupNoChildren = initTestValues.createUserGroupNoChildren();
-        userAttributeDTO = initTestValues.createUserAttributeDTO(user.getId());
         userAttributeDTOList = initTestValues.createUserAttributesDTO(user.getId());
+        userSearchCriteriaBuilder = UserSearchCriteria.UserSearchCriteriaBuilder.createCriteria();
+        userSearchCriteria = userSearchCriteriaBuilder.build();
     }
 
     @Test
     public void testCreateUserWithoutUserAttributes() {
         UserDTO userDTO = initTestValues.createUserDTO();
-//        userDTO.setUserAttributes(new HashSet<>());
         User user = initTestValues.createUser();
         user.setUserAttributes(new ArrayList<>());
         when(userMapper.mapToEntity(userDTO)).thenReturn(user);
@@ -128,6 +139,36 @@ public class UserServiceTest {
 
         when(userRepository.fetchById(userDTO.getId())).thenReturn(user);
         userService.updateUser(userDTO, true, false);
+
+        verify(userMapper, times(1)).mapToExistingEntity(userDTO, user);
+        verify(userAttributeRepository, never()).findByUserIdAndName(any(), any());
+    }
+
+    @Test
+    public void testUpdateUserWithoutUserAttibutesNoSalt() {
+        UserDTO userDTO = initTestValues.createUserDTO();
+        userDTO.setUserAttributes(new HashSet<>());
+        User user = initTestValues.createUser();
+        user.setUserAttributes(new ArrayList<>());
+        user.setSalt(null);
+
+        when(userRepository.fetchById(userDTO.getId())).thenReturn(user);
+        userService.updateUser(userDTO, true, false);
+
+        verify(userMapper, times(1)).mapToExistingEntity(userDTO, user);
+        verify(userAttributeRepository, never()).findByUserIdAndName(any(), any());
+    }
+
+    @Test
+    public void testUpdateUserWithoutUserAttibutesNoUpdatePassword() {
+        UserDTO userDTO = initTestValues.createUserDTO();
+        userDTO.setUserAttributes(new HashSet<>());
+        User user = initTestValues.createUser();
+        user.setUserAttributes(new ArrayList<>());
+        user.setSalt(null);
+
+        when(userRepository.fetchById(userDTO.getId())).thenReturn(user);
+        userService.updateUser(userDTO, false, false);
 
         verify(userMapper, times(1)).mapToExistingEntity(userDTO, user);
         verify(userAttributeRepository, never()).findByUserIdAndName(any(), any());
@@ -273,7 +314,16 @@ public class UserServiceTest {
 
     @Test
     public void testCanNotAuthenticate(){
+        user.setSalt(null);
         when(userRepository.findByUsername(user.getUsername())).thenReturn(user);
+        String userId = userService.canAuthenticate(user.getUsername(), user.getPassword());
+        verify(userRepository, times(1)).findByUsername(user.getUsername());
+        assertNotEquals(userId, user.getId());
+    }
+
+    @Test
+    public void testCanAuthenticateNullUser(){
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(null);
         String userId = userService.canAuthenticate(user.getUsername(), user.getPassword());
         verify(userRepository, times(1)).findByUsername(user.getUsername());
         assertNotEquals(userId, user.getId());
@@ -313,10 +363,32 @@ public class UserServiceTest {
     public void testLoginAndTerminateSessions() {
         when(userRepository.fetchById(user.getId())).thenReturn(user);
         when(userMapper.mapToDTO(user)).thenReturn(userDTO);
+        user.getSessions().forEach(session -> session.setTerminatedOn(123L));
+
+        UserDTO loggedUser = userService.login(user.getId(), UUID.randomUUID().toString(), true);
+        assertEquals(loggedUser, userDTO);
+        verify(accountingService, times(1)).createSession(any());
+    }
+
+    @Test
+    public void testLoginAndTerminateSessionsNoTerminatedOn() {
+        when(userRepository.fetchById(user.getId())).thenReturn(user);
+        when(userMapper.mapToDTO(user)).thenReturn(userDTO);
 
         UserDTO loggedUser = userService.login(user.getId(), UUID.randomUUID().toString(), true);
         assertEquals(loggedUser, userDTO);
         verify(accountingService, times(2)).terminateSession(any());
+    }
+
+    @Test
+    public void testLoginAndTerminateNullSessions() {
+        when(userRepository.fetchById(user.getId())).thenReturn(user);
+        when(userMapper.mapToDTO(user)).thenReturn(userDTO);
+        user.setSessions(null);
+
+        UserDTO loggedUser = userService.login(user.getId(), UUID.randomUUID().toString(), true);
+        assertEquals(loggedUser, userDTO);
+        verify(accountingService, times(1)).createSession(any());
     }
 
     @Test
@@ -329,11 +401,43 @@ public class UserServiceTest {
     }
 
     @Test
+    public void testLogoutNoApplicationId() {
+        when(userRepository.fetchById(user.getId())).thenReturn(user);
+        userService.logout(user.getId(), null);
+        verify(userRepository, times(1)).fetchById(any());
+    }
+
+    @Test
+    public void testLogoutNoSessionApplicationId() {
+        user.getSessions().forEach(session -> session.setApplicationSessionId(null));
+        when(userRepository.fetchById(user.getId())).thenReturn(user);
+        userService.logout(user.getId(), null);
+        verify(userRepository, times(1)).fetchById(any());
+    }
+
+    @Test
+    public void testLogoutNullSessions() {
+        user.setSessions(null);
+        when(userRepository.fetchById(user.getId())).thenReturn(user);
+        userService.logout(user.getId(), null);
+        verify(userRepository, times(1)).fetchById(any());
+    }
+
+
+    @Test
     public void testLogoutAll() {
         when(sessionRepository.findAll(qSession.terminatedOn.isNull())).thenReturn(user.getSessions());
         when(userRepository.fetchById(user.getId())).thenReturn(user);
         userService.logoutAll();
         verify(accountingService, times(2)).terminateSession(any());
+    }
+
+
+    @Test
+    public void testLogoutAllNulllQuery() {
+        when(sessionRepository.findAll(qSession.terminatedOn.isNull())).thenReturn(null);
+        userService.logoutAll();
+        verify(sessionRepository, times(1)).findAll(qSession.terminatedOn.isNull());
     }
 
     @Test
@@ -345,6 +449,17 @@ public class UserServiceTest {
 
         List<SessionDTO> foundSessionsDTO = userService.isUserAlreadyLoggedIn(user.getId());
         assertEquals(foundSessionsDTO, sessionsDTO);
+    }
+
+    @Test
+    public void testIsUserAlreadyLoggedInRetValNull() {
+        List<SessionDTO> sessionsDTO = initTestValues.createSessionsDTO(user.getId());
+        when(sessionRepository.findAll(qSession.user.id.eq(user.getId()).and(qSession.terminatedOn.isNull()),
+            Sort.by("createdOn").ascending())).thenReturn(user.getSessions());
+        when(sessionMapper.mapToDTO(user.getSessions())).thenReturn(new ArrayList<>());
+
+        List<SessionDTO> foundSessionsDTO = userService.isUserAlreadyLoggedIn(user.getId());
+        assertNull(foundSessionsDTO);
     }
 
     @Test
@@ -403,7 +518,51 @@ public class UserServiceTest {
         Collection<String> userIds = new ArrayList<>();
         userIds.add(user.getId());
         userIds.add(user.getId());
-        userService.getUserIDsForAttribute(userIds, user.getUserAttributes().get(0).getName(),user.getUserAttributes().get(0).getData());
+        userService.getUserIDsForAttribute(userIds, user.getUserAttributes().get(0).getName(),
+            user.getUserAttributes().get(0).getData());
         verify(userRepository, times(1)).findAll((Predicate) any());
+    }
+
+    @Test
+    public void findUsersEmptyCriteriaTest() {
+        Iterable<UserDTO> result = userService.findUsers(userSearchCriteria);
+        assertTrue(Arrays.asList(result).size() > 0 );
+        verify(userRepository, times(1)).findAll((Predicate) any());
+    }
+
+    @Test
+    public void findUsersBuildPredicateTest() {
+        userSearchCriteria.setIncludeGroupIds(new ArrayList<>());
+        userSearchCriteria.setExcludeGroupIds(new ArrayList<>());
+        userSearchCriteria.setIncludeIds(new ArrayList<>());
+        userSearchCriteria.setIncludeStatuses(new ArrayList<>());
+        userSearchCriteria.setExcludeIds(new ArrayList<>());
+        userSearchCriteria.setExcludeStatuses(new ArrayList<>());
+        userSearchCriteria.setUsername(user.getUsername());
+        userSearchCriteria.setSuperadmin(true);
+        userService.findUsers(userSearchCriteria);
+        verify(userRepository, times(1)).findAll((Predicate) any());
+    }
+
+    @Test
+    public void findUserCountTest() {
+        userService.findUserCount(userSearchCriteria);
+        verify(userRepository, times(1)).findAll((Predicate) any());
+    }
+
+    @Test
+    public void isAttributeValueUniqueEmptyListTest() {
+        assertTrue(userService.isAttributeValueUnique("name", user.getId()));
+        verify(userAttributeRepository, times(1)).findAll((Predicate) any());
+    }
+
+    @Test
+    public void isAttributeValueUniqueTest() {
+        List<UserAttribute> userAttributeList = initTestValues.createUserAttributes(user);
+        when(userAttributeRepository.findAll((Predicate) any())).thenReturn(userAttributeList);
+        when(userAttributeMapper.mapToDTO(userAttributeRepository.findAll((Predicate) any())))
+            .thenReturn(userAttributeDTOList);
+        userService.isAttributeValueUnique("name", user.getId());
+        verify(userAttributeRepository, times(2)).findAll((Predicate) any());
     }
 }
