@@ -1,33 +1,27 @@
-package com.eurodyn.qlack.fuse.rules.service.service.util;
+package com.eurodyn.qlack.fuse.rules.util;
 
+import static org.junit.Assert.assertNotNull;
+
+import com.eurodyn.qlack.fuse.rules.InitTestValues;
 import com.eurodyn.qlack.fuse.rules.model.KnowledgeBase;
 import com.eurodyn.qlack.fuse.rules.model.KnowledgeBaseLibrary;
-import com.eurodyn.qlack.fuse.rules.service.service.InitTestValues;
-import com.eurodyn.qlack.fuse.rules.util.ClassLoaderKnowledgeBase;
-import com.eurodyn.qlack.fuse.rules.util.RulesUtil;
-import org.drools.core.util.DroolsStreamUtils;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.api.KieBase;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.when;
-
 @RunWith(MockitoJUnitRunner.class)
 public class RulesUtilTest {
 
-  @InjectMocks private RulesUtil rulesUtil;
+  @InjectMocks
+  private RulesUtil rulesUtil;
 
-  @Mock private KnowledgeBase knowledgeBase;
+  @Mock
+  private KnowledgeBase knowledgeBase;
 
   private List<byte[]> libraries;
   private List<String> rules;
@@ -35,7 +29,7 @@ public class RulesUtilTest {
   private InitTestValues initTestValues;
 
   @Before
-  public void init(){
+  public void init() {
     rulesUtil = new RulesUtil();
     initTestValues = new InitTestValues();
     knowledgeBase = initTestValues.createKnowledgeBase();
@@ -45,14 +39,14 @@ public class RulesUtilTest {
   }
 
   @Test
-  public void createKieBaseFromBaseStateTest(){
+  public void createKieBaseFromBaseStateTest() {
     knowledgeBaseLibraryList.add(initTestValues.createKnowledgeBaseLibrary());
     knowledgeBase.setLibraries(knowledgeBaseLibraryList);
     assertNotNull(rulesUtil.createKieBaseFromBaseState(knowledgeBase));
   }
 
   @Test
-  public void createKieBaseTest(){
+  public void createKieBaseTest() {
     assertNotNull(rulesUtil.createKieBase(null, rules));
     assertNotNull(rulesUtil.createKieBase(libraries, rules));
   }

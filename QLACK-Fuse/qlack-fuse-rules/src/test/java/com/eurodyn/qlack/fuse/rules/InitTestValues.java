@@ -1,4 +1,4 @@
-package com.eurodyn.qlack.fuse.rules.service.service;
+package com.eurodyn.qlack.fuse.rules;
 
 import com.eurodyn.qlack.fuse.rules.component.RulesComponent;
 import com.eurodyn.qlack.fuse.rules.model.KnowledgeBase;
@@ -23,6 +23,14 @@ public class InitTestValues {
     knowledgeBase.setState(rulesUtil.serializeKnowledgeBase(createKieBase()));
     knowledgeBase.setLibraries(createKnowledgeBaseLibraryList());
     knowledgeBase.setRules(createKnowledgeBaseRule());
+    knowledgeBase.setId("knowledgeBaseId");
+    return knowledgeBase;
+  }
+
+  public KnowledgeBase createKnowledgeBaseWithCustomRules() {
+    knowledgeBase.setState(rulesUtil.serializeKnowledgeBase(createKieBase()));
+    knowledgeBase.setLibraries(createKnowledgeBaseLibraryList());
+    knowledgeBase.setRules(createCustomKnowledgeBaseRule());
     knowledgeBase.setId("knowledgeBaseId");
     return knowledgeBase;
   }
@@ -91,6 +99,18 @@ public class InitTestValues {
     return knowledgeBaseRules;
   }
 
+  public List<KnowledgeBaseRule> createCustomKnowledgeBaseRule() {
+    List<KnowledgeBaseRule> knowledgeBaseRules = new ArrayList<>();
+    for (String rule : createRulesAdd()) {
+      KnowledgeBaseRule knowledgeBaseRule = new KnowledgeBaseRule();
+      knowledgeBaseRule.setRule(rule);
+
+      knowledgeBaseRule.setBase(knowledgeBase);
+      knowledgeBaseRules.add(knowledgeBaseRule);
+    }
+    return knowledgeBaseRules;
+  }
+
   public Map<String, byte[]> createInputGlobals() {
     Map<String, Object> globals = new LinkedHashMap<>();
     globals.put("outPut", new byte[1024]);
@@ -110,6 +130,7 @@ public class InitTestValues {
     return knowledgeBaseLibrary;
   }
 
+
   public List<byte[]> createFacts() {
     List<byte[]> facts = new ArrayList<>();
     facts.add(rulesComponent.serializeObject("first fact object"));
@@ -117,5 +138,4 @@ public class InitTestValues {
 
     return facts;
   }
-
 }
