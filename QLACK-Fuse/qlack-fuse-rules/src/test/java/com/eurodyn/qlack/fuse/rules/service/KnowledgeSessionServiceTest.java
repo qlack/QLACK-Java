@@ -2,15 +2,12 @@ package com.eurodyn.qlack.fuse.rules.service;
 
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
+import com.eurodyn.qlack.fuse.rules.InitTestValues;
 import com.eurodyn.qlack.fuse.rules.component.RulesComponent;
 import com.eurodyn.qlack.fuse.rules.dto.ExecutionResultsDTO;
 import com.eurodyn.qlack.fuse.rules.model.KnowledgeBase;
-import com.eurodyn.qlack.fuse.rules.service.KnowledgeBaseService;
-import com.eurodyn.qlack.fuse.rules.service.KnowledgeSessionService;
-import com.eurodyn.qlack.fuse.rules.service.service.InitTestValues;
 import java.util.List;
 import java.util.Map;
 import org.junit.Before;
