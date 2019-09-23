@@ -1,7 +1,7 @@
 package com.eurodyn.qlack.fuse.mailing.util;
 
 /**
- * Constants to be used in Mailing.
+ * Constants.
  *
  * @author European Dynamics SA.
  */
@@ -23,6 +23,9 @@ public class MailConstants {
   public static final String INBOX_FOLDER_TYPE = "INBOX";
   public static final String SENT_FOLDER_TYPE = "SENT";
 
+  /**
+   * Email Status
+   */
   public enum EMAIL_STATUS {
     QUEUED, SENT, FAILED, CANCELED
   }

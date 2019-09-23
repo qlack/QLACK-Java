@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Data transfer object for distribution lists.
+ * Data Transfer Object for distribution lists.
  *
  * @author European Dynamics SA.
  */
@@ -14,10 +14,31 @@ import lombok.Setter;
 public class DistributionListDTO extends MailBaseDTO {
 
 	private static final long serialVersionUID = 1L;
-	private String name;
-	private String description;
-	private List<ContactDTO> contacts;
-	private String createdBy;
-	private Long createdOn;
 
+  /**
+   * Distribution list name
+   */
+	private String name;
+
+  /**
+   * Description of the distribution list
+   */
+	private String description;
+
+  /**
+   * The username of the user that created
+   * the distribution list
+   */
+	private String createdBy;
+
+  /**
+   * The date the distribution list was created
+   * represented as a {@link java.lang.Long} number
+   */
+  private Long createdOn;
+
+  /**
+   * The list of the contacts assigned to the distribution list
+   */
+  private List<ContactDTO> contacts;
 }

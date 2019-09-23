@@ -4,12 +4,20 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Data Transfer Object for Mail
+ *
+ * @author European Dynamics SA.
+ */
 @Getter
 @Setter
 public class MailBaseDTO extends AttributeDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+  /**
+   * Id
+   */
 	private String id;
 
 	/**

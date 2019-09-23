@@ -6,6 +6,12 @@ import org.springframework.boot.autoconfigure.mail.MailProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
+/**
+ * Properties class for qlack-fuse-mailing module.
+ * This class extends the default Spring Boot {@link MailProperties} class.
+ *
+ * @author European Dynamics SA.
+ */
 @Getter
 @Setter
 @Primary

@@ -59,9 +59,14 @@ public class MailQueueMonitor {
 		this.emailMapper = emailMapper;
 	}
 
+  /**
+   * Sends an email and update its status to the database. If an error occurs
+   * it logs the reason of failure in the database.
+   * @param email the email
+   */
 	private void send(Email email) {
 		/** Create a DTO for the email about to be sent */
-		EmailDTO dto = emailMapper.mapToDTOyWithRecipilents(email, true);
+		EmailDTO dto = emailMapper.mapToDTOWithRecipients(email, true);
 
 		/**
 		 * Update email's tries and date sent in the database, irrespectively of the
@@ -96,14 +101,18 @@ public class MailQueueMonitor {
 		emailRepository.save(email);
 	}
 
+  /**
+   * Sends only one email.
+   * @param emailId the id of the email
+   */
 	public void sendOne(String emailId) {
 		send(emailRepository.fetchById(emailId));
 	}
 
 	/**
 	 * Sends email to a mail distribution lists recipients.
-	 * @param emailId the email to send.
-	 * @param distributionListId the mail distribution list.
+	 * @param emailId the email
+	 * @param distributionListId the mail distribution list
 	 */
 	public void sendToDistributionList(String emailId, String distributionListId) {
 	    Email email = emailRepository.fetchById(emailId);

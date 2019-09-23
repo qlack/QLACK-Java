@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * DTO for Attachment.
+ * Data Transfer Object for Attachment.
  *
  * @author European Dynamics SA.
  */
@@ -17,9 +17,24 @@ import lombok.Setter;
 public class AttachmentDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+  /**
+   * Id
+   */
 	private String id;
+
+  /**
+   * The attachment filename
+   */
 	private String filename;
+
+  /**
+   * A {@link java.lang.String} representing the Content-Type of the attachment
+   */
 	private String contentType;
+
+  /**
+   * The attachment actual data
+   */
 	private byte[] data;
 
 	/**

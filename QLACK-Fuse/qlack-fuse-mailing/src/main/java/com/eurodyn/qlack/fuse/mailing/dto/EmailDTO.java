@@ -14,7 +14,9 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * DTO for Email data.
+ * Data Transfer Object for Email data.
+ *
+ * @author European Dynamics SA.
  */
 @Getter
 @Setter
@@ -23,19 +25,75 @@ public class EmailDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+  /**
+   * Id
+   */
 	private String id;
+
+  /**
+   * The email subject
+   */
 	private @NotBlank String subject;
+
+  /**
+   * The email body
+   */
 	private @NotBlank String body;
+
+  /**
+   * The sender
+   */
 	private @NotBlank String fromEmail;
+
+  /**
+   * The email list of recipients
+   */
 	private @NotEmpty List<String> toEmails;
+
+  /**
+   * The email list of recipients in Carbon Copy (cc)
+   */
 	private List<String> ccEmails;
+
+  /**
+   * The email list of recipients in Blind Carbon Copy (Bcc)
+   */
 	private List<String> bccEmails;
+
+  /**
+   * The 'Reply to' email list
+   */
 	private List<String> replyToEmails;
+
+  /**
+   * The {@link EMAIL_TYPE} email type
+   */
 	private @NotNull EMAIL_TYPE emailType;
+
+  /**
+   * The email status
+   */
 	private String status;
+
+  /**
+   * List of email attachments
+   */
 	private List<AttachmentDTO> attachments;
+
+  /**
+   * The date the email was sent
+   */
 	private Date dateSent;
+
+  /**
+   * A server response string
+   */
 	private String serverResponse;
+
+  /**
+   * The date that the response was sent
+   * from the server
+   */
 	private Date serverResponseDate;
 	private String charset = EmailCharset.UTF_8.getValue();
 

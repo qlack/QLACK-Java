@@ -44,7 +44,8 @@ public class DistributionListService {
 
 	/**
 	 * Create a new distribution list.
-	 */
+   * @param dto a distribution list DTO
+   */
 	public void createDistributionList(DistributionListDTO dto) {
 		DistributionList dlist = distributionListMapper.mapToEntity(dto);
 		distributionListRepository.save(dlist);
@@ -52,7 +53,8 @@ public class DistributionListService {
 
 	/**
 	 * Edit an existing distribution list.
-	 */
+   * @param dto a distribution list DTO
+   */
 	public void editDistributionList(DistributionListDTO dto) {
 		DistributionList dlist = distributionListMapper.mapToEntity(dto);
 		distributionListRepository.save(dlist);
@@ -60,7 +62,8 @@ public class DistributionListService {
 
 	/**
 	 * Delete a distribution list.
-	 */
+   * @param id the distribution list Id
+   */
 	public void deleteDistributionList(String id) {
 		DistributionList dlist = distributionListRepository.fetchById(id);
 		distributionListRepository.delete(dlist);
@@ -69,7 +72,9 @@ public class DistributionListService {
 
 	/**
 	 * Find a specific distribution list.
-	 */
+   * @param id the distribution list Id
+   * @return the distribution list DTO
+   */
 	public DistributionListDTO find(String id) {
 		DistributionList dlist = distributionListRepository.fetchById(id);
 		return distributionListMapper.mapToDTO(dlist);
@@ -78,7 +83,9 @@ public class DistributionListService {
 	/**
 	 * Search for a specific distribution list, with the criteria provided. (Only
 	 * the name can be provided as criteria at the moment.)
-	 */
+   * @param name the name as criteria
+   * @return list of distribution list DTOs
+   */
 	public List<DistributionListDTO> search(String name) {
 		List<DistributionList> distributionList = null;
 		if (name == null) {
@@ -97,7 +104,7 @@ public class DistributionListService {
 
 	/**
 	 * Create a new contact.
-	 *
+   * @param dto the contact dto source object
 	 * @return id of contact
 	 */
 	public String createContact(ContactDTO dto) {
@@ -106,21 +113,30 @@ public class DistributionListService {
 		return contact.getId();
 	}
 
-	/**
-	 * Add a contact to a distribution list.
-	 */
+  /**
+   * Add a contact to a distribution list.
+   * @param distributionId the distribution list Id
+   * @param contactId the contact Id
+   */
 	public void addContactToDistributionList(String distributionId, String contactId) {
 		DistributionList dlist = distributionListRepository.fetchById(distributionId);
 		Contact contact = findContactById(contactId);
 		dlist.getContacts().add(contact);
 	}
 
+  /**
+   * Find contact by Id
+   * @param contactId the contact Id
+   * @return a contact
+   */
 	private Contact findContactById(String contactId) {
 		return contactRepository.fetchById(contactId);
 	}
 
   /**
    * Remove a contact from a distribution list.
+   * @param distributionId the Id of the distribution list
+   * @param contactId the Id of the contact
    */
   public void removeContactFromDistributionList(String distributionId, String contactId) {
     DistributionList dlist = distributionListRepository.fetchById(distributionId);

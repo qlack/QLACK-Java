@@ -1,5 +1,10 @@
 package com.eurodyn.qlack.fuse.mailing.util;
 
+/**
+ * Charset enum for email
+ *
+ * @author European Dynamics SA.
+ */
 public enum EmailCharset {
 
   KOI8_R("koi8-r"),
@@ -7,6 +12,9 @@ public enum EmailCharset {
   US_ASCII("us-ascii"),
   UTF_8("utf-8");
 
+  /**
+   * Charset value
+   */
   private String value;
 
   EmailCharset(String value){

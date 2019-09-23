@@ -19,7 +19,7 @@ import com.eurodyn.qlack.common.exception.QException;
 /**
  * Exceptions wrapper for Mailing module.
  *
- * @author European Dynamics SA
+ * @author European Dynamics SA.
  */
 public class MailingException extends QException {
 

@@ -52,8 +52,7 @@ public class InternalMessageService {
 	/**
 	 * Send a new internal message.
 	 *
-	 * @param dto
-	 *            - the internal message data
+	 * @param dto - the internal message data
 	 * @return - an InternalMessageDTO object
 	 */
 	public String sendInternalMail(InternalMessageDTO dto) {
@@ -88,8 +87,7 @@ public class InternalMessageService {
 	/**
 	 * Get the Inbox.
 	 *
-	 * @param userId
-	 *            - the person that the message was sent to
+	 * @param userId - the person that the message was sent to
 	 * @return a list of InternalMessageDTO
 	 */
 	public List<InternalMessageDTO> getInternalInboxFolder(String userId) {
@@ -104,8 +102,7 @@ public class InternalMessageService {
 	/**
 	 * Get the sent folder.
 	 *
-	 * @param userId
-	 *            - the person that sent the message
+	 * @param userId - the person that sent the message
 	 * @return a list of messages
 	 */
 	public List<InternalMessageDTO> getInternalSentFolder(String userId) {
@@ -120,10 +117,8 @@ public class InternalMessageService {
 	/**
 	 * Get the number of the messages
 	 *
-	 * @param userId
-	 *            - the person that the message was sent to
-	 * @param status
-	 *            - the status (read, unread, replied)
+	 * @param userId - the person that the message was sent to
+	 * @param status - the status (read, unread, replied)
 	 * @return the No of messages.
 	 */
 	public long getMailCount(String userId, String status) {
@@ -144,8 +139,7 @@ public class InternalMessageService {
 	/**
 	 * Mark a message as Read
 	 *
-	 * @param messageId
-	 *            - the message Id
+	 * @param messageId - the message Id
 	 */
 	public void markMessageAsRead(String messageId) {
 		InternalMessage internalMessage = internalMessagesRepository.fetchById(messageId);
@@ -156,8 +150,7 @@ public class InternalMessageService {
 	/**
 	 * Mark a message as Replied.
 	 *
-	 * @param messageId
-	 *            - the message Id
+	 * @param messageId - the message Id
 	 */
 	public void markMessageAsReplied(String messageId) {
 		InternalMessage internalMessage = internalMessagesRepository.fetchById(messageId);
@@ -168,8 +161,7 @@ public class InternalMessageService {
 	/**
 	 * Mark a message as Unread.
 	 *
-	 * @param messageId
-	 *            - the message Id
+	 * @param messageId - the message Id
 	 */
 	public void markMessageAsUnread(String messageId) {
 		InternalMessage internalMessage = internalMessagesRepository.fetchById(messageId);
@@ -197,10 +189,8 @@ public class InternalMessageService {
 	 * from the receiver".</li>
 	 * </ul>
 	 *
-	 * @param messageId
-	 *            - the message Id
-	 * @param folderType
-	 *            - the folder type (inbox or sent)
+	 * @param messageId - the message Id
+	 * @param folderType - the folder type (inbox or sent)
 	 */
 	public void deleteMessage(String messageId, String folderType) {
 		InternalMessage internalMessage = internalMessagesRepository.fetchById(messageId);
@@ -226,8 +216,7 @@ public class InternalMessageService {
 	/**
 	 * View the details of a message.
 	 *
-	 * @param messageId
-	 *            - the message Id
+	 * @param messageId - the message Id
 	 * @return the message
 	 */
 	public InternalMessageDTO getInternalMessage(String messageId) {
@@ -238,8 +227,7 @@ public class InternalMessageService {
 	/**
 	 * Get the attachments of a message.
 	 *
-	 * @param messageId
-	 *            - the message Id
+	 * @param messageId - the message Id
 	 */
 	public List<InternalAttachmentDTO> getInternalMessageAttachments(String messageId) {
 		List<InternalAttachment> internalAttachments = internalAttachmentRepository.findByMessagesId(messageId);
@@ -253,8 +241,7 @@ public class InternalMessageService {
 	/**
 	 * Get an attachment based on its Id.
 	 *
-	 * @param attachmentId
-	 *            - the attachment Id.
+	 * @param attachmentId - the attachment Id.
 	 * @return the attachment
 	 */
 	public InternalAttachmentDTO getInternalAttachment(String attachmentId) {

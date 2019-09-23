@@ -65,6 +65,8 @@ public class ConverterUtil {
 
   /**
    * Converts the entity data transfer object ContactDTO to Contact.
+   * @param dto
+   * @return
    */
   public static Contact contactConvert(ContactDTO dto) {
     Contact entity = new Contact();

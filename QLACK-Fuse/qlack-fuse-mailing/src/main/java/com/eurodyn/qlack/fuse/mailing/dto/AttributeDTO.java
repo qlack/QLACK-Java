@@ -7,7 +7,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * @author European Dynamics SA
+ * Data Transfer Object for Attribute.
+ *
+ * @author European Dynamics SA.
  */
 @Getter
 @Setter

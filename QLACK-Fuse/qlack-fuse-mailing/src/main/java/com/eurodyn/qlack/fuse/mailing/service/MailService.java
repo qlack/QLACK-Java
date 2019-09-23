@@ -51,8 +51,7 @@ public class MailService {
 	/**
 	 * Queue a list of Emails.
 	 *
-	 * @param dtos
-	 *            - list of email data transfer objects.
+	 * @param dtos - list of email data transfer objects.
 	 * @return List of email ids
 	 */
 	public List<String> queueEmails(List<EmailDTO> dtos) {
@@ -67,8 +66,7 @@ public class MailService {
 	/**
 	 * Queue an email.
 	 *
-	 * @param emailDto
-	 *            - an email data transfer object.
+	 * @param emailDto - an email data transfer object.
 	 * @return email id
 	 */
 	public String queueEmail(@Valid EmailDTO emailDto) {
@@ -102,12 +100,10 @@ public class MailService {
 	 * Warning: If you pass a <code>null</code> date all emails irrespectively of
 	 * date will be removed.
 	 *
-	 * @param date
-	 *            the date before which all e-mails will be removed.
-	 * @param status
-	 *            the status to be processed. Be cautious to not include e-mails of
-	 *            status QUEUED as such e-mails might not have been tried to be
-	 *            delivered yet.
+	 * @param date - the date before which all e-mails will be removed.
+	 * @param status - the status to be processed. Be cautious to not include e-mails of
+	 * status QUEUED as such e-mails might not have been tried to be
+	 * delivered yet.
 	 */
 	public void cleanup(Long date, EMAIL_STATUS[] status) {
 		List<Email> emails = emailRepository.findByAddedOnDateAndStatus(date, status);
@@ -119,29 +115,47 @@ public class MailService {
 	/**
 	 * Delete an email from the queue.
 	 *
-	 * @param emailId
-	 *            - the email id.
+	 * @param emailId - the email id.
 	 */
 	public void deleteFromQueue(String emailId) {
 		emailRepository.deleteById(emailId);
 	}
 
+  /**
+   * Update email status
+   * @param emailId the email Id
+   * @param status the new email status
+   */
 	public void updateStatus(String emailId, EMAIL_STATUS status) {
 		Email email = emailRepository.fetchById(emailId);
 		email.setStatus(status.toString());
 		emailRepository.save(email);
 	}
 
+  /**
+   * Get an email DTO by Id
+   * @param emailId the email Id
+   * @return an email DTO object
+   */
 	public EmailDTO getMail(String emailId) {
 		Email email = emailRepository.fetchById(emailId);
 		return emailMapper.mapToDTO(email);
 	}
 
+  /**
+   * Get all email of the provided status
+   * @param status the provided status
+   * @return a list of email with the provided status
+   */
 	public List<EmailDTO> getByStatus(EMAIL_STATUS status) {
 		return emailRepository.findByAddedOnDateAndStatus(null, status).stream().map(o ->
 		emailMapper.mapToDTO(o)).collect(Collectors.toList());
 	}
 
+  /**
+   * Send an email
+   * @param emailId the emailId
+   */
 	public void sendOne(String emailId) {
 		mailQueueMonitor.sendOne(emailId);
 	}

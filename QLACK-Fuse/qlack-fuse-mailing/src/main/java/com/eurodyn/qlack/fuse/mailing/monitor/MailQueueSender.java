@@ -24,6 +24,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+/**
+ * Sender email queue.
+ *
+ * @author European Dynamics SA
+ */
 @Service
 @Validated
 @Transactional(noRollbackFor = {MailingException.class})
@@ -183,7 +188,11 @@ public class MailQueueSender {
         emailSender.send(message);
     }
 
-    private boolean isTlsEnabled() {
+  /**
+   * Checks if TLS protocol is enabled for the STMP mail server
+   * @return true if TLS is enabled, false otherwise
+   */
+  private boolean isTlsEnabled() {
         return (this.mailingProperties.getProperties() != null
             && !this.mailingProperties.getProperties().isEmpty())
             && this.mailingProperties.getProperties().get("mail.smtp.starttls.enable").equals(true);
