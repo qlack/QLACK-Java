@@ -77,7 +77,7 @@ public class MailQueueMonitorTest {
   @Test
   public void testSendOne() {
     when(emailMapper.mapToDTO(email)).thenReturn(emailDTO);
-    when(emailMapper.mapToDTOyWithRecipilents(email, true)).thenReturn(emailDTO);
+    when(emailMapper.mapToDTOWithRecipients(email, true)).thenReturn(emailDTO);
     when(emailRepository.fetchById(emailId)).thenReturn(email);
     mailQueueMonitor.sendOne(emailId);
     assertNotNull(email.getDateSent());
@@ -88,7 +88,7 @@ public class MailQueueMonitorTest {
   @Test
   public void testSendToDistributionList() {
     when(emailMapper.mapToDTO(email)).thenReturn(emailDTO);
-    when(emailMapper.mapToDTOyWithRecipilents(email, true)).thenReturn(emailDTO);
+    when(emailMapper.mapToDTOWithRecipients(email, true)).thenReturn(emailDTO);
     when(emailRepository.fetchById(emailId)).thenReturn(email);
     when(distributionListRepository.fetchById(distributionListId)).thenReturn(distributionList);
     mailQueueMonitor.sendToDistributionList(emailId, distributionListId);
@@ -146,7 +146,7 @@ public class MailQueueMonitorTest {
                                        .and(qEmail.tries.lt(mailingProperties.getMaxTries()));
     for (Email e : emails) {
       when(emailMapper.mapToDTO(e)).thenReturn(emailDTO);
-      when(emailMapper.mapToDTOyWithRecipilents(e, true)).thenReturn(emailDTO);
+      when(emailMapper.mapToDTOWithRecipients(e, true)).thenReturn(emailDTO);
     }
     when(emailRepository.findAll(predicate)).thenReturn(emails);
     when(mailingProperties.isPolling()).thenReturn(true);
