@@ -1,4 +1,4 @@
-package com.eurodyn.qlack.fuse.rules.service.service.service;
+package com.eurodyn.qlack.fuse.rules.service;
 
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -32,6 +32,8 @@ public class KnowledgeSessionServiceTest {
   @Mock
   private KnowledgeBase knowledgeBaseState;
   @Mock
+  private KnowledgeBase customKnowledgeBaseState;
+  @Mock
   private RulesComponent rulesComponent;
 
   private List<byte[]> inputLibraries;
@@ -44,6 +46,7 @@ public class KnowledgeSessionServiceTest {
     knowledgeSessionService = new KnowledgeSessionService(rulesComponent, knowledgeBaseService);
     InitTestValues initTestValues = new InitTestValues();
     knowledgeBaseState = initTestValues.createKnowledgeBase();
+    customKnowledgeBaseState = initTestValues.createKnowledgeBaseWithCustomRules();
     inputLibraries = initTestValues.createLibraries();
     inputRules = initTestValues.createRules();
     inputGlobals = initTestValues.createInputGlobals();
@@ -119,6 +122,16 @@ public class KnowledgeSessionServiceTest {
   public void fireRulesInputGlobalsFactsTest() {
     when(knowledgeBaseService.findKnowledgeBaseStateById("knowledgeBaseId"))
         .thenReturn(knowledgeBaseState);
+    ExecutionResultsDTO executionResultsDTO = knowledgeSessionService
+        .fireRules("knowledgeBaseId", inputRules,
+            inputGlobals, facts);
+    assertNotNull(executionResultsDTO);
+  }
+
+  @Test
+  public void fireRulesInputGlobalsFactsLambdaExpression() {
+    when(knowledgeBaseService.findKnowledgeBaseStateById("knowledgeBaseId"))
+        .thenReturn(customKnowledgeBaseState);
     ExecutionResultsDTO executionResultsDTO = knowledgeSessionService
         .fireRules("knowledgeBaseId", inputRules,
             inputGlobals, facts);

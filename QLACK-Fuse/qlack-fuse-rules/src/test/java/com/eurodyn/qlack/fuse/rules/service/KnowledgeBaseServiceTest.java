@@ -1,4 +1,4 @@
-package com.eurodyn.qlack.fuse.rules.service.service.service;
+package com.eurodyn.qlack.fuse.rules.service;
 
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.fuse.rules.mapper.KnowledgeBaseMapper;
