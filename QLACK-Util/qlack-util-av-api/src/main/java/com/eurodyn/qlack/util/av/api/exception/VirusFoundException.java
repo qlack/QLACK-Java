@@ -3,7 +3,9 @@ package com.eurodyn.qlack.util.av.api.exception;
 import com.eurodyn.qlack.common.exception.QException;
 
 /**
- * @author European Dynamics
+ * Exception for the case a virus was found on the scanned file.
+ *
+ * @author European Dynamics SA.
  */
 public class VirusFoundException extends QException {
 

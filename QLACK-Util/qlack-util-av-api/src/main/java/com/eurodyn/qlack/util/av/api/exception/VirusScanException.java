@@ -4,7 +4,9 @@ package com.eurodyn.qlack.util.av.api.exception;
 import com.eurodyn.qlack.common.exception.QException;
 
 /**
- * @author European Dynamics
+ *  Exception for the case of any error during a file scan.
+ *
+ * @author European Dynamics SA.
  */
 public class VirusScanException extends QException {
 

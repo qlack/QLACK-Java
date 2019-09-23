@@ -8,7 +8,7 @@ import lombok.Setter;
  * perform a file virus scan
  * and return its result
  *
- * @author European Dynamics
+ * @author European Dynamics SA.
  */
 @Getter
 @Setter
