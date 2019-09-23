@@ -5,12 +5,11 @@ import com.eurodyn.qlack.fuse.rules.model.KnowledgeBase;
 import com.eurodyn.qlack.fuse.rules.model.KnowledgeBaseLibrary;
 import com.eurodyn.qlack.fuse.rules.model.KnowledgeBaseRule;
 import com.eurodyn.qlack.fuse.rules.util.RulesUtil;
-import org.kie.api.KieBase;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.kie.api.KieBase;
 
 public class InitTestValues {
 
@@ -20,7 +19,7 @@ public class InitTestValues {
   private KnowledgeBase knowledgeBase = new KnowledgeBase();
   private RulesComponent rulesComponent = new RulesComponent();
 
-  public KnowledgeBase createKnowledgeBase(){
+  public KnowledgeBase createKnowledgeBase() {
     knowledgeBase.setState(rulesUtil.serializeKnowledgeBase(createKieBase()));
     knowledgeBase.setLibraries(createKnowledgeBaseLibraryList());
     knowledgeBase.setRules(createKnowledgeBaseRule());
@@ -28,11 +27,11 @@ public class InitTestValues {
     return knowledgeBase;
   }
 
-  public KieBase createKieBase(){
+  public KieBase createKieBase() {
     return rulesUtil.createKieBase(libraries, rules);
   }
 
-  public List<byte[]> createLibraries(){
+  public List<byte[]> createLibraries() {
     List<KnowledgeBaseLibrary> runtimeLibraries = createKnowledgeBase().getLibraries();
     for (KnowledgeBaseLibrary runtimeLibrary : runtimeLibraries) {
       byte[] library = runtimeLibrary.getLibrary();
@@ -41,7 +40,7 @@ public class InitTestValues {
     return libraries;
   }
 
-  public List<byte[]> createLibrariesAdd(){
+  public List<byte[]> createLibrariesAdd() {
     KnowledgeBaseLibrary knowledgeBaseLibrary = new KnowledgeBaseLibrary();
     knowledgeBaseLibrary.setBase(createKnowledgeBase());
     knowledgeBaseLibrary.setLibrary(new byte[1024]);
@@ -49,7 +48,7 @@ public class InitTestValues {
     return libraries;
   }
 
-  public List<String> createRules(){
+  public List<String> createRules() {
     List<KnowledgeBaseRule> runtimeRules = knowledgeBase.getRules();
     for (KnowledgeBaseRule runtimeRule : runtimeRules) {
       String rule = runtimeRule.getRule();
@@ -58,7 +57,7 @@ public class InitTestValues {
     return rules;
   }
 
-  public List<String> createRulesAdd(){
+  public List<String> createRulesAdd() {
     String rule = "rule\"Offer for Gold on Festival\"\nwhen\nthen\nend";
     KnowledgeBaseRule knowledgeBaseRule = new KnowledgeBaseRule();
     knowledgeBaseRule.setRule(rule);
@@ -68,7 +67,7 @@ public class InitTestValues {
     return rules;
   }
 
-  public List<KnowledgeBaseLibrary> createKnowledgeBaseLibraryList(){
+  public List<KnowledgeBaseLibrary> createKnowledgeBaseLibraryList() {
     List<KnowledgeBaseLibrary> knowledgeBaseLibraries = new ArrayList<>();
     for (byte[] library : libraries) {
       KnowledgeBaseLibrary knowledgeBaseLibrary = new KnowledgeBaseLibrary();
@@ -80,7 +79,7 @@ public class InitTestValues {
     return knowledgeBaseLibraries;
   }
 
-  public List<KnowledgeBaseRule> createKnowledgeBaseRule(){
+  public List<KnowledgeBaseRule> createKnowledgeBaseRule() {
     List<KnowledgeBaseRule> knowledgeBaseRules = new ArrayList<>();
     for (String rule : rules) {
       KnowledgeBaseRule knowledgeBaseRule = new KnowledgeBaseRule();
@@ -92,7 +91,7 @@ public class InitTestValues {
     return knowledgeBaseRules;
   }
 
-  public Map<String, byte[]> createInputGlobals(){
+  public Map<String, byte[]> createInputGlobals() {
     Map<String, Object> globals = new LinkedHashMap<>();
     globals.put("outPut", new byte[1024]);
     Map<String, byte[]> outputGlobals = new LinkedHashMap<>();
@@ -103,11 +102,20 @@ public class InitTestValues {
     }
     return outputGlobals;
   }
-  
-  public KnowledgeBaseLibrary createKnowledgeBaseLibrary(){
+
+  public KnowledgeBaseLibrary createKnowledgeBaseLibrary() {
     KnowledgeBaseLibrary knowledgeBaseLibrary = new KnowledgeBaseLibrary();
     knowledgeBaseLibrary.setBase(createKnowledgeBase());
     knowledgeBaseLibrary.setLibrary(new byte[1024]);
     return knowledgeBaseLibrary;
   }
+
+  public List<byte[]> createFacts() {
+    List<byte[]> facts = new ArrayList<>();
+    facts.add(rulesComponent.serializeObject("first fact object"));
+    facts.add(rulesComponent.serializeObject("second fact object"));
+
+    return facts;
+  }
+
 }
