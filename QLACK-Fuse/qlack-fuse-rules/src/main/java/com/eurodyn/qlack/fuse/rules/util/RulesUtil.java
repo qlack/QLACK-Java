@@ -4,7 +4,6 @@ import com.eurodyn.qlack.fuse.rules.exception.QRulesException;
 import com.eurodyn.qlack.fuse.rules.model.KnowledgeBase;
 import com.eurodyn.qlack.fuse.rules.model.KnowledgeBaseLibrary;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.java.Log;
@@ -13,14 +12,9 @@ import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.util.DroolsStreamUtils;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
-import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
-import org.kie.internal.builder.KnowledgeBuilderError;
-import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
 
 /**
  * This util method contains useful method that are used by the rules Qlack component.
@@ -29,6 +23,8 @@ import org.kie.internal.io.ResourceFactory;
  */
 @Log
 public class RulesUtil {
+
+    private CompileRulesUtil compileRulesUtil = new CompileRulesUtil();
 
     /**
      * Creates a KieBase using a persisted Knowledge Base.
@@ -81,7 +77,7 @@ public class RulesUtil {
         KnowledgeBuilderConfiguration kBuilderConfiguration = KnowledgeBuilderFactory
             .newKnowledgeBuilderConfiguration(null, classLoader);
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kBuilderConfiguration);
-        compileRules(rules, kbuilder);
+        compileRulesUtil.compileRules(rules, kbuilder);
 
         KieBaseConfiguration kBaseConfiguration = KnowledgeBaseFactory
             .newKnowledgeBaseConfiguration(null, classLoader);
@@ -90,28 +86,6 @@ public class RulesUtil {
         // add packages to knowledge base
         ((KnowledgeBaseImpl) kbase).addPackages(kbuilder.getKnowledgePackages());
         return kbase;
-    }
-
-    /**
-     * Compiles the given rules and adds them in the KnowledgeBuilder
-     *
-     * @param rules the rules to compiled and added
-     * @param knowledgeBuilder the KnowledgeBuilder that will include the compiled rules
-     */
-    private void compileRules(List<String> rules, KnowledgeBuilder knowledgeBuilder) {
-        for (String rulesText : rules) {
-            byte[] rulesBytes = rulesText.getBytes(Charset.forName("UTF-8"));
-            Resource rulesResource = ResourceFactory.newByteArrayResource(rulesBytes);
-            knowledgeBuilder.add(rulesResource, ResourceType.DRL);
-
-            if (knowledgeBuilder.hasErrors()) {
-                KnowledgeBuilderErrors kerrors = knowledgeBuilder.getErrors();
-                for (KnowledgeBuilderError kerror : kerrors) {
-                    log.severe(kerror.toString());
-                }
-                throw new QRulesException(kerrors.toString());
-            }
-        }
     }
 
     /**

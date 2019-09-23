@@ -5,10 +5,12 @@ import com.eurodyn.qlack.fuse.rules.model.KnowledgeBase;
 import com.eurodyn.qlack.fuse.rules.model.KnowledgeBaseLibrary;
 import com.eurodyn.qlack.fuse.rules.model.KnowledgeBaseRule;
 import com.eurodyn.qlack.fuse.rules.util.RulesUtil;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.SerializationUtils;
 import org.kie.api.KieBase;
 
 public class InitTestValues {
@@ -135,6 +137,13 @@ public class InitTestValues {
     List<byte[]> facts = new ArrayList<>();
     facts.add(rulesComponent.serializeObject("first fact object"));
     facts.add(rulesComponent.serializeObject("second fact object"));
+
+    return facts;
+  }
+
+  public List<byte[]> createWrongLibraries() {
+    List<byte[]> facts = new ArrayList<>();
+    facts.add(SerializationUtils.serialize(new TestClass()));
 
     return facts;
   }

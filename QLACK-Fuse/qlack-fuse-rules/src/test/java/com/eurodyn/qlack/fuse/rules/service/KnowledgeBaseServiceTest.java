@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.fuse.rules.InitTestValues;
+import com.eurodyn.qlack.fuse.rules.exception.QRulesException;
 import com.eurodyn.qlack.fuse.rules.mapper.KnowledgeBaseMapper;
 import com.eurodyn.qlack.fuse.rules.model.KnowledgeBase;
 import com.eurodyn.qlack.fuse.rules.repository.KnowledgeBaseRepository;
@@ -34,6 +35,7 @@ public class KnowledgeBaseServiceTest {
   @Mock
   private KnowledgeBase knowledgeBase;
   private List<byte[]> inputLibraries;
+  private List<byte[]> wrongLibraries;
   private List<String> inputRules;
 
   @Before
@@ -42,6 +44,7 @@ public class KnowledgeBaseServiceTest {
     knowledgeBaseService = new KnowledgeBaseService(knowledgeBaseMapper, knowledgeBaseRepository);
     inputLibraries = initTestValues.createLibrariesAdd();
     inputRules = initTestValues.createRulesAdd();
+    wrongLibraries = initTestValues.createWrongLibraries();
   }
 
   @Test(expected = QDoesNotExistException.class)
