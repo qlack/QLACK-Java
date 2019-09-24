@@ -14,6 +14,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -233,5 +235,18 @@ public class UserGroupService {
       }
     }
     return retVal;
+  }
+
+  /**
+   * Retrieves the names of the users who are members of specific groups
+   *
+   * @param groupIDs The ids of the groups whose members to retrieve
+   * @return The names of the retrieved users
+   */
+  public Set<String> getGroupUsersNames(Collection<String> groupIDs) {
+    List<UserGroup> groups = userGroupRepository.findByIdIn(groupIDs);
+    Set<User> users = groups.stream().flatMap(g -> g.getUsers().stream())
+            .collect(Collectors.toSet());
+    return users.stream().map(User::getUsername).collect(Collectors.toSet());
   }
 }

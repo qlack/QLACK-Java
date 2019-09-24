@@ -1,6 +1,7 @@
 package com.eurodyn.qlack.fuse.aaa.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -16,10 +17,9 @@ import com.eurodyn.qlack.fuse.aaa.model.User;
 import com.eurodyn.qlack.fuse.aaa.model.UserGroup;
 import com.eurodyn.qlack.fuse.aaa.repository.UserGroupRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 import com.querydsl.core.types.Predicate;
 import org.junit.Before;
@@ -29,6 +29,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Sort;
+
+import javax.validation.constraints.AssertTrue;
 
 /**
  * @author European Dynamics
@@ -278,4 +280,17 @@ public class UserGroupServiceTest {
     verify(userRepository, times(1)).
         fetchById(userGroup.getId());
   }
+
+  @Test
+  public void testGetGroupUsersNames(){
+
+    Set<String> groupIds = userGroups.stream().map(g->g.getId()).collect(Collectors.toSet());
+    when(userGroupRepository.findByIdIn(groupIds)).thenReturn(userGroups);
+    userGroups.stream().forEach(g->g.setUsers(users));
+    Set<String> usernames = userGroupService.getGroupUsersNames(groupIds);
+    assertTrue(usernames.contains(users.get(0).getUsername()));
+    assertTrue(usernames.contains(users.get(1).getUsername()));
+
+  }
+
 }
