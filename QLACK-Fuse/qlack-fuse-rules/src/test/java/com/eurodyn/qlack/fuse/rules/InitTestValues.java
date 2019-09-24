@@ -5,12 +5,10 @@ import com.eurodyn.qlack.fuse.rules.model.KnowledgeBase;
 import com.eurodyn.qlack.fuse.rules.model.KnowledgeBaseLibrary;
 import com.eurodyn.qlack.fuse.rules.model.KnowledgeBaseRule;
 import com.eurodyn.qlack.fuse.rules.util.RulesUtil;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang3.SerializationUtils;
 import org.kie.api.KieBase;
 
 public class InitTestValues {
@@ -42,7 +40,8 @@ public class InitTestValues {
   }
 
   public List<byte[]> createLibraries() {
-    List<KnowledgeBaseLibrary> runtimeLibraries = createKnowledgeBase().getLibraries();
+    List<KnowledgeBaseLibrary> runtimeLibraries = createKnowledgeBase()
+      .getLibraries();
     for (KnowledgeBaseLibrary runtimeLibrary : runtimeLibraries) {
       byte[] library = runtimeLibrary.getLibrary();
       libraries.add(library);
@@ -132,7 +131,6 @@ public class InitTestValues {
     return knowledgeBaseLibrary;
   }
 
-
   public List<byte[]> createFacts() {
     List<byte[]> facts = new ArrayList<>();
     facts.add(rulesComponent.serializeObject("first fact object"));
@@ -141,10 +139,21 @@ public class InitTestValues {
     return facts;
   }
 
-  public List<byte[]> createWrongLibraries() {
-    List<byte[]> facts = new ArrayList<>();
-    facts.add(SerializationUtils.serialize(new TestClass()));
+  public List<String> createWrongRules(){
 
-    return facts;
+    List<String> wrongRules = new ArrayList<>();
+    String rule1 = "import package.does.not.exist.Account\n"
+      + "\n"
+      + "rule \"accountBalanceAtLeast100\"\n"
+      + "  when\n"
+      + "    $account : Account(balance < 100)\n"
+      + "  then\n"
+      + "    System.out.println(\"The balance of the account \" +$account.getId()+ \" is significantly low.\");\n"
+      + "end";
+
+    wrongRules.add(rule1);
+
+    return wrongRules;
   }
+
 }

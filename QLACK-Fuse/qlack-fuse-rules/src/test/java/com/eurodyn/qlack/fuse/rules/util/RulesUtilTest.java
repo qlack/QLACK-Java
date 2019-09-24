@@ -1,23 +1,16 @@
 package com.eurodyn.qlack.fuse.rules.util;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import com.eurodyn.qlack.fuse.rules.InitTestValues;
 import com.eurodyn.qlack.fuse.rules.exception.QRulesException;
 import com.eurodyn.qlack.fuse.rules.model.KnowledgeBase;
 import com.eurodyn.qlack.fuse.rules.model.KnowledgeBaseLibrary;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.util.DroolsStreamUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.api.KieBase;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -33,6 +26,7 @@ public class RulesUtilTest {
 
   private List<byte[]> libraries;
   private List<String> rules;
+  private List<String> wrongRules;
   private List<KnowledgeBaseLibrary> knowledgeBaseLibraryList;
   private InitTestValues initTestValues;
 
@@ -43,6 +37,7 @@ public class RulesUtilTest {
     knowledgeBase = initTestValues.createKnowledgeBase();
     libraries = initTestValues.createLibraries();
     rules = initTestValues.createRules();
+    wrongRules = initTestValues.createWrongRules();
     knowledgeBaseLibraryList = new ArrayList<>();
   }
 
@@ -58,4 +53,10 @@ public class RulesUtilTest {
     assertNotNull(rulesUtil.createKieBase(null, rules));
     assertNotNull(rulesUtil.createKieBase(libraries, rules));
   }
+
+  @Test(expected = QRulesException.class)
+  public void compileRulesExceptionTest() {
+    assertNotNull(rulesUtil.createKieBase(libraries, wrongRules));
+  }
 }
+
