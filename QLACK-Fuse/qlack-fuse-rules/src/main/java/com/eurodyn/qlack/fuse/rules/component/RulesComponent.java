@@ -44,11 +44,7 @@ public class RulesComponent {
                 }
             }) {
             return ois.readObject();
-        } catch (IOException e) {
-            throw new QRulesException(e);
-        } catch (ClassNotFoundException e) {
-            throw new QRulesException(e);
-        } catch (Exception e) {
+        } catch (IOException | ClassNotFoundException e) {
             throw new QRulesException(e);
         }
     }

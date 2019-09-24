@@ -1,17 +1,11 @@
 package com.eurodyn.qlack.fuse.rules.util;
 
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import com.eurodyn.qlack.fuse.rules.InitTestValues;
 import com.eurodyn.qlack.fuse.rules.exception.QRulesException;
-import com.eurodyn.qlack.fuse.rules.model.KnowledgeBase;
-import com.eurodyn.qlack.fuse.rules.model.KnowledgeBaseLibrary;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.criteria.CriteriaBuilder.In;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.util.DroolsStreamUtils;
 import org.junit.Before;
@@ -19,7 +13,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.KieBase;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
