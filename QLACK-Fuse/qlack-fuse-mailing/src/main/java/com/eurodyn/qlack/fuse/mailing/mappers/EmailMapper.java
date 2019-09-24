@@ -62,13 +62,13 @@ public interface EmailMapper extends MailingMapper<Email, EmailDTO> {
       return null;
     }
 
-    StringTokenizer st = new StringTokenizer(emails, ",");
-    while (st.hasMoreElements()) {
-      String next = (String) st.nextElement();
-      contacts.add(next);
-    }
-    return contacts.isEmpty() ? null : contacts;
-  }
+		StringTokenizer st = new StringTokenizer(emails, ",");
+		while (st.hasMoreElements()) {
+			String next = (String) st.nextElement();
+			contacts.add(next.trim());
+		}
+		return contacts.isEmpty() ? null : contacts;
+	}
 
   /**
    * Maps an entity to DTO and also maps the recipients if

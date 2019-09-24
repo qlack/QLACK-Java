@@ -3,10 +3,15 @@ package com.eurodyn.qlack.fuse.mailing.mappers;/**
  */
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
-import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import com.eurodyn.qlack.fuse.mailing.dto.AttachmentDTO;
+import com.eurodyn.qlack.fuse.mailing.model.Attachment;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +34,9 @@ public class EmailMapperTest {
   private List<Email> emails;
   private List<EmailDTO> emailsDTO;
   private final String EMAIL_DELIMITER = ",";
+  private Attachment attachment;
+  private AttachmentDTO attachmentDTO;
+  private Set<Attachment> attachmentSet;
 
   @Before
   public void init() {
@@ -38,6 +46,9 @@ public class EmailMapperTest {
     emailDTO = initTestValues.createEmailDTO();
     emails = initTestValues.createEmails();
     emailsDTO = initTestValues.createEmailsDTO();
+    attachment = initTestValues.createAttachment();
+    attachmentDTO = initTestValues.createAttachmentDTO();
+    attachmentSet = initTestValues.createAttachments();
   }
 
   @Test
@@ -125,15 +136,43 @@ public class EmailMapperTest {
   }
 
   @Test
+  public void testMapToDTONull() {
+    assertNull(emailMapperImpl.mapToDTO((Email) null));
+  }
+
+  @Test
+  public void testMapToDTONullEmailType() {
+    email.setEmailType(null);
+    assertEquals(EmailDTO.EMAIL_TYPE.TEXT, emailMapperImpl.mapToDTO(email).getEmailType());
+  }
+
+  @Test
   public void testMapToDTOList() {
     emailsDTO = emailMapperImpl.mapToDTO(emails);
     assertEquals(emails.size(), emailsDTO.size());
   }
 
   @Test
+  public void testMapToDTONullList() {
+    assertNull(emailMapperImpl.mapToDTO((List<Email>) null));
+  }
+
+  @Test
   public void testMapToEntityId() {
     Email email = emailMapperImpl.mapToEntity(emailDTO);
     assertEquals(emailDTO.getId(), email.getId());
+  }
+
+  @Test
+  public void testMapToEntityIdNull() {
+    Email email = emailMapperImpl.mapToEntity((EmailDTO) null);
+    assertNull(email);
+  }
+
+  @Test
+  public void testMapToEntityNullEmailType() {
+    emailDTO.setEmailType(null);
+    assertNull(emailMapperImpl.mapToEntity(emailDTO).getEmailType());
   }
 
   @Test
@@ -218,5 +257,92 @@ public class EmailMapperTest {
   public void testMapToEntityList() {
     emails = emailMapperImpl.mapToEntity(emailsDTO);
     assertEquals(emailsDTO.size(), emails.size());
+  }
+
+  @Test
+  public void testMapToEntityListNull() {
+    emails = emailMapperImpl.mapToEntity((List<EmailDTO>) null);
+    assertNull(emails);
+  }
+
+  @Test
+  public void testAttachmentToAttachmentDTONull(){
+    assertNull(emailMapperImpl.attachmentToAttachmentDTO(null));
+  }
+
+  @Test
+  public void testAttachmentToAttachmentDTONoData(){
+    attachment.setData(null);
+    assertNull(emailMapperImpl.attachmentToAttachmentDTO(attachment).getData());
+  }
+
+  @Test
+  public void testAttachmentSetToAttachmentDTOListNull(){
+    assertNull(emailMapperImpl.attachmentSetToAttachmentDTOList(null));
+  }
+
+  @Test
+  public void testAttachmentDTOToAttachmentNull(){
+    assertNull(emailMapperImpl.attachmentDTOToAttachment(null));
+  }
+
+  @Test
+  public void testAttachmentDTOToAttachmentNullNoData(){
+    attachmentDTO.setData(null);
+    assertNull(emailMapperImpl.attachmentDTOToAttachment(attachmentDTO).getData());
+  }
+
+  @Test
+  public void testAttachmentDTOListToAttachmentSet(){
+    assertNull(emailMapperImpl.attachmentDTOListToAttachmentSet(null));
+  }
+
+  @Test
+  public void testMapListToCsvNull(){
+    assertNull(emailMapperImpl.mapListToCsv(null));
+  }
+
+  @Test
+  public void testMapListToCsvEmpty(){
+    List<String> emailList = new ArrayList<>();
+    String result = emailMapperImpl.mapListToCsv(emailList);
+    assertNull(result);
+  }
+
+  @Test
+  public void testMapCsvToListNull(){
+    assertNull(emailMapperImpl.mapCsvToList(null));
+  }
+
+  @Test
+  public void testMapCsvToListEmpty(){
+    assertNull(emailMapperImpl.mapCsvToList(""));
+  }
+
+  @Test
+  public void testMapToDTOyWithRecipients(){
+    String[] actual = email.getToEmails().split(",");
+    EmailDTO expected = emailMapperImpl.mapToDTOWithRecipients(email, false);
+    for (int i=0; i < actual.length; i++){
+      assertEquals(actual[i].trim(), expected.getToEmails().get(i));
+    }
+  }
+
+  @Test
+  public void testMapToEntityWithRecipients(){
+    Email result = emailMapperImpl.mapToEntityWithRecipients(emailDTO, true);
+    String[] expected = result.getToEmails().split(",");
+    for (int i=0; i < emailDTO.getToEmails().size(); i++){
+      assertEquals(emailDTO.getToEmails().get(i), expected[i]);
+    }
+  }
+
+  @Test
+  public void testMapToEntityWithRecipientsNoInclude(){
+    Email result = emailMapperImpl.mapToEntityWithRecipients(emailDTO, false);
+    String[] expected = result.getToEmails().split(",");
+    for (int i=0; i < emailDTO.getToEmails().size(); i++){
+      assertEquals(emailDTO.getToEmails().get(i), expected[i]);
+    }
   }
 }
