@@ -5,7 +5,7 @@ import com.eurodyn.qlack.fuse.lexicon.model.Application;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 
-/** An interface Repository class provides abstract methods for crud operations
+/** An interface Repository provides abstract methods for crud operations
  * @author European Dynamics SA
  */
 @Repository

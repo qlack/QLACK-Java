@@ -5,7 +5,7 @@ import com.eurodyn.qlack.fuse.lexicon.model.Key;
 import org.springframework.stereotype.Repository;
 
 /**
- * An interface KeyRepository that is used to declared crud methods
+ * An interface KeyRepository that is used to declare crud methods
  * @author European Dynamics SA
  */
 @Repository

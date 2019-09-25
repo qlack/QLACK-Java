@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 /**
- * An interface Repository class for Data. Its is used to declare abstract methods for
+ * A Repository interface for Data. Its is used to declare abstract methods for
  * crud operations
  * @author European Dynamics SA
  */
