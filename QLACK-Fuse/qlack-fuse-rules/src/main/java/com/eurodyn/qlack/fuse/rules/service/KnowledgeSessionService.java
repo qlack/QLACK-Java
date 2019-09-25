@@ -178,7 +178,7 @@ public class KnowledgeSessionService {
       for (byte[] inputFact : inputFacts) {
         facts.add(rulesComponent.deserializeObject(classLoader, inputFact));
       }
-      facts.stream().forEach(f -> kieSession.insert(f));
+      facts.stream().forEach(kieSession::insert);
     }
 
     //set rules

@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RulesComponentTest {
@@ -25,6 +26,8 @@ public class RulesComponentTest {
   @Before
   public void init() {
     rulesComponent = new RulesComponent();
+    ReflectionTestUtils.setField(rulesComponent, "acceptedPackagesNames", "*");
+    rulesComponent.init();
     JarClassLoaderBuilder classLoaderBuilder = new JarClassLoaderBuilder();
     classLoader = classLoaderBuilder.buildClassLoader(null);
   }
@@ -53,5 +56,13 @@ public class RulesComponentTest {
   @Test(expected = QRulesException.class)
   public void deserializeObjectExceptionTest() {
     assertNotNull(rulesComponent.deserializeObject(classLoader, "object".getBytes()));
+  }
+
+  @Test(expected = QRulesException.class)
+  public void deserializeUnknownTest() {
+    ReflectionTestUtils.setField(rulesComponent, "acceptedPackagesNames", "package.does.not.exist");
+    rulesComponent.init();
+    assertNotNull(rulesComponent
+        .deserializeObject(classLoader, rulesComponent.serializeObject(new SerializableClass())));
   }
 }
