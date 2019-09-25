@@ -24,7 +24,7 @@ public class RulesComponent {
 
   private List<String> acceptedPackages;
 
-  @Value("${qlack.fuse.rules.accepted.objects.packages:*}")
+  @Value("${qlack.fuse.rules.accepted.classes:*}")
   private String acceptedPackagesNames;
 
   @PostConstruct
@@ -43,36 +43,12 @@ public class RulesComponent {
   }
 
   public Object deserializeObject(final ClassLoader classLoader, byte[] bytes) {
-    try (
-        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-        ObjectInputStream ois = new ObjectInputStream(bais) {
-          @Override
-          protected Class<?> resolveClass(ObjectStreamClass desc)
-              throws IOException, ClassNotFoundException {
-            String name = desc.getName();
-            permitClassName(name);
-            Class<?> clazz = classLoader.loadClass(name);
-            if (clazz != null) {
-              return clazz;
-            } else {
-              return super.resolveClass(desc);
-            }
-          }
-        }) {
+    try {
+      ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+      ObjectInputStream ois = new LookAheadObjectInputStream(classLoader, bais, acceptedPackages);
       return ois.readObject();
     } catch (IOException | ClassNotFoundException e) {
       throw new QRulesException(e);
     }
   }
-
-  public void permitClassName(String name) {
-    for (String pattern : acceptedPackages) {
-      if (pattern.equals("*") || name.startsWith(pattern)) {
-        return;
-      }
-    }
-    throw new QRulesException(
-        "The class " + name + " cannot be deserialized for security reasons.");
-  }
-
 }
