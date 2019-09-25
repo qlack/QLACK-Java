@@ -6,7 +6,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.ObjectStreamClass;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -27,11 +26,21 @@ public class RulesComponent {
   @Value("${qlack.fuse.rules.accepted.classes:*}")
   private String acceptedPackagesNames;
 
+  /**
+   * On the construction of the component, define the packages that can be de-serialized based on
+   * the configuration. If no config is given, accept all packages.
+   */
   @PostConstruct
   public void init() {
     acceptedPackages = Arrays.asList(acceptedPackagesNames.split(","));
   }
 
+  /**
+   * Serialized an object and returns its byte representation.
+   *
+   * @param object the object to serialize
+   * @return the byte representation
+   */
   public byte[] serializeObject(Object object) {
     try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ObjectOutputStream oos = new ObjectOutputStream(
         baos)) {
@@ -42,6 +51,13 @@ public class RulesComponent {
     }
   }
 
+  /**
+   * De-serializes a byte array to a class that exists in the Drools Classloader.
+   *
+   * @param classLoader the Drools Classloader
+   * @param bytes the byte array to de-serialize
+   * @return the de-serialized object
+   */
   public Object deserializeObject(final ClassLoader classLoader, byte[] bytes) {
     try {
       ByteArrayInputStream bais = new ByteArrayInputStream(bytes);

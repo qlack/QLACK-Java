@@ -3,6 +3,13 @@ package com.eurodyn.qlack.fuse.rules.mapper;
 import com.eurodyn.qlack.common.model.QlackBaseModel;
 import java.util.List;
 
+/**
+ * Generic mapping interface for entities and DTOs of the <tt>qlack-fuse-rules</tt> module.
+ *
+ * @param <E> an entity class
+ * @param <D> a DTO class
+ * @author European Dynamics SA
+ */
 public interface RulesMapper<E extends QlackBaseModel, D> {
 
   /**
