@@ -3,24 +3,16 @@ groups:
     description: UI translations
   - name: reports
     description: Translations of report title and descriptions
-    forceUpdate: true
 languages:
   - name: English
     locale: en
-    forceUpdate: true
   - name: Français
     locale: fr
   - name: Portuguese
     locale: pt
 translations:
-  - group:
+  - not_in_group: [errors]
     locale: en
     keys:
       - generic_key : A key without a group
-  - group: ui
-    locale: en
-    keys:
-      - welc: Welcome
-      - user_details: User Details Section
-      - add_attachment_description: Add attachment description
-        forceDelete: true
+    forceDelete: true
