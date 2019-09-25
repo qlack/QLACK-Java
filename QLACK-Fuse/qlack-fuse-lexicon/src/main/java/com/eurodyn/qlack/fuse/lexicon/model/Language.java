@@ -28,13 +28,31 @@ public class Language extends QlackBaseModel {
 
   private static final long serialVersionUID = -1L;
 
+  /**
+   *  the dbversion
+   */
   @Version
   private long dbversion;
+  /**
+   *  the language name
+   */
   private String name;
+  /**
+   *  the locale identifies the language code
+   */
   private String locale;
+  /**
+   * the active status
+   */
   private boolean active;
+  /**
+   *  a list of lexicon data mapped by language
+   */
   @OneToMany(mappedBy = "language")
   private List<Data> data;
+  /**
+   * A list of templates mapped by language
+   */
   @OneToMany(mappedBy = "language")
   private List<Template> templates;
 
