@@ -12,7 +12,7 @@ import lombok.Setter;
 /**
  * The Audit Level entity, that holds all information about the level of an Audit.
  *
- * @author European Dynamics SA
+ * @author European Dynamics SA.
  */
 @Entity
 @Table(name = "al_audit_level")
@@ -52,6 +52,9 @@ public class AuditLevel extends QlackBaseModel {
     setId(java.util.UUID.randomUUID().toString());
   }
 
+  /**
+   * Invalidate cache
+   */
   public static void clearCache() {
     cache.invalidateAll();
   }

@@ -5,7 +5,7 @@ import com.eurodyn.qlack.common.exception.QException;
 /**
  * The QAuditException class is used by the qlack-fuse-audit module to throw error messages on the runtime and rollback the transactions.
  *
- * @author European Dynamics SA
+ * @author European Dynamics SA.
  */
 public class QAuditException extends QException {
 

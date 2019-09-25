@@ -25,6 +25,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Provides Audit CRUD and search functionality
+ *
+ * @author European Dynamics SA.
+ */
 @Service
 @Transactional
 @Validated
@@ -246,7 +251,6 @@ public class AuditService {
    * @param referenceId the reference id that each audit should have
    * @return a list of event names of audits, that have the specific reference id.
    */
-
   public List<String> getDistinctEventsForReferenceId(String referenceId) {
     log.trace(MessageFormat.format("Fetching distinct events for id: {0}", referenceId));
     return auditRepository.findDistinctEventsByReferenceId(referenceId);

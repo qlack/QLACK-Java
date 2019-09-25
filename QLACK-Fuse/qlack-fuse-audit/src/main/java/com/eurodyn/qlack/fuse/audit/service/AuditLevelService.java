@@ -13,6 +13,11 @@ import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+/**
+ * Provides Audit level CRUD functionality
+ *
+ * @author European Dynamics SA.
+ */
 @Transactional
 @Validated
 @Service

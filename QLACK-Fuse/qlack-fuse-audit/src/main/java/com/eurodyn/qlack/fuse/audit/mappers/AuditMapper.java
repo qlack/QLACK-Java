@@ -7,6 +7,11 @@ import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.data.domain.Page;
 
+/**
+ * Mapping interface for <tt>Audit</tt> entities and DTOs
+ *
+ * @author European Dynamics SA.
+ */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = AuditTraceMapper.class)
 public interface AuditMapper extends AuditBaseMapper<Audit, AuditDTO> {
 

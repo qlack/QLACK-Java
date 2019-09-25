@@ -14,6 +14,12 @@ import org.springframework.validation.annotation.Validated;
 import java.text.MessageFormat;
 import java.util.Date;
 
+/**
+ * Provides Audit CRUD functionality. {@link Async} ensures that each method will be executed at
+ * a separate thread
+ *
+ * @author European Dynamics SA.
+ */
 @Log
 @Service
 @Validated

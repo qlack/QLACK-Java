@@ -11,7 +11,7 @@ import lombok.Setter;
 /**
  * The Audit Trace entity, that holds the trace of an Audit.
  *
- * @author European Dynamics SA
+ * @author European Dynamics SA.
  */
 @Entity
 @Table(name = "al_audit_trace")

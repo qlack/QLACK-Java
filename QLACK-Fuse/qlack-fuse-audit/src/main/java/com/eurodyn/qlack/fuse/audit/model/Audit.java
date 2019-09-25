@@ -15,7 +15,7 @@ import lombok.Setter;
 /**
  * The Audit entity, that holds the data of an Audit.
  *
- * @author European Dynamics SA
+ * @author European Dynamics SA.
  */
 @Entity
 @Table(name = "al_audit")

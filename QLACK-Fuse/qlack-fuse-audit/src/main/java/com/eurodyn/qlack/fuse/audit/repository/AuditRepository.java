@@ -17,11 +17,25 @@ import org.springframework.data.querydsl.binding.QuerydslBindings;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
+/**
+ * Repository interface for <tt>Audit</tt> entities
+ *
+ * @author European Dynamics SA.
+ */
 @Repository
 public interface AuditRepository extends QlackBaseRepository<Audit, String>, GenericQuerydslBinder<QAudit> {
 
+  /**
+   * Deletes Audits created before the date provided
+   * @param date the date limit
+   */
   void deleteByCreatedOnBefore(Long date);
 
+  /**
+   * Adds custom bindings to GenericQuerydslBinder for <tt>QAudit</tt>
+   * @param bindings the bindings
+   * @param audit the {@link QAudit} object
+   */
   @Override
   default void customize(@NonNull QuerydslBindings bindings, @NonNull QAudit audit) {
     // Add generic bindings.
@@ -38,6 +52,11 @@ public interface AuditRepository extends QlackBaseRepository<Audit, String>, Gen
     bindings.excluding(audit.shortDescription);
   }
 
+  /**
+   * Finds distinct audit events using their reference Id
+   * @param referenceId the reference Id
+   * @return a "sorted by event" list of the related events
+   */
   default List<String> findDistinctEventsByReferenceId(String referenceId) {
     QAudit qAudit = QAudit.audit;
 

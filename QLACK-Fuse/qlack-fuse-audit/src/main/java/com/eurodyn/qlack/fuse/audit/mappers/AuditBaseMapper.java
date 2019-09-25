@@ -6,6 +6,11 @@ import java.util.List;
 import org.mapstruct.MappingTarget;
 import org.springframework.data.domain.Page;
 
+/**
+ * Mapping interface for <tt>AuditBase</tt> entities and DTOs
+ *
+ * @author European Dynamics SA.
+ */
 public interface AuditBaseMapper<E extends QlackBaseModel, D extends AuditBaseDTO> {
 
   /**
