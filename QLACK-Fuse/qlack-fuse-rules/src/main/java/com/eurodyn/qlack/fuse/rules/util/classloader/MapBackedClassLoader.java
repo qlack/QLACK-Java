@@ -1,5 +1,6 @@
 package com.eurodyn.qlack.fuse.rules.util.classloader;
 
+import com.eurodyn.qlack.fuse.rules.exception.QRulesException;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -29,8 +30,8 @@ public class MapBackedClassLoader extends ClassLoader {
 
   static {
     PROTECTION_DOMAIN = AccessController
-        .doPrivileged((PrivilegedAction<ProtectionDomain>) () -> MapBackedClassLoader.class
-            .getProtectionDomain());
+        .doPrivileged(
+            (PrivilegedAction<ProtectionDomain>) MapBackedClassLoader.class::getProtectionDomain);
   }
 
   public MapBackedClassLoader(ClassLoader parentClassLoader) {
@@ -151,6 +152,7 @@ public class MapBackedClassLoader extends ClassLoader {
         return new URLConnection(u) {
           @Override
           public void connect() {
+            //do nothing
           }
 
           @Override
@@ -165,7 +167,7 @@ public class MapBackedClassLoader extends ClassLoader {
     try {
       url = new URL("", "", 0, name, handler);
     } catch (MalformedURLException e) {
-      throw new RuntimeException(e);
+      throw new QRulesException(e.getMessage());
     }
 
     return url;

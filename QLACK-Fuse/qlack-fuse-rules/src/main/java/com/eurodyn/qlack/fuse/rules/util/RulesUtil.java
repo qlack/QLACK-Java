@@ -7,7 +7,7 @@ import com.eurodyn.qlack.fuse.rules.util.classloader.ClassLoaderKnowledgeBase;
 import com.eurodyn.qlack.fuse.rules.util.classloader.JarClassLoaderBuilder;
 import com.eurodyn.qlack.fuse.rules.util.classloader.MapBackedClassLoader;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.java.Log;
@@ -77,7 +77,7 @@ public class RulesUtil {
     // add libraries to classloader
     JarClassLoaderBuilder classLoaderBuilder = new JarClassLoaderBuilder();
     if (libraries != null) {
-      libraries.stream().forEach(l -> classLoaderBuilder.add(l));
+      libraries.stream().forEach(classLoaderBuilder::add);
     }
     ClassLoader classLoader = classLoaderBuilder.buildClassLoader(null);
 
@@ -132,7 +132,7 @@ public class RulesUtil {
    */
   private void compileRules(List<String> rules, KnowledgeBuilder knowledgeBuilder) {
     for (String rulesText : rules) {
-      byte[] rulesBytes = rulesText.getBytes(Charset.forName("UTF-8"));
+      byte[] rulesBytes = rulesText.getBytes(StandardCharsets.UTF_8);
       Resource rulesResource = ResourceFactory.newByteArrayResource(rulesBytes);
       knowledgeBuilder.add(rulesResource, ResourceType.DRL);
 

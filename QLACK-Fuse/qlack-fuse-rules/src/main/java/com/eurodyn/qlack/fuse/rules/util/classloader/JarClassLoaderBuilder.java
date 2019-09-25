@@ -58,9 +58,9 @@ public class JarClassLoaderBuilder {
 
       try {
         for (JarInputStream jis : jarInputStreams) {
-          JarEntry entry = null;
+          JarEntry entry;
           byte[] buf = new byte[1024];
-          int len = 0;
+          int len;
           while ((entry = jis.getNextJarEntry()) != null) {
             if (!entry.isDirectory()
                 && !entry.getName().endsWith(".java")) {
@@ -100,18 +100,6 @@ public class JarClassLoaderBuilder {
   }
 
   private ClassLoader getParentClassLoader() {
-    // sun.misc.launcher$AppClassLoader -> sun.misc.launcher$ExtClassLoader
-    // -> null
-    // ClassLoader parent = Thread.currentThread().getContextClassLoader();
-    // ClassLoader parent = ClassLoader.getSystemClassLoader();
-
-    // BundleWiringImpl$BundleClassLoaderJava5 (jbpm-runtime) ->
-    // java.net.URLClassLoader (karaf) -> sun.misc.launcher$AppClassLoader
-    // -> ...
-    // org.osgi.framework.wiring.BundleWiring
-    // org.apache.felix.framework.BundleWiringImpl
-    // BundleClassLoaderJava5 extends BundleClassLoader extends
-    // java.security.SecureClassLoader
     return org.drools.core.common.ProjectClassLoader.class
         .getClassLoader();
   }
