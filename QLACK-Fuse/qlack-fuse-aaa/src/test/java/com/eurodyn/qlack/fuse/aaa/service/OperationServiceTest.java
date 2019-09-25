@@ -505,7 +505,6 @@ public class OperationServiceTest {
   @Test
   public void testIsPermittedForGroupByResource() {
     when(userGroupRepository.fetchById(userGroup.getId())).thenReturn(userGroup);
-    when(operationRepository.findByName(operation.getName())).thenReturn(operation);
     when(userGroupHasOperationRepository.findByUserGroupIdAndOperationNameAndResourceNameAndResourceObjectId(userGroup.getId(), operation.getName(),resource.getName(),resource.getObjectId()))
             .thenReturn(userGroupHasOperation);
     Boolean permittedForGroupByResource = operationService.isPermittedForGroupByResource(userGroup.getId(), operation.getName(),resource.getName(),resource.getObjectId());
