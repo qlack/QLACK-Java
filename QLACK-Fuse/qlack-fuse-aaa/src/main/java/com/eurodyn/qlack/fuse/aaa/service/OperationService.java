@@ -342,6 +342,44 @@ public class OperationService {
     return retVal;
   }
 
+  /**
+   * Checks whether a specific operation, for a specific userGroup on a specific resource is allowed.
+   * The check is performed by checking whether the specified userGroup is assigned the specific
+   * operation and resource, if yes, check the deny flag of the operation assignment to decide
+   * whether the userGroup is permitted the operation. In case no assignment for this operation can be
+   * found for the userGroup the userGroup's ancestors are checked recursively until we arrive to a
+   * decision.
+   *
+   * @param userGroupID The id of the userGroup for which to check the operation
+   * @param operationName The name of the operation to check
+   * @param resourceName The name of the resource to check
+   * @param resourceObjectId A specific object Id the resource is referring to
+   * @return true, if the group is allowed the operation. false, if the group is denied the
+   * operation. null, if there is no information available to reply accordingly.
+   */
+  public Boolean isPermittedForGroupByResource(String userGroupID, String operationName, String resourceName, String resourceObjectId) {
+    LOGGER.log(Level.FINEST,
+            "Checking permissions for userGroup {0}, operation {1} and resource with name {2} and object ID {3}.",
+            new String[] { userGroupID, operationName, resourceName, resourceObjectId});
+
+    UserGroup userGroup = userGroupRepository.fetchById(userGroupID);
+
+    Boolean retVal = null;
+    UserGroupHasOperation gho = userGroupHasOperationRepository
+            .findByUserGroupIdAndOperationNameAndResourceNameAndResourceObjectId(userGroupID, operationName, resourceName,
+                    resourceObjectId);
+    if (gho != null) {
+      retVal = !gho.isDeny();
+    }
+    else if (userGroup.getParent() != null) {
+      // If this group is not assigned the operation check the group's
+      // parents until a result is found or until no other parent exists.
+      retVal = isPermittedForGroup(userGroup.getParent().getId(), operationName, resourceObjectId);
+    }
+
+    return retVal;
+  }
+
   private Set<String> getUsersForOperation(String operationName,
       String resourceObjectID, boolean checkUserGroups, boolean getAllowed) {
     Set<String> allUsers = userRepository.getUserIds(false);

@@ -13,6 +13,8 @@ public interface UserGroupHasOperationRepository extends AAARepository<UserGroup
   UserGroupHasOperation findByUserGroupIdAndResourceIdAndOperationName(String userGroupId, String resourceId,
                                                                    String operationName);
 
+  UserGroupHasOperation findByUserGroupIdAndOperationNameAndResourceNameAndResourceObjectId(String userGroupId, String operationName, String resourceName,String resourceObjectId);
+
   List<UserGroupHasOperation> findByOperationName(String operationName);
 
   List<UserGroupHasOperation> findByResourceIdAndOperationName(String resourceId, String operationName);
