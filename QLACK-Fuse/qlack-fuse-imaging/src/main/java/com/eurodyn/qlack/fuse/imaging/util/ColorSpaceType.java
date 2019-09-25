@@ -2,6 +2,8 @@ package com.eurodyn.qlack.fuse.imaging.util;
 
 /**
  * The list of detectable color-spaces.
+ *
+ * @author European Dynamics SA.
  */
 @SuppressWarnings("squid:S00115")
 public enum ColorSpaceType {
@@ -36,16 +38,32 @@ public enum ColorSpaceType {
   CS_PYCC(1002),
   CS_GRAY(1003);
 
+  /**
+   * Color space type value
+   */
   private final int val;
 
+  /**
+   * Copy constructor
+   * @param val the color space type value
+   */
   ColorSpaceType(int val) {
     this.val = val;
   }
 
+  /**
+   * Returns current color space type value
+   * @return the current color space type value
+   */
   public int getVal() {
     return val;
   }
 
+  /**
+   * Returns the value corresponding name
+   * @param val the color space type value
+   * @return the value corresponding name
+   */
   public static String getReverseVal(int val) {
       for(ColorSpaceType v : values()) {
         if (v.getVal() == val) {

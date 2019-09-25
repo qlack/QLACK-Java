@@ -3,6 +3,7 @@ package com.eurodyn.qlack.fuse.imaging;
 import com.eurodyn.qlack.fuse.imaging.dto.ImageFormatHandler;
 import com.eurodyn.qlack.fuse.imaging.dto.ImageInfo;
 import com.eurodyn.qlack.fuse.imaging.exception.ImagingException;
+import com.eurodyn.qlack.fuse.imaging.service.ImagingService;
 import com.eurodyn.qlack.fuse.imaging.util.ICCProfile;
 import com.eurodyn.qlack.fuse.imaging.util.ResamplingAlgorithm;
 import com.eurodyn.qlack.fuse.imaging.util.TIFFCompression;
@@ -15,7 +16,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -28,7 +28,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ImagingServiceTest {

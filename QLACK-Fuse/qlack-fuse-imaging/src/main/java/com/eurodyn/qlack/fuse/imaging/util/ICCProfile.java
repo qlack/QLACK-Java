@@ -2,6 +2,8 @@ package com.eurodyn.qlack.fuse.imaging.util;
 
 /**
  * A list of ICC color profiles to be used in colorspace conversions.
+ *
+ * @author European Dynamics SA.
  */
 @SuppressWarnings("squid:S00115")
 public enum ICCProfile {

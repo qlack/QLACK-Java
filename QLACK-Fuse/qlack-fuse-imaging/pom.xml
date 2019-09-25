@@ -168,6 +168,10 @@
       <artifactId>imageio-batik</artifactId>
       <version>${twelvemonkeys.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+    </dependency>
     <!--<dependency>-->
       <!--<groupId>org.apache.xmlgraphics</groupId>-->
       <!--<artifactId>batik-rasterizer-ext</artifactId>-->

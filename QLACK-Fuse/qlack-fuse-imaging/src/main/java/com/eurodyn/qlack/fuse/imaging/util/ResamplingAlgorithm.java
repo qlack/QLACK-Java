@@ -5,6 +5,8 @@ package com.eurodyn.qlack.fuse.imaging.util;
  * resampling algorithm is appropriate for just any type of resampling. You need to understand what
  * type of resampling you are about to perform (and some times even the type of image you are
  * working with) to be able to choose the most appropriate algorithm.
+ *
+ * @author European Dynamics SA.
  */
 public enum ResamplingAlgorithm {
   FILTER_UNDEFINED(0),
@@ -24,12 +26,23 @@ public enum ResamplingAlgorithm {
   FILTER_BLACKMAN_BESSEL(14),
   FILTER_BLACKMAN_SINC(15);
 
+  /**
+   * Filter value
+   */
   private final int val;
 
+  /**
+   * Copy constructor
+   * @param val filter value
+   */
   ResamplingAlgorithm(int val) {
     this.val = val;
   }
 
+  /**
+   * Returns current filter value
+   * @return the current filter value
+   */
   public int getVal() {
     return val;
   }

@@ -1,36 +1,26 @@
 package com.eurodyn.qlack.fuse.imaging.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * Definition of Dots Per Inch (DPI).
+ *
+ * @author European Dynamics SA.
  */
+@Getter
+@Setter
+@ToString
 public class DotsPerInch {
-  // Horizontal DPI.
+
+  /**
+   * Horizontal DPI.
+   */
   private int horizontal;
 
-  // Vertical DPI.
+  /**
+   * Vertical DPI.
+   */
   private int vertical;
-
-  public int getHorizontal() {
-    return horizontal;
-  }
-
-  public void setHorizontal(int horizontal) {
-    this.horizontal = horizontal;
-  }
-
-  public int getVertical() {
-    return vertical;
-  }
-
-  public void setVertical(int vertical) {
-    this.vertical = vertical;
-  }
-
-  @Override
-  public String toString() {
-    return "DotsPerInch{" +
-      "horizontal=" + horizontal +
-      ", vertical=" + vertical +
-      '}';
-  }
 }

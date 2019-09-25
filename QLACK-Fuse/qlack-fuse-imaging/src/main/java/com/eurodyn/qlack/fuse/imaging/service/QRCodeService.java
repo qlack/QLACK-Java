@@ -1,4 +1,4 @@
-package com.eurodyn.qlack.fuse.imaging;
+package com.eurodyn.qlack.fuse.imaging.service;
 
 import com.eurodyn.qlack.fuse.imaging.exception.ImagingException;
 import com.google.zxing.BarcodeFormat;
@@ -18,30 +18,62 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 
+/**
+ * Provides QR code generation related functionality
+ *
+ * @author European Dynamics SA.
+ */
 @Service
 @Validated
 public class QRCodeService {
 
-  // Default width for QR code.
+  /**
+   * Default width for QR code.
+   */
   public static final int DEFAULT_WIDTH = 125;
 
-  // Default height for QR code.
+  /**
+   * Default height for QR code.
+   */
   public static final int DEFAULT_HEIGHT = 125;
 
-  // Default image format for QR code.
+  /**
+   * Default image format for QR code.
+   */
   public static final String DEFAULT_FORMAT = "PNG";
 
-  // Default background color for QR code.
+  /**
+   * Default background color for QR code.
+   */
   public static final Color DEFAULT_BACKGROUND = Color.WHITE;
 
-  // Default foreground color for QR code.
+  /**
+   * Default foreground color for QR code.
+   */
   public static final Color DEFAULT_FOREGROUND = Color.BLACK;
 
+  /**
+   * Generates a QR code for the given text using default values for width, height, image format,
+   * background and foreground colors
+   * @param text the input text
+   * @return a byte array representing the QR code
+   */
   public byte[] generateQRCode(String text) {
     return generateQRCode(text, DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_FORMAT, DEFAULT_BACKGROUND,
       DEFAULT_FOREGROUND);
   }
 
+  /**
+   * Generates a QR code for the given text using provided values for width, height, image format,
+   * background and foreground colors
+   * @param text the input text
+   * @param width qr code width
+   * @param height qr code height
+   * @param imageFormat qr code image format
+   * @param background qr code image background color
+   * @param foreground qr code image foreground color
+   * @return a byte array representing the QR code
+   */
   public byte[] generateQRCode(String text, int width, int height, String imageFormat,
     Color background, Color foreground) {
     byte[] qrCode = null;

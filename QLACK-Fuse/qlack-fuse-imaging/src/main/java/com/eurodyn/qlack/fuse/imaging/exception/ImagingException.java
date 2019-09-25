@@ -4,6 +4,8 @@ import com.eurodyn.qlack.common.exception.QException;
 
 /**
  * A generic exception for errors related to image processing.
+ *
+ * @author European Dynamics SA.
  */
 public class ImagingException extends QException {
 

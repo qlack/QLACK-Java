@@ -17,9 +17,14 @@ import java.util.Iterator;
 
 /**
  * Utility methods to be used by various imaging functions.
+ *
+ * @author European Dynamics SA.
  */
 public class ImagingUtil {
 
+  /**
+   * Default constructor
+   */
   private ImagingUtil() {
   }
 

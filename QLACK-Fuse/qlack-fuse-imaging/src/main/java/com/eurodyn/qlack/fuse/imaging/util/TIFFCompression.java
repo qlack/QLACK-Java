@@ -2,6 +2,8 @@ package com.eurodyn.qlack.fuse.imaging.util;
 
 /**
  * Available algorithm to compress TIFFs.
+ *
+ * @author European Dynamics SA.
  */
 public enum TIFFCompression {
   None("None"),
@@ -14,11 +16,23 @@ public enum TIFFCompression {
   PackBits("PackBits"),
   Deflate("Deflate");
 
+  /**
+   * Algorithm value
+   */
   private final String val;
+
+  /**
+   * Copy constructor
+   * @param val the current algorithm value
+   */
   TIFFCompression(String val) {
     this.val = val;
   }
 
+  /**
+   * Returns current algorithm value
+   * @return the current algorithm value
+   */
   public String getVal() {
     return val;
   }

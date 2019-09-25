@@ -1,4 +1,4 @@
-package com.eurodyn.qlack.fuse.imaging;
+package com.eurodyn.qlack.fuse.imaging.service;
 
 import com.eurodyn.qlack.fuse.imaging.dto.ImageFormatHandler;
 import com.eurodyn.qlack.fuse.imaging.dto.ImageInfo;
@@ -42,19 +42,24 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Provides image filtering and conversion functionality
+ *
+ * @author European Dynamics SA.
+ */
 @Service
 @Validated
 public class ImagingService {
 
   /**
-   * Resamples an image to the new dimensions using one of the available resampling algorithms.
+   * Re-samples an image to the new dimensions using one of the available resampling algorithms.
    *
    * @param originalImage The image to resample.
-   * @param width The new widht.
+   * @param width The new width.
    * @param height The new height.
    * @param qfiResamplingAlgorithm The resampling algorithm to use.
    * @param imageType The type of the image (so that the resulting image is of the same type).
-   * @return Returns a resampled image.
+   * @return Returns a re-sampled image.
    */
   private byte[] resample(BufferedImage originalImage, int width, int height,
     ResamplingAlgorithm qfiResamplingAlgorithm, String imageType) throws IOException {
@@ -68,7 +73,7 @@ public class ImagingService {
   }
 
   /**
-   * Initialiser in which all SPI readers/writers are registered with ImageIO.
+   * Initializer in which all SPI readers/writers are registered with ImageIO.
    */
   @PostConstruct
   public void init() {
@@ -94,6 +99,10 @@ public class ImagingService {
     return handlers;
   }
 
+  /**
+   * Returns the supported image format handlers
+   * @return a list of the supported image format handlers
+   */
   public List<ImageFormatHandler> getSupportedWriteFormats() {
     List<ImageFormatHandler> handlers = new ArrayList<>();
 
@@ -111,14 +120,30 @@ public class ImagingService {
     return handlers;
   }
 
+  /**
+   * Checks if the provided format is supported for reading
+   * @param format the format
+   * @return true if the format is supported, false otherwise
+   */
   public boolean isFormatSupportedForRead(String format) {
     return getSupportedReadFormats().stream().anyMatch(o -> o.getFormat().equals(format));
   }
 
+  /**
+   * Checks if the provided format is supported for writing
+   * @param format the format
+   * @return true if the format is supported, false otherwise
+   */
   public boolean isFormatSupportedForWrite(String format) {
     return getSupportedWriteFormats().stream().anyMatch(o -> o.getFormat().equals(format));
   }
 
+  /**
+   * Provides information for the given image. Among the information provided are the bpp, the
+   * image colorspace type, the width and height, the mime-type, dpi and image format
+   * @param image a byte array representing an image
+   * @return an {@link ImageInfo} object with information for the given image
+   */
   public ImageInfo getInfo(byte[] image) {
     ImageInfo imageInfo = null;
 
@@ -147,10 +172,21 @@ public class ImagingService {
     return imageInfo;
   }
 
+  /**
+   * Converts an image to another format
+   * @param image the image
+   * @param dstFormat the target image format
+   * @return byte array representing the converted image
+   */
   public byte[] convert(byte[] image, String dstFormat) {
     return convert(image, dstFormat, null);
   }
 
+  /**
+   * Removes alpha channel from given image
+   * @param image the image
+   * @return a byte array representing the edited image
+   */
   public byte[] removeAlphaChannel(byte[] image) {
     try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
       final String type = ImagingUtil.getType(image);
@@ -169,13 +205,20 @@ public class ImagingService {
     }
   }
 
+  /**
+   * Converts an image to another format and also convert its colorspace
+   * @param image the image
+   * @param dstFormat the target image format
+   * @param dstColorspace the target image colorspace
+   * @return byte array representing the converted image
+   */
   public byte[] convert(byte[] image, String dstFormat, ICCProfile dstColorspace) {
     try (ByteArrayOutputStream dstImage = new ByteArrayOutputStream()) {
       // Read image.
       try (InputStream originalImageInputStream = new ByteArrayInputStream(image)) {
         BufferedImage originalImage = ImageIO.read(originalImageInputStream);
 
-        // Convert colospace if requested.
+        // Convert colorspace if requested.
         if (dstColorspace != null) {
           String iccProfileFile = "icc/" + dstColorspace.name() + ".icc";
           ColorSpace cmykColorSpace = new ICC_ColorSpace(ICC_Profile.getInstance(
@@ -198,10 +241,23 @@ public class ImagingService {
     }
   }
 
+  /**
+   * Converts an image to TIFF format
+   * @param image the image
+   * @param tiffCompression the TIFF compression algorithm
+   * @return byte array representing the converted image
+   */
   public byte[] convertToTIFF(byte[] image, TIFFCompression tiffCompression) {
     return convertToTIFF(image, null, tiffCompression);
   }
 
+  /**
+   * Converts an image to TIFF format and also convert its colorspace
+   * @param image the image
+   * @param dstColorspace the target image colorspace
+   * @param tiffCompression the TIFF compression algorithm
+   * @return byte array representing the converted image
+   */
   public byte[] convertToTIFF(byte[] image, ICCProfile dstColorspace,
       TIFFCompression tiffCompression) {
     try (ByteArrayOutputStream convertedImage = new ByteArrayOutputStream()) {
@@ -236,6 +292,16 @@ public class ImagingService {
     }
   }
 
+  /**
+   * Re-samples an image to the new dimensions using a resize percentage and one of the available
+   * resampling
+   * algorithms.
+   *
+   * @param image The image to resample.
+   * @param percent The new percentage for the width and height
+   * @param qfiResamplingAlgorithm The resampling algorithm to use.
+   * @return Returns a re-sampled image.
+   */
   public byte[] resampleByPercent(byte[] image, int percent,
     ResamplingAlgorithm qfiResamplingAlgorithm) {
     try (InputStream originalImageInputStream = new ByteArrayInputStream(image)) {
@@ -249,6 +315,16 @@ public class ImagingService {
     }
   }
 
+  /**
+   * Re-samples an image to the new dimensions using a resize factor and one of the available
+   * resampling
+   * algorithms.
+   *
+   * @param image The image to resample.
+   * @param factor The resize factor for width and height
+   * @param qfiResamplingAlgorithm The resampling algorithm to use.
+   * @return Returns a re-sampled image.
+   */
   public byte[] resampleByFactor(byte[] image, float factor,
     ResamplingAlgorithm qfiResamplingAlgorithm) {
     try (InputStream originalImageInputStream = new ByteArrayInputStream(image)) {
@@ -261,6 +337,14 @@ public class ImagingService {
     }
   }
 
+  /**
+   * Re-samples an image to the new width using one of the available resampling algorithms.
+   *
+   * @param image The image to resample.
+   * @param width The new width.
+   * @param qfiResamplingAlgorithm The resampling algorithm to use.
+   * @return Returns a re-sampled image.
+   */
   public byte[] resampleByWidth(byte[] image, int width, ResamplingAlgorithm qfiResamplingAlgorithm) {
     try (InputStream originalImageInputStream = new ByteArrayInputStream(image)) {
       BufferedImage originalBufferedImage = ImageIO.read(originalImageInputStream);
@@ -273,6 +357,15 @@ public class ImagingService {
     }
   }
 
+  /**
+   * Re-samples an image to the new height sing one of the available resampling
+   * algorithms.
+   *
+   * @param image The image to resample.
+   * @param height The new height.
+   * @param qfiResamplingAlgorithm The resampling algorithm to use.
+   * @return Returns a re-sampled image.
+   */
   public byte[] resampleByHeight(byte[] image, int height,
       ResamplingAlgorithm qfiResamplingAlgorithm) {
     try (InputStream originalImageInputStream = new ByteArrayInputStream(image)) {
@@ -285,6 +378,15 @@ public class ImagingService {
     }
   }
 
+  /**
+   * Re-samples an image to the new dimensions using one of the available resampling algorithms.
+   *
+   * @param image The image to resample.
+   * @param width The new width.
+   * @param height The new height.
+   * @param qfiResamplingAlgorithm The resampling algorithm to use.
+   * @return Returns a re-sampled image.
+   */
   public byte[] resample(byte[] image, int width, int height,
       ResamplingAlgorithm qfiResamplingAlgorithm) {
     try (InputStream originalImageInputStream = new ByteArrayInputStream(image)) {
