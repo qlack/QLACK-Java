@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: mailing_002
+      author: European Dynamics SA
+      changes:
+        - modifyDataType:
+            columnName: cc_emails
+            newDataType: varchar(4000)
+            tableName: mai_email
+        - modifyDataType:
+            columnName: bcc_emails
+            newDataType: varchar(4000)
+            tableName: mai_email
