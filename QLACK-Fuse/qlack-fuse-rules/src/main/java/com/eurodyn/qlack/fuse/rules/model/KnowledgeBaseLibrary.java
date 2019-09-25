@@ -22,16 +22,16 @@ import lombok.Setter;
 @NoArgsConstructor
 public class KnowledgeBaseLibrary extends QlackBaseModel {
 
-    /**
-     * the library of the Knowledge Base
-     */
-    @Lob
-    private byte[] library;
+  /**
+   * the library of the Knowledge Base
+   */
+  @Lob
+  private byte[] library;
 
-    /**
-     * the Knowledge Base
-     */
-    @ManyToOne
-    @JoinColumn(name = "kbase_id")
-    private KnowledgeBase base;
+  /**
+   * the Knowledge Base
+   */
+  @ManyToOne
+  @JoinColumn(name = "kbase_id")
+  private KnowledgeBase base;
 }

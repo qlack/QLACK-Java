@@ -21,15 +21,15 @@ import lombok.Setter;
 @NoArgsConstructor
 public class KnowledgeBaseRule extends QlackBaseModel {
 
-    /**
-     * the .drl rule of the Knowledge Base
-     */
-    private String rule;
+  /**
+   * the .drl rule of the Knowledge Base
+   */
+  private String rule;
 
-    /**
-     * the Knowledge Base
-     */
-    @ManyToOne
-    @JoinColumn(name = "kbase_id")
-    private KnowledgeBase base;
+  /**
+   * the Knowledge Base
+   */
+  @ManyToOne
+  @JoinColumn(name = "kbase_id")
+  private KnowledgeBase base;
 }

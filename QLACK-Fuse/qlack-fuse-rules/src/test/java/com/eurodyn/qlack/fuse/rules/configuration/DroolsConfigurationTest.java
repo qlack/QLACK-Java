@@ -20,7 +20,7 @@ public class DroolsConfigurationTest {
   }
 
   @Test
-  public void droolsConfigurationTest(){
+  public void droolsConfigurationTest() {
     assertNotNull(droolsConfiguration.kieBase());
     assertNotNull(droolsConfiguration.kieSession());
     assertNotNull(droolsConfiguration.statelessKieSession());

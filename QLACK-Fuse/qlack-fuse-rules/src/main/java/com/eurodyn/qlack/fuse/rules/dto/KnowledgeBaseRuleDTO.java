@@ -14,8 +14,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class KnowledgeBaseRuleDTO {
 
-    /**
-     * the .drl rule of the Knowledge Base
-     */
-    private String rule;
+  /**
+   * the .drl rule of the Knowledge Base
+   */
+  private String rule;
 }

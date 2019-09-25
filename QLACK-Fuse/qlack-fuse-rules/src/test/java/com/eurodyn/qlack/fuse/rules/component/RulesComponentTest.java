@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 import com.eurodyn.qlack.fuse.rules.SerializableClass;
 import com.eurodyn.qlack.fuse.rules.UnserializableClass;
 import com.eurodyn.qlack.fuse.rules.exception.QRulesException;
-import com.eurodyn.qlack.fuse.rules.util.JarClassLoaderBuilder;
+import com.eurodyn.qlack.fuse.rules.util.classloader.JarClassLoaderBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,32 +23,35 @@ public class RulesComponentTest {
   private ClassLoader classLoader;
 
   @Before
-  public void init(){
+  public void init() {
     rulesComponent = new RulesComponent();
     JarClassLoaderBuilder classLoaderBuilder = new JarClassLoaderBuilder();
     classLoader = classLoaderBuilder.buildClassLoader(null);
   }
 
   @Test(expected = QRulesException.class)
-  public void serializeObjectExceptionTest(){
+  public void serializeObjectExceptionTest() {
     assertNotNull(rulesComponent.serializeObject(new UnserializableClass()));
   }
 
   @Test
-  public void deserializeObjectTest(){
-    assertNotNull(rulesComponent.deserializeObject(classLoader, rulesComponent.serializeObject(new SerializableClass())));
+  public void deserializeObjectTest() {
+    assertNotNull(rulesComponent
+        .deserializeObject(classLoader, rulesComponent.serializeObject(new SerializableClass())));
   }
 
   @Test
   public void deserializeObjectNullClassTest() throws ClassNotFoundException {
 
     ClassLoader classLoaderInstance = mock(ClassLoader.class);
-    when(classLoaderInstance.loadClass("com.eurodyn.qlack.fuse.rules.SerializableClass")).thenReturn(null);
-    assertNotNull(rulesComponent.deserializeObject(classLoaderInstance, rulesComponent.serializeObject(new SerializableClass())));
+    when(classLoaderInstance.loadClass("com.eurodyn.qlack.fuse.rules.SerializableClass"))
+        .thenReturn(null);
+    assertNotNull(rulesComponent.deserializeObject(classLoaderInstance,
+        rulesComponent.serializeObject(new SerializableClass())));
   }
 
   @Test(expected = QRulesException.class)
-  public void deserializeObjectExceptionTest(){
+  public void deserializeObjectExceptionTest() {
     assertNotNull(rulesComponent.deserializeObject(classLoader, "object".getBytes()));
   }
 }

@@ -4,6 +4,8 @@ import static org.mockito.Mockito.when;
 
 import com.eurodyn.qlack.fuse.rules.InitTestValues;
 import com.eurodyn.qlack.fuse.rules.exception.QRulesException;
+import com.eurodyn.qlack.fuse.rules.util.classloader.JarClassLoaderBuilder;
+import com.eurodyn.qlack.fuse.rules.util.classloader.MapBackedClassLoader;
 import java.io.IOException;
 import java.util.List;
 import org.drools.core.impl.KnowledgeBaseFactory;
@@ -39,7 +41,7 @@ public class RulesUtilExceptionTest {
   @Test(expected = QRulesException.class)
   public void serializeKnowledgeBaseExceptionTest() throws IOException {
     KieBase kbase = KnowledgeBaseFactory
-      .newKnowledgeBase("test", null);
+        .newKnowledgeBase("test", null);
     when(DroolsStreamUtils.streamOut(kbase)).thenThrow(new IOException());
 
     rulesUtil.serializeKnowledgeBase(kbase);
@@ -47,7 +49,7 @@ public class RulesUtilExceptionTest {
 
   @Test(expected = QRulesException.class)
   public void deserializeKnowledgeBaseExceptionTest()
-    throws IOException, ClassNotFoundException {
+      throws IOException, ClassNotFoundException {
 
     JarClassLoaderBuilder classLoaderBuilder = new JarClassLoaderBuilder();
     MapBackedClassLoader classLoader = classLoaderBuilder.buildClassLoader("null");

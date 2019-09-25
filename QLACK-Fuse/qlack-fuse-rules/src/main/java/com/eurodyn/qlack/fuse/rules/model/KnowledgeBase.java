@@ -23,22 +23,22 @@ import lombok.Setter;
 @NoArgsConstructor
 public class KnowledgeBase extends QlackBaseModel {
 
-    /**
-     * the serialized KieBase
-     */
-    @Lob
-    private byte[] state;
+  /**
+   * the serialized KieBase
+   */
+  @Lob
+  private byte[] state;
 
-    /**
-     * the libraries of the Knowledge Base
-     */
-    @OneToMany(mappedBy = "base", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<KnowledgeBaseLibrary> libraries;
+  /**
+   * the libraries of the Knowledge Base
+   */
+  @OneToMany(mappedBy = "base", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  private List<KnowledgeBaseLibrary> libraries;
 
-    /**
-     * the rules of the Knowledge Base
-     */
-    @OneToMany(mappedBy = "base", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<KnowledgeBaseRule> rules;
+  /**
+   * the rules of the Knowledge Base
+   */
+  @OneToMany(mappedBy = "base", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  private List<KnowledgeBaseRule> rules;
 
 }

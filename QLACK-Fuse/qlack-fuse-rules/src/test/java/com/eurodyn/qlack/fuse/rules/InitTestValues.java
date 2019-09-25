@@ -41,7 +41,7 @@ public class InitTestValues {
 
   public List<byte[]> createLibraries() {
     List<KnowledgeBaseLibrary> runtimeLibraries = createKnowledgeBase()
-      .getLibraries();
+        .getLibraries();
     for (KnowledgeBaseLibrary runtimeLibrary : runtimeLibraries) {
       byte[] library = runtimeLibrary.getLibrary();
       libraries.add(library);
@@ -139,17 +139,17 @@ public class InitTestValues {
     return facts;
   }
 
-  public List<String> createWrongRules(){
+  public List<String> createWrongRules() {
 
     List<String> wrongRules = new ArrayList<>();
     String rule1 = "import package.does.not.exist.Account\n"
-      + "\n"
-      + "rule \"accountBalanceAtLeast100\"\n"
-      + "  when\n"
-      + "    $account : Account(balance < 100)\n"
-      + "  then\n"
-      + "    System.out.println(\"The balance of the account \" +$account.getId()+ \" is significantly low.\");\n"
-      + "end";
+        + "\n"
+        + "rule \"accountBalanceAtLeast100\"\n"
+        + "  when\n"
+        + "    $account : Account(balance < 100)\n"
+        + "  then\n"
+        + "    System.out.println(\"The balance of the account \" +$account.getId()+ \" is significantly low.\");\n"
+        + "end";
 
     wrongRules.add(rule1);
 

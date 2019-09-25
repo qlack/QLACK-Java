@@ -15,23 +15,23 @@ import lombok.Setter;
 @NoArgsConstructor
 public class KnowledgeBaseDTO {
 
-    /**
-     * the id
-     */
-    private String id;
+  /**
+   * the id
+   */
+  private String id;
 
-    /**
-     * the serialized KieBase
-     */
-    private byte[] state;
+  /**
+   * the serialized KieBase
+   */
+  private byte[] state;
 
-    /**
-     * the libraries of the Knowledge Base
-     */
-    private List<KnowledgeBaseLibraryDTO> libraries;
+  /**
+   * the libraries of the Knowledge Base
+   */
+  private List<KnowledgeBaseLibraryDTO> libraries;
 
-    /**
-     * the rules of the Knowledge Base
-     */
-    private List<KnowledgeBaseRuleDTO> rules;
+  /**
+   * the rules of the Knowledge Base
+   */
+  private List<KnowledgeBaseRuleDTO> rules;
 }

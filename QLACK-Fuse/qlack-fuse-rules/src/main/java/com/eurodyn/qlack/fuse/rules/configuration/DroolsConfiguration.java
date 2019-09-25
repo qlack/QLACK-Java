@@ -26,7 +26,7 @@ public class DroolsConfiguration {
 
   @Bean
   @ConditionalOnMissingBean(KieBase.class)
-  public KieBase kieBase(){
+  public KieBase kieBase() {
     return kieContainer().getKieBase();
   }
 

@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.fuse.rules.InitTestValues;
-import com.eurodyn.qlack.fuse.rules.exception.QRulesException;
 import com.eurodyn.qlack.fuse.rules.mapper.KnowledgeBaseMapper;
 import com.eurodyn.qlack.fuse.rules.model.KnowledgeBase;
 import com.eurodyn.qlack.fuse.rules.repository.KnowledgeBaseRepository;
