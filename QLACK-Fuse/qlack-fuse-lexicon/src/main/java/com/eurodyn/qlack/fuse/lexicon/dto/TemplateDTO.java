@@ -6,7 +6,7 @@ import lombok.Setter;
 
 /** A simple DTO (Data Transfer Object) that does not contain any business logic. It is used to
  * retrieve and store the Template data .
- * @author European Dynamics
+ * @author European Dynamics SA
  */
 @Getter
 @Setter

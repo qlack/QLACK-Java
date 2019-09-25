@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 /** A class that specifies the criteria that is used in order to search
  *  for a specific Key
- * @author  European Dynamics
+ * @author  European Dynamics SA
  */
 @Getter
 @Setter

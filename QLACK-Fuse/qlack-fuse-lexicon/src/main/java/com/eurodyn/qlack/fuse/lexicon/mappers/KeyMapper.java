@@ -14,6 +14,10 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
+/**
+ * An interface Mapper for Key to map its object with its value
+ * @author European Dynamics SA
+ */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface KeyMapper extends LexiconMapper<Key, KeyDTO> {
 

@@ -7,7 +7,7 @@ import lombok.Setter;
 
 /**
  * A simple DTO for Key class. The usage of it is to retrieve and store the data for the Key .
- * @author European Dynamics
+ * @author European Dynamics SA
  */
 @Getter
 @Setter
