@@ -1,5 +1,10 @@
 package com.eurodyn.qlack.fuse.search.request;
 
+/**
+ * Request for scrolling
+ *
+ * @author European Dynamics SA.
+ */
 public class ScrollRequest extends BaseRequest {
 
   private Integer scroll;

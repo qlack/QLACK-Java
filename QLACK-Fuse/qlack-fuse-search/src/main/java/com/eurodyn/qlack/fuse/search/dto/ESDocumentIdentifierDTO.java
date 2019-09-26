@@ -8,6 +8,8 @@ import lombok.Setter;
 
 /**
  * Holds the minimum necessary information to uniquely identify a document in ES.
+ *
+ * @author European Dynamics SA.
  */
 @Getter
 @Setter

@@ -3,7 +3,9 @@ package com.eurodyn.qlack.fuse.search.exception;
 import com.eurodyn.qlack.common.exception.QException;
 
 /**
- * A generic wrapping-exception for this module.
+ * A generic wrapping-exception for qlack-fuse-search module.
+ *
+ * @author European Dynamics SA.
  */
 public class SearchException extends QException {
 

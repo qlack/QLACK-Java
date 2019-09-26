@@ -23,21 +23,32 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 /**
- * A client to communicate with ES. This client is using the {@link RestClient} implementation of
- * the ES Java client.
+ * A client to communicate with ES. This client is using the {@link RestClient} implementation of the ES Java client.
  *
- * //TODO support credentials as well as SSL: https://qbox.io/blog/rest-calls-new-java-elasticsearch-client-tutorial
+ * @author European Dynamics SA.
  */
 @Service
 @Validated
 public class ESClient {
 
-  // Logger.
+  /**
+   * Logger
+   */
   private static final Logger LOGGER = Logger.getLogger(ESClient.class.getName());
 
-  // Service references.
+  /**
+   * Elastic search RestClient
+   */
   private RestClient restClient;
+
+  /**
+   * Elastic search RestHighLevelClient
+   */
   private RestHighLevelClient rhClient;
+
+  /**
+   * properties
+   */
   private Properties properties;
 
   @Autowired
@@ -45,6 +56,10 @@ public class ESClient {
     this.properties = properties;
   }
 
+  /**
+   * Post-construct client initialization method. It initializes a REST High level client
+   * using properties provided in the <b>application.properties</b> file.
+   */
   @PostConstruct
   public void init() {
     LOGGER.log(Level.WARNING, "Initialising connection to ES: {0}", properties.getEsHosts());

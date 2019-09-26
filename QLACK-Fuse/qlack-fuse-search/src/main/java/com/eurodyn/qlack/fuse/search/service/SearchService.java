@@ -54,15 +54,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+/**
+ * Provides Elastic search related functionality
+ *
+ * @author European Dynamics SA.
+ */
 @Service
 @Validated
 @Log
 public class SearchService {
 
+  /**
+   * Jackson object mapper
+   */
   private static final ObjectMapper mapper = new ObjectMapper();
 
-  // The ES client injected by blueprint.
+  /**
+   * The ES client injected by blueprint.
+   */
   private ESClient esClient;
+
+  /**
+   * AdminService reference
+   */
   private AdminService adminService;
 
   @Autowired
@@ -205,6 +219,12 @@ public class SearchService {
     return result;
   }
 
+  /**
+   * Returns all the indices from the {@link QuerySpec} object to an indices endpoint
+   *
+   * @param dto a {@link QuerySpec} object
+   * @return the indices as a comma separated value string
+   */
   private String processIndices(QuerySpec dto) {
     // This is done to remove duplicates
     String indicesEndpoint = "";
@@ -225,6 +245,12 @@ public class SearchService {
     return indicesEndpoint;
   }
 
+  /**
+   * Returns all the types from the {@link QuerySpec} object to a types endpoint
+   *
+   * @param dto a {@link QuerySpec} object
+   * @return the types as a comma separated value string
+   */
   private String processTypes(QuerySpec dto) {
     // This is done to remove duplicates
     String typesEndpoint = "";
@@ -245,6 +271,13 @@ public class SearchService {
     return typesEndpoint;
   }
 
+  /**
+   * Creates an {@link InternalSearchRequest} object using given the {@link QuerySpec} properties
+   * and params
+   * @param dto a {@link QuerySpec} object
+   * @param params a parameter map
+   * @return an {@link InternalSearchRequest} object
+   */
   private InternalSearchRequest createRequest(QuerySpec dto, Map<String, String> params) {
     QuerySort dtoSort = dto.getQuerySort();
     InternalSearchRequest internalRequest = new InternalSearchRequest();
@@ -268,6 +301,11 @@ public class SearchService {
     return internalRequest;
   }
 
+  /**
+   * Builds a query based on the {@link QuerySpec} object properties
+   * @param dto a {@link QuerySpec} object
+   * @return a query string
+   */
   private String buildQuery(QuerySpec dto) {
     StringBuilder builder = new StringBuilder("{");
 

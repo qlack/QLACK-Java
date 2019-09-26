@@ -1,15 +1,18 @@
 package com.eurodyn.qlack.fuse.search.dto;
 
 import com.eurodyn.qlack.fuse.search.service.IndexingService;
-import java.io.Serializable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.io.Serializable;
 
 /**
  * Holds a document to be indexed. The source object to be indexed is specified on the
  * <i>sourceObject</i> property and can be internally converted to a JSON string by the underling
  * methods of {@link IndexingService} when convertToJSON is true.
+ *
+ * @author European Dynamics SA.
  */
 @Getter
 @Setter

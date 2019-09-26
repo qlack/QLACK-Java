@@ -15,14 +15,27 @@ import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.data.repository.query.QueryLookupStrategy;
 
+/**
+ * Elastic search configuration class
+ *
+ * @author European Dynamics SA.
+ */
 @Configuration
 @EnableElasticsearchRepositories(queryLookupStrategy = QueryLookupStrategy.Key.CREATE_IF_NOT_FOUND)
 public class EsConfig {
 
-
+  /**
+   * Environment reference
+   */
   @Autowired
   private Environment env;
 
+  /**
+   * Bean that creates a configuration for elastic search using the properties
+   * acquired from the <b>application.properties</b> file
+   * @return an Elastic search client
+   * @throws UnknownHostException if the host cannot be found
+   */
   @Bean
   public Client client() throws UnknownHostException {
 
@@ -37,6 +50,12 @@ public class EsConfig {
 
   }
 
+  /**
+   * Creates an Elastic search template by creating and using an Elastic search client
+   * @return an {@link ElasticsearchOperations} object
+   * @throws UnknownHostException if the host cannot be found
+   * @see EsConfig#client()
+   */
   @Bean
   public ElasticsearchOperations elasticsearchTemplate() throws UnknownHostException {
     return new ElasticsearchTemplate(client());
