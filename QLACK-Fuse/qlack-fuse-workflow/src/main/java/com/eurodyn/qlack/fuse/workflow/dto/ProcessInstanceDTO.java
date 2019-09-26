@@ -10,7 +10,7 @@ import lombok.ToString;
 /**
  * This object class contains useful information about the workflow processes instances.
  *
- * @author European Dynamics
+ * @author European Dynamics SA
  */
 @Getter
 @Setter
@@ -19,13 +19,20 @@ import lombok.ToString;
 @ToString
 public class ProcessInstanceDTO {
 
-  //the identifier of the task
+
+  /**
+   *  the id
+   */
   private String id;
 
-  //defines if the instance is suspended
+  /**
+   * defines if the instance is suspended
+   */
   private boolean suspended;
 
-  //the variables of the process
+  /**
+   * the variables of the process
+   **/
   private Map<String, Object> variables;
 
 }

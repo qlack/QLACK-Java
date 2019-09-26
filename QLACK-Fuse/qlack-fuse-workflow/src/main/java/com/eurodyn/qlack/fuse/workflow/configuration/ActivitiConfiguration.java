@@ -10,6 +10,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
+/** A configuration class that is used to configure an activity
+ *
+ * @author European Dynamics SA
+ */
 @Configuration
 public class ActivitiConfiguration {
 

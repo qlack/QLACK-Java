@@ -9,7 +9,7 @@ import lombok.ToString;
 /**
  * This object class contains useful information about the history of workflow processes.
  *
- * @author European Dynamics
+ * @author European Dynamics SA
  */
 @Getter
 @Setter
@@ -18,17 +18,38 @@ import lombok.ToString;
 @ToString
 public class ProcessHistoryDTO {
 
+  /**
+   *  the id of the process history
+   */
   private String id;
 
+  /**
+   * the deployment Id
+   */
   private String deploymentId;
 
+  /**
+   * the version
+   */
   private Integer version;
 
+  /**
+   * the deletion reason
+   */
   private String deleteReason;
 
+  /**
+   * the name
+   */
   private String name;
 
+  /**
+   * the description
+   */
   private String description;
 
+  /**
+   * the data
+   */
   private byte[] data;
 }

@@ -13,6 +13,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProcessFileRepository extends JpaRepository<ProcessFile, String>, QuerydslPredicateExecutor<ProcessFile> {
 
+  /** An abstract method that the usage of it is to retrieve the file name
+   * @param filename the name of the file
+   * @return the file name
+   */
   ProcessFile findOneByFilename(String filename);
 
 }

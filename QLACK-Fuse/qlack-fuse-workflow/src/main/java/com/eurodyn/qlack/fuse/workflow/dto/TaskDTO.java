@@ -10,7 +10,7 @@ import lombok.ToString;
 /**
  * This object class contains useful information about the workflow processes tasks.
  *
- * @author European Dynamics
+ * @author European Dynamics SA
  */
 @Getter
 @Setter
@@ -19,16 +19,20 @@ import lombok.ToString;
 @ToString
 public class TaskDTO {
 
-  //the identifier of the task
+  /**
+   *  the id of the task
+   */
   private String id;
 
-  //the name of the task
+  /**
+   * the name of the task
+   */
   private String name;
 
-  //the id of the process instance which created the task
+  /**the id of the process instance which created the task**/
   private String processInstanceId;
 
-  //the variables of the task
+  /**the variables of the task**/
   private Map<String, Object> variables;
 
 }

@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * This service provides methods related to the processes and workflows of Activiti.
+ * This service provides methods related to the processes and workflow of Activiti.
  *
  * @author European Dynamics
  */
