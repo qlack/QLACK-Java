@@ -21,14 +21,29 @@ import org.springframework.security.core.userdetails.UserDetails;
 @AllArgsConstructor
 public class UserDetailsDTO extends BaseDTO implements UserDetails {
 
+    /**
+     * the username
+     */
     private String username;
 
+    /**
+     * the password
+     */
     private String password;
 
+    /**
+     * the salt
+     */
     private String salt;
 
+    /**
+     * the status
+     */
     private byte status;
 
+    /**
+     * the superAdmin
+     */
     private boolean superadmin;
 
     private boolean external;

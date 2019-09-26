@@ -5,7 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * User attributes DTO
+ * A simple DTO for Attribute that does not contain any business logic. The usage is to
+ * retrieve and save the user's data attributes
  *
  * @author European Dynamics
  */
@@ -14,8 +15,17 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserAttributeDTO extends BaseDTO {
 
+  /**
+   * the attribute name
+   */
   private String name;
+  /**
+   * the data
+   */
   private String data;
+  /**
+   * the userId
+   */
   private String userId;
   private byte[] binData;
   private String contentType;

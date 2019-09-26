@@ -14,10 +14,25 @@ import java.util.Set;
 @Setter
 public class SessionDTO extends BaseDTO {
 
+  /**
+   * the userId
+   */
   private String userId;
+  /**
+   * the date that is created on the session
+   */
   private long createdOn;
+  /**
+   * the terminated on
+   */
   private Long terminatedOn;
+  /**
+   * the application session Id
+   */
   private String applicationSessionId;
+  /**
+   * a set of attributes
+   */
   private Set<SessionAttributeDTO> sessionAttributes;
 
 }
