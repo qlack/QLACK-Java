@@ -359,18 +359,8 @@
                 </goals>
                 <configuration>
                   <excludes>
-                    <exclude>com/eurodyn/qlack/**/repository/**/*</exclude>
-                    <exclude>com/eurodyn/qlack/**/exception/**/*</exclude>
-                    <exclude>com/eurodyn/qlack/**/dto/**/*</exclude>
-                    <exclude>com/eurodyn/qlack/**/model/**/*</exclude>
-                    <exclude>com/eurodyn/qlack/**/**/repository/**/*</exclude>
-                    <exclude>com/eurodyn/qlack/**/**/exception/**/*</exclude>
-                    <exclude>com/eurodyn/qlack/**/**/dto/**/*</exclude>
-                    <exclude>com/eurodyn/qlack/**/**/model/**/*</exclude>
-                    <exclude>com/eurodyn/qlack/**/**/**/repository/**/*</exclude>
-                    <exclude>com/eurodyn/qlack/**/**/**/exception/**/*</exclude>
-                    <exclude>com/eurodyn/qlack/**/**/**/dto/**/*</exclude>
-                    <exclude>com/eurodyn/qlack/**/**/**/model/**/*</exclude>
+                    <exclude>com/eurodyn/qlack/**/**/model/Q*</exclude>
+                    <exclude>com/eurodyn/qlack/fuse/rules/util/classloader/*</exclude>
                   </excludes>
                 </configuration>
               </execution>

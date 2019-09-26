@@ -1,6 +1,9 @@
 package com.eurodyn.qlack.fuse.rules;
 
 import com.eurodyn.qlack.fuse.rules.component.RulesComponent;
+import com.eurodyn.qlack.fuse.rules.dto.KnowledgeBaseDTO;
+import com.eurodyn.qlack.fuse.rules.dto.KnowledgeBaseLibraryDTO;
+import com.eurodyn.qlack.fuse.rules.dto.KnowledgeBaseRuleDTO;
 import com.eurodyn.qlack.fuse.rules.model.KnowledgeBase;
 import com.eurodyn.qlack.fuse.rules.model.KnowledgeBaseLibrary;
 import com.eurodyn.qlack.fuse.rules.model.KnowledgeBaseRule;
@@ -154,6 +157,54 @@ public class InitTestValues {
     wrongRules.add(rule1);
 
     return wrongRules;
+  }
+
+  public KnowledgeBase createFullKnowledgeBase() {
+    KnowledgeBase knowledgeBase = new KnowledgeBase();
+    knowledgeBase.setId("id");
+    knowledgeBase.setState("state".getBytes());
+    knowledgeBase.setRules(new ArrayList<>());
+    knowledgeBase.setLibraries(new ArrayList<>());
+
+    return knowledgeBase;
+  }
+
+  public KnowledgeBaseDTO createKnowledgeBaseDTO() {
+    KnowledgeBaseDTO knowledgeBaseDTO = new KnowledgeBaseDTO();
+    knowledgeBaseDTO.setId("id");
+    knowledgeBaseDTO.setState("state".getBytes());
+    knowledgeBaseDTO.setRules(new ArrayList<>());
+    knowledgeBaseDTO.setLibraries(new ArrayList<>());
+
+    return knowledgeBaseDTO;
+  }
+
+  public KnowledgeBaseRule createFullKnowledgeBaseRule() {
+    KnowledgeBaseRule knowledgeBaseRule = new KnowledgeBaseRule();
+    knowledgeBaseRule.setRule("rule");
+
+    return knowledgeBaseRule;
+  }
+
+  public KnowledgeBaseRuleDTO createKnowledgeBaseRuleDTO() {
+    KnowledgeBaseRuleDTO knowledgeBaseRuleDTO = new KnowledgeBaseRuleDTO();
+    knowledgeBaseRuleDTO.setRule("rule");
+
+    return knowledgeBaseRuleDTO;
+  }
+
+  public KnowledgeBaseLibrary createFullKnowledgeBaseLibrary() {
+    KnowledgeBaseLibrary knowledgeBaseLibrary = new KnowledgeBaseLibrary();
+    knowledgeBaseLibrary.setLibrary("library".getBytes());
+
+    return knowledgeBaseLibrary;
+  }
+
+  public KnowledgeBaseLibraryDTO createKnowledgeBaseLibraryDTO() {
+    KnowledgeBaseLibraryDTO knowledgeBaseLibraryDTO = new KnowledgeBaseLibraryDTO();
+    knowledgeBaseLibraryDTO.setLibrary("library".getBytes());
+
+    return knowledgeBaseLibraryDTO;
   }
 
 }

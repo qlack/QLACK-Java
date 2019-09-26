@@ -68,7 +68,8 @@ public class RulesComponentTest {
 
   @Test
   public void deserializeKnownObject2Test() {
-    ReflectionTestUtils.setField(rulesComponent, "acceptedPackagesNames", "com.eurodyn.qlack.fuse.rules.");
+    ReflectionTestUtils
+        .setField(rulesComponent, "acceptedPackagesNames", "com.eurodyn.qlack.fuse.rules.");
     rulesComponent.init();
     assertNotNull(rulesComponent
         .deserializeObject(classLoader, rulesComponent.serializeObject(new SerializableClass())));
