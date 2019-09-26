@@ -13,7 +13,8 @@ import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-/**
+/** A StatelessCSRFFilter class that is used for filtering reasons.
+ *
  * @author EUROPEAN DYNAMICS SA
  */
 public class StatelessCSRFFilter extends OncePerRequestFilter {

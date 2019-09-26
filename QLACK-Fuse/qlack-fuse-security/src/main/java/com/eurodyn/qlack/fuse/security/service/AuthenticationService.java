@@ -17,6 +17,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+/**
+ * A Service class that is used for Authentication procedure
+ *
+ * @author European Dynamics SA
+ */
 @Service
 @Validated
 @Transactional

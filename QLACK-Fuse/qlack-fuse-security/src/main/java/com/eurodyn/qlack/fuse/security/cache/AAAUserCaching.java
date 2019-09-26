@@ -35,10 +35,16 @@ public class AAAUserCaching implements InitializingBean {
         }
     }
 
+    /** the user cache
+     * @return the user cache
+     */
     public UserCache getUserCache() {
         return userCache;
     }
 
+    /** the cache name
+     * @return the cache name
+     */
     public String getCacheName() {
         return cacheName;
     }

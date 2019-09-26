@@ -10,6 +10,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
+ *  A class that is used to provide information about the procedure of an aaa username
+ *  password
+ *
  * @author EUROPEAN DYNAMICS SA
  */
 public class AAAUsernamePasswordProvider extends DaoAuthenticationProvider {

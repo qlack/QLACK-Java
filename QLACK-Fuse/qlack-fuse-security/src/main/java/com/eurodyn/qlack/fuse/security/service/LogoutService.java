@@ -14,6 +14,10 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * A Service class that is used to for Log out.
+ * @author European Dynamics SA
+ */
 @Service
 @Validated
 @Transactional
