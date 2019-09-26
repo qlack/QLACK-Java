@@ -56,27 +56,8 @@ public class JarClassLoaderBuilder {
     if (mapBackedClassLoader == null) {
       mapBackedClassLoader = getMapBackedClassLoader();
 
-      try {
-        for (JarInputStream jis : jarInputStreams) {
-          JarEntry entry;
-          byte[] buf = new byte[1024];
-          int len;
-          while ((entry = jis.getNextJarEntry()) != null) {
-            if (!entry.isDirectory()
-                && !entry.getName().endsWith(".java")) {
-              ByteArrayOutputStream out = new ByteArrayOutputStream();
-              while ((len = jis.read(buf)) >= 0) {
-                out.write(buf, 0, len);
-              }
-
-              mapBackedClassLoader.addResource(entry.getName(),
-                  out.toByteArray());
-            }
-          }
-
-        }
-      } catch (IOException e) {
-        throw new QRulesException(e);
+      for (JarInputStream jis : jarInputStreams) {
+        loadJarToClassloader(jis, mapBackedClassLoader);
       }
 
       if (uuid != null) {
@@ -102,6 +83,32 @@ public class JarClassLoaderBuilder {
   private ClassLoader getParentClassLoader() {
     return org.drools.core.common.ProjectClassLoader.class
         .getClassLoader();
+  }
+
+  private MapBackedClassLoader loadJarToClassloader(JarInputStream jis,
+      MapBackedClassLoader mapBackedClassLoader) {
+    try {
+      JarEntry entry;
+      byte[] buf = new byte[1024];
+      int len;
+      while ((entry = jis.getNextJarEntry()) != null) {
+        if (!entry.isDirectory()
+            && !entry.getName().endsWith(".java")) {
+          ByteArrayOutputStream out = new ByteArrayOutputStream();
+          while ((len = jis.read(buf)) >= 0) {
+            out.write(buf, 0, len);
+          }
+
+          mapBackedClassLoader.addResource(entry.getName(),
+              out.toByteArray());
+        }
+      }
+
+    } catch (IOException e) {
+      throw new QRulesException(e);
+    }
+
+    return mapBackedClassLoader;
   }
 
 }
