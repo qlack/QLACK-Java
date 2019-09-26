@@ -34,7 +34,7 @@ import org.springframework.stereotype.Component;
  * against the provided access rules. The access rules are described using {@link ResourceAccess},
  * {@link ResourceOperation} and {@link ResourceId} on the REST endpoint the request is issued for
  * or on the corresponding DTO fields that represent a resourceId field
- * @author European Dynamics
+ * @author European Dynamics SA
  */
 @Aspect
 @Component

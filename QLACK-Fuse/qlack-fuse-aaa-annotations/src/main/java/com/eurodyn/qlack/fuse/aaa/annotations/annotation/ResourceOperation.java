@@ -6,9 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Describes access rules for a REST endpoint
- * on an operation/resource level
- * @author European Dynamics
+ * Describes access rules for a REST endpoint on an operation/resource level
+ *
+ * @author European Dynamics SA
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
