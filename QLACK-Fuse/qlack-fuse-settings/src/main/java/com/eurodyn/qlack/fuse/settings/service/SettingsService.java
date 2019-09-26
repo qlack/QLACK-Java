@@ -22,6 +22,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+/**
+ * Provides settings administration functionality
+ *
+ * @author European Dynamics SA.
+ */
 @Log
 @Service
 @Validated
