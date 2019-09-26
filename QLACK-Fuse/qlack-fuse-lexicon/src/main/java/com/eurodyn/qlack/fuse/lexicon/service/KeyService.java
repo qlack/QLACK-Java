@@ -36,6 +36,12 @@ import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+/**
+ *  A Service class for Key that contains the implementations of crud
+ *  methods .
+ *
+ * @author European Dynamics SA
+ */
 @Transactional
 @Service
 @Validated

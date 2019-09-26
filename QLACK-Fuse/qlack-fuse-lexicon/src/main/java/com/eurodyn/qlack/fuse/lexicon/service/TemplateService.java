@@ -23,6 +23,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+/** A Template Service class contains the implementations of crud operations
+ *  to database for template entity and language.
+ *
+ * @author European Dynamics SA
+ */
 @Transactional
 @Service
 @Validated

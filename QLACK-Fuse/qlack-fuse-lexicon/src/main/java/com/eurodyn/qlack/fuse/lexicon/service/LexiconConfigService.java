@@ -28,6 +28,10 @@ import org.springframework.validation.annotation.Validated;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 
+/** A lexicon Service class that is used to configure lexicon data.
+ *
+ * @author European Dynamics SA
+ */
 @Service
 @Validated
 @Transactional

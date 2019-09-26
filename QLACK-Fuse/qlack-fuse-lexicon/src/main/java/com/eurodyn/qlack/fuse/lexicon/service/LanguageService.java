@@ -32,6 +32,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+/** A LanguageService class that is used to implement crud operations
+ *  in database for Language entity.
+ *
+ * @author European Dynamics SA
+ *
+ */
 @Transactional
 @Service
 @Validated

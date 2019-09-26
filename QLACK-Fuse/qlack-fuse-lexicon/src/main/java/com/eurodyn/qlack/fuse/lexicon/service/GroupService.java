@@ -26,6 +26,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+/**
+ * A Service class for Group . It is used to implement the crud operations
+ *
+ * @author European Dynamics SA
+ */
 @Transactional
 @Service
 @Validated

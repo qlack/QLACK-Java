@@ -16,10 +16,20 @@ package com.eurodyn.qlack.fuse.lexicon.exception;
 
 import com.eurodyn.qlack.common.exception.QException;
 
+/**
+ *  A class definition to throw Exception if anything wrong happens
+ *  to language procedure
+ *
+ * @author European Dynamics SA
+ */
 public class LanguageProcessingException extends QException {
 
   private static final long serialVersionUID = 1L;
 
+  /** A method declaration that is used to throw exception message if anything
+   *  wrong happens
+   * @param msg the message that is throwing
+   */
   public LanguageProcessingException(String msg) {
     super(msg);
   }
