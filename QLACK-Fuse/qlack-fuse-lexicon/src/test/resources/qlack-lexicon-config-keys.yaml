@@ -15,5 +15,4 @@ translations:
     locale: en
     keys:
       - generic_key : A key without a group
-        forceUpdate: true
-    forceDelete: true
+        forceDelete: true

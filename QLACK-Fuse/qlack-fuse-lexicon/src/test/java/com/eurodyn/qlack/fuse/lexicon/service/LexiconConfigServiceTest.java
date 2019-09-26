@@ -18,8 +18,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -49,7 +51,6 @@ public class LexiconConfigServiceTest {
   public void init() {
     lexiconConfigService = new LexiconConfigService(groupService, languageService, keyService,
         applicationRepository, applicationContext);
-    groupDTOSet.add(groupDTO);
   }
 
   private URL createUrl() throws IOException {
@@ -70,7 +71,20 @@ public class LexiconConfigServiceTest {
   }
 
   @Test
-  public void initUpdateKeysTest() {
+  public void initUpdateKeysTest() throws IOException {
+    groupDTOSet.add(groupDTO);
+    when(languageService.getLanguageByLocale("en")).thenReturn(languageDTO);
+    when(groupService.getGroupByTitle(any())).thenReturn(groupDTO);
+    when(keyService.getKeyByName(any(), any(), eq(true))).thenReturn(keyDTO);
+    when(groupService.getRemainingGroups(any())).thenReturn(groupDTOSet);
+    lexiconConfigService.updateTranslations(createUrl("qlack-lexicon-config-keys.yaml"));
+    verify(applicationRepository, times(1)).findBySymbolicName(any());
+  }
+
+  @Test
+  public void initUpdateKeysNullTest() {
+    groupDTOSet.add(groupDTO);
+    languageDTO.setId(null);
     when(languageService.getLanguageByLocale("en")).thenReturn(languageDTO);
     when(groupService.getGroupByTitle(any())).thenReturn(groupDTO);
     when(keyService.getKeyByName(any(), any(), eq(true))).thenReturn(keyDTO);
@@ -79,7 +93,7 @@ public class LexiconConfigServiceTest {
   }
 
   @Test
-  public void initTestAppId() throws IOException {
+  public void initAppIdTest() throws IOException {
     yamlUrl = createUrl();
     Application application = new Application();
     application.setChecksum(DigestUtils.md5Hex(yamlUrl.openStream()));
@@ -92,7 +106,7 @@ public class LexiconConfigServiceTest {
   }
 
   @Test
-  public void initTestAppCheckSum() throws IOException {
+  public void initAppCheckSumTest() throws IOException {
     Application application = new Application();
     application.setChecksum("randomChecksum");
     applicationList.add(application);
@@ -106,7 +120,7 @@ public class LexiconConfigServiceTest {
   }
 
   @Test
-  public void initTestNoGroup() throws IOException {
+  public void initNoGroupTest() throws IOException {
     lexiconConfigService.updateTranslations(createUrl("qlack-lexicon-config-no-data.yaml"));
     verify(applicationRepository, times(1)).findBySymbolicName(any());
   }
