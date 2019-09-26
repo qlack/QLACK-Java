@@ -472,4 +472,10 @@ public class InitTestValues {
         return userGroupHasOperation;
     }
 
+    public List<UserGroupHasOperation> createUserGroupHasOperationList() {
+        List<UserGroupHasOperation> userGroupHasOperationList = new ArrayList<>();
+        userGroupHasOperationList.add(createUserGroupHasOperation());
+        return userGroupHasOperationList;
+    }
+
 }
