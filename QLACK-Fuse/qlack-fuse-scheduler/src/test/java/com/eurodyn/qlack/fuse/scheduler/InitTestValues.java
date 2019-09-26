@@ -12,6 +12,11 @@ import org.quartz.JobDetail;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 
+/**
+ * Provides object initialization methods for Test classes
+ *
+ * @author European Dynamics SA.
+ */
 public class InitTestValues {
 
   public <J extends Job> Trigger createTrigger(Class<J> clazz, String cronExpression) {

@@ -26,12 +26,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Provides scheduler administration functionality
+ *
+ * @author European Dynamics SA.
+ */
 @Transactional
 @Service
 @Log
 public class SchedulerService {
 
-  // Reference to Quartz scheduler.
+  /**
+   * Reference to Quartz scheduler.
+   */
   private Scheduler scheduler;
 
   @Autowired
@@ -441,6 +448,12 @@ public class SchedulerService {
     return jobs;
   }
 
+  /**
+   * Builds a new job
+   * @param jobClass a class implementing the Job interface
+   * @param jobData a map containing any number of serializable objects, that the job will be able to access on execution
+   * @return a {@link JobDetail} object containing all the info for the new job
+   */
   private <J extends Job> JobDetail buildJob(Class<J> jobClass, Map<String, Object> jobData) {
     return JobBuilder
       .newJob(jobClass)
@@ -450,6 +463,12 @@ public class SchedulerService {
       .build();
   }
 
+  /**
+   * Builds a new trigger
+   * @param jobClass a class implementing the Job interface
+   * @param cronExpression a cron expression defining the execution interval of the job
+   * @return a {@link CronTrigger} object containing all the info for the new trigger
+   */
   private <J extends Job> CronTrigger buildTrigger(Class<J> jobClass, String cronExpression) {
     return TriggerBuilder
       .newTrigger()
@@ -460,6 +479,11 @@ public class SchedulerService {
       .build();
   }
 
+  /**
+   * Creates a new job data map
+   * @param jobData a map containing any number of serializable objects, that the job will be able to access on execution
+   * @return a {@link JobDataMap} object containing all the info for the job data
+   */
   private JobDataMap createJobDataMap(Map<String, Object> jobData) {
     JobDataMap jobDataMap = new JobDataMap();
     if (jobData != null) {

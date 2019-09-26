@@ -6,9 +6,10 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 /**
- * @author European Dynamics
+ * Job class for testing purposes
+ *
+ * @author European Dynamics SA.
  */
-
 @Log
 public class TestJob implements Job {
 

@@ -9,9 +9,10 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * @author European Dynamics
+ * Data Transfer Object for Job.
+ *
+ * @author European Dynamics SA.
  */
-
 @Getter
 @Setter
 @AllArgsConstructor
@@ -19,7 +20,18 @@ import lombok.ToString;
 @ToString
 public class JobDTO implements Serializable {
 
+  /**
+   * Job name
+   */
   private String jobName;
+
+  /**
+   * Job group
+   */
   private String jobGroup;
+
+  /**
+   * The time of the next scheduler fire up
+   */
   private Date nextFireTime;
 }

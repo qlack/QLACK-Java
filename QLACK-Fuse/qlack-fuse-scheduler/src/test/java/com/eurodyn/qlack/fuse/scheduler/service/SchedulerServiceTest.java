@@ -37,7 +37,9 @@ import org.quartz.TriggerKey;
 import org.quartz.impl.matchers.GroupMatcher;
 
 /**
- * @author European Dynamics
+ * JUnit Test for SchedulerService class
+ *
+ * @author European Dynamics SA.
  */
 
 @RunWith(MockitoJUnitRunner.class)
