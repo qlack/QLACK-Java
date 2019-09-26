@@ -13,26 +13,26 @@ public class UpdateMappingRequestTest {
   private UpdateMappingRequest updateMappingRequest;
 
   @Before
-  public void init(){
+  public void init() {
     updateMappingRequest = new UpdateMappingRequest();
   }
 
   @Test
-  public void indexNameTest(){
+  public void indexNameTest() {
     String indexName = "indexName";
     updateMappingRequest.setIndexName(indexName);
     assertEquals(indexName, updateMappingRequest.getIndexName());
   }
 
   @Test
-  public void typeNameTest(){
+  public void typeNameTest() {
     String typeName = "typeName";
     updateMappingRequest.setTypeName(typeName);
     assertEquals(typeName, updateMappingRequest.getTypeName());
   }
 
   @Test
-  public void indexMappingTest(){
+  public void indexMappingTest() {
     String indexMapping = "indexMapping";
     updateMappingRequest.setIndexMapping(indexMapping);
     assertEquals(indexMapping, updateMappingRequest.getIndexMapping());

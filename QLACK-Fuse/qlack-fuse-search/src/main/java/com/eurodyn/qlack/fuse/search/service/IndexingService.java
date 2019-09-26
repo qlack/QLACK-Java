@@ -16,6 +16,7 @@ import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,7 +51,8 @@ public class IndexingService {
       IndexRequest indexRequest = new IndexRequest(dto.getIndex(), dto.getType(), dto.getId())
           .source(mapper.writeValueAsString(dto.getSourceObject()), XContentType.JSON);
 
-      IndexResponse response = esClient.getClient().index(indexRequest, RequestOptions.DEFAULT);
+      RestHighLevelClient client = esClient.getClient();
+      IndexResponse response = client.index(indexRequest, RequestOptions.DEFAULT);
 
       log.log(Level.INFO,
           MessageFormat.format("Index document created with id: {0}, {1}", dto.getId(), response));

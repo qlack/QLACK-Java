@@ -13,7 +13,7 @@ public class ScrollRequestTest {
   private ScrollRequest scrollRequest;
 
   @Before
-  public void init(){
+  public void init() {
     scrollRequest = new ScrollRequest();
   }
 

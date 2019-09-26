@@ -48,6 +48,20 @@ public class CreateIndexRequestMapperTest {
   }
 
   @Test
+  public void mapToNStringEntityCreateNullWordsTest()
+      throws IOException {
+    CreateIndexRequest createIndexRequest = initTestValues.createIndexRequest();
+    createIndexRequest.setStopwords(null);
+
+    String expectedContent =
+        mapper.writeValueAsString(createIndexRequestMapper.mapToInternal(createIndexRequest));
+
+    NStringEntity result = createIndexRequestMapper.mapToNStringEntity(createIndexRequest);
+    assertEquals(expectedContent, CharStreams.toString(new InputStreamReader(
+        result.getContent(), Charsets.UTF_8)));
+  }
+
+  @Test
   public void mapToNStringEntityCreateNullTest()
       throws IOException {
     String expectedContent =

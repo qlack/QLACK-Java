@@ -13,12 +13,12 @@ public class BaseRequestTest {
   private BaseRequest baseRequest;
 
   @Before
-  public void init(){
+  public void init() {
     baseRequest = new CreateIndexRequest();
   }
 
   @Test
-  public void asyncTest(){
+  public void asyncTest() {
     baseRequest.setAsync(true);
     assertEquals(true, baseRequest.isAsync());
   }
