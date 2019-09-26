@@ -10,6 +10,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.Pageable;
 
+/**
+ * A UserSearchCriteria class that is used to specify the criteria to
+ * search for a User
+ *
+ * @author European Dynamics SA
+ */
 @Getter
 @Setter
 public class UserSearchCriteria {

@@ -5,6 +5,7 @@ import lombok.Setter;
 
 /**
  * A Java class mirroring the JSON file with configuration options.
+ * @author European Dynamics SA
  */
 @Getter
 @Setter
