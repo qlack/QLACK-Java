@@ -58,6 +58,7 @@ public class RulesComponent {
    * @param bytes the byte array to de-serialize
    * @return the de-serialized object
    */
+  @SuppressWarnings("squid:s4508")
   public Object deserializeObject(final ClassLoader classLoader, byte[] bytes) {
     try {
       ByteArrayInputStream bais = new ByteArrayInputStream(bytes);

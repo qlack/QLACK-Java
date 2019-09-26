@@ -85,6 +85,7 @@ public class JarClassLoaderBuilder {
         .getClassLoader();
   }
 
+  @SuppressWarnings("squid:S5042")
   private MapBackedClassLoader loadJarToClassloader(JarInputStream jis,
       MapBackedClassLoader mapBackedClassLoader) {
     try {
