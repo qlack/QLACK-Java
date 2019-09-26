@@ -4,8 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * A query performing a query string against ES. A query that uses a query parser in order to parse its content Multiple fields can be
- * specified
+ * A query performing a query string against ES. A query that uses a query parser in order to parse
+ * its content Multiple fields can be specified
  *
  * <pre>
  * new QueryStringSpecField()

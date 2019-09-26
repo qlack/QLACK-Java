@@ -6,8 +6,9 @@ import java.util.List;
 import lombok.Getter;
 
 /**
- * The superclass of all different types of queries supported by this module. It provides commonly used properties between all subclasses as
- * well as it allows to tune the number and type of search results.
+ * The superclass of all different types of queries supported by this module. It provides commonly
+ * used properties between all subclasses as well as it allows to tune the number and type of search
+ * results.
  */
 @Getter
 public abstract class QuerySpec {

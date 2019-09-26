@@ -56,13 +56,13 @@ public class SearchResultDTO {
   @Override
   public String toString() {
     return "SearchResultDTO [source=" + source + ", executionTime=" + executionTime
-      + ", timedOut="
-      + timedOut
-      + ", shardsTotal=" + shardsTotal + ", shardsSuccessful=" + shardsSuccessful
-      + ", shardsFailed="
-      + shardsFailed + ", totalHits=" + totalHits + ", bestScore=" + bestScore + ", hasMore="
-      + hasMore
-      + ", hits=" + hits + "]";
+        + ", timedOut="
+        + timedOut
+        + ", shardsTotal=" + shardsTotal + ", shardsSuccessful=" + shardsSuccessful
+        + ", shardsFailed="
+        + shardsFailed + ", totalHits=" + totalHits + ", bestScore=" + bestScore + ", hasMore="
+        + hasMore
+        + ", hits=" + hits + "]";
   }
 
 }

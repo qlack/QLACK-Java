@@ -4,8 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Represents a specific hit within a set of hits held by {@link SearchResultDTO}. 23/01/2018 The Adding the innerHits for the nested
- * Objects in the Search Hit DTO
+ * Represents a specific hit within a set of hits held by {@link SearchResultDTO}. 23/01/2018 The
+ * Adding the innerHits for the nested Objects in the Search Hit DTO
  */
 @Getter
 @Setter
@@ -32,6 +32,7 @@ public class SearchHitDTO {
 
   @Override
   public String toString() {
-    return "SearchHitDTO [source=" + source + ", score=" + score + ", type=" + type + ", innerHits=" + innerHits + "]";
+    return "SearchHitDTO [source=" + source + ", score=" + score + ", type=" + type + ", innerHits="
+        + innerHits + "]";
   }
 }

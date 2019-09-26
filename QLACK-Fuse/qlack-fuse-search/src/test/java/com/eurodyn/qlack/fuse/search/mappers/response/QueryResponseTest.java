@@ -1,23 +1,22 @@
 package com.eurodyn.qlack.fuse.search.mappers.response;
 
-import com.eurodyn.qlack.fuse.search.mappers.response.QueryResponse;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 @RunWith(MockitoJUnitRunner.class)
 public class QueryResponseTest {
 
-  @InjectMocks private QueryResponse queryResponse;
+  @InjectMocks
+  private QueryResponse queryResponse;
 
   private QueryResponse.Shards shards;
   private QueryResponse.Hits hits;
@@ -30,7 +29,7 @@ public class QueryResponseTest {
   private List<QueryResponse.Aggregations.Agg.Bucket> bucketList;
 
   @Before
-  public void init(){
+  public void init() {
     queryResponse = new QueryResponse();
     shards = new QueryResponse.Shards();
     hits = new QueryResponse.Hits();
@@ -46,32 +45,32 @@ public class QueryResponseTest {
   }
 
   @Test
-  public void tookTest(){
+  public void tookTest() {
     queryResponse.setTook(40);
     assertEquals(40, queryResponse.getTook());
   }
 
   @Test
-  public void timeOutTest(){
+  public void timeOutTest() {
     queryResponse.setTimeOut(true);
     assertTrue(queryResponse.isTimeOut());
   }
 
   @Test
-  public void countTest(){
+  public void countTest() {
     queryResponse.setCount(20);
     assertEquals(20, queryResponse.getCount());
   }
 
   @Test
-  public void scrollIdTest(){
+  public void scrollIdTest() {
     queryResponse.setScrollId("scrollId");
     assertEquals("scrollId", queryResponse.getScrollId());
   }
 
 
   @Test
-  public void shardsTest(){
+  public void shardsTest() {
     shards.setFailed(20);
     shards.setSuccessful(20);
     shards.setTotal(20);
@@ -84,7 +83,7 @@ public class QueryResponseTest {
   }
 
   @Test
-  public void hitsTest(){
+  public void hitsTest() {
     hits.setTotal(20);
     hits.setMaxScore(20);
 
@@ -95,7 +94,7 @@ public class QueryResponseTest {
   }
 
   @Test
-  public void hitsHitListTest(){
+  public void hitsHitListTest() {
     hits.setHits(hitList);
     QueryResponse.Hits actualHits = queryResponse.getHits();
     assertEquals(hitList.size(), actualHits.getHits().size());
@@ -107,7 +106,7 @@ public class QueryResponseTest {
 
 
   @Test
-  public void hitIndexTest(){
+  public void hitIndexTest() {
     hit.setIndex("index");
     hitList.add(hit);
     hits.setHits(hitList);
@@ -117,7 +116,7 @@ public class QueryResponseTest {
   }
 
   @Test
-  public void hitTypeTest(){
+  public void hitTypeTest() {
     hit.setType("type");
     hitList.add(hit);
     hits.setHits(hitList);
@@ -127,7 +126,7 @@ public class QueryResponseTest {
   }
 
   @Test
-  public void hitIdTest(){
+  public void hitIdTest() {
     hit.setId("hitId");
     hitList.add(hit);
     hits.setHits(hitList);
@@ -137,7 +136,7 @@ public class QueryResponseTest {
   }
 
   @Test
-  public void hitScoreTest(){
+  public void hitScoreTest() {
     hit.setScore(20);
     hitList.add(hit);
     hits.setHits(hitList);
@@ -147,7 +146,7 @@ public class QueryResponseTest {
   }
 
   @Test
-  public void hitSourceTest(){
+  public void hitSourceTest() {
     hit.setSource("src");
     hitList.add(hit);
     hits.setHits(hitList);
@@ -157,7 +156,7 @@ public class QueryResponseTest {
   }
 
   @Test
-  public void hitSourceNullTest(){
+  public void hitSourceNullTest() {
     hit.setSource(null);
     hitList.add(hit);
     hits.setHits(hitList);
@@ -167,7 +166,7 @@ public class QueryResponseTest {
   }
 
   @Test
-  public void hitInnerHitsTest(){
+  public void hitInnerHitsTest() {
     hit.setInnerHits("innerHit");
     hitList.add(hit);
     hits.setHits(hitList);
@@ -177,7 +176,7 @@ public class QueryResponseTest {
   }
 
   @Test
-  public void hitInnerHitsNullTest(){
+  public void hitInnerHitsNullTest() {
     hit.setInnerHits(null);
     hitList.add(hit);
     hits.setHits(hitList);
@@ -187,16 +186,17 @@ public class QueryResponseTest {
   }
 
   @Test
-  public void aggregationsDocCountErrorUpperBoundTest(){
+  public void aggregationsDocCountErrorUpperBoundTest() {
     agg.setDocCountErrorUpperBound(20);
     aggregations.setAgg(agg);
 
     QueryResponse.Aggregations actualAggregations = queryResponse.getAggregations();
-    assertEquals(agg.getDocCountErrorUpperBound(), actualAggregations.getAgg().getDocCountErrorUpperBound());
+    assertEquals(agg.getDocCountErrorUpperBound(),
+        actualAggregations.getAgg().getDocCountErrorUpperBound());
   }
 
   @Test
-  public void aggregationsSumOtherDocCountTest(){
+  public void aggregationsSumOtherDocCountTest() {
     agg.setSumOtherDocCount(20);
     aggregations.setAgg(agg);
 
@@ -205,7 +205,7 @@ public class QueryResponseTest {
   }
 
   @Test
-  public void aggregationsBucketsTest(){
+  public void aggregationsBucketsTest() {
     agg.setBuckets(bucketList);
     aggregations.setAgg(agg);
 
@@ -214,7 +214,7 @@ public class QueryResponseTest {
   }
 
   @Test
-  public void aggregationsBucketsNullTest(){
+  public void aggregationsBucketsNullTest() {
     agg.setBuckets(null);
     aggregations.setAgg(agg);
 
@@ -223,7 +223,7 @@ public class QueryResponseTest {
   }
 
   @Test
-  public void bucketKeyTest(){
+  public void bucketKeyTest() {
     bucket.setKey(20);
     bucketList.add(bucket);
     agg.setBuckets(bucketList);
@@ -234,18 +234,19 @@ public class QueryResponseTest {
   }
 
   @Test
-  public void bucketKeyAsStringTest(){
+  public void bucketKeyAsStringTest() {
     bucket.setKeyAsString("keyAsString");
     bucketList.add(bucket);
     agg.setBuckets(bucketList);
     aggregations.setAgg(agg);
 
     QueryResponse.Aggregations actualBucket = queryResponse.getAggregations();
-    assertEquals(bucket.getKeyAsString(), actualBucket.getAgg().getBuckets().get(0).getKeyAsString());
+    assertEquals(bucket.getKeyAsString(),
+        actualBucket.getAgg().getBuckets().get(0).getKeyAsString());
   }
 
   @Test
-  public void bucketDocCountTest(){
+  public void bucketDocCountTest() {
     bucket.setDocCount(20);
     bucketList.add(bucket);
     agg.setBuckets(bucketList);

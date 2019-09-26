@@ -4,8 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A query applying boolean logic on its terms. This query is constructed by setting individual {@link QuerySpec} objects as terms while
- * specifying one of the three default boolean operators of ES. Example:
+ * A query applying boolean logic on its terms. This query is constructed by setting individual
+ * {@link QuerySpec} objects as terms while specifying one of the three default boolean operators of
+ * ES. Example:
  *
  * <pre>
  * new QueryBoolean()

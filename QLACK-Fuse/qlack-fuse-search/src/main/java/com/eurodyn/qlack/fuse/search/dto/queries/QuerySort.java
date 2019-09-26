@@ -5,8 +5,9 @@ import java.util.Map;
 import lombok.Getter;
 
 /**
- * A query performing a match against ES. The default match query is of type boolean. The value provided is analyzed and the analysis
- * process constructs a boolean query from the provided text using boolean OR. Example:
+ * A query performing a match against ES. The default match query is of type boolean. The value
+ * provided is analyzed and the analysis process constructs a boolean query from the provided text
+ * using boolean OR. Example:
  *
  * <pre>
  * new QueryMatch()

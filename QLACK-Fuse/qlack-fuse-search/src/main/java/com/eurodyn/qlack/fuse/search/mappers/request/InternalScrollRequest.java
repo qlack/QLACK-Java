@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class InternalScollRequest {
+public class InternalScrollRequest {
 
   private String scroll;
   @JsonProperty("scroll_id")

@@ -3,7 +3,8 @@ package com.eurodyn.qlack.fuse.search.dto.queries;
 import lombok.Getter;
 
 /**
- * Similar to {@link QueryMatch}, a query performing a match against ES but on multiple fields. Example:
+ * Similar to {@link QueryMatch}, a query performing a match against ES but on multiple fields.
+ * Example:
  *
  * <pre>
  * new QueryMultiMatch()

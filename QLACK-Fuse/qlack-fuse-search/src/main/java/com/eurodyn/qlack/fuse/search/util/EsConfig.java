@@ -27,13 +27,13 @@ public class EsConfig {
   public Client client() throws UnknownHostException {
 
     Settings settings = Settings.builder()
-      .put("cluster.name", env.getProperty("qlack.fuse.search.cluster.name"))
-      .put("client.transport.sniff", false)
-      .put("transport.host", env.getProperty("qlack.fuse.search.host.name")).build();
+        .put("cluster.name", env.getProperty("qlack.fuse.search.cluster.name"))
+        .put("client.transport.sniff", false)
+        .put("transport.host", env.getProperty("qlack.fuse.search.host.name")).build();
 
     return new PreBuiltTransportClient(settings).addTransportAddress(new
-      TransportAddress(InetAddress.getByName(env.getProperty("qlack.fuse.search.host.name")),
-      Integer.parseInt(env.getProperty("qlack.fuse.search.host.port"))));
+        TransportAddress(InetAddress.getByName(env.getProperty("qlack.fuse.search.host.name")),
+        Integer.parseInt(env.getProperty("qlack.fuse.search.host.port"))));
 
   }
 

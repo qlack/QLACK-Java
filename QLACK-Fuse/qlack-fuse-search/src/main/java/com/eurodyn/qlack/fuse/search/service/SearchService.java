@@ -20,7 +20,7 @@ import com.eurodyn.qlack.fuse.search.dto.queries.QueryWildcard;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryWildcardNested;
 import com.eurodyn.qlack.fuse.search.dto.queries.SimpleQueryString;
 import com.eurodyn.qlack.fuse.search.exception.SearchException;
-import com.eurodyn.qlack.fuse.search.mappers.request.InternalScollRequest;
+import com.eurodyn.qlack.fuse.search.mappers.request.InternalScrollRequest;
 import com.eurodyn.qlack.fuse.search.mappers.request.InternalSearchRequest;
 import com.eurodyn.qlack.fuse.search.mappers.response.QueryResponse;
 import com.eurodyn.qlack.fuse.search.mappers.response.QueryResponse.Aggregations.Agg.Bucket;
@@ -96,7 +96,8 @@ public class SearchService {
       Response response = esClient.getClient().getLowLevelClient().performRequest(request);
       QueryResponse queryResponse = getQueryResponse(response);
 
-      SearchResultDTO result = buildResultFrom(queryResponse, dto.isCountOnly(), dto.isIncludeAllSource(), dto.isIncludeResults());
+      SearchResultDTO result = buildResultFrom(queryResponse, dto.isCountOnly(),
+          dto.isIncludeAllSource(), dto.isIncludeResults());
 
       if (!dto.isCountOnly()) {
         result.setHasMore(queryResponse.getHits().getTotal() > dto.getPageSize());
@@ -118,10 +119,13 @@ public class SearchService {
    * @return a wrapper containing the retrieved document
    */
   public SearchHitDTO findById(String indexName, String typeName, String id) {
-    log.info(MessageFormat.format("Searching index {0} of {1} type for document with id {2}", indexName, typeName, id));
+    log.info(MessageFormat
+        .format("Searching index {0} of {1} type for document with id {2}", indexName, typeName,
+            id));
     String endpoint = indexName + "/" + typeName + "/" + id;
     try {
-      Response response = esClient.getClient().getLowLevelClient().performRequest(new Request("GET", endpoint));
+      Response response = esClient.getClient().getLowLevelClient()
+          .performRequest(new Request("GET", endpoint));
       if (response.getStatusLine().getStatusCode() == 200) {
         Hit hit = mapper.readValue(response.getEntity().getContent(), Hit.class);
         return map(hit);
@@ -134,7 +138,8 @@ public class SearchService {
   }
 
   /**
-   * Creates a ScrollRequest that can be used for searches with large results ("page" type results).
+   * Creates a ScrollRequest that can be used for searches with large results ("page" type
+   * results).
    *
    * @param indexName the name of the index that the serach will be performed
    * @param query the query of the search
@@ -142,7 +147,9 @@ public class SearchService {
    * @return a ScrollRequest to use in a search
    */
   public ScrollRequest prepareScroll(String indexName, QueryMatch query, int maxResults) {
-    log.info(MessageFormat.format("Creating a ScrollRequest for index {0} with max {1} results", indexName, maxResults));
+    log.info(MessageFormat
+        .format("Creating a ScrollRequest for index {0} with max {1} results", indexName,
+            maxResults));
     ScrollRequest scrollRequest = new ScrollRequest();
     try {
 
@@ -175,7 +182,7 @@ public class SearchService {
    */
   public SearchResultDTO scroll(ScrollRequest scrollRequest) {
     log.info(MessageFormat.format("Executing scroll query {0}", scrollRequest));
-    InternalScollRequest internalRequest = new InternalScollRequest();
+    InternalScrollRequest internalRequest = new InternalScrollRequest();
     internalRequest.setScroll(scrollRequest.getScroll().toString() + "m");
     internalRequest.setScrollId(scrollRequest.getScrollId());
 
@@ -300,10 +307,12 @@ public class SearchService {
       builder.append("}");
     } else if (dto instanceof QueryMatch) {
       QueryMatch query = (QueryMatch) dto;
-      builder.append("\"match\" : { \"").append(query.getField()).append("\" : \"").append(query.getValue()).append("\" }");
+      builder.append("\"match\" : { \"").append(query.getField()).append("\" : \"")
+          .append(query.getValue()).append("\" }");
     } else if (dto instanceof QueryMultiMatch) {
       QueryMultiMatch query = (QueryMultiMatch) dto;
-      builder.append("\"multi_match\" : { \"query\" : \"").append(query.getValue()).append("\", \"fields\" : [");
+      builder.append("\"multi_match\" : { \"query\" : \"").append(query.getValue())
+          .append("\", \"fields\" : [");
       for (int i = 0; i < query.getFields().length; i++) {
         if (i > 0) {
           builder.append(", ");
@@ -313,72 +322,88 @@ public class SearchService {
       builder.append("]}");
     } else if (dto instanceof QueryString) {
       QueryString query = (QueryString) dto;
-      builder.append("\"query_string\" : { \"query\" : \"").append(query.getQueryString()).append("\"}");
+      builder.append("\"query_string\" : { \"query\" : \"").append(query.getQueryString())
+          .append("\"}");
     } else if (dto instanceof QueryTerm) {
       QueryTerm query = (QueryTerm) dto;
 
-      builder.append("\"term\" : { \"").append(query.getField()).append("\" : \"").append(query.getValue())
-        .append("\" }");
+      builder.append("\"term\" : { \"").append(query.getField()).append("\" : \"")
+          .append(query.getValue())
+          .append("\" }");
     } else if (dto instanceof QueryTermNested) {
       QueryTermNested query = (QueryTermNested) dto;
-      builder.append("\"nested\" : { ").append("\"path\": \"").append(query.getPath()).append("\", \"query\": { ")
-        .append("\"term\" : { \"").append(query.getField()).append("\" : \"").append(query.getValue())
-        .append("\" }").append(" } , \"inner_hits\": {").append("\"_source\" : false, ")
-        .append("\"docvalue_fields\" : [ \"").append(query.getDocvalueFields()).append("\"]").append("}}");
+      builder.append("\"nested\" : { ").append("\"path\": \"").append(query.getPath())
+          .append("\", \"query\": { ")
+          .append("\"term\" : { \"").append(query.getField()).append("\" : \"")
+          .append(query.getValue())
+          .append("\" }").append(" } , \"inner_hits\": {").append("\"_source\" : false, ")
+          .append("\"docvalue_fields\" : [ \"").append(query.getDocvalueFields()).append("\"]")
+          .append("}}");
     } else if (dto instanceof QueryWildcard) {
       QueryWildcard query = (QueryWildcard) dto;
 
-      builder.append("\"wildcard\" : { \"").append(query.getField()).append("\" : \"").append(query.getWildcard())
-        .append("\" }");
+      builder.append("\"wildcard\" : { \"").append(query.getField()).append("\" : \"")
+          .append(query.getWildcard())
+          .append("\" }");
     } else if (dto instanceof QueryWildcardNested) {
       QueryWildcardNested query = (QueryWildcardNested) dto;
 
-      builder.append("\"nested\" : { ").append("\"path\": \"").append(query.getPath()).append("\", \"query\": { ")
-        .append("\"wildcard\" : { \"").append(query.getField()).append("\" : \"")
-        .append(query.getWildcard()).append("\" }").append(" } , \"inner_hits\": {")
-        .append("\"_source\" : false, ").append("\"docvalue_fields\" : [ \"")
-        .append(query.getDocvalueFields()).append("\"]").append("}}");
+      builder.append("\"nested\" : { ").append("\"path\": \"").append(query.getPath())
+          .append("\", \"query\": { ")
+          .append("\"wildcard\" : { \"").append(query.getField()).append("\" : \"")
+          .append(query.getWildcard()).append("\" }").append(" } , \"inner_hits\": {")
+          .append("\"_source\" : false, ").append("\"docvalue_fields\" : [ \"")
+          .append(query.getDocvalueFields()).append("\"]").append("}}");
     } else if (dto instanceof QueryTerms) {
       QueryTerms query = (QueryTerms) dto;
-      builder.append("\"terms\" : { \"").append(query.getField()).append("\" : [ ").append(query.getValues())
-        .append(" ] }");
+      builder.append("\"terms\" : { \"").append(query.getField()).append("\" : [ ")
+          .append(query.getValues())
+          .append(" ] }");
     } else if (dto instanceof QueryTermsNested) {
       QueryTermsNested query = (QueryTermsNested) dto;
-      builder.append("\"nested\" : { ").append("\"path\": \"").append(query.getPath()).append("\", \"query\": { ")
-        .append("\"terms\" : { \"").append(query.getField()).append("\" : [ ").append(query.getValues())
-        .append(" ] }").append(" } , \"inner_hits\": {").append("\"_source\" : false, ")
-        .append("\"docvalue_fields\" : [ \"").append(query.getDocvalueFields()).append("\"]").append("}}");
+      builder.append("\"nested\" : { ").append("\"path\": \"").append(query.getPath())
+          .append("\", \"query\": { ")
+          .append("\"terms\" : { \"").append(query.getField()).append("\" : [ ")
+          .append(query.getValues())
+          .append(" ] }").append(" } , \"inner_hits\": {").append("\"_source\" : false, ")
+          .append("\"docvalue_fields\" : [ \"").append(query.getDocvalueFields()).append("\"]")
+          .append("}}");
     } else if (dto instanceof QueryRange) {
       QueryRange query = (QueryRange) dto;
       builder.append("\"range\" : { \"").append(query.getField()).append("\" : { \"gte\" : \"")
-        .append(query.getFromValue()).append("\" , \"lte\" : \"").append(query.getToValue())
-        .append("\" } }");
+          .append(query.getFromValue()).append("\" , \"lte\" : \"").append(query.getToValue())
+          .append("\" } }");
     } else if (dto instanceof QueryStringSpecField) {
       QueryStringSpecField query = (QueryStringSpecField) dto;
       builder.append("\"query_string\" : { \"fields\" : [\"").append(query.getField())
-        .append("\"] , \"query\" : \"").append(query.getValue()).append("\" , \"default_operator\" : \"")
-        .append(query.getOperator()).append("\" }");
+          .append("\"] , \"query\" : \"").append(query.getValue())
+          .append("\" , \"default_operator\" : \"")
+          .append(query.getOperator()).append("\" }");
     } else if (dto instanceof QueryStringSpecFieldNested) {
       QueryStringSpecFieldNested query = (QueryStringSpecFieldNested) dto;
-      builder.append("\"nested\" : { ").append("\"path\": \"").append(query.getPath()).append("\", \"query\": { ")
-        .append("\"query_string\" : { \"fields\" : [\"").append(query.getField())
-        .append("\"] , \"query\" : \"").append(query.getValue()).append("\" , \"default_operator\" : \"")
-        .append(query.getOperator()).append("\" }").append(" } , \"inner_hits\": {")
-        .append("\"_source\" : false, ").append("\"docvalue_fields\" : [ \"")
-        .append(query.getDocvalueFields()).append("\"]").append("}}");
+      builder.append("\"nested\" : { ").append("\"path\": \"").append(query.getPath())
+          .append("\", \"query\": { ")
+          .append("\"query_string\" : { \"fields\" : [\"").append(query.getField())
+          .append("\"] , \"query\" : \"").append(query.getValue())
+          .append("\" , \"default_operator\" : \"")
+          .append(query.getOperator()).append("\" }").append(" } , \"inner_hits\": {")
+          .append("\"_source\" : false, ").append("\"docvalue_fields\" : [ \"")
+          .append(query.getDocvalueFields()).append("\"]").append("}}");
     } else if (dto instanceof SimpleQueryString) {
       SimpleQueryString query = (SimpleQueryString) dto;
       builder.append("\"simple_query_string\" : { \"fields\" : [\"").append(query.getField())
-        .append("\"] , \"query\" : \"").append(query.getValue()).append("\" , \"default_operator\" : \"")
-        .append(query.getOperator()).append("\" }");
+          .append("\"] , \"query\" : \"").append(query.getValue())
+          .append("\" , \"default_operator\" : \"")
+          .append(query.getOperator()).append("\" }");
     }
     return builder.append("}").toString().replace("\"null\"", "null");
   }
 
   private String buildAggregate(String aggregate, int aggregateSize) {
     return new StringBuilder("{").append("\"agg\" : {\"terms\" : {\"field\" : \"").append(aggregate)
-      .append("\", \"size\" : ").append(aggregateSize).append(",\"order\" : {\"_term\" : \"desc\"}")
-      .append("}}}").toString();
+        .append("\", \"size\" : ").append(aggregateSize)
+        .append(",\"order\" : {\"_term\" : \"desc\"}")
+        .append("}}}").toString();
   }
 
   private String buildSort(QuerySort dto) {
@@ -387,15 +412,17 @@ public class SearchService {
       if (builder.length() > 1) {
         builder.append(',');
       }
-      builder.append("{").append("\"").append(entry.getKey()).append("\"").append(" : {").append("\"order\"")
-        .append(" : ").append("\"").append(entry.getValue()).append("\"").append("}").append("}");
+      builder.append("{").append("\"").append(entry.getKey()).append("\"").append(" : {")
+          .append("\"order\"")
+          .append(" : ").append("\"").append(entry.getValue()).append("\"").append("}").append("}");
     }
     builder.append("]");
     return builder.toString();
   }
 
-  private SearchResultDTO buildResultFrom(QueryResponse queryResponse, boolean countOnly, boolean includeAllSource,
-    boolean includeResults) {
+  private SearchResultDTO buildResultFrom(QueryResponse queryResponse, boolean countOnly,
+      boolean includeAllSource,
+      boolean includeResults) {
 
     SearchResultDTO result = new SearchResultDTO();
     if (!countOnly) {
@@ -426,7 +453,8 @@ public class SearchService {
       }
     }
 
-    if (queryResponse.getAggregations() != null && queryResponse.getAggregations().getAgg() != null) {
+    if (queryResponse.getAggregations() != null
+        && queryResponse.getAggregations().getAgg() != null) {
       for (Bucket bucket : queryResponse.getAggregations().getAgg().getBuckets()) {
         result.getAggregations().put(bucket.getKeyAsString(), bucket.getDocCount());
       }

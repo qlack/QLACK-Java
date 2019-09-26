@@ -17,11 +17,6 @@ Run the following cmd command to start ElasticSearch v6.4.3:
 
 ### Add qlack-fuse-search to your pom.xml:
 ```xml
-  <properties>
-      <!-- ... -->
-      <qlack.version>3.0.0-SNAPSHOT</qlack.version>
-  </properties>
-
   <!-- ... -->
   <dependency>
 	   <groupId>com.eurodyn.qlack.fuse</groupId>

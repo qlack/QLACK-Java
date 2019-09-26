@@ -3,7 +3,8 @@ package com.eurodyn.qlack.fuse.search.dto.queries;
 import lombok.Getter;
 
 /**
- * The term query finds documents that contain the exact terms specified in the inverted index. Example:
+ * The term query finds documents that contain the exact terms specified in the inverted index.
+ * Example:
  *
  * <pre>
  * new QueryTerms()
