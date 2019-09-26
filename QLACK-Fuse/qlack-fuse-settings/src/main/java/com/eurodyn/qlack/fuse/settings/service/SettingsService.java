@@ -28,11 +28,21 @@ import org.springframework.validation.annotation.Validated;
 @Transactional
 public class SettingsService {
 
+  /**
+   * Settings mapper
+   */
   private final SettingMapper settingMapper;
+
+  /**
+   * Settings repository
+   */
   private final SettingRepository settingRepository;
+
+  /**
+   * Querydsl query type for Setting
+   */
   private QSetting qsetting = QSetting.setting;
 
-  //TODO is this annotation needed?
   @Autowired
   public SettingsService(SettingMapper settingMapper, SettingRepository settingRepository) {
     this.settingMapper = settingMapper;

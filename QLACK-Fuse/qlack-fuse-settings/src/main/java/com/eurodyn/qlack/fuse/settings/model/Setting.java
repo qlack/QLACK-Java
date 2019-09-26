@@ -13,7 +13,7 @@ import lombok.Setter;
 /**
  * This entity is used to store the internal settings of the application
  *
- * @author European Dynamics SA
+ * @author European Dynamics SA.
  */
 @Entity
 @Getter
