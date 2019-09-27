@@ -262,7 +262,7 @@ public class AdminService {
    * @param clazz the class
    * @return true if the class is annotated, false otherwise
    */
-  private boolean isClassValid(Class clazz) {
+  protected boolean isClassValid(Class clazz) {
     if (!clazz.isAnnotationPresent(Document.class)) {
       log.log(Level.SEVERE, "Unable to identify index name. " + clazz.getSimpleName() +
           " is not a Document. Make sure the document class is annotated with @Document(indexName=\"foo\")");

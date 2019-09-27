@@ -4,6 +4,8 @@ import com.eurodyn.qlack.fuse.search.dto.IndexingDTO;
 import com.eurodyn.qlack.fuse.search.request.CreateIndexRequest;
 import com.eurodyn.qlack.fuse.search.request.UpdateMappingRequest;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class InitTestValues {
 
@@ -36,6 +38,23 @@ public class InitTestValues {
     indexingDTO.setConvertToJSON(true);
 
     return indexingDTO;
+  }
+
+  public UpdateMappingRequest createUpdateMappingRequest() {
+    UpdateMappingRequest updateMappingRequest = new UpdateMappingRequest();
+    updateMappingRequest.setIndexMapping("indexMapping");
+    updateMappingRequest.setIndexName("indexName");
+    updateMappingRequest.setAsync(false);
+    updateMappingRequest.setTypeName("typeName");
+
+    return updateMappingRequest;
+  }
+
+  public Map<String, String> createSettings(){
+    Map<String, String> settings = new HashMap<>();
+    settings.put("setting1", "option1");
+
+    return settings;
   }
 
 }
