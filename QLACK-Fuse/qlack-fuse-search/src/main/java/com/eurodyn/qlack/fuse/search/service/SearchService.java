@@ -67,7 +67,7 @@ public class SearchService {
   /**
    * Jackson object mapper
    */
-  private static final ObjectMapper mapper = new ObjectMapper();
+  private ObjectMapper mapper;
 
   /**
    * The ES client injected by blueprint.
@@ -83,6 +83,7 @@ public class SearchService {
   public SearchService(ESClient esClient, AdminService adminService) {
     this.esClient = esClient;
     this.adminService = adminService;
+    this.mapper = new ObjectMapper();
   }
 
   /**
