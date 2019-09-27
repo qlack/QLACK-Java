@@ -23,12 +23,19 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+/**
+ * Provides index administration functionality
+ *
+ * @author European Dynamics SA.
+ */
 @Service
 @Validated
 @Log
 public class AdminService {
 
-  // Service references.
+  /**
+   * Elastic Search client
+   */
   private ESClient esClient;
 
   @Autowired
@@ -250,6 +257,11 @@ public class AdminService {
     }
   }
 
+  /**
+   * Checks if the provided class is annotated with @{@link Document}
+   * @param clazz the class
+   * @return true if the class is annotated, false otherwise
+   */
   private boolean isClassValid(Class clazz) {
     if (!clazz.isAnnotationPresent(Document.class)) {
       log.log(Level.SEVERE, "Unable to identify index name. " + clazz.getSimpleName() +
@@ -259,6 +271,11 @@ public class AdminService {
     return true;
   }
 
+  /**
+   * Checks if index exists
+   * @param indexName an index name
+   * @return true if the index exists, false otherwise
+   */
   private boolean canPerformOperation(String indexName) {
     if (!indexExists(indexName)) {
       log.log(Level.WARNING, "Index does not exist: {0}.", indexName);
@@ -267,10 +284,25 @@ public class AdminService {
     return true;
   }
 
+  /**
+   * Executes a request on Elastic Search client
+   * @param method an HTTP method (GET, POST etc.)
+   * @param indexName an index name
+   * @param errorMsg a custom error message
+   * @return true if the response http status code is 200 (OK), false otherwise
+   */
   private boolean commonIndexingOperation(String method, String indexName, String errorMsg) {
     return commonIndexingOperationWithEntity(method, indexName, errorMsg, null);
   }
 
+  /**
+   * Executes a request on Elastic Search client
+   * @param method an HTTP method (GET, POST etc.)
+   * @param endpoint an endpoint on which the request should be performed
+   * @param errorMsg a custom error message
+   * @param entity an HttpEntity
+   * @return true if the response http status code is 200 (OK), false otherwise
+   */
   private boolean commonIndexingOperationWithEntity(String method, String endpoint, String errorMsg,
       NStringEntity entity) {
     try {

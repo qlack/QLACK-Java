@@ -6,6 +6,11 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Request for creating indexes
+ *
+ * @author European Dynamics SA.
+ */
 @Getter
 @Setter
 public class CreateIndexRequest extends BaseRequest {

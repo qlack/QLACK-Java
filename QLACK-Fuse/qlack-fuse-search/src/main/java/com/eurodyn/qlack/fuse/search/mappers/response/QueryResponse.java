@@ -9,28 +9,62 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import org.elasticsearch.search.aggregations.Aggregations;
 
 /**
- * 23/01/2018 : Json Property InnerHits for nested ES Objects
+ * An Elastic Search response wrapper
+ *
+ * @author European Dynamics SA.
  */
-
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class QueryResponse {
 
+  /**
+   * Time to respond
+   */
   private int took;
+
+  /**
+   * Timeout
+   */
   @JsonProperty("timed_out")
   private boolean timeOut;
+
+  /**
+   * Shards
+   */
   @JsonProperty("_shards")
   private Shards shards;
+
+  /**
+   * Hits
+   */
   private Hits hits;
+
+  /**
+   * Aggregations
+   */
   @JsonInclude(Include.NON_NULL)
   private Aggregations aggregations;
+
+  /**
+   * Result count
+   */
   private long count;
+
+  /**
+   * Scroll Id
+   */
   @JsonProperty("_scroll_id")
   private String scrollId;
 
+  /**
+   * An Elastic Search response wrapper
+   *
+   * @author European Dynamics SA.
+   */
   @Getter
   @Setter
   @JsonIgnoreProperties(ignoreUnknown = true)

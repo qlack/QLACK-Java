@@ -22,6 +22,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+/**
+ * Provides indexing functionality
+ *
+ * @author European Dynamics SA.
+ */
 @Service
 @Validated
 @Log
