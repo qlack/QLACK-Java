@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
-import org.elasticsearch.search.aggregations.Aggregations;
 
 /**
  * An Elastic Search response wrapper
