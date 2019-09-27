@@ -6,6 +6,12 @@ import java.util.List;
 import org.mapstruct.MappingTarget;
 import org.springframework.data.domain.Page;
 
+/** A generic AAAMapper interface that is used to map keys with their values.
+ * @param <E>
+ * @param <D>
+ *
+ * @author European Dynamics SA
+ */
 public interface AAAMapper<E extends AAAModel, D extends BaseDTO> {
 
   /**

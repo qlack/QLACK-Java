@@ -6,6 +6,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.data.domain.Page;
 
+/**
+ * A Mapper for {@link Session} objects.
+ * @author European Dynamics SA
+ */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,
     uses = SessionAttributeMapper.class)
 public interface SessionMapper extends AAAMapper<Session, SessionDTO> {

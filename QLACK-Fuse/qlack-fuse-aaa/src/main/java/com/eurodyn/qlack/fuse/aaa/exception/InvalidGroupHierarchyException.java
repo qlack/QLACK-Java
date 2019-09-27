@@ -14,8 +14,15 @@
  */
 package com.eurodyn.qlack.fuse.aaa.exception;
 
+/**
+ * An Exception class for InvalidGroupHierarchy.
+ * @author European Dynamics SA
+ */
 public class InvalidGroupHierarchyException extends AAAException {
 
+  /** a constructor initialisation of the exception message
+   * @param msg the throwing exception  message
+   */
   public InvalidGroupHierarchyException(String msg) {
     super(msg);
   }

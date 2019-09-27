@@ -6,6 +6,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
+/**
+ * A Mapper for UserHasOperation. It is used to map the object values.
+ * @author European Dynamics SA
+ */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,
 uses = {
     UserGroupMapper.class,
@@ -14,6 +18,10 @@ uses = {
 })
 public interface UserGroupHasOperationMapper extends AAAMapper<UserGroupHasOperation, UserGroupHasOperationDTO> {
 
+    /** Maps a specified Entity to according DTO
+     * @param userGroupHasOperation the userGroupHasOperation object
+     * @return the relative DTO
+     */
     @Mapping(source = "userGroup", target = "userGroupDTO")
     @Mapping(source = "operation", target = "operationDTO")
     UserGroupHasOperationDTO mapToDTO(UserGroupHasOperation userGroupHasOperation);
