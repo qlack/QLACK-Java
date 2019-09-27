@@ -17,15 +17,12 @@ translations:
     locale: en
     keys:
       - generic_key : A key without a group
-        forceDelete: true
+        forceDelete: false
   - group: ui
     locale: en
     keys:
       - generic_key: Welcome
-      - en: en
-      - ui: ui
-        forceUpdate: false
       - user_details: User Details Section
-        forceUpdate: true
+        forceDelete: true
       - add_attachment_description: Add attachment description
         forceDelete: false

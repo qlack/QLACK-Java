@@ -71,6 +71,22 @@ public class LexiconConfigServiceTest {
   }
 
   @Test
+  public void initShouldDeleteTest() throws IOException {
+    when(languageService.getLanguageByLocale("en")).thenReturn(languageDTO);
+    when(groupService.getGroupByTitle(any())).thenReturn(groupDTO);
+    lexiconConfigService.updateTranslations(createUrl("qlack-lexicon-config-keys.yaml"));
+    verify(applicationRepository, times(1)).findBySymbolicName(any());
+  }
+
+  @Test
+  public void initForceUpdateTest() throws IOException {
+    when(languageService.getLanguageByLocale("en")).thenReturn(languageDTO);
+    when(groupService.getGroupByTitle(any())).thenReturn(groupDTO);
+    lexiconConfigService.updateTranslations(createUrl("qlack-lexicon-config-keys.yaml"));
+    verify(applicationRepository, times(1)).findBySymbolicName(any());
+  }
+
+  @Test
   public void initUpdateKeysTest() throws IOException {
     groupDTOSet.add(groupDTO);
     when(languageService.getLanguageByLocale("en")).thenReturn(languageDTO);
@@ -79,6 +95,40 @@ public class LexiconConfigServiceTest {
     when(groupService.getRemainingGroups(any())).thenReturn(groupDTOSet);
     lexiconConfigService.updateTranslations(createUrl("qlack-lexicon-config-keys.yaml"));
     verify(applicationRepository, times(1)).findBySymbolicName(any());
+  }
+
+  @Test
+  public void initUpdateKeysForceDeleteTest() throws IOException {
+    groupDTOSet.add(groupDTO);
+    when(languageService.getLanguageByLocale("en")).thenReturn(languageDTO);
+    when(groupService.getGroupByTitle(any())).thenReturn(groupDTO);
+    when(keyService.getKeyByName(any(), any(), eq(true))).thenReturn(keyDTO);
+    lexiconConfigService.updateTranslations(createUrl("qlack-lexicon-config.yaml"));
+
+    when(keyService.getKeyByName(any(), any(), eq(true))).thenReturn(null);
+    lexiconConfigService.updateTranslations(createUrl("qlack-lexicon-config2.yaml"));
+    verify(applicationRepository, times(2)).findBySymbolicName(any());
+  }
+
+  @Test
+  public void initUpdateKeysLastBranchTest() throws IOException {
+    KeyDTO keyDTO1 = new KeyDTO();
+    groupDTOSet.add(groupDTO);
+    Map<String, String> translationKeys = new HashMap<>();
+    translationKeys.put("generic_key", "Welcome");
+    translationKeys.put("en", "en");
+    keyDTO1.setTranslations(translationKeys);
+    when(languageService.getLanguageByLocale("en")).thenReturn(languageDTO);
+    when(languageDTO.getId()).thenReturn("en");
+    when(groupService.getGroupByTitle(any())).thenReturn(groupDTO);
+    when(keyService.getKeyByName(any(), any(), eq(true))).thenReturn(keyDTO1);
+
+    lexiconConfigService.updateTranslations(createUrl("qlack-lexicon-config.yaml"));
+
+    when(keyService.getKeyByName(any(), any(), eq(true))).thenReturn(keyDTO);
+    lexiconConfigService.updateTranslations(createUrl("qlack-lexicon-config.yaml"));
+
+    verify(applicationRepository, times(2)).findBySymbolicName(any());
   }
 
   @Test

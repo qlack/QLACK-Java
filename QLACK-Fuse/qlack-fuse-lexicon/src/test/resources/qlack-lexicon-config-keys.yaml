@@ -3,9 +3,11 @@ groups:
     description: UI translations
   - name: reports
     description: Translations of report title and descriptions
+    forceUpdate: false
 languages:
   - name: English
     locale: en
+    forceUpdate: false
   - name: Français
     locale: fr
   - name: Portuguese
