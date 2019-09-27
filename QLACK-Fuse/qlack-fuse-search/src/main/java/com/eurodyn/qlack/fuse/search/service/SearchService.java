@@ -437,6 +437,12 @@ public class SearchService {
     return builder.append("}").toString().replace("\"null\"", "null");
   }
 
+  /**
+   * Builds an aggregate
+   * @param aggregate the aggregate name
+   * @param aggregateSize the aggregate size
+   * @return the aggregate
+   */
   private String buildAggregate(String aggregate, int aggregateSize) {
     return new StringBuilder("{").append("\"agg\" : {\"terms\" : {\"field\" : \"").append(aggregate)
         .append("\", \"size\" : ").append(aggregateSize)
@@ -444,6 +450,12 @@ public class SearchService {
         .append("}}}").toString();
   }
 
+  /**
+   * Builds a JSON string for sorting
+   * the provided {@link QuerySort} object
+   * @param dto a {@link QuerySort} object
+   * @return a JSON string rep
+   */
   private String buildSort(QuerySort dto) {
     StringBuilder builder = new StringBuilder("[");
     for (Entry<String, String> entry : dto.getSortMap().entrySet()) {
@@ -458,6 +470,15 @@ public class SearchService {
     return builder.toString();
   }
 
+  /**
+   * Creates and returns a search result DTO based on the Elastic search response wrapper object
+   * {@link QueryResponse)
+   * @param queryResponse an Elastic search response wrapper object
+   * @param countOnly flag to indicate whether only the result count should be returned
+   * @param includeAllSource flag to indicate whether the whole query response should be included
+   * @param includeResults flag to indicate whether the results should be included
+   * @return a {@link SearchResultDTO} containing the results of the Elastic search executed query
+   */
   private SearchResultDTO buildResultFrom(QueryResponse queryResponse, boolean countOnly,
       boolean includeAllSource,
       boolean includeResults) {
@@ -501,6 +522,11 @@ public class SearchService {
     return result;
   }
 
+  /**
+   * Maps a {@link Hit} object to a {@link SearchHitDTO}
+   * @param hit a {@link Hit} object
+   * @return a {@link SearchHitDTO} object
+   */
   private SearchHitDTO map(Hit hit) {
     SearchHitDTO sh = new SearchHitDTO();
     sh.setScore(hit.getScore());
@@ -511,6 +537,11 @@ public class SearchService {
     return sh;
   }
 
+  /**
+   * Maps an Elastic search {@link Response} object to a {@link QueryResponse}
+   * @param response an Elastic search {@link Response} object
+   * @return a {@link QueryResponse} object
+   */
   private QueryResponse getQueryResponse(Response response) {
     try {
       return mapper.readValue(response.getEntity().getContent(), QueryResponse.class);
