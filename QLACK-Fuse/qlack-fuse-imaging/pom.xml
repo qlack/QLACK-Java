@@ -172,42 +172,6 @@
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
     </dependency>
-    <!--<dependency>-->
-      <!--<groupId>org.apache.xmlgraphics</groupId>-->
-      <!--<artifactId>batik-rasterizer-ext</artifactId>-->
-      <!--<version>${batik.version}</version>-->
-      <!--<exclusions>-->
-        <!--<exclusion>-->
-          <!--<groupId>org.apache.xmlgraphics</groupId>-->
-          <!--<artifactId>batik-extensions</artifactId>-->
-        <!--</exclusion>-->
-      <!--</exclusions>-->
-    <!--</dependency>-->
-
-    <!--<dependency>-->
-      <!--<groupId>org.apache.xmlgraphics</groupId>-->
-      <!--<artifactId>batik-extension</artifactId>-->
-      <!--<version>${batik.version}</version>-->
-    <!--</dependency>-->
-
-    <!--<dependency>-->
-      <!--<groupId>org.apache.xmlgraphics</groupId>-->
-      <!--<artifactId>xmlgraphics-commons</artifactId>-->
-      <!--<version>2.0.1</version>-->
-    <!--</dependency>-->
-
-    <!--<dependency>-->
-      <!--<groupId>org.apache.xmlgraphics</groupId>-->
-      <!--<artifactId>batik-anim</artifactId>-->
-      <!--<version>${batik.version}</version>-->
-    <!--</dependency>-->
-
-    <!--<dependency>-->
-      <!--<groupId>org.apache.xmlgraphics</groupId>-->
-      <!--<artifactId>batik-svggen</artifactId>-->
-      <!--<version>${batik.version}</version>-->
-    <!--</dependency>-->
-
     <dependency>
       <groupId>org.apache.xmlgraphics</groupId>
       <artifactId>batik-transcoder</artifactId>
@@ -224,6 +188,23 @@
           <artifactId>fop</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+
+    <!-- Test Dependencies -->
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-module-junit4</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-api-mockito2</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
