@@ -78,6 +78,7 @@
     <jacoco.version>0.8.4</jacoco.version>
     <enunciate.version>2.11.1</enunciate.version>
     <powermockito.version>2.0.2</powermockito.version>
+    <org.javassist.verion>3.22.0-GA</org.javassist.verion>
   </properties>
 
   <dependencyManagement>
@@ -160,6 +161,12 @@
         <groupId>org.powermock</groupId>
         <artifactId>powermock-api-mockito2</artifactId>
         <version>${powermockito.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.javassist</groupId>
+        <artifactId>javassist</artifactId>
+        <version>${org.javassist.verion}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
