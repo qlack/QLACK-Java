@@ -12,7 +12,7 @@ import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.fuse.lexicon.InitTestValues;
 import com.eurodyn.qlack.fuse.lexicon.dto.TemplateDTO;
 import com.eurodyn.qlack.fuse.lexicon.exception.TemplateProcessingException;
-import com.eurodyn.qlack.fuse.lexicon.mappers.TemplateMapper;
+import com.eurodyn.qlack.fuse.lexicon.mapper.TemplateMapper;
 import com.eurodyn.qlack.fuse.lexicon.model.Data;
 import com.eurodyn.qlack.fuse.lexicon.model.Language;
 import com.eurodyn.qlack.fuse.lexicon.model.Template;
@@ -178,4 +178,14 @@ public class TemplateServiceTest {
     String processedTemplate = templateService.processTemplate(template.getContent(), templateData);
     assertEquals(expectedProcessedTemplate, processedTemplate);
   }
+
+  @Test
+  public void processTemplateByNameNoValuesTest() {
+    String content = "<h1>Template example</h1><p>message</p>";
+    template.setContent(content);
+    when(templateRepository.findByNameAndLanguageId(template.getName(), language.getId())).thenReturn(template);
+    String processedTemplate = templateService.processTemplateByName(template.getName(), language.getId(), templateData);
+    assertEquals(content, processedTemplate);
+  }
+
 }

@@ -48,6 +48,8 @@ public class LexiconConfigService {
   private ApplicationContext applicationContext;
   private ApplicationRepository applicationRepository;
 
+  private ClassLoader classLoader;
+
   @Autowired
   public LexiconConfigService(GroupService groupService,
     LanguageService languageService, KeyService keyService, ApplicationRepository applicationRepository,
@@ -57,13 +59,14 @@ public class LexiconConfigService {
     this.keyService = keyService;
     this.applicationRepository = applicationRepository;
     this.applicationContext = applicationContext;
+    this.classLoader = this.getClass().getClassLoader();
   }
 
   @PostConstruct
   public void init() {
     try {
 
-      Enumeration<URL> entries = this.getClass().getClassLoader().getResources("qlack-lexicon-config.yaml");
+      Enumeration<URL> entries = classLoader.getResources("qlack-lexicon-config.yaml");
       if (entries != null) {
         while (entries.hasMoreElements()) {
           updateTranslations(entries.nextElement());

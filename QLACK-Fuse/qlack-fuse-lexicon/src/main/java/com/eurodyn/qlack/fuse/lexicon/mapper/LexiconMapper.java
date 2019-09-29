@@ -1,4 +1,4 @@
-package com.eurodyn.qlack.fuse.lexicon.mappers;
+package com.eurodyn.qlack.fuse.lexicon.mapper;
 
 import java.util.List;
 

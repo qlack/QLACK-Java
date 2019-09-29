@@ -3,12 +3,13 @@ package com.eurodyn.qlack.fuse.lexicon.service;
 import com.eurodyn.qlack.common.exception.QAlreadyExistsException;
 import com.eurodyn.qlack.fuse.lexicon.dto.LanguageDTO;
 import com.eurodyn.qlack.fuse.lexicon.exception.LanguageProcessingException;
-import com.eurodyn.qlack.fuse.lexicon.mappers.LanguageMapper;
+import com.eurodyn.qlack.fuse.lexicon.mapper.LanguageMapper;
 import com.eurodyn.qlack.fuse.lexicon.model.Group;
 import com.eurodyn.qlack.fuse.lexicon.model.Key;
 import com.eurodyn.qlack.fuse.lexicon.model.Language;
 import com.eurodyn.qlack.fuse.lexicon.repository.KeyRepository;
 import com.eurodyn.qlack.fuse.lexicon.repository.LanguageRepository;
+import com.eurodyn.qlack.fuse.lexicon.util.WorkbookUtil;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -21,7 +22,6 @@ import java.util.logging.Level;
 import java.util.regex.Pattern;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -282,7 +282,7 @@ public class LanguageService {
 
     // Create an Excel workbook. The workbook will contain a sheet for each
     // group.
-    Workbook wb = new HSSFWorkbook();
+    Workbook wb = WorkbookUtil.createHssfWorkbook();
     CreationHelper createHelper = wb.getCreationHelper();
 
     // Iterate over all existing groups and create a sheet for each one.
@@ -359,7 +359,6 @@ public class LanguageService {
       log.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       throw new LanguageProcessingException("Error reading Excel file for language " + languageId);
     }
-
   }
 
   /**

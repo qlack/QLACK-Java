@@ -88,6 +88,7 @@ public class InitTestValues {
     GroupDTO groupDTO = new GroupDTO();
     groupDTO.setId("06b68e66-d4fa-4070-ae49-826be499eb41");
     groupDTO.setTitle("Application UI");
+    groupDTO.setDescription("description");
     return groupDTO;
   }
 
@@ -95,6 +96,7 @@ public class InitTestValues {
     Group group = new Group();
     group.setId("06b68e66-d4fa-4070-ae49-826be499eb41");
     group.setTitle("Application UI");
+    group.setDescription("description");
     return group;
   }
 

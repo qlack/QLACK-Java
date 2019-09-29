@@ -1,6 +1,7 @@
 package com.eurodyn.qlack.fuse.lexicon.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -8,7 +9,7 @@ import static org.mockito.Mockito.when;
 
 import com.eurodyn.qlack.fuse.lexicon.InitTestValues;
 import com.eurodyn.qlack.fuse.lexicon.dto.GroupDTO;
-import com.eurodyn.qlack.fuse.lexicon.mappers.GroupMapper;
+import com.eurodyn.qlack.fuse.lexicon.mapper.GroupMapper;
 import com.eurodyn.qlack.fuse.lexicon.model.Data;
 import com.eurodyn.qlack.fuse.lexicon.model.Group;
 import com.eurodyn.qlack.fuse.lexicon.model.Language;
@@ -187,4 +188,13 @@ public class GroupServiceTest {
     long lastUpdateDateForLocale = groupService.getLastUpdateDateForLocale(group.getId(), language.getLocale());
     assertEquals(expectedLastUpdateDate, lastUpdateDateForLocale);
   }
+
+  @Test
+  public void getLastUpdateDateForLocaleNullTest() {
+    Predicate predicate = qData.key.group.id.eq(group.getId()).and(qData.language.id
+      .eq(JPAExpressions.select(qLanguage.id).from(qLanguage).where(qLanguage.locale.eq(language.getLocale()))));
+    when(dataRepository.findAll(predicate, Sort.by("lastUpdatedOn").descending())).thenReturn(new ArrayList<>());
+    assertNotNull(groupService.getLastUpdateDateForLocale(group.getId(), language.getLocale()));
+  }
+
 }

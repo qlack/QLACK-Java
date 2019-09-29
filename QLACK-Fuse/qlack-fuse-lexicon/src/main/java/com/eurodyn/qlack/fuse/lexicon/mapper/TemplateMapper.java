@@ -1,4 +1,4 @@
-package com.eurodyn.qlack.fuse.lexicon.mappers;
+package com.eurodyn.qlack.fuse.lexicon.mapper;
 
 import com.eurodyn.qlack.fuse.lexicon.dto.TemplateDTO;
 import com.eurodyn.qlack.fuse.lexicon.model.Template;

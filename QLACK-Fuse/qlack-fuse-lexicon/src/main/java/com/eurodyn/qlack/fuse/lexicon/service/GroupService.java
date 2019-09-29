@@ -1,7 +1,7 @@
 package com.eurodyn.qlack.fuse.lexicon.service;
 
 import com.eurodyn.qlack.fuse.lexicon.dto.GroupDTO;
-import com.eurodyn.qlack.fuse.lexicon.mappers.GroupMapper;
+import com.eurodyn.qlack.fuse.lexicon.mapper.GroupMapper;
 import com.eurodyn.qlack.fuse.lexicon.model.Data;
 import com.eurodyn.qlack.fuse.lexicon.model.Group;
 import com.eurodyn.qlack.fuse.lexicon.model.Language;
@@ -200,9 +200,13 @@ public class GroupService {
       .and(qData.language.id.eq(JPAExpressions.select(qLanguage.id)
         .from(qLanguage)
         .where(qLanguage.locale.eq(locale))));
-    Data data = dataRepository.findAll(predicate, Sort.by("lastUpdatedOn").descending()).iterator().next();
+    List<Data> datas = dataRepository.findAll(predicate, Sort.by("lastUpdatedOn").descending());
 
-    return data != null ? data.getLastUpdatedOn() : Instant.now().toEpochMilli();
+    if (datas.iterator().hasNext()){
+      return datas.iterator().next().getLastUpdatedOn();
+    } else {
+      return Instant.now().toEpochMilli();
+    }
   }
 
 }

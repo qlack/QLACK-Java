@@ -1,7 +1,8 @@
-package com.eurodyn.qlack.fuse.lexicon.mappers;
+package com.eurodyn.qlack.fuse.lexicon.mapper;
 
 import com.eurodyn.qlack.fuse.lexicon.dto.KeyDTO;
 import com.eurodyn.qlack.fuse.lexicon.model.Data;
+import com.eurodyn.qlack.fuse.lexicon.model.Group;
 import com.eurodyn.qlack.fuse.lexicon.model.Key;
 import java.util.HashMap;
 import java.util.List;
@@ -26,9 +27,26 @@ public interface KeyMapper extends LexiconMapper<Key, KeyDTO> {
    * @param addTranslations an addTranslations check value
    * @return a mapped DTO
    */
-  @Mapping(target = "groupId", source = "group.id")
+  @Mapping(target = "groupId", source = "group", qualifiedByName = "mapGroup")
   @Mapping(target = "translations", source = "data", qualifiedByName = "mapData")
   KeyDTO mapToDTO(Key key, @Context boolean addTranslations);
+
+  /**
+   * Maps the Group value
+   * @param group the group of the key
+   * @return the id of the Group
+   */
+  @Named("mapGroup")
+  default String mapGroup(Group group) {
+    if ( group == null ) {
+      return null;
+    }
+    String id = group.getId();
+    if ( id == null ) {
+      return null;
+    }
+    return id;
+  }
 
   /** Maps tha Data
    * @param data a list of lexicon data

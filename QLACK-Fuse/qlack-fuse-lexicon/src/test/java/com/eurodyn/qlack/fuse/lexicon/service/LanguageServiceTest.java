@@ -8,11 +8,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 import com.eurodyn.qlack.common.exception.QAlreadyExistsException;
 import com.eurodyn.qlack.fuse.lexicon.InitTestValues;
 import com.eurodyn.qlack.fuse.lexicon.dto.LanguageDTO;
-import com.eurodyn.qlack.fuse.lexicon.mappers.LanguageMapper;
+import com.eurodyn.qlack.fuse.lexicon.exception.LanguageProcessingException;
+import com.eurodyn.qlack.fuse.lexicon.mapper.LanguageMapper;
 import com.eurodyn.qlack.fuse.lexicon.model.Data;
 import com.eurodyn.qlack.fuse.lexicon.model.Group;
 import com.eurodyn.qlack.fuse.lexicon.model.Key;
@@ -31,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -219,9 +220,11 @@ public class LanguageServiceTest {
 
   @Test
   public void testGetLanguageByLocale() {
-    when(languageRepository.findByLocale(language.getLocale())).thenReturn(language);
+    when(languageRepository.findByLocale(language.getLocale()))
+      .thenReturn(language);
     when(languageMapper.mapToDTO(language)).thenReturn(languageDTO);
-    LanguageDTO foundLanguageDTO = languageService.getLanguageByLocale(language.getLocale());
+    LanguageDTO foundLanguageDTO = languageService
+      .getLanguageByLocale(language.getLocale());
     assertEquals(languageDTO, foundLanguageDTO);
   }
 
@@ -232,6 +235,31 @@ public class LanguageServiceTest {
     when(languageRepository.findByLocale(language.getLocale())).thenReturn(language);
     LanguageDTO foundLanguageDTO = languageService.getLanguageByLocale("en_", true);
     assertEquals(languageDTO, foundLanguageDTO);
+  }
+
+  @Test
+  public void getLanguageByLocaleWithFallbackAndReducedLocaleInactiveTest() {
+    when(languageRepository.findByLocale(language.getLocale())).thenReturn(language);
+    LanguageDTO foundLanguageDTO = languageService.getLanguageByLocale("en_", true);
+    assertNull(foundLanguageDTO);
+  }
+
+  @Test
+  public void getEffectiveLanguageNullTest() {
+    assertNull(languageService.getEffectiveLanguage("en_-en", "en"));
+  }
+
+  @Test
+  public void getLanguageByLocaleNoFallbackTest() {
+    LanguageDTO foundLanguageDTO = languageService.getLanguageByLocale("en_", false);
+    assertNull(foundLanguageDTO);
+  }
+
+  @Test
+  public void getLanguageByLocaleNoLanguageTest() {
+    when(languageRepository.findByLocale(language.getLocale())).thenReturn(language);
+    LanguageDTO foundLanguageDTO = languageService.getLanguageByLocale(language.getLocale(), true);
+    assertNull(foundLanguageDTO);
   }
 
   @Test
@@ -261,6 +289,14 @@ public class LanguageServiceTest {
     when(languageRepository.findByLocale(locale)).thenReturn(language);
     String effectiveLanguage = languageService.getEffectiveLanguage("en", locale);
     assertEquals(locale, effectiveLanguage);
+  }
+
+  @Test
+  public void getEffectiveLanguageInactiveTest() {
+    String locale = "en";
+    when(languageRepository.findByLocale(locale)).thenReturn(language);
+    String effectiveLanguage = languageService.getEffectiveLanguage("en", locale);
+    assertNull(effectiveLanguage);
   }
 
   @Test
@@ -310,7 +346,7 @@ public class LanguageServiceTest {
   }
 
   @Test
-  public void testUploadLanguage() throws IOException, InvalidFormatException {
+  public void testUploadLanguage() throws IOException {
     List<Group> groups = initTestValues.createGroups();
     List<String> groupsIds = new ArrayList<>();
     for (Group group : groups) {
@@ -337,6 +373,11 @@ public class LanguageServiceTest {
     }
   }
 
+  @Test(expected = LanguageProcessingException.class)
+  public void uploadLanguageIoExceptionTest() {
+    languageService.uploadLanguage(language.getId(), "unsupported type".getBytes());
+  }
+
   @Test
   public void testIsLocaleRTL() {
     assertTrue(languageService.isLocaleRTL("ar"));
@@ -346,4 +387,5 @@ public class LanguageServiceTest {
   public void testIsLocaleRTLFalse() {
     assertFalse(languageService.isLocaleRTL(language.getLocale()));
   }
+
 }

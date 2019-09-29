@@ -4,7 +4,7 @@ import com.eurodyn.qlack.common.exception.QAlreadyExistsException;
 import com.eurodyn.qlack.fuse.lexicon.criteria.KeySearchCriteria;
 import com.eurodyn.qlack.fuse.lexicon.criteria.KeySearchCriteria.SortType;
 import com.eurodyn.qlack.fuse.lexicon.dto.KeyDTO;
-import com.eurodyn.qlack.fuse.lexicon.mappers.KeyMapper;
+import com.eurodyn.qlack.fuse.lexicon.mapper.KeyMapper;
 import com.eurodyn.qlack.fuse.lexicon.model.Data;
 import com.eurodyn.qlack.fuse.lexicon.model.Group;
 import com.eurodyn.qlack.fuse.lexicon.model.Key;
