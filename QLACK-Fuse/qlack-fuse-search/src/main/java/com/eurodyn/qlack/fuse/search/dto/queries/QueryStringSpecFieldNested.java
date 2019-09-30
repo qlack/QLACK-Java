@@ -25,15 +25,29 @@ import lombok.Setter;
 @Setter
 public class QueryStringSpecFieldNested extends QuerySpec {
 
-  // The field to execute the search against.
+  /**
+   * The field to execute the search against.
+   */
   private String field;
-  // The value to lookup.
+
+  /**
+   * The value to lookup.
+   */
   private Object value;
-  // The field to execute the search against.
+
+  /**
+   * The field to execute the search against.
+   */
   private String operator;
-  // The nested object
+
+  /**
+   * The nested object
+   */
   private String path;
-  // The Object name of the inner search results
+
+  /**
+   * The Object name of the inner search results
+   */
   private String docvalueFields;
 
   /**

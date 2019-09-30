@@ -57,13 +57,21 @@ public class QueryBoolean extends QuerySpec {
     return this;
   }
 
-  // The available boolean operators.
+  /**
+   * The available boolean operators.
+   */
   public enum BooleanType {
-    // Boolean AND-equivalent
+    /**
+     * Boolean AND-equivalent
+     */
     MUST,
-    // Boolean NOT-equivalent
+    /**
+     * Boolean NOT-equivalent
+     */
     MUSTNOT,
-    // Boolean OR-equivalent
+    /**
+     * Boolean OR-equivalent
+     */
     SHOULD
   }
 }

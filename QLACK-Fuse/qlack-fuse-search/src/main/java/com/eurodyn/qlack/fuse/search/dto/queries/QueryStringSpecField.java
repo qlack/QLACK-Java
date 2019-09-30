@@ -23,11 +23,20 @@ import lombok.Setter;
 @Setter
 public class QueryStringSpecField extends QuerySpec {
 
-  // The field to execute the search against.
+
+  /**
+   * The field to execute the search against.
+   */
   private String field;
-  // The value to lookup.
+
+  /**
+   * The value to lookup.
+   */
   private Object value;
-  // The field to execute the search against.
+
+  /**
+   * The field to execute the search against.
+   */
   private String operator;
 
   /**

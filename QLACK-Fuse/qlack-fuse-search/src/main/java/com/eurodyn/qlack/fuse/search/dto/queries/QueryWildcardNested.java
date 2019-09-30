@@ -28,9 +28,15 @@ public class QueryWildcardNested extends QuerySpec {
 
   private String field;
   private String wildcard;
-  // The nested object
+
+  /**
+   * The nested object
+   */
   private String path;
-  // The Object name of the inner search results
+
+  /**
+   * The Object name of the inner search results
+   */
   private String docvalueFields;
 
   public QueryWildcardNested setTerm(String field, String wildcard, String path,

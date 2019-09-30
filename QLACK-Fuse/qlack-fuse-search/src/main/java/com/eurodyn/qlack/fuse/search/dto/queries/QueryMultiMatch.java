@@ -21,10 +21,14 @@ import lombok.Getter;
 @Getter
 public class QueryMultiMatch extends QuerySpec {
 
-  // The list of fields to search against.
+  /**
+   * The list of fields to search against.
+   */
   private String[] fields;
 
-  // The value to search for.
+  /**
+   *The value to search for.
+   */
   private Object value;
 
   /**

@@ -23,13 +23,24 @@ import lombok.Getter;
 @Getter
 public class QueryTermsNested extends QuerySpec {
 
-  // The field to execute the search against
+  /**
+   * The field to execute the search against
+   */
   private String field;
-  // The comma delimited Search Values
+
+  /**
+   * The comma delimited Search Values
+   */
   private Object values;
-  // The nested object
+
+  /**
+   * The nested object
+   */
   private String path;
-  // The Object name of the inner search results
+
+  /**
+   * The Object name of the inner search results
+   */
   private String docvalueFields;
 
   public QueryTermsNested setTerm(String field, Object values, String path,

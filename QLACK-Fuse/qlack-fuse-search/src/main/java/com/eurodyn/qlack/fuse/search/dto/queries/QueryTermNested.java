@@ -26,7 +26,10 @@ public class QueryTermNested extends QuerySpec {
   private String field;
   private Object value;
   private String path;
-  // The Object name of the inner search results
+
+  /**
+   * The Object name of the inner search results
+   */
   private String docvalueFields;
 
   public QueryTermNested setTerm(String field, Object value, String path,

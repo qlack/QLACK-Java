@@ -69,48 +69,110 @@ public class QueryResponse {
   @JsonIgnoreProperties(ignoreUnknown = true)
   public static class Shards {
 
+    /**
+     * Total no of shards
+     */
     private int total;
+
+    /**
+     * Flag to indicate success
+     */
     private int successful;
+
+    /**
+     * Flag to indicate failure
+     */
     private int failed;
   }
 
+  /**
+   * Hits class
+   *
+   * @author European Dynamics SA.
+   */
   @Getter
   @Setter
   @JsonIgnoreProperties(ignoreUnknown = true)
   public static class Hits {
 
+    /**
+     * Total no of hits
+     */
     private int total;
+
+    /**
+     * Maximum score
+     */
     @JsonProperty("max_score")
     private float maxScore;
+
+    /**
+     * Hits list
+     */
     private List<Hit> hits;
 
     public List<Hit> getHits() {
       return hits == null ? hits = new ArrayList<>() : hits;
     }
 
+    /**
+     * Hit class
+     *
+     * @author European Dynamics SA.
+     */
     @Getter
     @Setter
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Hit {
 
+      /**
+       * Index
+       */
       @JsonProperty("_index")
       private String index;
+
+      /**
+       * Type
+       */
       @JsonProperty("_type")
       private String type;
+
+      /**
+       * Id
+       */
       @JsonProperty("_id")
       private String id;
+
+      /**
+       * Score
+       */
       @JsonProperty("_score")
       private float score;
+
+      /**
+       * Source
+       */
       @JsonProperty("_source")
       private Object source;
+
+      /**
+       * InnerHits
+       */
       @JsonProperty("inner_hits")
       private Object innerHits;
 
+      /**
+       * Returns the Hit's source
+       * @return the source value
+       */
       @JsonRawValue
       public String getSource() {
         return source != null ? source.toString() : null;
       }
-
+      /**
+       * Returns the inner hits value
+       * @return the inner hits value
+       */
       @JsonRawValue
       public String getInnerHits() {
         return innerHits != null ? innerHits.toString() : null;
@@ -118,33 +180,77 @@ public class QueryResponse {
     }
   }
 
+  /**
+   * Aggregations
+   *
+   * @author European Dynamics SA.
+   */
   @Getter
   @Setter
   @JsonIgnoreProperties(ignoreUnknown = true)
   public static class Aggregations {
 
+    /**
+     * Aggregation
+     */
     private Agg agg;
 
+    /**
+     * Aggregation
+     *
+     * @author European Dynamics SA.
+     */
     @Getter
     @Setter
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Agg {
 
+      /**
+       * Upper bound for document error count
+       */
       private long docCountErrorUpperBound;
+
+      /**
+       * Sum for other document count
+       */
       private long sumOtherDocCount;
+
+      /**
+       * Bucket list
+       */
       private List<Bucket> buckets;
 
+      /**
+       * Bucket list getter method
+       * @return a list of {@link Bucket} objects
+       */
       public List<Bucket> getBuckets() {
         return (buckets == null) ? buckets = new ArrayList<>() : buckets;
       }
 
+      /**
+       * Bucket class
+       *
+       * @author European Dynamics SA.
+       */
       @Getter
       @Setter
       @JsonIgnoreProperties(ignoreUnknown = true)
       public static class Bucket {
 
+        /**
+         * Key
+         */
         private long key;
+
+        /**
+         * Key as String
+         */
         private String keyAsString;
+
+        /**
+         * Document count
+         */
         private long docCount;
 
       }
