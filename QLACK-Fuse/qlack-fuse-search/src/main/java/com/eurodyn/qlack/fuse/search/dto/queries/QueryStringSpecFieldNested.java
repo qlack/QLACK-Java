@@ -56,6 +56,16 @@ public class QueryStringSpecFieldNested extends QuerySpec {
    * @param field The field name to search against.
    * @param value The value to search.
    */
+
+  /**
+   * A convenience method to set the term of this query.
+   * @param field The field name to search against.
+   * @param value The value to search.
+   * @param operator The field to execute the search against.
+   * @param path The nested object
+   * @param docvalueFields The Object name of the inner search results
+   * @return a {@link QueryStringSpecFieldNested} object
+   */
   public QueryStringSpecFieldNested setTerm(String field, Object value, String operator,
       String path, String docvalueFields) {
     this.field = field;

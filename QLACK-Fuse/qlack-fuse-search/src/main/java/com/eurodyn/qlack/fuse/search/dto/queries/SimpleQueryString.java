@@ -44,6 +44,8 @@ public class SimpleQueryString extends QuerySpec {
    *
    * @param field The field name to search against.
    * @param value The value to search.
+   * @param operator The field to execute the search against.
+   * @return a {@link SimpleQueryString} object
    */
   public SimpleQueryString setTerm(String field, Object value, String operator) {
     this.field = field;

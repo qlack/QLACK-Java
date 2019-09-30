@@ -50,6 +50,7 @@ public class QueryBoolean extends QuerySpec {
    *
    * @param term The term to append.
    * @param type The boolean type to combine this term with existing terms.
+   * @return a {@link QueryBoolean} object
    */
   public QueryBoolean setTerm(QuerySpec term, BooleanType type) {
     terms.put(term, type);

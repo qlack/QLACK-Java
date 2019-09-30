@@ -36,6 +36,7 @@ public class QueryMultiMatch extends QuerySpec {
    *
    * @param value The value to search for.
    * @param fields The list of fields to search against.
+   * @return a {@link QueryMultiMatch} object
    */
   public QueryMultiMatch setTerm(Object value, String... fields) {
     this.value = value;

@@ -124,6 +124,8 @@ public class AdminService {
 
   /**
    * Checks if an Elasticsearch index from given class exists.
+   * @param clazz the class
+   * @return true if it exists, false otherwise
    */
   public boolean indexExists(Class clazz) {
     log.info(MessageFormat.format("Checking if index for class {0} exists", clazz.getName()));

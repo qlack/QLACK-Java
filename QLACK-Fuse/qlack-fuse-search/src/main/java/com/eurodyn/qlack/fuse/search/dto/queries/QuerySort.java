@@ -36,6 +36,7 @@ public class QuerySort {
    *
    * @param field The field name to search against.
    * @param order The value to search.
+   * @return a {@link QuerySort} object
    */
   public QuerySort setSort(String field, String order) {
     sortMap.put(field, order);

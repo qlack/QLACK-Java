@@ -47,7 +47,7 @@ public class CreateIndexRequest extends BaseRequest {
 
   /**
    * Adds stopwords to the list
-   * @param words
+   * @param words The stopwords
    */
   public void addStopWords(String... words) {
     if (words == null) {

@@ -39,6 +39,7 @@ public class QueryMatch extends QuerySpec {
    *
    * @param field The field name to search against.
    * @param value The value to search.
+   * @return a {@link QueryMatch} object
    */
   public QueryMatch setTerm(String field, Object value) {
     this.field = field;

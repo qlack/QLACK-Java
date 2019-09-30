@@ -92,6 +92,7 @@ public abstract class QuerySpec {
    * Sets the indices against which the query is executed.
    *
    * @param indexName The names of the indices to add.
+   * @return a {@link QuerySpec} object
    */
   public QuerySpec setIndex(String... indexName) {
     indices.addAll(Arrays.asList(indexName));
@@ -102,6 +103,7 @@ public abstract class QuerySpec {
    * Sets the document types against which the query is executed.
    *
    * @param typeName The names of the document types to search.
+   * @return a {@link QuerySpec} object
    */
   public QuerySpec setType(String... typeName) {
     types.addAll(Arrays.asList(typeName));
@@ -112,6 +114,7 @@ public abstract class QuerySpec {
    * Sets the first record from which search results are paginated.
    *
    * @param startRecord The number of record to start from.
+   * @return a {@link QuerySpec} object
    */
   public QuerySpec setStartRecord(int startRecord) {
     this.startRecord = startRecord;
@@ -122,6 +125,7 @@ public abstract class QuerySpec {
    * Sets the number of search results returned.
    *
    * @param pageSize The number of results to return.
+   * @return a {@link QuerySpec} object
    */
   public QuerySpec setPageSize(int pageSize) {
     this.pageSize = pageSize;
@@ -132,6 +136,7 @@ public abstract class QuerySpec {
    * Sets whether ES explain info is included in the results.
    *
    * @param explain Whether to enable or disable the ES explain info.
+   * @return a {@link QuerySpec} object
    */
   public QuerySpec setExplain(boolean explain) {
     this.explain = explain;
@@ -140,6 +145,7 @@ public abstract class QuerySpec {
 
   /**
    * Convenience method to include the complete query output in the results.
+   * @return a {@link QuerySpec} object
    */
   public QuerySpec includeAllSources() {
     this.includeAllSource = true;
@@ -148,32 +154,58 @@ public abstract class QuerySpec {
 
   /**
    * Convenience method to exclude search hits from the results.
+   * @return a {@link QuerySpec} object
    */
   public QuerySpec excludeResults() {
     this.includeResults = false;
     return this;
   }
 
+  /**
+   * Convenience method to include a query sort object
+   * @param querySort the query sort object
+   * @return a {@link QuerySpec} object
+   */
   public QuerySpec setQuerySort(QuerySort querySort) {
     this.querySort = querySort;
     return this;
   }
 
+  /**
+   * Convenience method that sets a flag to include only result count
+   * @param countOnly the flag
+   * @return a {@link QuerySpec} object
+   */
   public QuerySpec setCountOnly(boolean countOnly) {
     this.countOnly = countOnly;
     return this;
   }
 
+  /**
+   * Convenience method that sets the current scroll
+   * @param scroll the scroll
+   * @return a {@link QuerySpec} object
+   */
   public QuerySpec setScroll(Integer scroll) {
     this.scroll = scroll;
     return this;
   }
 
+  /**
+   * Convenience method that sets the current aggregate
+   * @param aggregate the aggregate
+   * @return a {@link QuerySpec} object
+   */
   public QuerySpec setAggregate(String aggregate) {
     this.aggregate = aggregate;
     return this;
   }
 
+  /**
+   * Convenience method that sets the aggregate size
+   * @param aggregateSize the aggregate size
+   * @return a {@link QuerySpec} object
+   */
   public QuerySpec setAggregateSize(int aggregateSize) {
     this.aggregateSize = aggregateSize;
     return this;
