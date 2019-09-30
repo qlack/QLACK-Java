@@ -1,5 +1,10 @@
 package com.eurodyn.qlack.fuse.imaging;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
+
 import com.eurodyn.qlack.fuse.imaging.dto.ImageFormatHandler;
 import com.eurodyn.qlack.fuse.imaging.dto.ImageInfo;
 import com.eurodyn.qlack.fuse.imaging.exception.ImagingException;
@@ -7,12 +12,6 @@ import com.eurodyn.qlack.fuse.imaging.service.ImagingService;
 import com.eurodyn.qlack.fuse.imaging.util.ICCProfile;
 import com.eurodyn.qlack.fuse.imaging.util.ResamplingAlgorithm;
 import com.eurodyn.qlack.fuse.imaging.util.TIFFCompression;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
-
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -20,14 +19,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doThrow;
+import javax.imageio.ImageIO;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ImagingServiceTest {
@@ -37,32 +33,32 @@ public class ImagingServiceTest {
   private byte[] createByteImage() throws IOException {
     BufferedImage bImage = ImageIO.read(this.getClass().getResource("/image/file-binary.jpg"));
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    ImageIO.write(bImage, "jpg", bos );
+    ImageIO.write(bImage, "jpg", bos);
     return bos.toByteArray();
   }
 
   @Before
-  public void init(){
+  public void init() {
     imagingService = new ImagingService();
     imagingService.init();
   }
 
   @Test
-  public void getSupportedReadFormatsTest(){
+  public void getSupportedReadFormatsTest() {
     List<ImageFormatHandler> result =
         imagingService.getSupportedReadFormats();
     assertEquals(Arrays.asList(ImageIO.getReaderFormatNames()).size(), result.size());
   }
 
   @Test
-  public void getSupportedWriteFormatsTest(){
+  public void getSupportedWriteFormatsTest() {
     List<ImageFormatHandler> result =
         imagingService.getSupportedWriteFormats();
     assertEquals(Arrays.asList(ImageIO.getWriterFormatNames()).size(), result.size());
   }
 
   @Test
-  public void isFormatSupportedForReadTest(){
+  public void isFormatSupportedForReadTest() {
     String supportedFormat = "bmp";
     String notSupportedFormat = "mp3";
     String randomCharacters = null;
@@ -72,7 +68,7 @@ public class ImagingServiceTest {
   }
 
   @Test
-  public void isFormatSupportedForWriteTest(){
+  public void isFormatSupportedForWriteTest() {
     String supportedFormat = "bmp";
     String notSupportedFormat = "mp3";
     String randomCharacters = "BmP";
@@ -121,22 +117,26 @@ public class ImagingServiceTest {
 
   @Test
   public void resampleByPercentTest() throws IOException {
-    byte[] result = imagingService.resampleByPercent(createByteImage(), 100, ResamplingAlgorithm.FILTER_BLACKMAN);
+    byte[] result = imagingService
+        .resampleByPercent(createByteImage(), 100, ResamplingAlgorithm.FILTER_BLACKMAN);
     assertTrue(createByteImage().length > result.length);
 
-    result = imagingService.resampleByPercent(createByteImage(), 50, ResamplingAlgorithm.FILTER_BLACKMAN);
+    result = imagingService
+        .resampleByPercent(createByteImage(), 50, ResamplingAlgorithm.FILTER_BLACKMAN);
     assertNotEquals(createByteImage().length, result.length);
   }
 
   @Test
   public void resampleByFactorTest() throws IOException {
-    byte[] result = imagingService.resampleByFactor(createByteImage(), 5, ResamplingAlgorithm.FILTER_BLACKMAN);
+    byte[] result = imagingService
+        .resampleByFactor(createByteImage(), 5, ResamplingAlgorithm.FILTER_BLACKMAN);
     assertTrue(createByteImage().length < result.length);
   }
 
   @Test
   public void resampleByWidthTest() throws IOException {
-    byte[] result = imagingService.resampleByWidth(createByteImage(), 5, ResamplingAlgorithm.FILTER_BLACKMAN);
+    byte[] result = imagingService
+        .resampleByWidth(createByteImage(), 5, ResamplingAlgorithm.FILTER_BLACKMAN);
     assertTrue(createByteImage().length > result.length);
   }
 
@@ -144,11 +144,12 @@ public class ImagingServiceTest {
   public void resampleByHeightTest() throws IOException {
     InputStream originalImageInputStream = new ByteArrayInputStream(createByteImage());
     BufferedImage bImage = ImageIO.read(originalImageInputStream);
-    byte[] result = imagingService.resampleByHeight(createByteImage(), 5, ResamplingAlgorithm.FILTER_BLACKMAN);
+    byte[] result = imagingService
+        .resampleByHeight(createByteImage(), 5, ResamplingAlgorithm.FILTER_BLACKMAN);
 
     InputStream resampleImageInputStream = new ByteArrayInputStream(result);
     BufferedImage originalBufferedImage = ImageIO.read(resampleImageInputStream);
-    assertTrue(bImage.getHeight() >  originalBufferedImage.getHeight());
+    assertTrue(bImage.getHeight() > originalBufferedImage.getHeight());
   }
 
   @Test
@@ -160,6 +161,6 @@ public class ImagingServiceTest {
 
     InputStream resampleImageInputStream = new ByteArrayInputStream(result);
     BufferedImage originalBufferedImage = ImageIO.read(resampleImageInputStream);
-    assertTrue(bImage.getHeight() >  originalBufferedImage.getHeight());
+    assertTrue(bImage.getHeight() > originalBufferedImage.getHeight());
   }
 }

@@ -7,16 +7,15 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
-import javax.imageio.ImageIO;
-import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
-
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import javax.imageio.ImageIO;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 /**
  * Provides QR code generation related functionality
@@ -55,17 +54,19 @@ public class QRCodeService {
   /**
    * Generates a QR code for the given text using default values for width, height, image format,
    * background and foreground colors
+   *
    * @param text the input text
    * @return a byte array representing the QR code
    */
   public byte[] generateQRCode(String text) {
     return generateQRCode(text, DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_FORMAT, DEFAULT_BACKGROUND,
-      DEFAULT_FOREGROUND);
+        DEFAULT_FOREGROUND);
   }
 
   /**
    * Generates a QR code for the given text using provided values for width, height, image format,
    * background and foreground colors
+   *
    * @param text the input text
    * @param width qr code width
    * @param height qr code height
@@ -75,7 +76,7 @@ public class QRCodeService {
    * @return a byte array representing the QR code
    */
   public byte[] generateQRCode(String text, int width, int height, String imageFormat,
-    Color background, Color foreground) {
+      Color background, Color foreground) {
     byte[] qrCode = null;
 
     try {
@@ -84,7 +85,7 @@ public class QRCodeService {
       hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
       QRCodeWriter qrCodeWriter = new QRCodeWriter();
       BitMatrix byteMatrix = qrCodeWriter
-        .encode(text, BarcodeFormat.QR_CODE, width, height, hintMap);
+          .encode(text, BarcodeFormat.QR_CODE, width, height, hintMap);
 
       // Create the BufferedImage to hold the QRCode.
       int matrixWidth = byteMatrix.getWidth();

@@ -1,4 +1,4 @@
-package com.eurodyn.qlack.fuse.search.mappers.response;
+package com.eurodyn.qlack.fuse.search.mapper.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

@@ -1,9 +1,9 @@
-package com.eurodyn.qlack.fuse.search.mappers;
+package com.eurodyn.qlack.fuse.search.mapper;
 
 import static org.junit.Assert.assertEquals;
 
 import com.eurodyn.qlack.fuse.search.InitTestValues;
-import com.eurodyn.qlack.fuse.search.mappers.request.InternalUpdateMappingRequest;
+import com.eurodyn.qlack.fuse.search.mapper.request.InternalUpdateMappingRequest;
 import com.eurodyn.qlack.fuse.search.request.CreateIndexRequest;
 import com.eurodyn.qlack.fuse.search.request.UpdateMappingRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;

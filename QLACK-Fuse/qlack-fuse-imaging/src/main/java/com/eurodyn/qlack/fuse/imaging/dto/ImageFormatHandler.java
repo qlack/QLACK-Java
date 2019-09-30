@@ -1,11 +1,10 @@
 package com.eurodyn.qlack.fuse.imaging.dto;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Definition of a handler for a specific image format.
@@ -28,8 +27,9 @@ public class ImageFormatHandler {
   private List<String> handlerClasses = new ArrayList<>();
 
   /**
-   * Adds a specific image format handler class
-   * @param handlerClass
+   * Adds a specific image format handler class.
+   *
+   * @param handlerClass the class to be added
    */
   public void addHandlerClass(String handlerClass) {
     handlerClasses.add(handlerClass);

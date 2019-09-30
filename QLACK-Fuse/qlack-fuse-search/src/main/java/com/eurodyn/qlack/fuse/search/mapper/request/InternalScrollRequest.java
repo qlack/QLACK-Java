@@ -1,4 +1,4 @@
-package com.eurodyn.qlack.fuse.search.mappers.request;
+package com.eurodyn.qlack.fuse.search.mapper.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

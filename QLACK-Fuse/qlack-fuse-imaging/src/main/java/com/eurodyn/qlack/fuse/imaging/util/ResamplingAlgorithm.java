@@ -33,6 +33,7 @@ public enum ResamplingAlgorithm {
 
   /**
    * Copy constructor
+   *
    * @param val filter value
    */
   ResamplingAlgorithm(int val) {
@@ -41,6 +42,7 @@ public enum ResamplingAlgorithm {
 
   /**
    * Returns current filter value
+   *
    * @return the current filter value
    */
   public int getVal() {

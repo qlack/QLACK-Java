@@ -33,7 +33,7 @@ public class ImagingServiceExceptionTest {
 
   private byte[] createByteImage() throws IOException {
     BufferedImage bImage = ImageIO
-      .read(this.getClass().getResource("/image/file-binary.jpg"));
+        .read(this.getClass().getResource("/image/file-binary.jpg"));
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     ImageIO.write(bImage, "jpg", bos);
     return bos.toByteArray();
@@ -49,75 +49,75 @@ public class ImagingServiceExceptionTest {
   @Test(expected = ImagingException.class)
   public void getInfoIoExceptionTest() throws IOException {
     when(ImageIO.read(any(ByteArrayInputStream.class)))
-      .thenThrow(new IOException());
+        .thenThrow(new IOException());
     imagingService.getInfo(createByteImage());
   }
 
   @Test(expected = ImagingException.class)
   public void removeAlphaChannelIoExceptionTest() throws IOException {
     when(ImageIO.write(any(RenderedImage.class), any(String.class), any(
-      OutputStream.class))).thenThrow(new IOException());
+        OutputStream.class))).thenThrow(new IOException());
     imagingService.removeAlphaChannel(createByteImage());
   }
 
   @Test(expected = ImagingException.class)
   public void convertDstColorspaceIoExceptionTest() throws IOException {
     when(ImageIO.read(any(ByteArrayInputStream.class)))
-      .thenThrow(new IOException());
+        .thenThrow(new IOException());
     imagingService.convert(createByteImage(), "icc", ICCProfile.CGATS21_CRPC1);
   }
 
   @Test(expected = ImagingException.class)
   public void resampleByPercentIoExceptionTest() throws IOException {
     when(ImageIO.read(any(ByteArrayInputStream.class)))
-      .thenThrow(new IOException());
+        .thenThrow(new IOException());
     imagingService.resampleByPercent(createByteImage(), 100,
-      ResamplingAlgorithm.FILTER_BLACKMAN);
+        ResamplingAlgorithm.FILTER_BLACKMAN);
   }
 
   @Test(expected = ImagingException.class)
   public void resampleByFactorIoExceptionTest() throws IOException {
     when(ImageIO.read(any(ByteArrayInputStream.class)))
-      .thenThrow(new IOException());
+        .thenThrow(new IOException());
     imagingService.resampleByFactor(createByteImage(), 5,
-      ResamplingAlgorithm.FILTER_BLACKMAN);
+        ResamplingAlgorithm.FILTER_BLACKMAN);
   }
 
   @Test(expected = ImagingException.class)
   public void resampleByWidthIoExceptionTest() throws IOException {
     when(ImageIO.read(any(ByteArrayInputStream.class)))
-      .thenThrow(new IOException());
+        .thenThrow(new IOException());
     imagingService.resampleByWidth(createByteImage(), 5,
-      ResamplingAlgorithm.FILTER_BLACKMAN);
+        ResamplingAlgorithm.FILTER_BLACKMAN);
   }
 
   @Test(expected = ImagingException.class)
   public void resampleByHeightIoExceptionTest() throws IOException {
     when(ImageIO.read(any(ByteArrayInputStream.class)))
-      .thenThrow(new IOException());
+        .thenThrow(new IOException());
     imagingService.resampleByHeight(createByteImage(), 5,
-      ResamplingAlgorithm.FILTER_BLACKMAN);
+        ResamplingAlgorithm.FILTER_BLACKMAN);
   }
 
   @Test(expected = ImagingException.class)
   public void resampleIoExceptionTest() throws IOException {
     when(ImageIO.read(any(ByteArrayInputStream.class)))
-      .thenThrow(new IOException());
+        .thenThrow(new IOException());
     imagingService
-      .resample(createByteImage(), 5, 5, ResamplingAlgorithm.FILTER_BLACKMAN);
+        .resample(createByteImage(), 5, 5, ResamplingAlgorithm.FILTER_BLACKMAN);
   }
 
   @Test(expected = ImagingException.class)
   public void getDPINullReaderTest() throws IOException {
     when(ImageIO.getImageReaders(null))
-      .thenReturn(Collections.emptyIterator());
+        .thenReturn(Collections.emptyIterator());
     ImagingUtil.getDPI(createByteImage());
   }
 
   @Test
   public void getTypeNullReaderTest() throws IOException {
     when(ImageIO.getImageReaders(null))
-      .thenReturn(Collections.emptyIterator());
+        .thenReturn(Collections.emptyIterator());
     assertNull(ImagingUtil.getType(createByteImage()));
   }
 

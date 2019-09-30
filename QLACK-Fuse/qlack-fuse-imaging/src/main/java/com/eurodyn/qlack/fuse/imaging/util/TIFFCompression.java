@@ -6,15 +6,15 @@ package com.eurodyn.qlack.fuse.imaging.util;
  * @author European Dynamics SA.
  */
 public enum TIFFCompression {
-  None("None"),
+  NONE("none"),
   CCITT_RLE("CCITT RLE"),
   CCITT_T4("CCITT T.4"),
   CCITT_T6("CCITT T.6"),
   LZW("LZW"),
   JPEG("JPEG"),
-  ZLib("ZLib"),
-  PackBits("PackBits"),
-  Deflate("Deflate");
+  ZLIB("ZLib"),
+  PACKBITS("PackBits"),
+  DEFLATE("Deflate");
 
   /**
    * Algorithm value
@@ -23,6 +23,7 @@ public enum TIFFCompression {
 
   /**
    * Copy constructor
+   *
    * @param val the current algorithm value
    */
   TIFFCompression(String val) {
@@ -31,6 +32,7 @@ public enum TIFFCompression {
 
   /**
    * Returns current algorithm value
+   *
    * @return the current algorithm value
    */
   public String getVal() {

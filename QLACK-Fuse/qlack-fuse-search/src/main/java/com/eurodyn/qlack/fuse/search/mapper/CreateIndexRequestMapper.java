@@ -1,7 +1,7 @@
-package com.eurodyn.qlack.fuse.search.mappers;
+package com.eurodyn.qlack.fuse.search.mapper;
 
-import com.eurodyn.qlack.fuse.search.mappers.request.InternalCreateIndexRequest;
-import com.eurodyn.qlack.fuse.search.mappers.request.InternalUpdateMappingRequest;
+import com.eurodyn.qlack.fuse.search.mapper.request.InternalCreateIndexRequest;
+import com.eurodyn.qlack.fuse.search.mapper.request.InternalUpdateMappingRequest;
 import com.eurodyn.qlack.fuse.search.request.CreateIndexRequest;
 import com.eurodyn.qlack.fuse.search.request.UpdateMappingRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;

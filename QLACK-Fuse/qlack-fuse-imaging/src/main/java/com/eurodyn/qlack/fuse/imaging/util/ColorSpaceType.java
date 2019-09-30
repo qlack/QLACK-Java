@@ -45,6 +45,7 @@ public enum ColorSpaceType {
 
   /**
    * Copy constructor
+   *
    * @param val the color space type value
    */
   ColorSpaceType(int val) {
@@ -53,6 +54,7 @@ public enum ColorSpaceType {
 
   /**
    * Returns current color space type value
+   *
    * @return the current color space type value
    */
   public int getVal() {
@@ -61,15 +63,16 @@ public enum ColorSpaceType {
 
   /**
    * Returns the value corresponding name
+   *
    * @param val the color space type value
    * @return the value corresponding name
    */
   public static String getReverseVal(int val) {
-      for(ColorSpaceType v : values()) {
-        if (v.getVal() == val) {
-          return v.name();
-        }
+    for (ColorSpaceType v : values()) {
+      if (v.getVal() == val) {
+        return v.name();
       }
-      throw new IllegalArgumentException();
+    }
+    throw new IllegalArgumentException();
   }
 }

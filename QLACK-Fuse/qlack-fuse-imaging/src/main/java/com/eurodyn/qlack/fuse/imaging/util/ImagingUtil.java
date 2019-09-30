@@ -2,6 +2,9 @@ package com.eurodyn.qlack.fuse.imaging.util;
 
 import com.eurodyn.qlack.fuse.imaging.dto.DotsPerInch;
 import com.eurodyn.qlack.fuse.imaging.exception.ImagingException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.Iterator;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.metadata.IIOMetadata;
@@ -10,10 +13,6 @@ import javax.imageio.stream.ImageInputStream;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.Iterator;
 
 /**
  * Utility methods to be used by various imaging functions.
@@ -40,7 +39,7 @@ public class ImagingUtil {
     DotsPerInch dotsPerInch = null;
 
     try (ImageInputStream stream = ImageIO
-      .createImageInputStream(new ByteArrayInputStream(image))) {
+        .createImageInputStream(new ByteArrayInputStream(image))) {
       Iterator it = ImageIO.getImageReaders(stream);
       if (!it.hasNext()) {
         throw new ImagingException("Could not find a reader for the image.");

@@ -32,7 +32,7 @@ public class QRCodeServiceExceptionTest {
   @Test(expected = ImagingException.class)
   public void generateQRCodeIoExceptionTest() throws IOException {
     when(ImageIO.write(any(RenderedImage.class), any(String.class), any(
-      OutputStream.class))).thenThrow(new IOException());
+        OutputStream.class))).thenThrow(new IOException());
     qrCodeService.generateQRCode("text");
   }
 }

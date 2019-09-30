@@ -9,6 +9,21 @@ import com.eurodyn.qlack.fuse.imaging.util.ImagingUtil;
 import com.eurodyn.qlack.fuse.imaging.util.ResamplingAlgorithm;
 import com.eurodyn.qlack.fuse.imaging.util.TIFFCompression;
 import com.twelvemonkeys.image.ResampleOp;
+import java.awt.Color;
+import java.awt.color.ColorSpace;
+import java.awt.color.ICC_ColorSpace;
+import java.awt.color.ICC_Profile;
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ColorConvertOp;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -25,22 +40,6 @@ import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-
-import java.awt.Color;
-import java.awt.color.ColorSpace;
-import java.awt.color.ICC_ColorSpace;
-import java.awt.color.ICC_Profile;
-import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
-import java.awt.image.ColorConvertOp;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Provides image filtering and conversion functionality
@@ -62,7 +61,7 @@ public class ImagingService {
    * @return Returns a re-sampled image.
    */
   private byte[] resample(BufferedImage originalImage, int width, int height,
-    ResamplingAlgorithm qfiResamplingAlgorithm, String imageType) throws IOException {
+      ResamplingAlgorithm qfiResamplingAlgorithm, String imageType) throws IOException {
 
     try (ByteArrayOutputStream resampledImageOutputStream = new ByteArrayOutputStream()) {
       BufferedImageOp resampler = new ResampleOp(width, height, qfiResamplingAlgorithm.getVal());
@@ -101,6 +100,7 @@ public class ImagingService {
 
   /**
    * Returns the supported image format handlers
+   *
    * @return a list of the supported image format handlers
    */
   public List<ImageFormatHandler> getSupportedWriteFormats() {
@@ -122,6 +122,7 @@ public class ImagingService {
 
   /**
    * Checks if the provided format is supported for reading
+   *
    * @param format the format
    * @return true if the format is supported, false otherwise
    */
@@ -131,6 +132,7 @@ public class ImagingService {
 
   /**
    * Checks if the provided format is supported for writing
+   *
    * @param format the format
    * @return true if the format is supported, false otherwise
    */
@@ -139,8 +141,9 @@ public class ImagingService {
   }
 
   /**
-   * Provides information for the given image. Among the information provided are the bpp, the
-   * image colorspace type, the width and height, the mime-type, dpi and image format
+   * Provides information for the given image. Among the information provided are the bpp, the image
+   * colorspace type, the width and height, the mime-type, dpi and image format
+   *
    * @param image a byte array representing an image
    * @return an {@link ImageInfo} object with information for the given image
    */
@@ -154,13 +157,14 @@ public class ImagingService {
         imageInfo.setBitsPerPixel(bufferedImage.getColorModel().getPixelSize());
         imageInfo.setColorType(
             ColorSpaceType.valueOf(
-            ColorSpaceType.getReverseVal(bufferedImage.getColorModel().getColorSpace().getType())));
+                ColorSpaceType
+                    .getReverseVal(bufferedImage.getColorModel().getColorSpace().getType())));
         imageInfo.setHeight(bufferedImage.getHeight());
         imageInfo.setWidth(bufferedImage.getWidth());
         try (InputStream originalImageInputStream2 = new ByteArrayInputStream(image)) {
           imageInfo.setMimeType(
-            new TikaConfig().getDetector().detect(originalImageInputStream2, new Metadata())
-              .toString());
+              new TikaConfig().getDetector().detect(originalImageInputStream2, new Metadata())
+                  .toString());
         }
         imageInfo.setDotsPerInch(ImagingUtil.getDPI(image));
         imageInfo.setFormat(ImagingUtil.getType(image));
@@ -174,6 +178,7 @@ public class ImagingService {
 
   /**
    * Converts an image to another format
+   *
    * @param image the image
    * @param dstFormat the target image format
    * @return byte array representing the converted image
@@ -184,6 +189,7 @@ public class ImagingService {
 
   /**
    * Removes alpha channel from given image
+   *
    * @param image the image
    * @return a byte array representing the edited image
    */
@@ -193,8 +199,8 @@ public class ImagingService {
       try (InputStream originalImageInputStream = new ByteArrayInputStream(image)) {
         BufferedImage originalImage = ImageIO.read(originalImageInputStream);
         BufferedImage newImage = new BufferedImage(originalImage.getWidth(),
-          originalImage.getHeight(),
-          BufferedImage.TYPE_INT_RGB);
+            originalImage.getHeight(),
+            BufferedImage.TYPE_INT_RGB);
         newImage.createGraphics().drawImage(originalImage, 0, 0, Color.BLACK, null);
         ImageIO.write(newImage, type, baos);
       }
@@ -207,6 +213,7 @@ public class ImagingService {
 
   /**
    * Converts an image to another format and also convert its colorspace
+   *
    * @param image the image
    * @param dstFormat the target image format
    * @param dstColorspace the target image colorspace
@@ -222,16 +229,16 @@ public class ImagingService {
         if (dstColorspace != null) {
           String iccProfileFile = "icc/" + dstColorspace.name() + ".icc";
           ColorSpace cmykColorSpace = new ICC_ColorSpace(ICC_Profile.getInstance(
-            this.getClass().getClassLoader().getResource(iccProfileFile).openStream()));
+              this.getClass().getClassLoader().getResource(iccProfileFile).openStream()));
           ColorConvertOp op = new ColorConvertOp(originalImage.getColorModel().getColorSpace(),
-            cmykColorSpace, null);
+              cmykColorSpace, null);
           originalImage = op.filter(originalImage, null);
         }
 
         // Write destination image.
         if (!ImageIO.write(originalImage, dstFormat, dstImage)) {
           throw new ImagingException(MessageFormat.format(
-            "Could not write destination format: {0}", dstFormat));
+              "Could not write destination format: {0}", dstFormat));
         }
       }
       // Return image.
@@ -243,6 +250,7 @@ public class ImagingService {
 
   /**
    * Converts an image to TIFF format
+   *
    * @param image the image
    * @param tiffCompression the TIFF compression algorithm
    * @return byte array representing the converted image
@@ -253,6 +261,7 @@ public class ImagingService {
 
   /**
    * Converts an image to TIFF format and also convert its colorspace
+   *
    * @param image the image
    * @param dstColorspace the target image colorspace
    * @param tiffCompression the TIFF compression algorithm
@@ -269,15 +278,15 @@ public class ImagingService {
         if (dstColorspace != null) {
           String iccProfileFile = "icc/" + dstColorspace.name() + ".icc";
           ColorSpace cmykColorSpace = new ICC_ColorSpace(ICC_Profile.getInstance(
-            this.getClass().getClassLoader().getResource(iccProfileFile).openStream()));
+              this.getClass().getClassLoader().getResource(iccProfileFile).openStream()));
           ColorConvertOp op = new ColorConvertOp(originalImage.getColorModel().getColorSpace(),
-            cmykColorSpace, null);
+              cmykColorSpace, null);
           originalImage = op.filter(originalImage, null);
         }
 
         // Compress.
         final ImageWriteParam params = ImageIO.getImageWritersByFormatName("TIFF").next()
-          .getDefaultWriteParam();
+            .getDefaultWriteParam();
         params.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
         params.setCompressionType(tiffCompression.getVal());
         try (ImageOutputStream ios = ImageIO.createImageOutputStream(convertedImage)) {
@@ -294,8 +303,7 @@ public class ImagingService {
 
   /**
    * Re-samples an image to the new dimensions using a resize percentage and one of the available
-   * resampling
-   * algorithms.
+   * resampling algorithms.
    *
    * @param image The image to resample.
    * @param percent The new percentage for the width and height
@@ -303,13 +311,14 @@ public class ImagingService {
    * @return Returns a re-sampled image.
    */
   public byte[] resampleByPercent(byte[] image, int percent,
-    ResamplingAlgorithm qfiResamplingAlgorithm) {
+      ResamplingAlgorithm qfiResamplingAlgorithm) {
     try (InputStream originalImageInputStream = new ByteArrayInputStream(image)) {
       BufferedImage originalBufferedImage = ImageIO.read(originalImageInputStream);
       return resample(originalBufferedImage,
-        (int) (originalBufferedImage.getWidth() * ((float) percent / 100f)),
-        (int) (originalBufferedImage.getHeight() * ((float) percent / 100f)), qfiResamplingAlgorithm,
-        ImagingUtil.getType(image));
+          (int) (originalBufferedImage.getWidth() * ((float) percent / 100f)),
+          (int) (originalBufferedImage.getHeight() * ((float) percent / 100f)),
+          qfiResamplingAlgorithm,
+          ImagingUtil.getType(image));
     } catch (IOException e) {
       throw new ImagingException("Could not resample image by percent.", e);
     }
@@ -317,8 +326,7 @@ public class ImagingService {
 
   /**
    * Re-samples an image to the new dimensions using a resize factor and one of the available
-   * resampling
-   * algorithms.
+   * resampling algorithms.
    *
    * @param image The image to resample.
    * @param factor The resize factor for width and height
@@ -326,12 +334,12 @@ public class ImagingService {
    * @return Returns a re-sampled image.
    */
   public byte[] resampleByFactor(byte[] image, float factor,
-    ResamplingAlgorithm qfiResamplingAlgorithm) {
+      ResamplingAlgorithm qfiResamplingAlgorithm) {
     try (InputStream originalImageInputStream = new ByteArrayInputStream(image)) {
       BufferedImage originalBufferedImage = ImageIO.read(originalImageInputStream);
       return resample(originalBufferedImage, (int) (originalBufferedImage.getWidth() * factor),
-        (int) (originalBufferedImage.getHeight() * factor), qfiResamplingAlgorithm,
-        ImagingUtil.getType(image));
+          (int) (originalBufferedImage.getHeight() * factor), qfiResamplingAlgorithm,
+          ImagingUtil.getType(image));
     } catch (IOException e) {
       throw new ImagingException("Could not resample image by factor.", e);
     }
@@ -345,21 +353,21 @@ public class ImagingService {
    * @param qfiResamplingAlgorithm The resampling algorithm to use.
    * @return Returns a re-sampled image.
    */
-  public byte[] resampleByWidth(byte[] image, int width, ResamplingAlgorithm qfiResamplingAlgorithm) {
+  public byte[] resampleByWidth(byte[] image, int width,
+      ResamplingAlgorithm qfiResamplingAlgorithm) {
     try (InputStream originalImageInputStream = new ByteArrayInputStream(image)) {
       BufferedImage originalBufferedImage = ImageIO.read(originalImageInputStream);
       float newYRatio = (float) width / (float) originalBufferedImage.getWidth();
       return resample(originalBufferedImage, width,
-        (int) (originalBufferedImage.getHeight() * newYRatio), qfiResamplingAlgorithm,
-        ImagingUtil.getType(image));
+          (int) (originalBufferedImage.getHeight() * newYRatio), qfiResamplingAlgorithm,
+          ImagingUtil.getType(image));
     } catch (IOException e) {
       throw new ImagingException("Could not resample image by width.", e);
     }
   }
 
   /**
-   * Re-samples an image to the new height sing one of the available resampling
-   * algorithms.
+   * Re-samples an image to the new height sing one of the available resampling algorithms.
    *
    * @param image The image to resample.
    * @param height The new height.
@@ -372,7 +380,7 @@ public class ImagingService {
       BufferedImage originalBufferedImage = ImageIO.read(originalImageInputStream);
       float newXRatio = (float) height / (float) originalBufferedImage.getHeight();
       return resample(originalBufferedImage, (int) (originalBufferedImage.getWidth() * newXRatio),
-        height, qfiResamplingAlgorithm, ImagingUtil.getType(image));
+          height, qfiResamplingAlgorithm, ImagingUtil.getType(image));
     } catch (IOException e) {
       throw new ImagingException("Could not resample image by height.", e);
     }
@@ -392,7 +400,7 @@ public class ImagingService {
     try (InputStream originalImageInputStream = new ByteArrayInputStream(image)) {
       BufferedImage originalBufferedImage = ImageIO.read(originalImageInputStream);
       return resample(originalBufferedImage, width, height, qfiResamplingAlgorithm,
-        ImagingUtil.getType(image));
+          ImagingUtil.getType(image));
     } catch (IOException e) {
       throw new ImagingException("Could not resample image.", e);
     }
