@@ -32,7 +32,8 @@ public interface UserHasOperationRepository extends AAARepository<UserHasOperati
      * @param operationName the operationName
      * @return a {@link UserHasOperation} object
      */
-  UserHasOperation findByUserIdAndResourceIdAndOperationName(String userId, String resourceId,String operationName);
+  UserHasOperation findByUserIdAndResourceIdAndOperationName(String userId, String resourceId,
+                                                             String operationName);
 
     /**Finds a list of {@link UserHasOperation}
      * @param name the name
