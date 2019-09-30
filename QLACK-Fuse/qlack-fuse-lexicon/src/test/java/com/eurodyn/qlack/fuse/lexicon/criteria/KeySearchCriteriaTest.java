@@ -15,32 +15,32 @@ public class KeySearchCriteriaTest {
   private KeySearchCriteria keySearchCriteria;
 
   @Before
-  public void init(){
+  public void init() {
     keySearchCriteria = new KeySearchCriteria();
   }
 
   @Test
-  public void groupIdTest(){
+  public void groupIdTest() {
     String groupId = "groupId";
     keySearchCriteria.setGroupId(groupId);
     assertEquals(groupId, keySearchCriteria.getGroupId());
   }
 
   @Test
-  public void keyNameTest(){
+  public void keyNameTest() {
     String keyName = "keyName";
     keySearchCriteria.setKeyName(keyName);
     assertEquals(keyName, keySearchCriteria.getKeyName());
   }
 
   @Test
-  public void ascendingTest(){
+  public void ascendingTest() {
     keySearchCriteria.setAscending(true);
     assertEquals(true, keySearchCriteria.isAscending());
   }
 
   @Test
-  public void pageableTest(){
+  public void pageableTest() {
     Pageable pageable = PageRequest.of(10, 10);
     keySearchCriteria.setPageable(pageable);
     assertEquals(pageable, keySearchCriteria.getPageable());

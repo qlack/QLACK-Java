@@ -68,7 +68,7 @@ public class LanguageServiceMockTest {
   @Before
   public void init() {
     languageService = new LanguageService(keyService, groupService,
-      languageRepository, keyRepository, languageMapper);
+        languageRepository, keyRepository, languageMapper);
     initTestValues = new InitTestValues();
     language = initTestValues.createEnglishLanguage();
     lgXl = initTestValues.getLanguageByteArray();
@@ -87,7 +87,7 @@ public class LanguageServiceMockTest {
     languageService.uploadLanguage(language.getId(), lgXl);
 
     Workbook wb = WorkbookFactory
-      .create(new BufferedInputStream(new ByteArrayInputStream(lgXl)));
+        .create(new BufferedInputStream(new ByteArrayInputStream(lgXl)));
     for (int si = 0; si < wb.getNumberOfSheets(); si++) {
       Map<String, String> translations = new HashMap<>();
       Sheet sheet = wb.getSheetAt(si);
@@ -102,8 +102,8 @@ public class LanguageServiceMockTest {
         translations.put(keyName, keyValue);
       }
       verify(keyService, times(1))
-        .updateTranslationsForLanguageByKeyName(language.getId(), null,
-          translations);
+          .updateTranslationsForLanguageByKeyName(language.getId(), null,
+              translations);
     }
   }
 

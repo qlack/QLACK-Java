@@ -6,8 +6,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
 /**
- *  An interface TemplateMapper that is used to map the Template objects with
- *  their values.
+ * An interface TemplateMapper that is used to map the Template objects with their values.
+ *
  * @author European Dynamics SA
  */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)

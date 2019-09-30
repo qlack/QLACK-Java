@@ -6,7 +6,6 @@ import com.eurodyn.qlack.fuse.lexicon.exception.LexiconYMLProcessingException;
 import com.eurodyn.qlack.fuse.lexicon.repository.ApplicationRepository;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Enumeration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,23 +45,23 @@ public class LexiconConfigServiceMockTest {
   @Before
   public void init() {
     lexiconConfigService = new LexiconConfigService(groupService,
-      languageService, keyService,
-      applicationRepository, applicationContext);
+        languageService, keyService,
+        applicationRepository, applicationContext);
     ReflectionTestUtils
-      .setField(lexiconConfigService, "classLoader", classLoader);
+        .setField(lexiconConfigService, "classLoader", classLoader);
   }
 
   @Test
   public void initNullEntriesTest() throws IOException {
     when(classLoader.getResources("qlack-lexicon-config.yaml"))
-      .thenReturn(null);
+        .thenReturn(null);
     lexiconConfigService.init();
   }
 
   @Test
   public void initIoExceptionTest() throws IOException {
     when(classLoader.getResources("qlack-lexicon-config.yaml"))
-      .thenThrow(new IOException());
+        .thenThrow(new IOException());
     lexiconConfigService.init();
   }
 

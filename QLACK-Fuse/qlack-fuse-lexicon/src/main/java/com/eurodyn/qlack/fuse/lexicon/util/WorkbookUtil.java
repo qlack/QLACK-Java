@@ -10,6 +10,13 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 public class WorkbookUtil {
 
   /**
+   * Private Constructor
+   */
+  private WorkbookUtil() {
+
+  }
+
+  /**
    * Creates a new instance of the HSSFWorkbook class.
    *
    * @return the HSSFWorkbook instance

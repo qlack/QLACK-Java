@@ -6,9 +6,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 
-/** A class that specifies the criteria that is used in order to search
- *  for a specific Key
- * @author  European Dynamics SA
+/**
+ * A class that specifies the criteria that is used in order to search for a specific Key
+ *
+ * @author European Dynamics SA
  */
 @Getter
 @Setter
@@ -25,8 +26,8 @@ public class KeySearchCriteria {
   }
 
   /**
-   * A Criteria Builder class that is used to construct CriteriaQuery for searching a
-   *  specific key object and its expression that is used to achieve it.
+   * A Criteria Builder class that is used to construct CriteriaQuery for searching a specific key
+   * object and its expression that is used to achieve it.
    */
   public static class KeySearchCriteriaBuilder {
 
@@ -46,7 +47,9 @@ public class KeySearchCriteria {
       return criteria;
     }
 
-    /** A method that is used to retrieve a specific key by its name
+    /**
+     * A method that is used to retrieve a specific key by its name
+     *
      * @param name the name of the key
      * @return the key by its name
      */
@@ -55,7 +58,9 @@ public class KeySearchCriteria {
       return this;
     }
 
-    /** A Criteria query that searches the key using expression by inGroup
+    /**
+     * A Criteria query that searches the key using expression by inGroup
+     *
      * @param groupId the group id
      * @return the key
      */
@@ -64,8 +69,10 @@ public class KeySearchCriteria {
       return this;
     }
 
-    /** A Criteria Query to search for a specific key using criteria such as
-     *  number of page and the size of the page
+    /**
+     * A Criteria Query to search for a specific key using criteria such as number of page and the
+     * size of the page
+     *
      * @param pageSize the page size
      * @param page the page number
      * @return the key

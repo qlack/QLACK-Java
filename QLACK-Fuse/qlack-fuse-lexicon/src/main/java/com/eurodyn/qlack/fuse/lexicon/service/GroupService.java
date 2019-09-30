@@ -47,8 +47,9 @@ public class GroupService {
   private QLanguage qLanguage = QLanguage.language;
 
   @Autowired
-  public GroupService(GroupRepository groupRepository, GroupMapper groupMapper, LanguageRepository languageRepository,
-    DataRepository dataRepository) {
+  public GroupService(GroupRepository groupRepository, GroupMapper groupMapper,
+      LanguageRepository languageRepository,
+      DataRepository dataRepository) {
     this.groupRepository = groupRepository;
     this.groupMapper = groupMapper;
     this.languageRepository = languageRepository;
@@ -144,7 +145,8 @@ public class GroupService {
   public Set<GroupDTO> getRemainingGroups(List<String> excludedGroupNames) {
     log.info("Fetching all included groups");
     Predicate predicate = qGroup.title.notIn(excludedGroupNames);
-    return groupMapper.mapToDTO(groupRepository.findAll(predicate)).stream().collect(Collectors.toSet());
+    return groupMapper.mapToDTO(groupRepository.findAll(predicate)).stream()
+        .collect(Collectors.toSet());
   }
 
   /**
@@ -165,8 +167,9 @@ public class GroupService {
    * @param languageID the id of the language
    */
   public void deleteLanguageTranslations(String groupID, String languageID) {
-    log.info(MessageFormat.format("Deleting all translation from group with id {0} for language with id {1}",
-      groupID, languageID));
+    log.info(MessageFormat
+        .format("Deleting all translation from group with id {0} for language with id {1}",
+            groupID, languageID));
     Language language = languageRepository.fetchById(languageID);
     deleteLanguageTranslationsByLocale(groupID, language.getLocale());
   }
@@ -179,7 +182,7 @@ public class GroupService {
    */
   public void deleteLanguageTranslationsByLocale(String groupID, String locale) {
     log.info(MessageFormat.format("Deleting all translation from group with id {0} for locale {1}",
-      groupID, locale));
+        groupID, locale));
     List<Data> dataList = dataRepository.findByKeyGroupIdAndLanguageLocale(groupID, locale);
     for (Data data : dataList) {
       dataRepository.delete(data);
@@ -194,15 +197,16 @@ public class GroupService {
    * @return a number representing the date of last update. The default return date is 'now'
    */
   public long getLastUpdateDateForLocale(String groupID, String locale) {
-    log.info(MessageFormat.format("Getting the last update date of all keys from group with id {0} for locale {1}",
-      groupID, locale));
+    log.info(MessageFormat
+        .format("Getting the last update date of all keys from group with id {0} for locale {1}",
+            groupID, locale));
     Predicate predicate = qData.key.group.id.eq(groupID)
-      .and(qData.language.id.eq(JPAExpressions.select(qLanguage.id)
-        .from(qLanguage)
-        .where(qLanguage.locale.eq(locale))));
+        .and(qData.language.id.eq(JPAExpressions.select(qLanguage.id)
+            .from(qLanguage)
+            .where(qLanguage.locale.eq(locale))));
     List<Data> datas = dataRepository.findAll(predicate, Sort.by("lastUpdatedOn").descending());
 
-    if (datas.iterator().hasNext()){
+    if (datas.iterator().hasNext()) {
       return datas.iterator().next().getLastUpdatedOn();
     } else {
       return Instant.now().toEpochMilli();

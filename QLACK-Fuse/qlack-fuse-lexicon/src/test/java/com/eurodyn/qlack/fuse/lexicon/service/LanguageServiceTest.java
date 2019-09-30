@@ -8,7 +8,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 import com.eurodyn.qlack.common.exception.QAlreadyExistsException;
 import com.eurodyn.qlack.fuse.lexicon.InitTestValues;
@@ -79,7 +78,8 @@ public class LanguageServiceTest {
 
   @Before
   public void init() {
-    languageService = new LanguageService(keyService, groupService, languageRepository, keyRepository, languageMapper);
+    languageService = new LanguageService(keyService, groupService, languageRepository,
+        keyRepository, languageMapper);
     initTestValues = new InitTestValues();
     languageDTO = initTestValues.createEnglishLanguageDTO();
     language = initTestValues.createEnglishLanguage();
@@ -146,7 +146,8 @@ public class LanguageServiceTest {
     when(keyRepository.findAll()).thenReturn(keys);
     String createdLanguageId = languageService.createLanguage(languageDTO, "en_");
     verify(languageRepository, times(1)).save(language);
-    verify(keyService, times(1)).updateTranslationsForLanguage(language.getId(), prefixedTranslationsMap);
+    verify(keyService, times(1))
+        .updateTranslationsForLanguage(language.getId(), prefixedTranslationsMap);
     assertEquals(languageDTO.getId(), createdLanguageId);
   }
 
@@ -157,10 +158,12 @@ public class LanguageServiceTest {
 
     when(languageMapper.mapToEntity(languageDTO)).thenReturn(language);
     when(languageRepository.fetchById(language.getId())).thenReturn(language);
-    when(keyService.getTranslationsForLocale(language.getLocale())).thenReturn(translationsForLocale);
+    when(keyService.getTranslationsForLocale(language.getLocale()))
+        .thenReturn(translationsForLocale);
     String createdLanguageId = languageService.createLanguage(languageDTO, language.getId(), null);
     verify(languageRepository, times(1)).save(language);
-    verify(keyService, times(1)).updateTranslationsForLanguage(language.getId(), translationsForLocale);
+    verify(keyService, times(1))
+        .updateTranslationsForLanguage(language.getId(), translationsForLocale);
     assertEquals(languageDTO.getId(), createdLanguageId);
   }
 
@@ -171,10 +174,12 @@ public class LanguageServiceTest {
 
     when(languageMapper.mapToEntity(languageDTO)).thenReturn(language);
     when(languageRepository.fetchById(language.getId())).thenReturn(language);
-    when(keyService.getTranslationsForLocale(language.getLocale())).thenReturn(translationsForLocale);
+    when(keyService.getTranslationsForLocale(language.getLocale()))
+        .thenReturn(translationsForLocale);
     String createdLanguageId = languageService.createLanguage(languageDTO, language.getId(), "en_");
     verify(languageRepository, times(1)).save(language);
-    verify(keyService, times(1)).updateTranslationsForLanguage(language.getId(), prefixedTranslationsForLocale);
+    verify(keyService, times(1))
+        .updateTranslationsForLanguage(language.getId(), prefixedTranslationsForLocale);
     assertEquals(languageDTO.getId(), createdLanguageId);
   }
 
@@ -221,10 +226,10 @@ public class LanguageServiceTest {
   @Test
   public void testGetLanguageByLocale() {
     when(languageRepository.findByLocale(language.getLocale()))
-      .thenReturn(language);
+        .thenReturn(language);
     when(languageMapper.mapToDTO(language)).thenReturn(languageDTO);
     LanguageDTO foundLanguageDTO = languageService
-      .getLanguageByLocale(language.getLocale());
+        .getLanguageByLocale(language.getLocale());
     assertEquals(languageDTO, foundLanguageDTO);
   }
 
@@ -272,9 +277,10 @@ public class LanguageServiceTest {
 
   @Test
   public void testGetActiveLanguages() {
-    List<Language> activeLanguages = languages.stream().filter(l -> l.isActive()).collect(Collectors.toList());
+    List<Language> activeLanguages = languages.stream().filter(l -> l.isActive())
+        .collect(Collectors.toList());
     List<LanguageDTO> activeLanguagesDTO = languagesDTO.stream().filter(languageDTO ->
-      languageDTO.isActive()).collect(Collectors.toList());
+        languageDTO.isActive()).collect(Collectors.toList());
 
     when(languageRepository.findByActiveTrueOrderByNameAsc()).thenReturn(activeLanguages);
     when(languageMapper.mapToDTO(activeLanguages)).thenReturn(activeLanguagesDTO);
@@ -330,9 +336,9 @@ public class LanguageServiceTest {
     when(groupService.findAll()).thenReturn(groups);
 
     when(keyService.getTranslationsForGroupAndLocale(groups.get(0).getId(), language.getLocale()))
-      .thenReturn(translationsOfApplicationUI);
+        .thenReturn(translationsOfApplicationUI);
     when(keyService.getTranslationsForGroupAndLocale(groups.get(1).getId(), language.getLocale()))
-      .thenReturn(translationsOfApplicationReports);
+        .thenReturn(translationsOfApplicationReports);
 
     byte[] bytes = languageService.downloadLanguage(language.getId());
     Path resourceDirectory = Paths.get("target/eng_translations_generated.xls");
@@ -341,7 +347,8 @@ public class LanguageServiceTest {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    groups.forEach(group -> verify(keyService, times(1)).getTranslationsForGroupAndLocale(group.getId(), language.getLocale()));
+    groups.forEach(group -> verify(keyService, times(1))
+        .getTranslationsForGroupAndLocale(group.getId(), language.getLocale()));
     //assertArrayEquals(lgXl, bytes);
   }
 
@@ -369,7 +376,9 @@ public class LanguageServiceTest {
         String keyValue = sheet.getRow(i).getCell(1).getStringCellValue();
         translations.put(keyName, keyValue);
       }
-      verify(keyService, times(1)).updateTranslationsForLanguageByKeyName(language.getId(), groupsIds.get(si), translations);
+      verify(keyService, times(1))
+          .updateTranslationsForLanguageByKeyName(language.getId(), groupsIds.get(si),
+              translations);
     }
   }
 

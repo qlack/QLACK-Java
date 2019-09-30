@@ -26,11 +26,11 @@ public class InitTestValues {
 
   public String templateContent = "<h1>Template example</h1><p>${data.value}</p>";
   public String nestedTemplateContent = "<html>"
-    + "<body>"
-    + "<title>Nested Template</title>"
-    + "<div>${template.content}</div>"
-    + "</body>"
-    + "</html>";
+      + "<body>"
+      + "<title>Nested Template</title>"
+      + "<div>${template.content}</div>"
+      + "</body>"
+      + "</html>";
   private Language englishLang;
   private Language portugueseLang;
   private Key attachment_desc;
@@ -269,7 +269,8 @@ public class InitTestValues {
     try {
       return Files.readAllBytes(resourceDirectory);
     } catch (IOException e) {
-      throw new LanguageProcessingException("Error loading Excel file for language " + createEnglishLanguage().getId());
+      throw new LanguageProcessingException(
+          "Error loading Excel file for language " + createEnglishLanguage().getId());
     }
   }
 }

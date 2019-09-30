@@ -5,11 +5,14 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import com.eurodyn.qlack.fuse.search.ESSerializableClass;
 import com.eurodyn.qlack.fuse.search.InitTestValues;
+import com.eurodyn.qlack.fuse.search.UnknownSearchDTO;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryBoolean;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryMatch;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryMultiMatch;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryRange;
+import com.eurodyn.qlack.fuse.search.dto.queries.QuerySort;
 import com.eurodyn.qlack.fuse.search.dto.queries.QuerySpec;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryStringSpecField;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryStringSpecFieldNested;
@@ -378,6 +381,28 @@ public class SearchServiceTest {
       .thenReturn(new ByteArrayInputStream(
         objectMapper.writeValueAsBytes(queryResponse)));
     assertNotNull(searchService.search(querySpec));
+  }
+
+  @Test
+  public void searchMultipleSortTest() throws IOException {
+    querySpec.setQuerySort(querySpec.getQuerySort().setSort("field2", "desc"));
+    when(restClient.performRequest(any(Request.class))).thenReturn(response);
+    assertNotNull(searchService.search(querySpec));
+  }
+
+  @Test
+  public void searchQueryMultiMatchMultipleFieldsTest() throws IOException {
+    queryMultiMatch.setTerm(this, "field1", "field2");
+    when(restClient.performRequest(any(Request.class))).thenReturn(response);
+    assertNotNull(searchService.search(queryMultiMatch));
+  }
+
+  @Test
+  public void searchUnknownDtoInstanceTest() throws IOException {
+    UnknownSearchDTO unknownSearchDTO = new UnknownSearchDTO();
+    unknownSearchDTO.setQuerySort(initTestValues.createQuerySort());
+    when(restClient.performRequest(any(Request.class))).thenReturn(response);
+    assertNotNull(searchService.search(unknownSearchDTO));
   }
 
 }

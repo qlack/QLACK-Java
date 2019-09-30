@@ -17,12 +17,15 @@ import org.mapstruct.ReportingPolicy;
 
 /**
  * An interface Mapper for Key to map its object with its value
+ *
  * @author European Dynamics SA
  */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface KeyMapper extends LexiconMapper<Key, KeyDTO> {
 
-  /** Maps an entity Key to DTO
+  /**
+   * Maps an entity Key to DTO
+   *
    * @param key the Key entity
    * @param addTranslations an addTranslations check value
    * @return a mapped DTO
@@ -33,32 +36,34 @@ public interface KeyMapper extends LexiconMapper<Key, KeyDTO> {
 
   /**
    * Maps the Group value
+   *
    * @param group the group of the key
    * @return the id of the Group
    */
   @Named("mapGroup")
   default String mapGroup(Group group) {
-    if ( group == null ) {
+    if (group == null) {
       return null;
     }
     String id = group.getId();
-    if ( id == null ) {
+    if (id == null) {
       return null;
     }
     return id;
   }
 
-  /** Maps tha Data
+  /**
+   * Maps tha Data
+   *
    * @param data a list of lexicon data
    * @param addTranslations checking value
    * @return a new HashMap of data
    */
   @Named("mapData")
   default Map<String, String> mapData(List<Data> data, @Context boolean addTranslations) {
-    if (addTranslations) {
-      if (Objects.nonNull(data)) {
-        return data.stream().collect(Collectors.toMap(a -> a.getLanguage().getLocale(), a -> a.getValue()));
-      }
+    if (addTranslations && Objects.nonNull(data)) {
+      return data.stream().collect(Collectors.toMap(a -> a.getLanguage().getLocale(),
+          Data::getValue));
     }
     return new HashMap<>();
   }

@@ -4,8 +4,10 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 
-/** A simple DTO (Data Transfer Object) that does not contain any business logic. It is used to
+/**
+ * A simple DTO (Data Transfer Object) that does not contain any business logic. It is used to
  * retrieve and store the Template data .
+ *
  * @author European Dynamics SA
  */
 @Getter
@@ -26,7 +28,7 @@ public class TemplateDTO implements Serializable {
    */
   private String languageId;
   /**
-   *  The content
+   * The content
    */
   private String content;
 

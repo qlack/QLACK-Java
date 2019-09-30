@@ -2,9 +2,8 @@ package com.eurodyn.qlack.fuse.lexicon.mapper;
 
 import java.util.List;
 
-/** A Generic Lexicon Mapper Interface
- * @param <E>
- * @param <D>
+/**
+ * A Generic Lexicon Mapper Interface
  *
  * @author European Dynamics SA
  */

@@ -5,8 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- *  A simple DTO(Data Transfer Object) that does not contain any business logic but is
- *  used in order to retrieve and store Group data information.
+ * A simple DTO(Data Transfer Object) that does not contain any business logic but is used in order
+ * to retrieve and store Group data information.
+ *
  * @author European Dynamics SA
  */
 @Getter

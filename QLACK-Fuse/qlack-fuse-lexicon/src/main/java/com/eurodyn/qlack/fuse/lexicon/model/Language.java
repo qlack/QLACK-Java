@@ -29,16 +29,16 @@ public class Language extends QlackBaseModel {
   private static final long serialVersionUID = -1L;
 
   /**
-   *  the dbversion
+   * the dbversion
    */
   @Version
   private long dbversion;
   /**
-   *  the language name
+   * the language name
    */
   private String name;
   /**
-   *  the locale identifies the language code
+   * the locale identifies the language code
    */
   private String locale;
   /**
@@ -46,7 +46,7 @@ public class Language extends QlackBaseModel {
    */
   private boolean active;
   /**
-   *  a list of lexicon data mapped by language
+   * a list of lexicon data mapped by language
    */
   @OneToMany(mappedBy = "language")
   private List<Data> data;

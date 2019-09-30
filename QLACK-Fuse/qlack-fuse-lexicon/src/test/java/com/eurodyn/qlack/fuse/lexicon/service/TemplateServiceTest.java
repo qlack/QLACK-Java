@@ -71,17 +71,17 @@ public class TemplateServiceTest {
     templateData.put("template", template);
 
     expectedProcessedTemplate =
-      "<h1>Template example</h1><p>Add attachment description</p>";
+        "<h1>Template example</h1><p>Add attachment description</p>";
 
     expectedProcessedNestedTemplate = "<html>"
-      + "<body>"
-      + "<title>Nested Template</title>"
-      + "<div>"
-      + "<h1>Template example</h1>"
-      + "<p>Add attachment description</p>"
-      + "</div>"
-      + "</body>"
-      + "</html>";
+        + "<body>"
+        + "<title>Nested Template</title>"
+        + "<div>"
+        + "<h1>Template example</h1>"
+        + "<p>Add attachment description</p>"
+        + "</div>"
+        + "</body>"
+        + "</html>";
   }
 
   @Test
@@ -126,48 +126,59 @@ public class TemplateServiceTest {
   @Test
   public void testGetTemplateContentByName() {
     Map<String, String> expectedTemplateContentsByName = new HashMap<>();
-    templates.forEach(t -> expectedTemplateContentsByName.put(t.getLanguage().getId(), t.getContent()));
+    templates
+        .forEach(t -> expectedTemplateContentsByName.put(t.getLanguage().getId(), t.getContent()));
     when(templateRepository.findByName(template.getName())).thenReturn(templates);
-    Map<String, String> templateContentByName = templateService.getTemplateContentByName(template.getName());
+    Map<String, String> templateContentByName = templateService
+        .getTemplateContentByName(template.getName());
     assertEquals(expectedTemplateContentsByName, templateContentByName);
   }
 
   @Test
   public void testGetTemplateContentByNameNotFound() {
-    Map<String, String> templateContentByName = templateService.getTemplateContentByName(template.getName());
+    Map<String, String> templateContentByName = templateService
+        .getTemplateContentByName(template.getName());
     assertNull(templateContentByName);
   }
 
   @Test
   public void testGetTemplateContentByNameAndLanguageId() {
-    when(templateRepository.findByNameAndLanguageId(template.getName(), language.getId())).thenReturn(template);
-    String templateContentByName = templateService.getTemplateContentByName(template.getName(), language.getId());
+    when(templateRepository.findByNameAndLanguageId(template.getName(), language.getId()))
+        .thenReturn(template);
+    String templateContentByName = templateService
+        .getTemplateContentByName(template.getName(), language.getId());
     assertEquals(template.getContent(), templateContentByName);
   }
 
   @Test
   public void testGetTemplateContentByNameAndLanguageIdNotFound() {
-    String templateContentByName = templateService.getTemplateContentByName(template.getName(), language.getId());
+    String templateContentByName = templateService
+        .getTemplateContentByName(template.getName(), language.getId());
     assertNull(templateContentByName);
   }
 
   @Test
   public void testProcessTemplateByName() {
-    when(templateRepository.findByNameAndLanguageId(template.getName(), language.getId())).thenReturn(template);
-    String processedTemplate = templateService.processTemplateByName(template.getName(), language.getId(), templateData);
+    when(templateRepository.findByNameAndLanguageId(template.getName(), language.getId()))
+        .thenReturn(template);
+    String processedTemplate = templateService
+        .processTemplateByName(template.getName(), language.getId(), templateData);
     assertEquals(expectedProcessedTemplate, processedTemplate);
   }
 
   @Test
   public void testProcessTemplateByNameAndLocale() {
-    when(templateRepository.findByNameAndLanguageLocale(template.getName(), language.getLocale())).thenReturn(template);
-    String processedTemplate = templateService.processTemplateByNameAndLocale(template.getName(), language.getLocale(), templateData);
+    when(templateRepository.findByNameAndLanguageLocale(template.getName(), language.getLocale()))
+        .thenReturn(template);
+    String processedTemplate = templateService
+        .processTemplateByNameAndLocale(template.getName(), language.getLocale(), templateData);
     assertEquals(expectedProcessedTemplate, processedTemplate);
   }
 
   @Test
   public void testProcessTemplateNested() {
-    String processedTemplate = templateService.processTemplate(initTestValues.nestedTemplateContent, templateData);
+    String processedTemplate = templateService
+        .processTemplate(initTestValues.nestedTemplateContent, templateData);
     assertEquals(expectedProcessedNestedTemplate, processedTemplate);
   }
 
@@ -183,8 +194,10 @@ public class TemplateServiceTest {
   public void processTemplateByNameNoValuesTest() {
     String content = "<h1>Template example</h1><p>message</p>";
     template.setContent(content);
-    when(templateRepository.findByNameAndLanguageId(template.getName(), language.getId())).thenReturn(template);
-    String processedTemplate = templateService.processTemplateByName(template.getName(), language.getId(), templateData);
+    when(templateRepository.findByNameAndLanguageId(template.getName(), language.getId()))
+        .thenReturn(template);
+    String processedTemplate = templateService
+        .processTemplateByName(template.getName(), language.getId(), templateData);
     assertEquals(content, processedTemplate);
   }
 

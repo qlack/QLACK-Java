@@ -1,19 +1,16 @@
 package com.eurodyn.qlack.fuse.lexicon.service;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.eurodyn.qlack.fuse.lexicon.dto.GroupDTO;
 import com.eurodyn.qlack.fuse.lexicon.dto.KeyDTO;
 import com.eurodyn.qlack.fuse.lexicon.dto.LanguageDTO;
 import com.eurodyn.qlack.fuse.lexicon.model.Application;
 import com.eurodyn.qlack.fuse.lexicon.repository.ApplicationRepository;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.context.ApplicationContext;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -23,25 +20,36 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.context.ApplicationContext;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LexiconConfigServiceTest {
 
-  @InjectMocks private LexiconConfigService lexiconConfigService;
-  @Mock private GroupService groupService;
-  @Mock private LanguageService languageService;
-  @Mock private KeyService keyService;
-  @Mock private ApplicationRepository applicationRepository;
-  @Mock private ApplicationContext applicationContext;
-  @Mock private LanguageDTO languageDTO;
-  @Mock private GroupDTO groupDTO;
-  @Mock private KeyDTO keyDTO;
+  @InjectMocks
+  private LexiconConfigService lexiconConfigService;
+  @Mock
+  private GroupService groupService;
+  @Mock
+  private LanguageService languageService;
+  @Mock
+  private KeyService keyService;
+  @Mock
+  private ApplicationRepository applicationRepository;
+  @Mock
+  private ApplicationContext applicationContext;
+  @Mock
+  private LanguageDTO languageDTO;
+  @Mock
+  private GroupDTO groupDTO;
+  @Mock
+  private KeyDTO keyDTO;
 
   private List<Application> applicationList = new ArrayList<>();
   private URL yamlUrl;

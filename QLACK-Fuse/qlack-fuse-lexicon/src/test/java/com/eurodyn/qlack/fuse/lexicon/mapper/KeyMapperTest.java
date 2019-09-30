@@ -4,11 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import com.eurodyn.qlack.fuse.lexicon.InitTestValues;
 import com.eurodyn.qlack.fuse.lexicon.dto.KeyDTO;
-import com.eurodyn.qlack.fuse.lexicon.dto.LanguageDTO;
 import com.eurodyn.qlack.fuse.lexicon.model.Group;
 import com.eurodyn.qlack.fuse.lexicon.model.Key;
-import com.eurodyn.qlack.fuse.lexicon.model.Language;
-import java.security.KeyFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +52,7 @@ public class KeyMapperTest {
     assertEquals(null, keyMapper.mapToDTO((Key) null));
 
     List<KeyDTO> keyDTOS = keyMapper.mapToDTO(
-      (List<Key>) null);
+        (List<Key>) null);
     assertEquals(null, keyDTOS);
   }
 
@@ -82,7 +79,7 @@ public class KeyMapperTest {
     assertEquals(null, keyMapper.mapToEntity((KeyDTO) null));
 
     List<Key> keys = keyMapper.mapToEntity(
-      (List<KeyDTO>) null);
+        (List<KeyDTO>) null);
     assertEquals(null, keys);
   }
 

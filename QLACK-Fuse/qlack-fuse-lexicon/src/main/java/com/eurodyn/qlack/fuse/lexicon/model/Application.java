@@ -12,7 +12,8 @@ import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-/** The Application Entity that holds data for Application
+/**
+ * The Application Entity that holds data for Application
  *
  * @author European Dynamics SA
  */

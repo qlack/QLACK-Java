@@ -3,11 +3,7 @@ package com.eurodyn.qlack.fuse.lexicon.mapper;
 import static org.junit.Assert.assertEquals;
 
 import com.eurodyn.qlack.fuse.lexicon.InitTestValues;
-import com.eurodyn.qlack.fuse.lexicon.dto.GroupDTO;
-import com.eurodyn.qlack.fuse.lexicon.dto.LanguageDTO;
 import com.eurodyn.qlack.fuse.lexicon.dto.TemplateDTO;
-import com.eurodyn.qlack.fuse.lexicon.model.Group;
-import com.eurodyn.qlack.fuse.lexicon.model.Language;
 import com.eurodyn.qlack.fuse.lexicon.model.Template;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +50,7 @@ public class TemplateMapperTest {
     assertEquals(null, templateMapper.mapToDTO((Template) null));
 
     List<TemplateDTO> templateDTOS = templateMapper.mapToDTO(
-      (List<Template>) null);
+        (List<Template>) null);
     assertEquals(null, templateDTOS);
   }
 
@@ -82,7 +78,7 @@ public class TemplateMapperTest {
     assertEquals(null, templateMapper.mapToEntity((TemplateDTO) null));
 
     List<Template> templates = templateMapper.mapToEntity(
-      (List<TemplateDTO>) null);
+        (List<TemplateDTO>) null);
     assertEquals(null, templates);
   }
 
