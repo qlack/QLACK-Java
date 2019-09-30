@@ -1,5 +1,7 @@
 package com.eurodyn.qlack.fuse.lexicon.util;
 
+import static org.junit.Assert.assertNotNull;
+
 import com.eurodyn.qlack.fuse.lexicon.criteria.KeySearchCriteria;
 import com.eurodyn.qlack.fuse.lexicon.criteria.KeySearchCriteria.KeySearchCriteriaBuilder;
 import org.junit.Before;
@@ -20,22 +22,22 @@ public class KeySearchCriteriaBuilderTest {
 
   @Test
   public void withNameLikeTest() {
-    keySearchCriteriaBuilder.withNameLike("name%");
+    assertNotNull(keySearchCriteriaBuilder.withNameLike("name%"));
   }
 
   @Test
   public void inGroupTest() {
-    keySearchCriteriaBuilder.inGroup("groupIn");
+    assertNotNull(keySearchCriteriaBuilder.inGroup("groupIn"));
   }
 
   @Test
   public void setPageSizeWithPageNumTest() {
-    keySearchCriteriaBuilder.setPageSizeWithPageNum(10, 10);
+    assertNotNull(keySearchCriteriaBuilder.setPageSizeWithPageNum(10, 10));
   }
 
   @Test
   public void buildTest() {
-    keySearchCriteriaBuilder.build();
+    assertNotNull(keySearchCriteriaBuilder.build());
   }
 
 }

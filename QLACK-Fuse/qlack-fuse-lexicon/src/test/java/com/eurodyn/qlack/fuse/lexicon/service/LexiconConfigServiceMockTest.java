@@ -52,6 +52,7 @@ public class LexiconConfigServiceMockTest {
   }
 
   @Test
+  @SuppressWarnings("squid:S2699")
   public void initNullEntriesTest() throws IOException {
     when(classLoader.getResources("qlack-lexicon-config.yaml"))
         .thenReturn(null);
@@ -59,6 +60,7 @@ public class LexiconConfigServiceMockTest {
   }
 
   @Test
+  @SuppressWarnings("squid:S2699")
   public void initIoExceptionTest() throws IOException {
     when(classLoader.getResources("qlack-lexicon-config.yaml"))
         .thenThrow(new IOException());

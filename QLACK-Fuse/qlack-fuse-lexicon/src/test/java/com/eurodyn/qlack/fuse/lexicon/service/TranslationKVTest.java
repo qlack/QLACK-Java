@@ -2,6 +2,7 @@ package com.eurodyn.qlack.fuse.lexicon.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.eurodyn.qlack.fuse.lexicon.InitTestValues;
@@ -61,7 +62,7 @@ public class TranslationKVTest {
 
   @Test
   public void hashCodeTest() {
-    translationKVOne.hashCode();
+    assertNotNull(translationKVOne.hashCode());
   }
 
 

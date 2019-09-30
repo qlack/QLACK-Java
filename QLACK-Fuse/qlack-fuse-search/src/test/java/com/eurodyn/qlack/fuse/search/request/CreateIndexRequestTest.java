@@ -63,7 +63,7 @@ public class CreateIndexRequestTest {
 
   @Test
   public void addStopWordsTest() {
-    createIndexRequest.addStopWords(null);
+    createIndexRequest.addStopWords((String[]) null);
     createIndexRequest.addStopWords("newWord");
   }
 
