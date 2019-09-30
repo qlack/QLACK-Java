@@ -14,6 +14,7 @@ import lombok.Setter;
 
 /**
  * The persistent class for the aaa_operation database table.
+ * @author European Dynamics SA
  */
 @Entity
 @Table(name = "aaa_operation")
@@ -23,28 +24,43 @@ public class Operation extends AAAModel {
 
   private static final long serialVersionUID = 1L;
 
+  /**
+   * the dbversion
+   */
   @Version
   private long dbversion;
 
+  /**
+   * the name
+   */
   private String name;
 
+  /**
+   * the description
+   */
   private String description;
 
+  /**
+   * the dynamic
+   */
   private boolean dynamic;
 
+  /**
+   * the dynamicCode
+   */
   @Lob
   @Column(name = "dynamic_code")
   private String dynamicCode;
 
-  //bi-directional many-to-one association to UserGroupHasOperation
+  /**bi-directional many-to-one association to UserGroupHasOperation**/
   @OneToMany(mappedBy = "operation")
   private List<UserGroupHasOperation> userGroupHasOperations;
 
-  //bi-directional many-to-one association to OpTemplateHasOperation
+  /**bi-directional many-to-one association to OpTemplateHasOperation**/
   @OneToMany(mappedBy = "operation")
   private List<OpTemplateHasOperation> opTemplateHasOperations;
 
-  //bi-directional many-to-one association to UserHasOperation
+  /**bi-directional many-to-one association to UserHasOperation**/
   @OneToMany(mappedBy = "operation")
   private List<UserHasOperation> userHasOperations;
 
@@ -52,6 +68,10 @@ public class Operation extends AAAModel {
     setId(UUID.randomUUID().toString());
   }
 
+  /** A method that adds a userGroupHasOperation object
+   * @param userGroupHasOperation a @{@link UserGroupHasOperation} object
+   * @return a @{@link UserGroupHasOperation} object
+   */
   public UserGroupHasOperation addGroupHasOperation(UserGroupHasOperation userGroupHasOperation) {
     if (this.getUserGroupHasOperations() == null) {
       setUserGroupHasOperations(new ArrayList<UserGroupHasOperation>());
@@ -62,6 +82,10 @@ public class Operation extends AAAModel {
     return userGroupHasOperation;
   }
 
+  /** A method that removes a userGroupHasOperation object
+   * @param userGroupHasOperation a @{@link UserGroupHasOperation} object
+   * @return the @{@link UserGroupHasOperation} object
+   */
   public UserGroupHasOperation removeGroupHasOperation(UserGroupHasOperation userGroupHasOperation) {
     this.getUserGroupHasOperations().remove(userGroupHasOperation);
     userGroupHasOperation.setOperation(null);
@@ -69,6 +93,10 @@ public class Operation extends AAAModel {
     return userGroupHasOperation;
   }
 
+  /** A method that adds a opTemplateHasOperation object
+   * @param opTemplateHasOperation a @{@link OpTemplateHasOperation} object
+   * @return a {@link OpTemplateHasOperation} object
+   */
   public OpTemplateHasOperation addOpTemplateHasOperation(
       OpTemplateHasOperation opTemplateHasOperation) {
     if (getOpTemplateHasOperations() == null) {
@@ -80,6 +108,10 @@ public class Operation extends AAAModel {
     return opTemplateHasOperation;
   }
 
+  /** A method that removes a {@link OpTemplateHasOperation} object
+   * @param opTemplateHasOperation a {@link OpTemplateHasOperation} object
+   * @return a {@link OpTemplateHasOperation} object
+   */
   public OpTemplateHasOperation removeOpTemplateHasOperation(
       OpTemplateHasOperation opTemplateHasOperation) {
     getOpTemplateHasOperations().remove(opTemplateHasOperation);
@@ -88,6 +120,10 @@ public class Operation extends AAAModel {
     return opTemplateHasOperation;
   }
 
+  /** A method that adds a userHasOperation object
+   * @param userHasOperation the @{@link UserHasOperation} object
+   * @return the {@link UserHasOperation} object
+   */
   public UserHasOperation addUserHasOperation(UserHasOperation userHasOperation) {
     getUserHasOperations().add(userHasOperation);
     userHasOperation.setOperation(this);
@@ -95,6 +131,10 @@ public class Operation extends AAAModel {
     return userHasOperation;
   }
 
+  /** A method that removes a userHasOperation object
+   * @param userHasOperation the @{@link UserHasOperation} object
+   * @return a {@link UserHasOperation} object
+   */
   public UserHasOperation removeUserHasOperation(UserHasOperation userHasOperation) {
     getUserHasOperations().remove(userHasOperation);
     userHasOperation.setOperation(null);
