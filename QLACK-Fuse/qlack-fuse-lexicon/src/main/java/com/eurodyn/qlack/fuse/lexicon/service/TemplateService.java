@@ -126,6 +126,7 @@ public class TemplateService {
    *
    * @param templateName the name of the template
    * @param languageId the language of the template content
+   * @return the template content
    */
   public String getTemplateContentByName(String templateName, String languageId) {
     log.info(MessageFormat

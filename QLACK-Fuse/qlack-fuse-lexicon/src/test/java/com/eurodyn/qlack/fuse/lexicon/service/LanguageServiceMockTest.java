@@ -1,5 +1,6 @@
 package com.eurodyn.qlack.fuse.lexicon.service;
 
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
@@ -115,6 +116,16 @@ public class LanguageServiceMockTest {
     doThrow(new IOException()).when(wb).write(any(OutputStream.class));
     when(languageRepository.fetchById(language.getId())).thenReturn(language);
     languageService.downloadLanguage(language.getId());
+  }
+
+  @Test
+  public void downloadLanguageCloseWorkbookIoExceptionTest() throws Exception {
+    PowerMockito.mockStatic(WorkbookUtil.class);
+    Workbook wb = PowerMockito.mock(HSSFWorkbook.class);
+    when(WorkbookUtil.createHssfWorkbook()).thenReturn((HSSFWorkbook) wb);
+    doThrow(new IOException()).when(wb).close();
+    when(languageRepository.fetchById(language.getId())).thenReturn(language);
+    assertNotNull(languageService.downloadLanguage(language.getId()));
   }
 
 }

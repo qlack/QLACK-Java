@@ -26,10 +26,12 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -141,7 +143,9 @@ public class KeyService {
   }
 
   /**
-   * Deletes a Key.
+   * Deletes a key and its values for the lexicon.
+   *
+   * @param keyId the id of the key to be deleted
    */
   public void deleteKey(String keyId) {
     log.info(MessageFormat.format("Deleting key with id: {0}", keyId));
@@ -198,6 +202,9 @@ public class KeyService {
 
   /**
    * Moves multiple Keys to a new Group.
+   *
+   * @param keyIds a Collection containing the ids of the keys to be moved.
+   * @param newGroupId the id of group which will inherit the keys
    */
   public void moveKeys(Collection<String> keyIds, String newGroupId) {
     log.info(MessageFormat
@@ -347,8 +354,9 @@ public class KeyService {
       String value) {
     Predicate predicate = qData.key.name.eq(keyName).and(qData.key.group.id.eq(groupId))
         .and(qData.language.id.eq(languageId));
-    Data data = dataRepository.findOne(predicate).get();
-    commonUpdateTranslationWithGroupId(data, keyName, groupId, languageId, value);
+    Optional<Data> data = dataRepository.findOne(predicate);
+    data.ifPresent(
+        data1 -> commonUpdateTranslationWithGroupId(data1, keyName, groupId, languageId, value));
   }
 
   /**
@@ -401,7 +409,7 @@ public class KeyService {
    */
   public void updateTranslationsForKey(String keyId, Map<String, String> translations) {
     log.info(MessageFormat.format("Updating key {0} with translations {1}", keyId, translations));
-    for (Map.Entry<String,String> entry : translations.entrySet()) {
+    for (Map.Entry<String, String> entry : translations.entrySet()) {
       updateTranslation(keyId, entry.getKey(), entry.getValue());
     }
   }
@@ -414,7 +422,7 @@ public class KeyService {
    */
   public void updateTranslationsForKeyByLocale(String keyId, Map<String, String> translations) {
     log.info(MessageFormat.format("Updating key {0} with translations: {1}", keyId, translations));
-    for (Map.Entry<String,String> entry : translations.entrySet()) {
+    for (Map.Entry<String, String> entry : translations.entrySet()) {
       updateTranslationByLocale(keyId, entry.getKey(), entry.getValue());
     }
   }
@@ -428,7 +436,7 @@ public class KeyService {
   public void updateTranslationsForLanguage(String languageId, Map<String, String> translations) {
     log.info(MessageFormat
         .format("Updating language {0} with translations: {1}", languageId, translations));
-    for (Map.Entry<String,String> entry : translations.entrySet()) {
+    for (Map.Entry<String, String> entry : translations.entrySet()) {
       updateTranslation(entry.getKey(), languageId, entry.getValue());
     }
   }
@@ -446,7 +454,7 @@ public class KeyService {
     log.info(MessageFormat
         .format("Updating language {0} with translations {1} of group {2} ", languageId,
             translations, groupId));
-    for (Map.Entry<String,String> entry : translations.entrySet()) {
+    for (Map.Entry<String, String> entry : translations.entrySet()) {
       updateTranslationByKeyName(entry.getKey(), groupId, languageId, entry.getValue());
     }
   }
@@ -484,11 +492,12 @@ public class KeyService {
   }
 
   /**
-   * Fetching translations of a key in given group name and locale
+   * Finds the translated value of a key in given group name and locale
    *
    * @param keyName the name of the translation Key
    * @param groupName the name of the group that the key is part of
    * @param locale the locale of the translation
+   * @return the translated value
    */
   public String getTranslationForKeyGroupLocale(String keyName, String groupName, String locale) {
     log.info(MessageFormat.format("Fetching translation of key {0} in group {1} and locale {2}",
@@ -611,7 +620,8 @@ public class KeyService {
   }
 
   // This class is used to sort translation keys ordered by value.
-  private static class TranslationKV implements Comparator<TranslationKV>,
+  @AllArgsConstructor
+  protected static class TranslationKV implements Comparator<TranslationKV>,
       Comparable<TranslationKV> {
 
     String key;

@@ -37,6 +37,7 @@ import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 @Validated
 @Transactional
 @Log
+@SuppressWarnings("squid:S4790")
 public class LexiconConfigService {
 
   //Holds groupId + key pairs of translations with forceDelete

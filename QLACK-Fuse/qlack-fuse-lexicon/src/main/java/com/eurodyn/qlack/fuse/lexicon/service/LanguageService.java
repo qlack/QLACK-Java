@@ -42,6 +42,7 @@ import org.springframework.validation.annotation.Validated;
 @Service
 @Validated
 @Log
+@SuppressWarnings("squid:S4784")
 public class LanguageService {
 
   // A pattern for RTL languages (from Google Closure Templates).
@@ -256,7 +257,9 @@ public class LanguageService {
    * of no result after the second search, a final search is executed using the provided default
    * locale.
    *
-   * @return the locale to use
+   * @param locale the locale to be searched in the lexicon
+   * @param defaultLocale the default locale to be searched if the locale does not exist
+   * @return the locale name to use
    */
   public String getEffectiveLanguage(String locale, String defaultLocale) {
     log.info(MessageFormat.format("Searching for language with locale: {0} ", locale));
@@ -346,6 +349,12 @@ public class LanguageService {
       // Convert to a runtime exception in order to roll back transaction
       log.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       throw new LanguageProcessingException("Error creating Excel file for language " + languageId);
+    } finally {
+      try {
+        wb.close();
+      } catch (IOException e) {
+        log.severe(e.getLocalizedMessage());
+      }
     }
   }
 
@@ -357,8 +366,8 @@ public class LanguageService {
    * @param lgXL a byte array containing the Excel representation of the language's translations.
    */
   public void uploadLanguage(String languageId, byte[] lgXL) {
-    try {
-      Workbook wb = WorkbookFactory.create(new BufferedInputStream(new ByteArrayInputStream(lgXL)));
+    try (Workbook wb = WorkbookFactory
+        .create(new BufferedInputStream(new ByteArrayInputStream(lgXL)))) {
       for (int si = 0; si < wb.getNumberOfSheets(); si++) {
         Map<String, String> translations = new HashMap<>();
         Sheet sheet = wb.getSheetAt(si);
@@ -384,7 +393,10 @@ public class LanguageService {
   }
 
   /**
-   * Checks if the script of the language is right to left.
+   * Checks if the syntax of the language is right to left.
+   *
+   * @param locale the locale to be checked
+   * @return true if the locale is RTL, else if if LTR
    */
   public boolean isLocaleRTL(String locale) {
     return RtlLocalesRe.matcher(locale).find();
