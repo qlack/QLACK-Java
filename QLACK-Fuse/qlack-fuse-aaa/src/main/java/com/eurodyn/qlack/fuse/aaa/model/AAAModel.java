@@ -8,9 +8,11 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
-/**
- * A Model definition for AAA.
+/**A Model definition for AAA.
+ *
+ * @author European Dynamics SA
  */
+
 @MappedSuperclass
 @Getter
 @Setter
