@@ -13,6 +13,7 @@ import lombok.Setter;
 
 /**
  * The persistent class for the aaa_resource database table.
+ * @author European Dynamics SA
  */
 @Entity
 @Table(name = "aaa_resource")
@@ -22,25 +23,37 @@ public class Resource extends AAAModel {
 
   private static final long serialVersionUID = 1L;
 
+  /**
+   * the dbversion
+   */
   @Version
   private long dbversion;
 
+  /**
+   * the name
+   */
   private String name;
 
+  /**
+   * the description
+   */
   private String description;
 
+  /**
+   * the object id
+   */
   @Column(name = "object_id")
   private String objectId;
 
-  //bi-directional many-to-one association to UserHasOperation
+  /**bi-directional many-to-one association to UserHasOperation **/
   @OneToMany(mappedBy = "resource")
   private List<UserHasOperation> userHasOperations;
 
-  //bi-directional many-to-one association to UserGroupHasOperation
+  /**bi-directional many-to-one association to UserGroupHasOperation **/
   @OneToMany(mappedBy = "resource")
   private List<UserGroupHasOperation> userGroupHasOperations;
 
-  //bi-directional many-to-one association to OpTemplateHasOperation
+  /**bi-directional many-to-one association to OpTemplateHasOperation **/
   @OneToMany(mappedBy = "resource")
   private List<OpTemplateHasOperation> opTemplateHasOperations;
 
@@ -48,6 +61,10 @@ public class Resource extends AAAModel {
     setId(UUID.randomUUID().toString());
   }
 
+  /** A method that adds a {@link UserHasOperation} object
+   * @param userHasOperation a {@link UserHasOperation} type Object
+   * @return a userHasOperation object
+   */
   public UserHasOperation addUserHasOperation(UserHasOperation userHasOperation) {
     if (getUserHasOperations() == null) {
       setUserHasOperations(new ArrayList<UserHasOperation>());
@@ -58,6 +75,10 @@ public class Resource extends AAAModel {
     return userHasOperation;
   }
 
+  /** A method that removes a {@link UserHasOperation} object
+   * @param userHasOperation a userHasOperation object
+   * @return a @{@link UserHasOperation} object
+   */
   public UserHasOperation removeUserHasOperation(UserHasOperation userHasOperation) {
     getUserHasOperations().remove(userHasOperation);
     userHasOperation.setResource(null);
@@ -65,6 +86,10 @@ public class Resource extends AAAModel {
     return userHasOperation;
   }
 
+  /** A method that adds a {@link UserGroupHasOperation} object
+   * @param userGroupHasOperation the {@link UserGroupHasOperation} object
+   * @return the {@link UserGroupHasOperation} object
+   */
   public UserGroupHasOperation addGroupHasOperation(UserGroupHasOperation userGroupHasOperation) {
     if (this.getUserGroupHasOperations() == null) {
       setUserGroupHasOperations(new ArrayList<UserGroupHasOperation>());
@@ -75,6 +100,10 @@ public class Resource extends AAAModel {
     return userGroupHasOperation;
   }
 
+  /** A method that removes a {@link UserGroupHasOperation} object
+   * @param userGroupHasOperation the {@link UserGroupHasOperation} object
+   * @return a {@link UserGroupHasOperation} object
+   */
   public UserGroupHasOperation removeGroupHasOperation(UserGroupHasOperation userGroupHasOperation) {
     this.getUserGroupHasOperations().remove(userGroupHasOperation);
     userGroupHasOperation.setResource(null);
@@ -82,6 +111,10 @@ public class Resource extends AAAModel {
     return userGroupHasOperation;
   }
 
+  /** A method that adds a {@link OpTemplateHasOperation} object
+   * @param opTemplateHasOperation a OpTemplateHasOperation object
+   * @return the {@link OpTemplateHasOperation} object
+   */
   public OpTemplateHasOperation addOpTemplateHasOperation(
       OpTemplateHasOperation opTemplateHasOperation) {
     if (getOpTemplateHasOperations() == null) {
@@ -93,6 +126,10 @@ public class Resource extends AAAModel {
     return opTemplateHasOperation;
   }
 
+  /** A method that removes a {@link OpTemplateHasOperation} object
+   * @param opTemplateHasOperation a OpTemplateHasOperation object
+   * @return a {@link OpTemplateHasOperation} object
+   */
   public OpTemplateHasOperation removeOpTemplateHasOperation(
       OpTemplateHasOperation opTemplateHasOperation) {
     getOpTemplateHasOperations().remove(opTemplateHasOperation);

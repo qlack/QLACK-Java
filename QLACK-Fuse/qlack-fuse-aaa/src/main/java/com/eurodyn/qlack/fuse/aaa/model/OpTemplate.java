@@ -12,6 +12,7 @@ import lombok.Setter;
 
 /**
  * The persistent class for the aaa_op_template database table.
+ * @author European Dynamics SA
  */
 @Entity
 @Table(name = "aaa_op_template")
@@ -21,14 +22,23 @@ public class OpTemplate extends AAAModel {
 
   private static final long serialVersionUID = 1L;
 
+  /**
+   * the dbversion
+   */
   @Version
   private long dbversion;
 
+  /**
+   * the description
+   */
   private String description;
 
+  /**
+   * the name
+   */
   private String name;
 
-  // bi-directional many-to-one association to OpTemplateHasOperation
+  /** bi-directional many-to-one association to OpTemplateHasOperation**/
   @OneToMany(mappedBy = "template")
   private List<OpTemplateHasOperation> opTemplateHasOperations;
 
@@ -36,6 +46,10 @@ public class OpTemplate extends AAAModel {
     setId(UUID.randomUUID().toString());
   }
 
+  /** A method that adds a {@link OpTemplateHasOperation} object
+   * @param opTemplateHasOperation a {@link OpTemplateHasOperation} object
+   * @return a {@link OpTemplateHasOperation} object
+   */
   public OpTemplateHasOperation addOpTemplateHasOperation(
       OpTemplateHasOperation opTemplateHasOperation) {
     if (getOpTemplateHasOperations() == null) {
@@ -47,6 +61,10 @@ public class OpTemplate extends AAAModel {
     return opTemplateHasOperation;
   }
 
+  /** A method that removes a {@link OpTemplateHasOperation} object
+   * @param opTemplateHasOperation a {@link OpTemplateHasOperation} object
+   * @return a {@link OpTemplateHasOperation} object
+   */
   public OpTemplateHasOperation removeOpTemplateHasOperation(
       OpTemplateHasOperation opTemplateHasOperation) {
     getOpTemplateHasOperations().remove(opTemplateHasOperation);
