@@ -11,10 +11,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OpTemplateHasOperationRepository extends AAARepository<OpTemplateHasOperation, String> {
 
-  /**
-   * @param templateId
-   * @param operationName
-   * @return
+  /**Finds a {@link OpTemplateHasOperation} object
+   * @param templateId the templateId
+   * @param operationName the operationName
+   * @return a {@link OpTemplateHasOperation} object
    */
   OpTemplateHasOperation findByTemplateIdAndOperationName(String templateId, String operationName);
 

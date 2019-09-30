@@ -7,8 +7,8 @@ import org.mapstruct.MappingTarget;
 import org.springframework.data.domain.Page;
 
 /** A generic AAAMapper interface that is used to map keys with their values.
- * @param <E>
- * @param <D>
+ * @param <E> the {@link AAAModel} object
+ * @param <D> the {@link BaseDTO} object
  *
  * @author European Dynamics SA
  */

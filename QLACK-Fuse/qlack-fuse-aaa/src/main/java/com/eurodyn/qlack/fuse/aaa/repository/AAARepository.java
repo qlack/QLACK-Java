@@ -14,7 +14,7 @@ import org.springframework.lang.NonNull;
 
 /**A repository interface written for AAA.It is used to define
  * a crud abstract methods for AAA model.
- * @param <T> a generic T object
+ * @param <T> a generic object
  * @param <I> I serializable object
  *
  * @author European Dynamics SA
@@ -22,17 +22,17 @@ import org.springframework.lang.NonNull;
 public interface AAARepository<T extends AAAModel, I extends Serializable>
     extends JpaRepository<T, I>, QuerydslPredicateExecutor<T> {
 
-  /**A method that is used to retrieve a list of <T> objects
+  /**A method that is used to retrieve a list of generic objects
    * @param predicate the predicate type object
-   * @return a List of <T> objects
+   * @return a List of generic objects
    */
   @NonNull
   List<T> findAll(@NonNull Predicate predicate);
 
-  /**A method that retrieves a List of <T> objects
+  /**A method that retrieves a List of {@link AAAModel} objects
    * @param predicate the predicate object
    * @param sort a sorting object
-   * @return a List of <T> objects
+   * @return a List of generic objects
    */
   @NonNull
   List<T> findAll(@NonNull Predicate predicate, @NonNull Sort sort);

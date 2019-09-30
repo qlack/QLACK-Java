@@ -95,8 +95,9 @@ public class UserService {
     /**
      * Creates a new user in AAA. If the password encoder you have chosen needs a salt, make sure you populate one into {@link UserDTO}. You
      * can find a secure seed/salt generator in qlack-fuse-crypto's generateSecureRandom.
-     *
+     * @param salt the salt
      * @param dto The DTO with the user details to create.
+     * @return  a user id
      */
     public String createUser(UserDTO dto, Optional<String> salt) {
         User user = userMapper.mapToEntity(dto);
