@@ -27,6 +27,10 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * A Util class that is used to configure the LdapUser
+ * @author European Dynamics  SA
+ */
 @Service
 @Validated
 public class LdapUserUtil {
@@ -191,6 +195,12 @@ public class LdapUserUtil {
     }
   }
 
+  /**
+   * Create a user from ldap
+   * @param username the username
+   * @param ldap the ldap
+   * @return the userId
+   */
   private String createUserFromLdap(String username, Map<String, List<String>> ldap) {
     User user = new User();
     String userId = user.getId();
@@ -212,6 +222,12 @@ public class LdapUserUtil {
     return userId;
   }
 
+  /**
+   * Creates a user from ldap
+   * @param user the user
+   * @param ldap the ldap
+   * @return the groupId
+   */
   private String addGroupFromLdap(User user, Map<String, List<String>> ldap) {
     String groupId = getFirst(ldap, ldapMappingGid);
     if (groupId == null) {
@@ -233,6 +249,11 @@ public class LdapUserUtil {
     return groupId;
   }
 
+  /**
+   * Creates user attributes from ldap
+   * @param user the user the user
+   * @param ldap the ldap the ldap
+   */
   private void createUserAttributesFromLdap(User user, Map<String, List<String>> ldap) {
 
     for (Entry<String, String> entry : attributesMap.entrySet()) {
@@ -247,6 +268,12 @@ public class LdapUserUtil {
     }
   }
 
+  /**
+   * Updates user from ldap
+   * @param user the user
+   * @param ldap the ldap
+   * @return the user id
+   */
   private String updateUserFromLdap(User user, Map<String, List<String>> ldap) {
     String userId = user.getId();
 
@@ -260,6 +287,12 @@ public class LdapUserUtil {
     return userId;
   }
 
+  /**
+   * Updates the group from ldap
+   * @param user the user
+   * @param ldap the ldap
+   * @return the updated groupId
+   */
   private String updateGroupFromLdap(User user, Map<String, List<String>> ldap) {
     UserGroup oldUserGroup = user.getUserGroups().get(0);
     String oldGroupId = oldUserGroup.getId();
@@ -284,6 +317,11 @@ public class LdapUserUtil {
     return newGroupId;
   }
 
+  /**
+   * Updates the user attributes from ldap
+   * @param user the user
+   * @param ldap the ldap
+   */
   private void updateUserAttributesFromLdap(User user, Map<String, List<String>> ldap) {
     List<UserAttribute> attributes = user.getUserAttributes();
 
@@ -301,6 +339,12 @@ public class LdapUserUtil {
 
   }
 
+  /**
+   * Finds by name the {@link UserAttribute} object
+   * @param attributes a list of attributes
+   * @param name the name
+   * @return the {@link UserAttribute} object
+   */
   private UserAttribute findByName(List<UserAttribute> attributes, String name) {
     for (UserAttribute attribute : attributes) {
       if (attribute.getName().equals(name)) {
@@ -310,6 +354,12 @@ public class LdapUserUtil {
     return null;
   }
 
+  /**
+   * Retrieves the first value
+   * @param ldap the ldap
+   * @param key the key
+   * @return the first value from ldap provided by the key
+   */
   private String getFirst(Map<String, List<String>> ldap, String key) {
     List<String> values = ldap.get(key);
     if (values != null && !values.isEmpty()) {

@@ -72,6 +72,11 @@ public class AccountingService {
     this.sessionAttributeMapper = sessionAttributeMapper;
   }
 
+  /**
+   * Creation method for Session
+   * @param sessionDTO the session DTO
+   * @return the session id
+   */
   public String createSession(SessionDTO sessionDTO) {
     Session entity = sessionMapper.mapToEntity(sessionDTO);
     if (entity.getCreatedOn() == 0) {
@@ -87,6 +92,10 @@ public class AccountingService {
     return entity.getId();
   }
 
+  /**
+   * A termination method for Session
+   * @param sessionID the session id
+   */
   public void terminateSession(String sessionID) {
     final Optional<Session> session = sessionRepository.findById(sessionID);
     if (session.isPresent()) {
@@ -111,6 +120,10 @@ public class AccountingService {
     });
   }
 
+  /**
+   * Terminate the session by its application session id
+   * @param applicationSessionId the application session id
+   */
   public void terminateSessionByApplicationSessionId(String applicationSessionId) {
     Predicate predicate = qSession.applicationSessionId.eq(applicationSessionId);
     final Session session = sessionRepository.findOne(predicate)
@@ -121,11 +134,21 @@ public class AccountingService {
     terminateSession(session.getId());
   }
 
+  /**
+   * Retrieves the session
+   * @param sessionID the session id
+   * @return the session
+   */
   public SessionDTO getSession(String sessionID) {
 
     return sessionMapper.mapToDTO(findSession(sessionID));
   }
 
+  /**
+   * Retrieves the duration of Session
+   * @param sessionID the session id
+   * @return the duration of session
+   */
   public Long getSessionDuration(String sessionID) {
     Session session = findSession(sessionID);
     if (session.getTerminatedOn() == null) {
@@ -135,6 +158,11 @@ public class AccountingService {
     return session.getTerminatedOn() - session.getCreatedOn();
   }
 
+  /**
+   * Retrieves the last login of the user in the app
+   * @param userID the userId
+   * @return when the last login of the user was
+   */
   public Long getUserLastLogIn(String userID) {
     Predicate predicate = qSession.user.id.eq(userID);
     List<Session> queryResult = sessionRepository
@@ -146,6 +174,11 @@ public class AccountingService {
     return queryResult.get(0).getCreatedOn();
   }
 
+  /**
+   * Retrieves tha last logout of the user in the app
+   * @param userID the userId
+   * @return the last logout of the user
+   */
   public Long getUserLastLogOut(String userID) {
     Predicate predicate = qSession.user.id.eq(userID);
     List<Session> queryResult = sessionRepository
@@ -157,6 +190,11 @@ public class AccountingService {
     return queryResult.get(0).getCreatedOn();
   }
 
+  /**
+   * Retrieves tha last login duration
+   * @param userID the userId
+   * @return the last login duration
+   */
   public Long getUserLastLogInDuration(String userID) {
     Predicate predicate = qSession.user.id.eq(userID);
     List<Session> queryResult = sessionRepository
@@ -169,12 +207,22 @@ public class AccountingService {
     return session.getTerminatedOn() - session.getCreatedOn();
   }
 
+  /**
+   * Retrieves the number of times the user has logged in
+   * @param userID the userId
+   * @return the number of times the user has logged in the app
+   */
   public long getNoOfTimesUserLoggedIn(String userID) {
     Predicate predicate = qSession.user.id.eq(userID);
 
     return (long) sessionRepository.findAll(predicate).size();
   }
 
+  /**
+   * Retrieves online users
+   * @param userIDs the userIds
+   * @return the filtered online users
+   */
   public Set<String> filterOnlineUsers(Collection<String> userIDs) {
     Predicate predicate = qSession.terminatedOn.isNull().and(qSession.user.id.in(userIDs));
 
@@ -184,6 +232,11 @@ public class AccountingService {
   }
 
 
+  /**
+   * Update the session attribute
+   * @param attribute the session attribute
+   * @param createIfMissing checking value create if missing
+   */
   public void updateAttribute(SessionAttributeDTO attribute,
       boolean createIfMissing) {
     Collection<SessionAttributeDTO> attributes = new ArrayList<>(1);
@@ -191,6 +244,11 @@ public class AccountingService {
     updateAttributes(attributes, createIfMissing);
   }
 
+  /**
+   * Update a collections of {@link SessionAttributeDTO} objects
+   * @param attributes a collection of {@link SessionAttributeDTO} objects
+   * @param createIfMissing checking value to create if missing
+   */
   public void updateAttributes(Collection<SessionAttributeDTO> attributes,
       boolean createIfMissing) {
     for (SessionAttributeDTO attributeDTO : attributes) {
@@ -206,18 +264,36 @@ public class AccountingService {
     }
   }
 
+  /**
+   * Deletes a session attribute
+   * @param sessionID the session Id
+   * @param attributeName the attributeName
+   */
   public void deleteAttribute(String sessionID, String attributeName) {
     SessionAttribute attribute = sessionAttributeRepository
         .findBySessionIdAndName(sessionID, attributeName);
     sessionAttributeRepository.delete(attribute);
   }
 
+  /**
+   * Retrieves @{@link SessionAttributeDTO} object
+   * @param sessionID the session id
+   * @param attributeName the attributeName
+   * @return a @{@link SessionAttributeDTO} object
+   */
   public SessionAttributeDTO getAttribute(String sessionID, String attributeName) {
 
     return sessionAttributeMapper.mapToDTO(
         sessionAttributeRepository.findBySessionIdAndName(sessionID, attributeName));
   }
 
+  /**
+   * Retrieves the session ids for attribute
+   * @param sessionIDs the sessionIDs
+   * @param attributeName the attributeName
+   * @param attributeValue the attribute value
+   * @return the session ids for attribute
+   */
   public Set<String> getSessionIDsForAttribute(Collection<String> sessionIDs,
       String attributeName, String attributeValue) {
     Predicate predicate = qSession.sessionAttributes.any().name.eq(attributeName)
@@ -235,6 +311,13 @@ public class AccountingService {
         .collect(Collectors.toSet());
   }
 
+  /**
+   * Check if attribute value is unique
+   * @param userId the userId
+   * @param attributeName the attributeName
+   * @param attributeValue the attributeValue
+   * @return a @{@link Boolean} check whether attribute is unique or not
+   */
   public boolean isAttributeValueUnique(String userId, String attributeName,
       String attributeValue) {
     Predicate predicate = qSession.sessionAttributes.any().name.eq(attributeName)
@@ -244,20 +327,39 @@ public class AccountingService {
     return sessionRepository.findAll(predicate).isEmpty();
   }
 
+  /**
+   * Deletes the session before given date
+   * @param date the date
+   */
   public void deleteSessionsBeforeDate(Date date) {
     sessionRepository.deleteByCreatedOnBefore(date.getTime());
   }
 
+  /**
+   * Terminates the session before given date
+   * @param date the date
+   */
   public void terminateSessionsBeforeDate(Date date) {
     final List<Session> sessions = sessionRepository.findByCreatedOnBeforeAndTerminatedOnNull(
         date.getTime());
     sessions.forEach(o -> terminateSession(o.getId()));
   }
 
+  /**
+   * Retrieves sessions
+   * @param userId the userId
+   * @param pageable the pageable
+   * @return the sessions
+   */
   public Page<SessionDTO> getSessions(String userId, Pageable pageable) {
     return sessionMapper.fromSessions(sessionRepository.findByUserId(userId, pageable));
   }
 
+  /**
+   * Finds {@link Session} object
+   * @param sessionId the sessionId
+   * @return the session
+   */
   private Session findSession(String sessionId){
 
     return sessionRepository.fetchById(sessionId);

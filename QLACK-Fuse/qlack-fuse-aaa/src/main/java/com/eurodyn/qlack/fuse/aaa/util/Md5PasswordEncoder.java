@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * Provides the legacy MD5 password encoder for AAA.
+ * @author European Dynamics SA
  */
 public class Md5PasswordEncoder implements PasswordEncoder {
 

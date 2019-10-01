@@ -46,6 +46,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+/**
+ * A Service class that is used to define a number of
+ * crud methods and configure the User model
+ *
+ * @author European Dynamics SA
+ */
 @Log
 @Primary
 @Service
@@ -112,6 +118,12 @@ public class UserService {
         return user.getId();
     }
 
+    /**
+     * Updates a user in AAA.
+     * @param dto the {@link UserDTO}
+     * @param updatePassword updatePassword value checks if password needs to be updated
+     * @param createIfMissing the createIfMissing
+     */
     public void updateUser(UserDTO dto, boolean updatePassword, boolean createIfMissing) {
         User user = userRepository.fetchById(dto.getId());
         userMapper.mapToExistingEntity(dto, user);
@@ -128,17 +140,31 @@ public class UserService {
         }
     }
 
+    /**
+     * Deletes user by its id
+     * @param userID the userId
+     */
     public void deleteUser(String userID) {
         User user = userRepository.fetchById(userID);
         userRepository.delete(user);
     }
 
+    /**
+     * Retrieves {@link UserDTO} id
+     * @param userID the userID
+     * @return the {@link UserDTO} id
+     */
     public UserDTO getUserById(String userID) {
         User user = userRepository.fetchById(userID);
 
         return userMapper.mapToDTO(user);
     }
 
+    /**
+     * Retrieves the users
+     * @param userIDs the userIds
+     * @return the users
+     */
     public Set<UserDTO> getUsersById(Collection<String> userIDs) {
         Predicate predicate = qUser.id.in(userIDs);
 
@@ -155,20 +181,40 @@ public class UserService {
             .collect(Collectors.toMap(UserDTO::getId, dto -> dto));
     }
 
+    /**
+     * Retrieves the name of the user
+     * @param userName the userName
+     * @return the user by its name
+     */
     public UserDTO getUserByName(String userName) {
         return userMapper.mapToDTO(userRepository.findByUsername(userName));
     }
 
+    /**
+     * Update user status
+     * @param userID the userID
+     * @param status the status
+     */
     public void updateUserStatus(String userID, byte status) {
         User user = userRepository.fetchById(userID);
         user.setStatus(status);
     }
 
+    /**
+     * Retrieves the status of user
+     * @param userID the userId
+     * @return the user status
+     */
     public byte getUserStatus(String userID) {
         User user = userRepository.fetchById(userID);
         return user.getStatus();
     }
 
+    /**
+     * Checks whether is superAdmin or not
+     * @param userID the userID
+     * @return true or false if is superAdmin
+     */
     public boolean isSuperadmin(String userID) {
         User user = userRepository.fetchById(userID);
         if (user != null) {
@@ -178,6 +224,11 @@ public class UserService {
         }
     }
 
+    /**
+     * Checks whether is external or not
+     * @param userID the id of user
+     * @return whether is external or not
+     */
     public boolean isExternal(String userID) {
         User user = userRepository.fetchById(userID);
         return user.isExternal();
@@ -210,6 +261,13 @@ public class UserService {
         return retVal;
     }
 
+    /**
+     * Login a {@link UserDTO}
+     * @param userID the userId
+     * @param applicationSessionID the applicationSessionID
+     * @param terminateOtherSessions the terminateOtherSessions
+     * @return the {@link UserDTO}
+     */
     public UserDTO login(String userID, String applicationSessionID,
         boolean terminateOtherSessions) {
         User user = userRepository.fetchById(userID);
@@ -239,6 +297,11 @@ public class UserService {
         return userDTO;
     }
 
+    /**
+     * Logout the user
+     * @param userID the userID
+     * @param applicationSessionID the applicationSessionID
+     */
     public void logout(String userID, String applicationSessionID) {
         User user = userRepository.fetchById(userID);
 
@@ -254,6 +317,9 @@ public class UserService {
         }
     }
 
+    /**
+     * Log out all from session
+     */
     public void logoutAll() {
         Predicate predicate = qSession.terminatedOn.isNull();
         List<Session> queryResult = sessionRepository.findAll(predicate);
@@ -265,6 +331,12 @@ public class UserService {
         }
     }
 
+    /**
+     * Retrieves the logged in users or null value if no one has logged in
+     * @param userID the user id
+     * @return a list of users that have already logged in the system or null value
+     * if no one has logged in
+     */
     public List<SessionDTO> isUserAlreadyLoggedIn(String userID) {
         Predicate predicate = qSession.user.id.eq(userID).and(qSession.terminatedOn.isNull());
         List<SessionDTO> retVal = sessionMapper.mapToDTO(sessionRepository
@@ -273,6 +345,13 @@ public class UserService {
         return retVal.isEmpty() ? null : retVal;
     }
 
+    /**
+     * Check if user's group children belongs to any group name
+     * @param userID the id of User
+     * @param groupName the group name
+     * @param includeChildren whether include children or not
+     * @return a {@link Boolean} value whether belongs to or not
+     */
     public boolean belongsToGroupByName(String userID, String groupName,
         boolean includeChildren) {
         User user = userRepository.fetchById(userID);
@@ -291,6 +370,11 @@ public class UserService {
         return retVal;
     }
 
+    /**
+     * Updates attributes
+     * @param attributes the attributes
+     * @param createIfMissing the createIfMissing check value
+     */
     public void updateAttributes(Collection<UserAttributeDTO> attributes,
         boolean createIfMissing) {
         for (UserAttributeDTO attributeDTO : attributes) {
@@ -298,6 +382,11 @@ public class UserService {
         }
     }
 
+    /**
+     * Updates user's attribute
+     * @param attributeDTO the UserAttributeDTO
+     * @param createIfMissing the createIfMissing
+     */
     public void updateAttribute(UserAttributeDTO attributeDTO,
         boolean createIfMissing) {
         String userId = attributeDTO.getUserId();
@@ -318,6 +407,11 @@ public class UserService {
         }
     }
 
+    /**
+     * Maps a DTO to existing Entity
+     * @param attribute the user's attribute
+     * @param attributeDTO the UserAttributeDTO
+     */
     private void mapAttribute(UserAttribute attribute,
         UserAttributeDTO attributeDTO) {
         String userId = attributeDTO.getUserId();
@@ -326,6 +420,11 @@ public class UserService {
         userAttributeMapper.mapToExistingEntity(attributeDTO, attribute);
     }
 
+    /**
+     * Deletes user's attribute
+     * @param userID the userId
+     * @param attributeName the attributeName
+     */
     public void deleteAttribute(String userID, String attributeName) {
         UserAttribute attribute = userAttributeRepository.findByUserIdAndName(userID, attributeName);
         if (attribute != null) {
@@ -333,11 +432,24 @@ public class UserService {
         }
     }
 
+    /**
+     * Retrieves the {@link UserAttributeDTO}
+     * @param userID the userId
+     * @param attributeName the attributeName
+     * @return the {@link UserAttributeDTO} dto
+     */
     public UserAttributeDTO getAttribute(String userID, String attributeName) {
         UserAttribute attribute = userAttributeRepository.findByUserIdAndName(userID, attributeName);
         return userAttributeMapper.mapToDTO(attribute);
     }
 
+    /**
+     * Retrieves the user ids for attribute
+     * @param userIDs the userIds
+     * @param attributeName the attributeName
+     * @param attributeValue the attributeValue
+     * @return the user ids
+     */
     public Set<String> getUserIDsForAttribute(Collection<String> userIDs,
         String attributeName, String attributeValue) {
         Predicate predicate = qUser.userAttributes.any().name.eq(attributeName)
@@ -351,6 +463,11 @@ public class UserService {
             .collect(Collectors.toSet());
     }
 
+    /**
+     * Retrieves users
+     * @param criteria the criteria that is specified to search for a user
+     * @return a list of Users
+     */
     public Iterable<UserDTO> findUsers(UserSearchCriteria criteria) {
         Predicate predicate = buildPredicate(criteria);
         if (criteria.getAttributeCriteria() != null) {
@@ -365,6 +482,12 @@ public class UserService {
         }
     }
 
+    /**
+     * Retrieves attribute predicate
+     * @param criteria the criteria that is used to search for a user
+     * @param predicate the predicate
+     * @return the attribute predicate
+     */
     //TODO fix attribute sorting
     private Predicate getAttributePredicate(UserAttributeCriteria criteria, Predicate predicate) {
         if (criteria.getAttCriteria() != null) {
@@ -378,6 +501,11 @@ public class UserService {
         return predicate;
     }
 
+    /**
+     * Retrieves users
+     * @param predicate the predicate
+     * @return  a list of {@link UserDTO} objects
+     */
     private List<UserDTO> listUsers(Predicate predicate) {
 
         return userRepository.findAll(predicate).stream()
@@ -429,6 +557,12 @@ public class UserService {
         return userRepository.findAll(predicate).size();
     }
 
+    /**
+     * Checks the uniqueness of an attribute value
+     * @param attributeName the attributeName
+     * @param userID the userId
+     * @return {@link Boolean} value whether the attribute value is unique or not
+     */
     public boolean isAttributeValueUnique(String attributeName, String userID) {
 
         boolean isAttributeValueUnique = false;
@@ -451,6 +585,12 @@ public class UserService {
         return userMapper.map(userRepository.findAll(predicate, pageable));
     }
 
+    /**
+     * Sets user's password
+     * @param dto the {@link UserDTO}
+     * @param user the {@link User}
+     * @param salt the salt
+     */
     private void setUserPassword(UserDTO dto, User user, Optional<String> salt) {
         if (dto == null || user == null) {
             return;

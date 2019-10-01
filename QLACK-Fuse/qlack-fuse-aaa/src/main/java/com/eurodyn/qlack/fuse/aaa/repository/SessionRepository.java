@@ -8,7 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-/**A repository interface for Session.It is used to define a number of abstract crud methods
+/**
+ * A repository interface for Session.It is used to define a number of abstract crud methods
  *
  * @author European Dynamics
  *
@@ -16,20 +17,23 @@ import java.util.List;
 @Repository
 public interface SessionRepository extends AAARepository<Session, String> {
 
-  /**A deletion method
+  /**
+   * A deletion method
    * @param date the date
    */
   @Modifying
   void deleteByCreatedOnBefore(long date);
 
-  /** Retrieves the {@link Session} object by its user id
+  /**
+   * Retrieves the {@link Session} object by its user id
    * @param userId the user id
    * @param pageable the pageable
    * @return the {@link Session} object
    */
   Page<Session> findByUserId(String userId, Pageable pageable);
 
-  /**Retrieves a List of {@link Session} objects
+  /**
+   * Retrieves a List of {@link Session} objects
    * @param date the date
    * @return a {@link Session} object
    */

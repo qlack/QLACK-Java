@@ -37,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 /**
+ * A Service class that is used to configure Operation
  * @author European Dynamics SA
  */
 @Service

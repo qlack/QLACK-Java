@@ -3,7 +3,8 @@ package com.eurodyn.qlack.fuse.aaa.repository;
 import com.eurodyn.qlack.fuse.aaa.model.OpTemplateHasOperation;
 import org.springframework.stereotype.Repository;
 
-/**A Repository Interface written for OpTemplateHasOperation. It is used to
+/**
+ * A Repository Interface written for OpTemplateHasOperation. It is used to
  *define a number of crud abstract methods.
  *
  * @author European Dynamics SA
@@ -11,14 +12,16 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OpTemplateHasOperationRepository extends AAARepository<OpTemplateHasOperation, String> {
 
-  /**Finds a {@link OpTemplateHasOperation} object
+  /**
+   * Finds a {@link OpTemplateHasOperation} object
    * @param templateId the templateId
    * @param operationName the operationName
    * @return a {@link OpTemplateHasOperation} object
    */
   OpTemplateHasOperation findByTemplateIdAndOperationName(String templateId, String operationName);
 
-  /**A method that retrieves an OpTemplateHasOperation object provided
+  /**
+   * A method that retrieves an OpTemplateHasOperation object provided
    * by its parameters
    * @param templateId the template id
    * @param resourceId the resource id

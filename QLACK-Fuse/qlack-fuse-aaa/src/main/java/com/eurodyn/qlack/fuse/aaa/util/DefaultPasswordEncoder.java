@@ -11,6 +11,8 @@ import java.util.logging.Logger;
  * A default implementation of a {@link PasswordEncoder} based on AAA's legacy MD5 encoder. It is
  * suggested to switch to a better implementation in your project, such as {@link
  * org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder}.
+ *
+ * @author European Dynamics SA
  */
 @Component
 public class DefaultPasswordEncoder {

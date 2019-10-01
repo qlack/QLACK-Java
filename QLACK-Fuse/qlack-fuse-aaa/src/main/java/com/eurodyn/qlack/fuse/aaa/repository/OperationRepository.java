@@ -3,7 +3,8 @@ package com.eurodyn.qlack.fuse.aaa.repository;
 import com.eurodyn.qlack.fuse.aaa.model.Operation;
 import org.springframework.stereotype.Repository;
 
-/**A Repository interface written for Operation . It is used to define
+/**
+ * A Repository interface written for Operation . It is used to define
  * abstract crud methods for Operation model.
  *
  * @author European Dynamics SA
@@ -11,7 +12,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OperationRepository extends AAARepository<Operation, String> {
 
-  /**Retrieves a name of operation
+  /**
+   * Retrieves a name of operation
    * @param name the name
    * @return the specified name
    */

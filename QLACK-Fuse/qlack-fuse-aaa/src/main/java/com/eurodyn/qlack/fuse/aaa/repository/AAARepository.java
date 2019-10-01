@@ -12,7 +12,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.lang.NonNull;
 
-/**A repository interface written for AAA.It is used to define
+/**
+ * A repository interface written for AAA.It is used to define
  * a crud abstract methods for AAA model.
  * @param <T> a generic object
  * @param <I> I serializable object
@@ -29,7 +30,8 @@ public interface AAARepository<T extends AAAModel, I extends Serializable>
   @NonNull
   List<T> findAll(@NonNull Predicate predicate);
 
-  /**A method that retrieves a List of {@link AAAModel} objects
+  /**
+   * A method that retrieves a List of {@link AAAModel} objects
    * @param predicate the predicate object
    * @param sort a sorting object
    * @return a List of generic objects
@@ -37,7 +39,8 @@ public interface AAARepository<T extends AAAModel, I extends Serializable>
   @NonNull
   List<T> findAll(@NonNull Predicate predicate, @NonNull Sort sort);
 
-  /**A method to retrieve the specified id
+  /**
+   * A method to retrieve the specified id
    * @param id the Serializable id
    * @return the relative id
    */

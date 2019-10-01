@@ -4,19 +4,49 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+/**
+ * The associated Properties class for AAA.
+ *
+ * @author European Dynamics SA
+ */
 @Configuration
 @ConfigurationProperties(prefix = "qlack.fuse.aaa")
 @PropertySource("classpath:qlack.fuse.aaa.application.properties")
 public class AAAProperties {
 
+  /**
+   * the permissionPrioritisePositive
+   */
   private boolean permissionPrioritisePositive;
+  /**
+   * the ldapEnabled
+   */
   private boolean ldapEnabled;
+  /**
+   * the ldapUrl
+   */
   private String ldapUrl;
+  /**
+   * the ldapBasedn
+   */
   private String ldapBasedn;
+  /**
+   * ldapMappingUid
+   */
   private String ldapMappingUid;
+  /**
+   * the ldapMappingGid
+   */
   private String ldapMappingGid;
+  /**
+   * the ldapMappingAttrs
+   */
   private String ldapMappingAttrs;
 
+  /**
+   * Checks whether the permission priorities is positive or not
+   * @return a {@link Boolean} value whether the permissionPrioritisePositive is true or not
+   */
   public boolean isPermissionPrioritisePositive() {
     return permissionPrioritisePositive;
   }
@@ -25,6 +55,10 @@ public class AAAProperties {
     this.permissionPrioritisePositive = permissionPrioritisePositive;
   }
 
+  /**
+   * Checks whether Ldap is enabled or not
+   * @return a {@link Boolean} value if ldap is enabled or not
+   */
   public boolean isLdapEnabled() {
     return ldapEnabled;
   }

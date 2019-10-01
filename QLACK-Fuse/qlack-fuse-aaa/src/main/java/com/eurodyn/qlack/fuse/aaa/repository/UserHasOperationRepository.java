@@ -5,7 +5,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-/**A Repository interface for UserHasOperation.It is used to define a number of
+/**
+ * A Repository interface for UserHasOperation.It is used to define a number of
  * crud methods.
  *
  * @author European Dynamics SA
@@ -19,7 +20,8 @@ public interface UserHasOperationRepository extends AAARepository<UserHasOperati
      */
   List<UserHasOperation> findByUserId(String userId);
 
-    /**Finds a {@link UserHasOperation} object by its userId and the operationName
+    /**
+     * Finds a {@link UserHasOperation} object by its userId and the operationName
      * @param userId the userId
      * @param operationName the operationName
      * @return a {@link UserHasOperation} object
@@ -35,13 +37,15 @@ public interface UserHasOperationRepository extends AAARepository<UserHasOperati
   UserHasOperation findByUserIdAndResourceIdAndOperationName(String userId, String resourceId,
                                                              String operationName);
 
-    /**Finds a list of {@link UserHasOperation}
+    /**
+     * Finds a list of {@link UserHasOperation}
      * @param name the name
      * @return a list of {@link UserHasOperation} object
      */
   List<UserHasOperation> findByOperationName(String name);
 
-    /**Finds a list of {@link UserHasOperation} objects
+    /**
+     * Finds a list of {@link UserHasOperation} objects
      * @param resourceId the resource Id
      * @param operationName the operationName
      * @return a list of {@link UserHasOperation} objects
