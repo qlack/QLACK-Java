@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 /**
+ * Service class for OpTemplate
+ *
  * @author European Dynamics SA
  */
 @Service
@@ -43,6 +45,11 @@ public class OpTemplateService {
     this.opTemplateMapper = opTemplateMapper;
   }
 
+  /**
+   * Creates a Template
+   * @param templateDTO the {@link OpTemplateDTO} object
+   * @return the template id
+   */
   public String createTemplate(OpTemplateDTO templateDTO) {
     OpTemplate template = opTemplateMapper.mapToEntity(templateDTO);
     opTemplateRepository.save(template);
@@ -50,22 +57,46 @@ public class OpTemplateService {
     return template.getId();
   }
 
+  /**
+   * Deletes template by its id
+   * @param templateID the templateID
+   */
   public void deleteTemplateByID(String templateID) {
     opTemplateRepository.delete(opTemplateRepository.fetchById(templateID));
   }
 
+  /**
+   * Deletes Template by its name
+   * @param templateName the templateName
+   */
   public void deleteTemplateByName(String templateName) {
     opTemplateRepository.delete(opTemplateRepository.findByName(templateName));
   }
 
+  /**
+   * Retrieves a template by its id
+   * @param templateID the templateID
+   * @return the {@link OpTemplateDTO} by its id
+   */
   public OpTemplateDTO getTemplateByID(String templateID) {
     return opTemplateMapper.mapToDTO(opTemplateRepository.fetchById(templateID));
   }
 
+  /**
+   * Retrieves the Template by its name
+   * @param templateName the templateName
+   * @return the {@link OpTemplateDTO} by its name
+   */
   public OpTemplateDTO getTemplateByName(String templateName) {
     return opTemplateMapper.mapToDTO(opTemplateRepository.findByName(templateName));
   }
 
+  /**
+   * Adds operation
+   * @param templateID the templateID
+   * @param operationName the operationName
+   * @param isDeny the isDeny checking value whether is denied or not
+   */
   public void addOperation(String templateID, String operationName,
       boolean isDeny) {
     OpTemplateHasOperation tho = opTemplateHasOperationRepository
@@ -77,6 +108,13 @@ public class OpTemplateService {
     }
   }
 
+  /**
+   * Adds Operation
+   * @param templateID the templateID
+   * @param operationName the operationName
+   * @param resourceID the resourceID
+   * @param isDeny whether is denied or not
+   */
   public void addOperation(String templateID, String operationName,
       String resourceID, boolean isDeny) {
     OpTemplateHasOperation tho = opTemplateHasOperationRepository
@@ -92,6 +130,13 @@ public class OpTemplateService {
     }
   }
 
+  /**
+   * Adds common operation
+   * @param templateID the templateID
+   * @param operationName the operationName
+   * @param isDeny whether is denied or not
+   * @return a {@link OpTemplateHasOperation} object
+   */
     private OpTemplateHasOperation commonAddOperation(String templateID, String operationName, boolean isDeny) {
         OpTemplate template = opTemplateRepository.fetchById(templateID);
         Operation operation = operationRepository.findByName(operationName);
@@ -102,12 +147,23 @@ public class OpTemplateService {
         return tho;
   }
 
+  /**
+   * Removes operation
+   * @param templateID the templateID
+   * @param operationName the operationName
+   */
   public void removeOperation(String templateID, String operationName) {
     OpTemplateHasOperation tho = opTemplateHasOperationRepository.findByTemplateIdAndOperationName(
         templateID, operationName);
     opTemplateHasOperationRepository.delete(tho);
   }
 
+  /**
+   * Removes Operation provided by its templateID, the operationName and the resourceID
+   * @param templateID the templateID
+   * @param operationName the operationName
+   * @param resourceID the resourceID
+   */
   public void removeOperation(String templateID, String operationName,
       String resourceID) {
     OpTemplateHasOperation tho = opTemplateHasOperationRepository
@@ -115,6 +171,12 @@ public class OpTemplateService {
     opTemplateHasOperationRepository.delete(tho);
   }
 
+  /**
+   * Checks the access that operation template
+   * @param templateID the templateID
+   * @param operationName the operationName
+   * @return a {@link Boolean} type that checks the access of operation
+   */
   public Boolean getOperationAccess(String templateID, String operationName) {
     Boolean retVal = null;
 
@@ -127,6 +189,13 @@ public class OpTemplateService {
     return retVal;
   }
 
+  /**
+   * Checks the access of operation template
+   * @param templateID the templateID
+   * @param operationName the operationName
+   * @param resourceID the resourceID
+   * @return a {@link Boolean} value that checks the access of operation template
+   */
   public Boolean getOperationAccess(String templateID, String operationName,
       String resourceID) {
     Boolean retVal = null;
@@ -141,6 +210,11 @@ public class OpTemplateService {
     return retVal;
   }
 
+  /**
+   * Checks if any update happens to Template
+   * @param templateDTO the {@link OpTemplateDTO} object
+   * @return a {@link Boolean} type that checks if any update happens to Template
+   */
   public boolean updateTemplate(OpTemplateDTO templateDTO) {
     boolean retVal = false;
     OpTemplate template = opTemplateRepository.fetchById(templateDTO.getId());

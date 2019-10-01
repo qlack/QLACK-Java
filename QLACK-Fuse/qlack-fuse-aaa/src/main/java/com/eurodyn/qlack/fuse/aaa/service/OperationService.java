@@ -96,21 +96,39 @@ public class OperationService {
     return operation.getId();
   }
 
+  /**
+   * Updates the {@link Operation} object
+   * @param operationDTO the {@link OperationDTO}
+   */
   public void updateOperation(OperationDTO operationDTO) {
     Operation operation = operationRepository.fetchById(operationDTO.getId());
     operationMapper.mapToExistingEntity(operationDTO, operation);
   }
 
+  /**
+   * Deletes the {@link Operation}
+   * @param operationID the operationID
+   */
   public void deleteOperation(String operationID) {
 
     operationRepository.delete(findById(operationID));
   }
 
+  /**
+   * Finds Operation by its id
+   * @param operationId the operationID
+   * @return the operation by its id
+   *
+   */
   private Operation findById(String operationId) {
 
     return operationRepository.fetchById(operationId);
   }
 
+  /**
+   * Retrieves all the operations
+   * @return all the operations
+   */
   public List<OperationDTO> getAllOperations() {
     return operationMapper.mapToDTO(operationRepository.findAll());
   }
@@ -119,6 +137,12 @@ public class OperationService {
     return operationMapper.mapToDTO(operationRepository.findByName(operationName));
   }
 
+  /**
+   * Add operation to a User
+   * @param userID the userID
+   * @param operationName the operationName
+   * @param isDeny if it is denied or not
+   */
   public void addOperationToUser(String userID, String operationName, boolean isDeny) {
     UserHasOperation uho = userHasOperationRepository.findByUserIdAndOperationName(userID, operationName);
     if (uho != null) {
@@ -141,6 +165,13 @@ public class OperationService {
     }
     }
 
+  /**
+   * Adds common operation to user
+   * @param userID the userID
+   * @param operationName the operation
+   * @param isDeny if it is denied or not
+   * @return the {@link UserHasOperation} object
+   */
     private UserHasOperation commonAddOperationToUser(String userID, String operationName, boolean isDeny) {
         User user = userRepository.fetchById(userID);
         Operation operation = operationRepository.findByName(operationName);
@@ -151,16 +182,31 @@ public class OperationService {
         return uho;
   }
 
+  /**
+   * Adds operation to a user from Template ID
+   * @param userID the userID
+   * @param templateID the templateID
+   */
   public void addOperationsToUserFromTemplateID(String userID, String templateID) {
     OpTemplate template = opTemplateRepository.fetchById(templateID);
     addOperationsToUserFromTemplate(userID, template);
   }
 
+  /**
+   *  Add operations to user from Template Name
+   * @param userID the userID
+   * @param templateName the templateName
+   */
   public void addOperationsToUserFromTemplateName(String userID, String templateName) {
     OpTemplate template = opTemplateRepository.findByName(templateName);
     addOperationsToUserFromTemplate(userID, template);
   }
 
+  /**
+   * Adds operation to user from template
+   * @param userID the userID
+   * @param template the template
+   */
   private void addOperationsToUserFromTemplate(String userID, OpTemplate template) {
     for (OpTemplateHasOperation tho : template.getOpTemplateHasOperations()) {
       if (tho.getResource() == null) {
@@ -171,6 +217,12 @@ public class OperationService {
     }
   }
 
+  /**
+   * Adds operation to Group
+   * @param groupID the groupID
+   * @param operationName the operationName
+   * @param isDeny isDeny value check whether is denied or not
+   */
   public void addOperationToGroup(String groupID, String operationName, boolean isDeny) {
     UserGroupHasOperation gho = userGroupHasOperationRepository.findByUserGroupIdAndOperationName(groupID, operationName);
 
@@ -181,6 +233,13 @@ public class OperationService {
     }
   }
 
+  /**
+   * Adds operation to Group
+   * @param groupID the groupId
+   * @param operationName the operationName
+   * @param resourceID the resourceId
+   * @param isDeny whether is denied or not
+   */
   public void addOperationToGroup(String groupID, String operationName, String resourceID,
       boolean isDeny) {
       UserGroupHasOperation gho = userGroupHasOperationRepository
@@ -195,6 +254,13 @@ public class OperationService {
     }
   }
 
+  /**
+   * Adds operation to Group
+   * @param groupID the groupId
+   * @param operationName the operationName
+   * @param isDeny whether is denied or not
+   * @return a {@link UserGroupHasOperation} object
+   */
     public UserGroupHasOperation commonAddOperationToGroup(String groupID, String operationName, boolean isDeny) {
         UserGroup userGroup = userGroupRepository.fetchById(groupID);
         Operation operation = operationRepository.findByName(operationName);
@@ -205,16 +271,30 @@ public class OperationService {
         return gho;
   }
 
+  /**
+   * Adds operation to group from TemplateID
+   * @param groupID the groupId
+   * @param templateID the templateID
+   */
   public void addOperationsToGroupFromTemplateID(String groupID, String templateID) {
     OpTemplate template = opTemplateRepository.fetchById(templateID);
     addOperationsToGroupFromTemplate(groupID, template);
   }
 
+  /**
+   * Adds operation to group from template name
+   * @param groupID the groupId
+   * @param templateName the templateName
+   */
   public void addOperationsToGroupFromTemplateName(String groupID, String templateName) {
     OpTemplate template = opTemplateRepository.findByName(templateName);
     addOperationsToGroupFromTemplate(groupID, template);
   }
 
+  /** Adds operations to group from template
+   * @param groupID the groupId
+   * @param template the template
+   */
   private void addOperationsToGroupFromTemplate(String groupID, OpTemplate template) {
     for (OpTemplateHasOperation tho : template.getOpTemplateHasOperations()) {
       if (tho.getResource() == null) {
@@ -226,6 +306,11 @@ public class OperationService {
     }
   }
 
+  /**
+   * Removes the operation from user provided by its userID and operationName
+   * @param userID the userID
+   * @param operationName the operationName
+   */
   public void removeOperationFromUser(String userID, String operationName) {
     UserHasOperation uho = userHasOperationRepository.findByUserIdAndOperationName(userID, operationName);
     if (uho != null) {
@@ -233,6 +318,12 @@ public class OperationService {
     }
   }
 
+  /**
+   * Removes the operation from user provided by its userID , operationName and resourceId
+   * @param userID the userID
+   * @param operationName the operationName
+   * @param resourceID the resourceId
+   */
   public void removeOperationFromUser(String userID, String operationName, String resourceID) {
     UserHasOperation uho = userHasOperationRepository
         .findByUserIdAndResourceIdAndOperationName(userID, resourceID, operationName);
@@ -241,6 +332,11 @@ public class OperationService {
     }
   }
 
+  /**
+   * Removes operation from Group provided by its groupID and operationName
+   * @param groupID the groupID
+   * @param operationName the operationName
+   */
   public void removeOperationFromGroup(String groupID, String operationName) {
     UserGroupHasOperation gho = userGroupHasOperationRepository.findByUserGroupIdAndOperationName(groupID, operationName);
     if (gho != null) {
@@ -248,6 +344,12 @@ public class OperationService {
     }
   }
 
+  /**
+   * Removes operation from group provided by its groupID,operationName and resourceID
+   * @param groupID the groupId
+   * @param operationName the operationName
+   * @param resourceID the resourceID
+   */
   public void removeOperationFromGroup(String groupID, String operationName, String resourceID) {
     UserGroupHasOperation gho = userGroupHasOperationRepository
         .findByUserGroupIdAndResourceIdAndOperationName(groupID, resourceID, operationName);
@@ -256,6 +358,12 @@ public class OperationService {
     }
   }
 
+  /**
+   * Checks whether is permitted the operation or not
+   * @param userId the userId
+   * @param operationName the operationName
+   * @return a {@link Boolean} value whether it is permitted or not
+   */
   public Boolean isPermitted(String userId, String operationName) {
     return isPermitted(userId, operationName, null);
   }
