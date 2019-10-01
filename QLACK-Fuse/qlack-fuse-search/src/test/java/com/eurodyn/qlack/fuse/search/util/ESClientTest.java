@@ -66,4 +66,5 @@ public class ESClientTest {
     //client is null because is not set
     assertNull(esClient.getClient());
   }
+
 }

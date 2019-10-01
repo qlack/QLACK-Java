@@ -1,9 +1,7 @@
 package com.eurodyn.qlack.fuse.search.util;
 
-import io.netty.util.internal.SuppressJava6Requirement;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;

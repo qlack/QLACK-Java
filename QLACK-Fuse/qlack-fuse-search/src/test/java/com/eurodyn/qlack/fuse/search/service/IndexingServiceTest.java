@@ -72,6 +72,8 @@ public class IndexingServiceTest {
     when(restHighLevelClient.delete(any(DeleteRequest.class), any(RequestOptions.class)))
         .thenReturn(deleteResponse);
     indexingService.unindexDocument(new ESDocumentIdentifierDTO());
+    verify(restHighLevelClient, times(1))
+        .delete(any(DeleteRequest.class), any(RequestOptions.class));
   }
 
   @Test(expected = SearchException.class)
@@ -79,7 +81,8 @@ public class IndexingServiceTest {
     when(restHighLevelClient.delete(any(DeleteRequest.class), any(RequestOptions.class)))
         .thenThrow(new IOException());
     indexingService.unindexDocument(new ESDocumentIdentifierDTO());
-    verify(restHighLevelClient ,times(1)).delete(any(DeleteRequest.class), any(RequestOptions.class));
+    verify(restHighLevelClient, times(1))
+        .delete(any(DeleteRequest.class), any(RequestOptions.class));
   }
 
 }

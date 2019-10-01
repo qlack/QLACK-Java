@@ -78,11 +78,6 @@ public class ESClient {
                     .setDefaultCredentialsProvider(credentialsProvider);
               }
 
-              if (!properties.isVerifyHostname()) {
-                httpClientBuilder = httpClientBuilder
-                    .setSSLHostnameVerifier((hostname, session) -> true);
-              }
-
               return httpClientBuilder;
             }));
   }
@@ -104,4 +99,5 @@ public class ESClient {
   public RestHighLevelClient getClient() {
     return rhClient;
   }
+
 }

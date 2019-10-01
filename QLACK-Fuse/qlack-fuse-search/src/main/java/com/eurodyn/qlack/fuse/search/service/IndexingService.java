@@ -81,7 +81,6 @@ public class IndexingService {
 
       log.log(Level.INFO, MessageFormat.format("Index document deleted with id: {0}", dto.getId()),
           response);
-
     } catch (IOException e) {
       log.log(Level.SEVERE,
           MessageFormat.format("Could not delete document with id: {0}", dto.getId()), e);
