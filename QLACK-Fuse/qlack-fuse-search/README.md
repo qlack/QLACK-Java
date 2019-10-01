@@ -44,8 +44,6 @@ qlack.fuse.search.cluster.name=docker-cluster
 
 qlack.fuse.search.es_username=
 qlack.fuse.search.es_password=
-# Enable or disable hostname verification. Only applies when https is used to communicate with Elasticsearch.
-qlack.fuse.search.verify_hostname=false
 
 
 spring.main.allow-bean-definition-overriding=true

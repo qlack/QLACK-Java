@@ -15,6 +15,7 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -42,6 +43,9 @@ public class ESClient {
    * properties
    */
   private Properties properties;
+
+  @Value("${qlack.fuse.search.host.name}")
+  private String hostNameProperty;
 
   @Autowired
   public ESClient(Properties properties) {

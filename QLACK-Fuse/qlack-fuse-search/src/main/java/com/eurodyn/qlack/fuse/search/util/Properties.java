@@ -31,8 +31,4 @@ public class Properties {
    */
   private String esPassword;
 
-  /**
-   * Whether to verify the provided hostname(s)
-   */
-  private boolean verifyHostname;
 }

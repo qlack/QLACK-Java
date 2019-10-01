@@ -21,7 +21,6 @@ public class ESClientTest {
     properties.setEsHosts("http://localhost:9200");
     properties.setEsPassword("password");
     properties.setEsUsername("userName");
-    properties.setVerifyHostname(true);
     return properties;
   }
 
@@ -40,7 +39,6 @@ public class ESClientTest {
   public void initTestEmptyUsername() {
     Properties properties = createProperties();
     properties.setEsUsername(null);
-    properties.setVerifyHostname(false);
     esClient = new ESClient(properties);
     esClient.init();
     assertNotNull(esClient.getClient());
