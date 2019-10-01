@@ -6,24 +6,21 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSession;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 /**
- * A client to communicate with ES. This client is using the {@link RestClient} implementation of the ES Java client.
+ * A client to communicate with ES. This client is using the {@link RestClient} implementation of
+ * the ES Java client.
  *
  * @author European Dynamics SA.
  */
@@ -35,11 +32,6 @@ public class ESClient {
    * Logger
    */
   private static final Logger LOGGER = Logger.getLogger(ESClient.class.getName());
-
-  /**
-   * Elastic search RestClient
-   */
-  private RestClient restClient;
 
   /**
    * Elastic search RestHighLevelClient
@@ -57,8 +49,8 @@ public class ESClient {
   }
 
   /**
-   * Post-construct client initialization method. It initializes a REST High level client
-   * using properties provided in the <b>application.properties</b> file.
+   * Post-construct client initialization method. It initializes a REST High level client using
+   * properties provided in the <b>application.properties</b> file.
    */
   @PostConstruct
   public void init() {
@@ -75,34 +67,23 @@ public class ESClient {
 
     rhClient = new RestHighLevelClient(
         RestClient.builder(httpHosts)
-            .setHttpClientConfigCallback(new RestClientBuilder.HttpClientConfigCallback() {
+            .setHttpClientConfigCallback(httpClientBuilder -> {
+              if (StringUtils.isNotEmpty(properties.getEsUsername())
+                  && StringUtils.isNotEmpty(properties.getEsPassword())) {
+                final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+                credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(
+                    properties.getEsUsername(), properties.getEsPassword()));
 
-              @Override
-              public HttpAsyncClientBuilder customizeHttpClient(
-                  HttpAsyncClientBuilder httpClientBuilder) {
-                if (StringUtils.isNotEmpty(properties.getEsUsername())
-                    && StringUtils.isNotEmpty(properties.getEsPassword())) {
-                  final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-                  credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(
-                      properties.getEsUsername(), properties.getEsPassword()));
-
-                  httpClientBuilder = httpClientBuilder
-                      .setDefaultCredentialsProvider(credentialsProvider);
-                }
-
-                if (!properties.isVerifyHostname()) {
-                  httpClientBuilder = httpClientBuilder
-                      .setSSLHostnameVerifier(new HostnameVerifier() {
-
-                        @Override
-                        public boolean verify(String hostname, SSLSession session) {
-                          return true;
-                        }
-                      });
-                }
-
-                return httpClientBuilder;
+                httpClientBuilder = httpClientBuilder
+                    .setDefaultCredentialsProvider(credentialsProvider);
               }
+
+              if (!properties.isVerifyHostname()) {
+                httpClientBuilder = httpClientBuilder
+                    .setSSLHostnameVerifier((hostname, session) -> true);
+              }
+
+              return httpClientBuilder;
             }));
   }
 
@@ -114,16 +95,6 @@ public class ESClient {
   public void shutdown() throws IOException {
     LOGGER.log(Level.WARNING, "Shutting down connection to ES.");
   }
-
-  /**
-   * Returns the client.
-   *
-   * @return A {@link RestClient} instance.
-   */
-  public RestClient getRestClient() {
-    return restClient;
-  }
-
 
   /**
    * Returns the RestHighLevelClient.

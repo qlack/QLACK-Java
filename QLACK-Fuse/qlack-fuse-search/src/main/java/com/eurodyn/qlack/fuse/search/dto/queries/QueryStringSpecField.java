@@ -41,6 +41,7 @@ public class QueryStringSpecField extends QuerySpec {
 
   /**
    * A convenience method to set the term of this query.
+   *
    * @param field The field name to search against.
    * @param value The value to search.
    * @param operator The field to execute the search against.

@@ -25,9 +25,8 @@ import lombok.Getter;
 public class QuerySort {
 
   /**
-   *  The fields to order against.
-   *  The key is he field to execute the sort against.
-   *  The value should be asc or desc.
+   * The fields to order against. The key is he field to execute the sort against. The value should
+   * be asc or desc.
    */
   private final Map<String, String> sortMap = new LinkedHashMap<>();
 

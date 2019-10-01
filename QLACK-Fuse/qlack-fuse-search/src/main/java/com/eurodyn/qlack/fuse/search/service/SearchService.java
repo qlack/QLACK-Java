@@ -30,9 +30,10 @@ import com.eurodyn.qlack.fuse.search.util.ESClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -74,15 +75,30 @@ public class SearchService {
    */
   private ESClient esClient;
 
-  /**
-   * AdminService reference
-   */
-  private AdminService adminService;
+  private static final String SCROLL_EXCEPTION = "Could not execute scroll query.";
+
+  private static final String QUERY_SLASHES_APPEND = "\" : \"";
+
+  private static final String QUERY_PATH_CONCAT = "\"path\": \"";
+
+  private static final String QUERY_NESTED_CONCAT = "\"nested\" : { ";
+
+  private static final String QUERY_INNER_HITS_CONCAT = " } , \"inner_hits\": {";
+
+  private static final String QUERY_SOURCE_CONCAT = "\"_source\" : false, ";
+
+  private static final String QUERY_DOCVALUE_CONCAT = "\"docvalue_fields\" : [ \"";
+
+  private static final String QUERY_OPERATOR_CONCAT = "\" , \"default_operator\" : \"";
+
+  private static final String QUERY_CONCAT = "\", \"query\": { ";
+
+  private static final String QUERY_NEW_CONCAT = "\"] , \"query\" : \"";
+
 
   @Autowired
-  public SearchService(ESClient esClient, AdminService adminService) {
+  public SearchService(ESClient esClient) {
     this.esClient = esClient;
-    this.adminService = adminService;
     this.mapper = new ObjectMapper();
   }
 
@@ -104,9 +120,9 @@ public class SearchService {
     InternalSearchRequest internalRequest = createRequest(dto, params);
 
     try {
-      ContentType contentType = ContentType.APPLICATION_JSON.withCharset(Charset.forName("UTF-8"));
+      ContentType contentType = ContentType.APPLICATION_JSON.withCharset(StandardCharsets.UTF_8);
       Request request = new Request("GET", endpointBuilder.toString());
-      params.forEach((key, value) -> request.addParameter(key, value));
+      params.forEach(request::addParameter);
       request.setEntity(new NStringEntity(mapper.writeValueAsString(internalRequest), contentType));
       Response response = esClient.getClient().getLowLevelClient().performRequest(request);
       QueryResponse queryResponse = getQueryResponse(response);
@@ -158,7 +174,7 @@ public class SearchService {
    *
    * @param indexName the name of the index that the serach will be performed
    * @param query the query of the search
-   * @param maxResults the maximum number of hits to be returned with each batch of results
+   * @param maxResults the maximum number of hitList to be returned with each batch of results
    * @return a ScrollRequest to use in a search
    */
   public ScrollRequest prepareScroll(String indexName, QueryMatch query, int maxResults) {
@@ -183,7 +199,7 @@ public class SearchService {
       scrollRequest.setScrollId(scrollId);
 
     } catch (IOException e) {
-      log.log(Level.SEVERE, "Could not execute scroll query.", e);
+      log.log(Level.SEVERE, SCROLL_EXCEPTION, e);
     }
 
     return scrollRequest;
@@ -203,14 +219,14 @@ public class SearchService {
 
     Response response;
     try {
-      ContentType contentType = ContentType.APPLICATION_JSON.withCharset(Charset.forName("UTF-8"));
+      ContentType contentType = ContentType.APPLICATION_JSON.withCharset(StandardCharsets.UTF_8);
       Request request = new Request("POST", "_search/scroll");
       request.setEntity(new NStringEntity(mapper.writeValueAsString(internalRequest), contentType));
       response = esClient.getClient().getLowLevelClient().performRequest(request);
 
     } catch (IOException e) {
-      log.log(Level.SEVERE, "Could not execute scroll query.", e);
-      throw new SearchException("Could not execute scroll query.", e);
+      log.log(Level.SEVERE, SCROLL_EXCEPTION, e);
+      throw new SearchException(SCROLL_EXCEPTION, e);
     }
 
     QueryResponse queryResponse = getQueryResponse(response);
@@ -226,6 +242,7 @@ public class SearchService {
    * @param dto a {@link QuerySpec} object
    * @return the indices as a comma separated value string
    */
+  @SuppressWarnings("squid:S2692")
   private String processIndices(QuerySpec dto) {
     // This is done to remove duplicates
     String indicesEndpoint = "";
@@ -252,6 +269,7 @@ public class SearchService {
    * @param dto a {@link QuerySpec} object
    * @return the types as a comma separated value string
    */
+  @SuppressWarnings("squid:S2692")
   private String processTypes(QuerySpec dto) {
     // This is done to remove duplicates
     String typesEndpoint = "";
@@ -275,6 +293,7 @@ public class SearchService {
   /**
    * Creates an {@link InternalSearchRequest} object using given the {@link QuerySpec} properties
    * and params
+   *
    * @param dto a {@link QuerySpec} object
    * @param params a parameter map
    * @return an {@link InternalSearchRequest} object
@@ -304,94 +323,55 @@ public class SearchService {
 
   /**
    * Builds a query based on the {@link QuerySpec} object properties
+   *
    * @param dto a {@link QuerySpec} object
    * @return a query string
    */
+  @SuppressWarnings("squid:S2692")
   private String buildQuery(QuerySpec dto) {
     StringBuilder builder = new StringBuilder("{");
 
     if (dto instanceof QueryBoolean) {
-      QueryBoolean query = (QueryBoolean) dto;
-      builder.append("\"bool\" : {");
-
-      Map<BooleanType, List<QuerySpec>> queriesMap = new HashMap<>();
-      for (Entry<QuerySpec, BooleanType> entry : query.getTerms().entrySet()) {
-        if (entry.getValue() != null) {
-          queriesMap.putIfAbsent(entry.getValue(), new ArrayList<>());
-          queriesMap.get(entry.getValue()).add(entry.getKey());
-        }
-      }
-
-      boolean appendComa = false;
-      for (Entry<BooleanType, List<QuerySpec>> entry : queriesMap.entrySet()) {
-        if (appendComa) {
-          builder.append(",");
-        }
-        if (BooleanType.MUSTNOT.equals(entry.getKey())) {
-          builder.append("\"must_not\" : [");
-        } else if (BooleanType.SHOULD.equals(entry.getKey())) {
-          builder.append("\"should\" : [");
-        } else {
-          builder.append("\"must\" : [");
-        }
-        for (QuerySpec querySpec : entry.getValue()) {
-          if (entry.getValue().indexOf(querySpec) > 0) {
-            builder.append(",");
-          }
-          builder.append(buildQuery(querySpec));
-        }
-        builder.append("]");
-        appendComa = true;
-      }
-      builder.append("}");
+      builder = buildQueryBoolean(builder, dto);
     } else if (dto instanceof QueryMatch) {
       QueryMatch query = (QueryMatch) dto;
-      builder.append("\"match\" : { \"").append(query.getField()).append("\" : \"")
+      builder.append("\"match\" : { \"").append(query.getField()).append(QUERY_SLASHES_APPEND)
           .append(query.getValue()).append("\" }");
     } else if (dto instanceof QueryMultiMatch) {
-      QueryMultiMatch query = (QueryMultiMatch) dto;
-      builder.append("\"multi_match\" : { \"query\" : \"").append(query.getValue())
-          .append("\", \"fields\" : [");
-      for (int i = 0; i < query.getFields().length; i++) {
-        if (i > 0) {
-          builder.append(", ");
-        }
-        builder.append("\"").append(query.getFields()[i]).append("\"");
-      }
-      builder.append("]}");
+      buildQueryMultimatch(builder, dto);
     } else if (dto instanceof QueryString) {
       QueryString query = (QueryString) dto;
-      builder.append("\"query_string\" : { \"query\" : \"").append(query.getQueryString())
+      builder.append("\"query_string\" : { \"query\" : \"").append(query.getQueryStringValue())
           .append("\"}");
     } else if (dto instanceof QueryTerm) {
       QueryTerm query = (QueryTerm) dto;
 
-      builder.append("\"term\" : { \"").append(query.getField()).append("\" : \"")
+      builder.append("\"term\" : { \"").append(query.getField()).append(QUERY_SLASHES_APPEND)
           .append(query.getValue())
           .append("\" }");
     } else if (dto instanceof QueryTermNested) {
       QueryTermNested query = (QueryTermNested) dto;
-      builder.append("\"nested\" : { ").append("\"path\": \"").append(query.getPath())
-          .append("\", \"query\": { ")
-          .append("\"term\" : { \"").append(query.getField()).append("\" : \"")
+      builder.append(QUERY_NESTED_CONCAT).append(QUERY_PATH_CONCAT).append(query.getPath())
+          .append(QUERY_CONCAT)
+          .append("\"term\" : { \"").append(query.getField()).append(QUERY_SLASHES_APPEND)
           .append(query.getValue())
-          .append("\" }").append(" } , \"inner_hits\": {").append("\"_source\" : false, ")
-          .append("\"docvalue_fields\" : [ \"").append(query.getDocvalueFields()).append("\"]")
+          .append("\" }").append(QUERY_INNER_HITS_CONCAT).append(QUERY_SOURCE_CONCAT)
+          .append(QUERY_DOCVALUE_CONCAT).append(query.getDocvalueFields()).append("\"]")
           .append("}}");
     } else if (dto instanceof QueryWildcard) {
       QueryWildcard query = (QueryWildcard) dto;
 
-      builder.append("\"wildcard\" : { \"").append(query.getField()).append("\" : \"")
+      builder.append("\"wildcard\" : { \"").append(query.getField()).append(QUERY_SLASHES_APPEND)
           .append(query.getWildcard())
           .append("\" }");
     } else if (dto instanceof QueryWildcardNested) {
       QueryWildcardNested query = (QueryWildcardNested) dto;
 
-      builder.append("\"nested\" : { ").append("\"path\": \"").append(query.getPath())
-          .append("\", \"query\": { ")
-          .append("\"wildcard\" : { \"").append(query.getField()).append("\" : \"")
-          .append(query.getWildcard()).append("\" }").append(" } , \"inner_hits\": {")
-          .append("\"_source\" : false, ").append("\"docvalue_fields\" : [ \"")
+      builder.append(QUERY_NESTED_CONCAT).append(QUERY_PATH_CONCAT).append(query.getPath())
+          .append(QUERY_CONCAT)
+          .append("\"wildcard\" : { \"").append(query.getField()).append(QUERY_SLASHES_APPEND)
+          .append(query.getWildcard()).append("\" }").append(QUERY_INNER_HITS_CONCAT)
+          .append(QUERY_SOURCE_CONCAT).append(QUERY_DOCVALUE_CONCAT)
           .append(query.getDocvalueFields()).append("\"]").append("}}");
     } else if (dto instanceof QueryTerms) {
       QueryTerms query = (QueryTerms) dto;
@@ -400,12 +380,12 @@ public class SearchService {
           .append(" ] }");
     } else if (dto instanceof QueryTermsNested) {
       QueryTermsNested query = (QueryTermsNested) dto;
-      builder.append("\"nested\" : { ").append("\"path\": \"").append(query.getPath())
-          .append("\", \"query\": { ")
+      builder.append(QUERY_NESTED_CONCAT).append(QUERY_PATH_CONCAT).append(query.getPath())
+          .append(QUERY_CONCAT)
           .append("\"terms\" : { \"").append(query.getField()).append("\" : [ ")
           .append(query.getValues())
-          .append(" ] }").append(" } , \"inner_hits\": {").append("\"_source\" : false, ")
-          .append("\"docvalue_fields\" : [ \"").append(query.getDocvalueFields()).append("\"]")
+          .append(" ] }").append(QUERY_INNER_HITS_CONCAT).append(QUERY_SOURCE_CONCAT)
+          .append(QUERY_DOCVALUE_CONCAT).append(query.getDocvalueFields()).append("\"]")
           .append("}}");
     } else if (dto instanceof QueryRange) {
       QueryRange query = (QueryRange) dto;
@@ -415,24 +395,24 @@ public class SearchService {
     } else if (dto instanceof QueryStringSpecField) {
       QueryStringSpecField query = (QueryStringSpecField) dto;
       builder.append("\"query_string\" : { \"fields\" : [\"").append(query.getField())
-          .append("\"] , \"query\" : \"").append(query.getValue())
-          .append("\" , \"default_operator\" : \"")
+          .append(QUERY_NEW_CONCAT).append(query.getValue())
+          .append(QUERY_OPERATOR_CONCAT)
           .append(query.getOperator()).append("\" }");
     } else if (dto instanceof QueryStringSpecFieldNested) {
       QueryStringSpecFieldNested query = (QueryStringSpecFieldNested) dto;
-      builder.append("\"nested\" : { ").append("\"path\": \"").append(query.getPath())
-          .append("\", \"query\": { ")
+      builder.append(QUERY_NESTED_CONCAT).append(QUERY_PATH_CONCAT).append(query.getPath())
+          .append(QUERY_CONCAT)
           .append("\"query_string\" : { \"fields\" : [\"").append(query.getField())
-          .append("\"] , \"query\" : \"").append(query.getValue())
-          .append("\" , \"default_operator\" : \"")
-          .append(query.getOperator()).append("\" }").append(" } , \"inner_hits\": {")
-          .append("\"_source\" : false, ").append("\"docvalue_fields\" : [ \"")
+          .append(QUERY_NEW_CONCAT).append(query.getValue())
+          .append(QUERY_OPERATOR_CONCAT)
+          .append(query.getOperator()).append("\" }").append(QUERY_INNER_HITS_CONCAT)
+          .append(QUERY_SOURCE_CONCAT).append(QUERY_DOCVALUE_CONCAT)
           .append(query.getDocvalueFields()).append("\"]").append("}}");
     } else if (dto instanceof SimpleQueryString) {
       SimpleQueryString query = (SimpleQueryString) dto;
       builder.append("\"simple_query_string\" : { \"fields\" : [\"").append(query.getField())
-          .append("\"] , \"query\" : \"").append(query.getValue())
-          .append("\" , \"default_operator\" : \"")
+          .append(QUERY_NEW_CONCAT).append(query.getValue())
+          .append(QUERY_OPERATOR_CONCAT)
           .append(query.getOperator()).append("\" }");
     }
     return builder.append("}").toString().replace("\"null\"", "null");
@@ -440,6 +420,7 @@ public class SearchService {
 
   /**
    * Builds an aggregate
+   *
    * @param aggregate the aggregate name
    * @param aggregateSize the aggregate size
    * @return the aggregate
@@ -452,8 +433,8 @@ public class SearchService {
   }
 
   /**
-   * Builds a JSON string for sorting
-   * the provided {@link QuerySort} object
+   * Builds a JSON string for sorting the provided {@link QuerySort} object
+   *
    * @param dto a {@link QuerySort} object
    * @return a JSON string rep
    */
@@ -474,6 +455,7 @@ public class SearchService {
   /**
    * Creates and returns a search result DTO based on the Elastic search response wrapper object
    * {@link QueryResponse)
+   *
    * @param queryResponse an Elastic search response wrapper object
    * @param countOnly flag to indicate whether only the result count should be returned
    * @param includeAllSource flag to indicate whether the whole query response should be included
@@ -508,7 +490,7 @@ public class SearchService {
     }
 
     if (!countOnly && includeResults) {
-      for (Hit hit : queryResponse.getHits().getHits()) {
+      for (Hit hit : queryResponse.getHits().getHitList()) {
         result.getHits().add(map(hit));
       }
     }
@@ -525,6 +507,7 @@ public class SearchService {
 
   /**
    * Maps a {@link Hit} object to a {@link SearchHitDTO}
+   *
    * @param hit a {@link Hit} object
    * @return a {@link SearchHitDTO} object
    */
@@ -540,6 +523,7 @@ public class SearchService {
 
   /**
    * Maps an Elastic search {@link Response} object to a {@link QueryResponse}
+   *
    * @param response an Elastic search {@link Response} object
    * @return a {@link QueryResponse} object
    */
@@ -550,5 +534,71 @@ public class SearchService {
       log.log(Level.SEVERE, "Could not deserialize response.", e);
       throw new SearchException("Could not deserialize response.", e);
     }
+  }
+
+  /**
+   * This method extends the functionality of the buildQuery method fot QueryBoolean classes.
+   *
+   * @param builder the string builder of the buildQuery method
+   * @param dto the dto object to be examined
+   * @return the updated string builder
+   */
+  @SuppressWarnings("squid:S2692")
+  private StringBuilder buildQueryBoolean(StringBuilder builder, QuerySpec dto) {
+    QueryBoolean query = (QueryBoolean) dto;
+    builder.append("\"bool\" : {");
+    Map<BooleanType, List<QuerySpec>> queriesMap = new EnumMap<>(BooleanType.class);
+    for (Entry<QuerySpec, BooleanType> entry : query.getTerms().entrySet()) {
+      if (entry.getValue() != null) {
+        queriesMap.putIfAbsent(entry.getValue(), new ArrayList<>());
+        queriesMap.get(entry.getValue()).add(entry.getKey());
+      }
+    }
+    boolean appendComa = false;
+    for (Entry<BooleanType, List<QuerySpec>> entry : queriesMap.entrySet()) {
+      if (appendComa) {
+        builder.append(",");
+      }
+      if (BooleanType.MUSTNOT.equals(entry.getKey())) {
+        builder.append("\"must_not\" : [");
+      } else if (BooleanType.SHOULD.equals(entry.getKey())) {
+        builder.append("\"should\" : [");
+      } else {
+        builder.append("\"must\" : [");
+      }
+      for (QuerySpec querySpec : entry.getValue()) {
+        if (entry.getValue().indexOf(querySpec) > 0) {
+          builder.append(",");
+        }
+        builder.append(buildQuery(querySpec));
+      }
+      builder.append("]");
+      appendComa = true;
+    }
+    builder.append("}");
+
+    return builder;
+  }
+
+  /**
+   * This method extends the functionality of the buildQuery method fot QueryMultiMatch classes.
+   *
+   * @param builder the string builder of the buildQuery method
+   * @param dto the dto object to be examined
+   * @return the updated string builder
+   */
+  private StringBuilder buildQueryMultimatch(StringBuilder builder, QuerySpec dto) {
+    QueryMultiMatch query = (QueryMultiMatch) dto;
+    builder.append("\"multi_match\" : { \"query\" : \"").append(query.getValue())
+        .append("\", \"fields\" : [");
+    for (int i = 0; i < query.getFields().length; i++) {
+      if (i > 0) {
+        builder.append(", ");
+      }
+      builder.append("\"").append(query.getFields()[i]).append("\"");
+    }
+    builder.append("]}");
+
+    return builder;
   }
 }

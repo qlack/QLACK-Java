@@ -27,7 +27,7 @@ public class QueryMultiMatch extends QuerySpec {
   private String[] fields;
 
   /**
-   *The value to search for.
+   * The value to search for.
    */
   private Object value;
 

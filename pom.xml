@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.eurodyn.qlack</groupId>
@@ -55,7 +57,7 @@
     <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
     <maven.javadoc.plugin.version>2.10.4</maven.javadoc.plugin.version>
     <maven.antrun.plugin.version>1.8</maven.antrun.plugin.version>
-    <spring.boot.version>2.1.4.RELEASE</spring.boot.version>
+    <spring.boot.version>2.1.8.RELEASE</spring.boot.version>
     <jrebel.version>1.1.8</jrebel.version>
     <mapstruct.version>1.3.0.Final</mapstruct.version>
     <commons.collections.version>3.2.2</commons.collections.version>
@@ -79,7 +81,6 @@
     <jacoco.version>0.8.4</jacoco.version>
     <enunciate.version>2.11.1</enunciate.version>
     <powermockito.version>2.0.2</powermockito.version>
-    <org.javassist.verion>3.22.0-GA</org.javassist.verion>
   </properties>
 
   <dependencyManagement>
@@ -162,12 +163,6 @@
         <groupId>org.powermock</groupId>
         <artifactId>powermock-api-mockito2</artifactId>
         <version>${powermockito.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.javassist</groupId>
-        <artifactId>javassist</artifactId>
-        <version>${org.javassist.verion}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
@@ -421,7 +416,8 @@
                       <groupId>com.eurodyn.qlack.util</groupId>
                       <artifactId>qlack-util-documentation</artifactId>
                       <version>${project.version}</version>
-                      <outputDirectory>${project.build.directory}/enunciate-documentation/</outputDirectory>
+                      <outputDirectory>${project.build.directory}/enunciate-documentation/
+                      </outputDirectory>
                       <includes>swagger-ui/swagger-ui-index.html</includes>
                     </artifactItem>
                   </artifactItems>
@@ -443,9 +439,12 @@
                 <configuration>
                   <target name="copy-apidocs">
                     <copy todir="src/main/resources/static/documentation/">
-                      <fileset dir="${project.build.directory}/enunciate-documentation/apidocs/" />
+                      <fileset dir="${project.build.directory}/enunciate-documentation/apidocs/"/>
                     </copy>
-                    <copy file="${project.build.directory}/enunciate-documentation/swagger-ui/swagger-ui-index.html" tofile="src/main/resources/static/documentation/ui/index.html" overwrite="true" />
+                    <copy
+                      file="${project.build.directory}/enunciate-documentation/swagger-ui/swagger-ui-index.html"
+                      tofile="src/main/resources/static/documentation/ui/index.html"
+                      overwrite="true"/>
                   </target>
                 </configuration>
               </execution>

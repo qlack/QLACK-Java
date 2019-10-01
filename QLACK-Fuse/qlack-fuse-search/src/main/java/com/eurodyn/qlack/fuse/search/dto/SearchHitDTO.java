@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Represents a specific hit within a set of hits held by {@link SearchResultDTO}
+ * Represents a specific hit within a set of hitList held by {@link SearchResultDTO}
  *
  * @author European Dynamics SA.
  */
@@ -20,7 +20,7 @@ public class SearchHitDTO {
   private String source;
 
   /**
-   * the inner hits for the nested Objects
+   * the inner hitList for the nested Objects
    */
   private String innerHits;
 

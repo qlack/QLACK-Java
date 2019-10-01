@@ -7,10 +7,10 @@ import lombok.Getter;
  *
  * <pre>
  * new QueryString()
- * 		.setQueryString("foo")
- * 		// .setQueryString("foo*")
- * 		// .setQueryString("foo AND bar")
- * 		// .setQueryString("foo -bar")
+ * 		.setQueryStringValue("foo")
+ * 		// .setQueryStringValue("foo*")
+ * 		// .setQueryStringValue("foo AND bar")
+ * 		// .setQueryStringValue("foo -bar")
  * 		.setIndex("bar")
  * 		.setType("FooBarDTO")
  * 		.setPageSize(10)
@@ -24,10 +24,10 @@ import lombok.Getter;
 @Getter
 public class QueryString extends QuerySpec {
 
-  private String queryString;
+  private String queryStringValue;
 
-  public QueryString setQueryString(String queryString) {
-    this.queryString = queryString;
+  public QueryString setQueryStringValue(String queryStringValue) {
+    this.queryStringValue = queryStringValue;
 
     return this;
   }

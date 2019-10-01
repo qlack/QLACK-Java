@@ -31,14 +31,13 @@ import org.springframework.validation.annotation.Validated;
 @Log
 public class IndexingService {
 
-  private static ObjectMapper mapper;
+  private static ObjectMapper mapper = new ObjectMapper();
   // The ES client injected by blueprint.
   private ESClient esClient;
 
   @Autowired
   public IndexingService(ESClient esClient) {
     this.esClient = esClient;
-    mapper = new ObjectMapper();
     mapper.registerModule(new JavaTimeModule());
     mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
   }

@@ -62,12 +62,6 @@ public class ESClientTest {
   }
 
   @Test
-  public void getRestClientTest() {
-    //client is null because is not set
-    assertNull(esClient.getRestClient());
-  }
-
-  @Test
   public void getClientTest() {
     //client is null because is not set
     assertNull(esClient.getClient());

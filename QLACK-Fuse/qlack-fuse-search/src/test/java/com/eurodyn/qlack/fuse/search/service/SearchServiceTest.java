@@ -65,9 +65,6 @@ public class SearchServiceTest {
   private ESClient esClient;
 
   @Mock
-  private AdminService adminService;
-
-  @Mock
   private Response response;
 
   @Mock
@@ -120,7 +117,7 @@ public class SearchServiceTest {
 
   @Before
   public void init() throws IOException {
-    searchService = new SearchService(esClient, adminService);
+    searchService = new SearchService(esClient);
     initTestValues = new InitTestValues();
     querySpec = initTestValues.createQuerySpec();
     queryResponse = initTestValues.createQueryResponse();
@@ -138,15 +135,15 @@ public class SearchServiceTest {
     queryRange = initTestValues.createQueryRange();
     queryStringSpecField = initTestValues.createQueryStringSpecField();
     queryStringSpecFieldNested = initTestValues
-      .createQueryStringSpecFieldNested();
+        .createQueryStringSpecFieldNested();
     simpleQueryString = initTestValues.createSimpleQueryString();
 
     when(esClient.getClient()).thenReturn(restHighLevelClient);
     when(restHighLevelClient.getLowLevelClient()).thenReturn(restClient);
     when(response.getEntity()).thenReturn(httpEntity);
     when(httpEntity.getContent())
-      .thenReturn(new ByteArrayInputStream(
-        objectMapper.writeValueAsBytes(queryResponse)));
+        .thenReturn(new ByteArrayInputStream(
+            objectMapper.writeValueAsBytes(queryResponse)));
   }
 
   @Test
@@ -198,21 +195,21 @@ public class SearchServiceTest {
 
     ReflectionTestUtils.setField(searchService, "mapper", mappedObjectMapper);
     when(
-      mappedObjectMapper.writeValueAsString(any(InternalSearchRequest.class)))
-      .thenReturn("entity");
+        mappedObjectMapper.writeValueAsString(any(InternalSearchRequest.class)))
+        .thenReturn("entity");
     when(mappedObjectMapper
-      .readValue(response.getEntity().getContent(), QueryResponse.class))
-      .thenReturn(queryResponse);
+        .readValue(response.getEntity().getContent(), QueryResponse.class))
+        .thenReturn(queryResponse);
     when(mappedObjectMapper.writeValueAsString(any(QueryResponse.class)))
-      .thenThrow(new JsonProcessingException("") {
-      });
+        .thenThrow(new JsonProcessingException("") {
+        });
     searchService.search(querySpec);
   }
 
   @Test(expected = SearchException.class)
   public void searchIoExceptionTest() throws IOException {
     when(restClient.performRequest(any(Request.class)))
-      .thenThrow(new IOException());
+        .thenThrow(new IOException());
     searchService.search(querySpec);
   }
 
@@ -242,21 +239,21 @@ public class SearchServiceTest {
   @Test
   public void findByIdIoExceptionTest() throws IOException {
     when(restClient.performRequest(any(Request.class)))
-      .thenThrow(new IOException());
+        .thenThrow(new IOException());
     assertNull(searchService.findById("indexName", "typeName", "id"));
   }
 
   @Test
   public void prepareScrollTest() throws IOException {
     when(restHighLevelClient.search(any(SearchRequest.class), any(
-      RequestOptions.class))).thenReturn(searchResponse);
+        RequestOptions.class))).thenReturn(searchResponse);
     assertNotNull(searchService.prepareScroll("indexName", queryMatch, 10));
   }
 
   @Test
   public void prepareScrollIoExceptionTest() throws IOException {
     when(restHighLevelClient.search(any(SearchRequest.class), any(
-      RequestOptions.class))).thenThrow(new IOException());
+        RequestOptions.class))).thenThrow(new IOException());
     assertNotNull(searchService.prepareScroll("indexName", queryMatch, 10));
   }
 
@@ -271,15 +268,15 @@ public class SearchServiceTest {
     when(restClient.performRequest(any(Request.class))).thenReturn(response);
     queryResponse.setHits(new Hits());
     when(httpEntity.getContent())
-      .thenReturn(new ByteArrayInputStream(
-        objectMapper.writeValueAsBytes(queryResponse)));
+        .thenReturn(new ByteArrayInputStream(
+            objectMapper.writeValueAsBytes(queryResponse)));
     assertNotNull(searchService.scroll(scrollRequest));
   }
 
   @Test(expected = SearchException.class)
   public void scrollIoExceptionTest() throws IOException {
     when(restClient.performRequest(any(Request.class)))
-      .thenThrow(new IOException());
+        .thenThrow(new IOException());
     assertNotNull(searchService.scroll(scrollRequest));
   }
 
@@ -366,8 +363,8 @@ public class SearchServiceTest {
     when(restClient.performRequest(any(Request.class))).thenReturn(response);
     queryResponse.setAggregations(new Aggregations());
     when(httpEntity.getContent())
-      .thenReturn(new ByteArrayInputStream(
-        objectMapper.writeValueAsBytes(queryResponse)));
+        .thenReturn(new ByteArrayInputStream(
+            objectMapper.writeValueAsBytes(queryResponse)));
     assertNotNull(searchService.search(querySpec));
   }
 
@@ -376,8 +373,8 @@ public class SearchServiceTest {
     when(restClient.performRequest(any(Request.class))).thenReturn(response);
     queryResponse.setAggregations(null);
     when(httpEntity.getContent())
-      .thenReturn(new ByteArrayInputStream(
-        objectMapper.writeValueAsBytes(queryResponse)));
+        .thenReturn(new ByteArrayInputStream(
+            objectMapper.writeValueAsBytes(queryResponse)));
     assertNotNull(searchService.search(querySpec));
   }
 

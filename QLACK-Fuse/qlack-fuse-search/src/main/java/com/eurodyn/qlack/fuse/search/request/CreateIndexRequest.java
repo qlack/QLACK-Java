@@ -1,10 +1,10 @@
 package com.eurodyn.qlack.fuse.search.request;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Request for creating indexes
@@ -47,6 +47,7 @@ public class CreateIndexRequest extends BaseRequest {
 
   /**
    * Adds stopwords to the list
+   *
    * @param words The stopwords
    */
   public void addStopWords(String... words) {
@@ -54,8 +55,6 @@ public class CreateIndexRequest extends BaseRequest {
       return;
     }
 
-    for (String word : words) {
-      stopwords.add(word);
-    }
+    Collections.addAll(this.stopwords, words);
   }
 }

@@ -96,7 +96,7 @@ public class QueryResponse {
   public static class Hits {
 
     /**
-     * Total no of hits
+     * Total no of hitList
      */
     private int total;
 
@@ -109,10 +109,13 @@ public class QueryResponse {
     /**
      * Hits list
      */
-    private List<Hit> hits;
+    private List<Hit> hitList;
 
-    public List<Hit> getHits() {
-      return hits == null ? hits = new ArrayList<>() : hits;
+    public List<Hit> getHitList() {
+      if (hitList == null) {
+        hitList = new ArrayList<>();
+      }
+      return hitList;
     }
 
     /**
@@ -163,15 +166,18 @@ public class QueryResponse {
 
       /**
        * Returns the Hit's source
+       *
        * @return the source value
        */
       @JsonRawValue
       public String getSource() {
         return source != null ? source.toString() : null;
       }
+
       /**
-       * Returns the inner hits value
-       * @return the inner hits value
+       * Returns the inner hitList value
+       *
+       * @return the inner hitList value
        */
       @JsonRawValue
       public String getInnerHits() {
@@ -222,10 +228,14 @@ public class QueryResponse {
 
       /**
        * Bucket list getter method
+       *
        * @return a list of {@link Bucket} objects
        */
       public List<Bucket> getBuckets() {
-        return (buckets == null) ? buckets = new ArrayList<>() : buckets;
+        if (buckets == null) {
+          buckets = new ArrayList<>();
+        }
+        return buckets;
       }
 
       /**

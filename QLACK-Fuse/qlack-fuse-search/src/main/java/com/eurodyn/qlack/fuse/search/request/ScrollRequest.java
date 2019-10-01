@@ -22,6 +22,7 @@ public class ScrollRequest extends BaseRequest {
 
   /**
    * Sets the scroll size
+   *
    * @param scroll the scroll size
    * @return a {@link ScrollRequest}
    */
@@ -32,6 +33,7 @@ public class ScrollRequest extends BaseRequest {
 
   /**
    * Sets the Scroll Id
+   *
    * @param scrollId the Scroll Id
    * @return a {@link ScrollRequest}
    */

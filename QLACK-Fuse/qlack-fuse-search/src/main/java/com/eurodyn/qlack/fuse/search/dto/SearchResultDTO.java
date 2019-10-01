@@ -47,7 +47,7 @@ public class SearchResultDTO {
   private int shardsFailed;
 
   /**
-   * The total number of hits for this search.
+   * The total number of hitList for this search.
    */
   private long totalHits;
 
@@ -57,8 +57,7 @@ public class SearchResultDTO {
   private float bestScore;
 
   /**
-   *  An indicator of whether there are more results available (useful in
-   *  paging).
+   * An indicator of whether there are more results available (useful in paging).
    */
   private boolean hasMore;
 
@@ -68,7 +67,7 @@ public class SearchResultDTO {
   private String scrollId;
 
   /**
-   * The list of hits generated for this search.
+   * The list of hitList generated for this search.
    */
   private List<SearchHitDTO> hits = new ArrayList<>();
 
@@ -89,7 +88,7 @@ public class SearchResultDTO {
         + ", shardsFailed="
         + shardsFailed + ", totalHits=" + totalHits + ", bestScore=" + bestScore + ", hasMore="
         + hasMore
-        + ", hits=" + hits + "]";
+        + ", hitList=" + hits + "]";
   }
 
 }

@@ -92,7 +92,7 @@ public class AdminService {
    * @return true if deleted, false otherwise
    */
   public boolean deleteIndex(String indexName) {
-    log.info(MessageFormat.format("Deleting index ", indexName));
+    log.info(MessageFormat.format("Deleting index {0}", indexName));
     return !canPerformOperation(indexName) || elasticsearchOperations.deleteIndex(indexName);
   }
 
@@ -124,6 +124,7 @@ public class AdminService {
 
   /**
    * Checks if an Elasticsearch index from given class exists.
+   *
    * @param clazz the class
    * @return true if it exists, false otherwise
    */
@@ -261,6 +262,7 @@ public class AdminService {
 
   /**
    * Checks if the provided class is annotated with @{@link Document}
+   *
    * @param clazz the class
    * @return true if the class is annotated, false otherwise
    */
@@ -275,6 +277,7 @@ public class AdminService {
 
   /**
    * Checks if index exists
+   *
    * @param indexName an index name
    * @return true if the index exists, false otherwise
    */
@@ -288,6 +291,7 @@ public class AdminService {
 
   /**
    * Executes a request on Elastic Search client
+   *
    * @param method an HTTP method (GET, POST etc.)
    * @param indexName an index name
    * @param errorMsg a custom error message
@@ -299,6 +303,7 @@ public class AdminService {
 
   /**
    * Executes a request on Elastic Search client
+   *
    * @param method an HTTP method (GET, POST etc.)
    * @param endpoint an endpoint on which the request should be performed
    * @param errorMsg a custom error message

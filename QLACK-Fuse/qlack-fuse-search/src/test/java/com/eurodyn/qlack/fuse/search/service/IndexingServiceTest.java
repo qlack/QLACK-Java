@@ -1,6 +1,8 @@
 package com.eurodyn.qlack.fuse.search.service;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.eurodyn.qlack.fuse.search.InitTestValues;
@@ -55,6 +57,7 @@ public class IndexingServiceTest {
     when(restHighLevelClient.index(any(IndexRequest.class), any(RequestOptions.class)))
         .thenReturn(indexResponse);
     indexingService.indexDocument(initTestValues.createIndexingDTO());
+    verify(restHighLevelClient, times(1)).index(any(IndexRequest.class), any(RequestOptions.class));
   }
 
   @Test(expected = SearchException.class)
@@ -76,6 +79,7 @@ public class IndexingServiceTest {
     when(restHighLevelClient.delete(any(DeleteRequest.class), any(RequestOptions.class)))
         .thenThrow(new IOException());
     indexingService.unindexDocument(new ESDocumentIdentifierDTO());
+    verify(restHighLevelClient ,times(1)).delete(any(DeleteRequest.class), any(RequestOptions.class));
   }
 
 }

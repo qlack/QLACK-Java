@@ -20,8 +20,8 @@ public class QueryStringTest {
   @Test
   public void queryStringTest() {
     String queryStringValue = "queryString";
-    queryString.setQueryString(queryStringValue);
-    assertEquals(queryStringValue, queryString.getQueryString());
+    queryString.setQueryStringValue(queryStringValue);
+    assertEquals(queryStringValue, queryString.getQueryStringValue());
   }
 
 }

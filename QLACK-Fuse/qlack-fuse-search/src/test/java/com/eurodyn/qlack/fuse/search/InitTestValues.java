@@ -98,7 +98,7 @@ public class InitTestValues {
     hit.setId("id");
     List<Hit> hitList = new ArrayList<>();
     hitList.add(hit);
-    hits.setHits(hitList);
+    hits.setHitList(hitList);
     queryResponse.setHits(hits);
 
     Shards shards = new Shards();

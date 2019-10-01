@@ -95,13 +95,13 @@ public class QueryResponseTest {
 
   @Test
   public void hitsHitListTest() {
-    hits.setHits(hitList);
+    hits.setHitList(hitList);
     QueryResponse.Hits actualHits = queryResponse.getHits();
-    assertEquals(hitList.size(), actualHits.getHits().size());
+    assertEquals(hitList.size(), actualHits.getHitList().size());
 
-    hits.setHits(null);
+    hits.setHitList(null);
     actualHits = queryResponse.getHits();
-    assertTrue(actualHits.getHits().isEmpty());
+    assertTrue(actualHits.getHitList().isEmpty());
   }
 
 
@@ -109,80 +109,80 @@ public class QueryResponseTest {
   public void hitIndexTest() {
     hit.setIndex("index");
     hitList.add(hit);
-    hits.setHits(hitList);
+    hits.setHitList(hitList);
 
     QueryResponse.Hits actualHits = queryResponse.getHits();
-    assertEquals(hit.getIndex(), actualHits.getHits().get(0).getIndex());
+    assertEquals(hit.getIndex(), actualHits.getHitList().get(0).getIndex());
   }
 
   @Test
   public void hitTypeTest() {
     hit.setType("type");
     hitList.add(hit);
-    hits.setHits(hitList);
+    hits.setHitList(hitList);
 
     QueryResponse.Hits actualHits = queryResponse.getHits();
-    assertEquals(hit.getType(), actualHits.getHits().get(0).getType());
+    assertEquals(hit.getType(), actualHits.getHitList().get(0).getType());
   }
 
   @Test
   public void hitIdTest() {
     hit.setId("hitId");
     hitList.add(hit);
-    hits.setHits(hitList);
+    hits.setHitList(hitList);
 
     QueryResponse.Hits actualHits = queryResponse.getHits();
-    assertEquals(hit.getId(), actualHits.getHits().get(0).getId());
+    assertEquals(hit.getId(), actualHits.getHitList().get(0).getId());
   }
 
   @Test
   public void hitScoreTest() {
     hit.setScore(20);
     hitList.add(hit);
-    hits.setHits(hitList);
+    hits.setHitList(hitList);
 
     QueryResponse.Hits actualHits = queryResponse.getHits();
-    assertEquals(hit.getScore(), actualHits.getHits().get(0).getScore(), Epsilon);
+    assertEquals(hit.getScore(), actualHits.getHitList().get(0).getScore(), Epsilon);
   }
 
   @Test
   public void hitSourceTest() {
     hit.setSource("src");
     hitList.add(hit);
-    hits.setHits(hitList);
+    hits.setHitList(hitList);
 
     QueryResponse.Hits actualHits = queryResponse.getHits();
-    assertEquals(hit.getSource(), actualHits.getHits().get(0).getSource());
+    assertEquals(hit.getSource(), actualHits.getHitList().get(0).getSource());
   }
 
   @Test
   public void hitSourceNullTest() {
     hit.setSource(null);
     hitList.add(hit);
-    hits.setHits(hitList);
+    hits.setHitList(hitList);
 
     QueryResponse.Hits actualHits = queryResponse.getHits();
-    assertNull(actualHits.getHits().get(0).getSource());
+    assertNull(actualHits.getHitList().get(0).getSource());
   }
 
   @Test
   public void hitInnerHitsTest() {
     hit.setInnerHits("innerHit");
     hitList.add(hit);
-    hits.setHits(hitList);
+    hits.setHitList(hitList);
 
     QueryResponse.Hits actualHits = queryResponse.getHits();
-    assertEquals(hit.getInnerHits(), actualHits.getHits().get(0).getInnerHits());
+    assertEquals(hit.getInnerHits(), actualHits.getHitList().get(0).getInnerHits());
   }
 
   @Test
   public void hitInnerHitsNullTest() {
     hit.setInnerHits(null);
     hitList.add(hit);
-    hits.setHits(hitList);
+    hits.setHitList(hitList);
 
     QueryResponse.Hits actualHits = queryResponse.getHits();
-    assertNull(actualHits.getHits().get(0).getInnerHits());
+    assertNull(actualHits.getHitList().get(0).getInnerHits());
   }
 
   @Test

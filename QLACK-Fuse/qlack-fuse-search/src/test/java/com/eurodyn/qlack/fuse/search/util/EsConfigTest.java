@@ -1,7 +1,6 @@
 package com.eurodyn.qlack.fuse.search.util;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.when;
 
 import java.net.UnknownHostException;
 import org.junit.Before;
@@ -27,12 +26,9 @@ public class EsConfigTest {
   @Before
   public void init() {
     esConfig = new EsConfig();
-    when(env.getProperty("qlack.fuse.search.cluster.name"))
-      .thenReturn("cluster.name");
-    when(env.getProperty("qlack.fuse.search.host.name"))
-      .thenReturn("localhost");
-    when(env.getProperty("qlack.fuse.search.host.port")).thenReturn("9200");
-    ReflectionTestUtils.setField(esConfig, "env", env);
+    ReflectionTestUtils.setField(esConfig, "clusterName", "cluster.name");
+    ReflectionTestUtils.setField(esConfig, "hostName", "localhost");
+    ReflectionTestUtils.setField(esConfig, "hostPort", "9200");
   }
 
   @Test

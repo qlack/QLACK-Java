@@ -62,6 +62,7 @@ public class CreateIndexRequestTest {
   }
 
   @Test
+  @SuppressWarnings("squid:S2699")
   public void addStopWordsTest() {
     createIndexRequest.addStopWords((String[]) null);
     createIndexRequest.addStopWords("newWord");
