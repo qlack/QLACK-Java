@@ -15,25 +15,25 @@ public class ProcessInstanceDTOTest {
   private ProcessInstanceDTO processInstanceDTO;
 
   @Before
-  public void init(){
+  public void init() {
     processInstanceDTO = new ProcessInstanceDTO();
   }
 
   @Test
-  public void idTest(){
+  public void idTest() {
     String id = "id";
     processInstanceDTO.setId(id);
     assertEquals(id, processInstanceDTO.getId());
   }
 
   @Test
-  public void suspendedTest(){
+  public void suspendedTest() {
     processInstanceDTO.setSuspended(true);
     assertEquals(true, processInstanceDTO.isSuspended());
   }
 
   @Test
-  public void variablesTest(){
+  public void variablesTest() {
     Map<String, Object> variables = new HashMap<>();
     variables.put("key", this);
     processInstanceDTO.setVariables(variables);

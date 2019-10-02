@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
  * This object class contains useful information about the workflow processes tasks.
@@ -16,11 +15,10 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class TaskDTO {
 
   /**
-   *  the id of the task
+   * the id of the task
    */
   private String id;
 
@@ -29,10 +27,14 @@ public class TaskDTO {
    */
   private String name;
 
-  /**the id of the process instance which created the task**/
+  /**
+   * the id of the process instance which created the task
+   **/
   private String processInstanceId;
 
-  /**the variables of the task**/
+  /**
+   * the variables of the task
+   **/
   private Map<String, Object> variables;
 
 }

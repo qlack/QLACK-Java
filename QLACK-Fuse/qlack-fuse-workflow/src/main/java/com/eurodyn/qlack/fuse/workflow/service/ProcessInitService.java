@@ -2,12 +2,11 @@ package com.eurodyn.qlack.fuse.workflow.service;
 
 import com.eurodyn.qlack.fuse.workflow.model.ProcessFile;
 import com.eurodyn.qlack.fuse.workflow.repository.ProcessFileRepository;
+import com.eurodyn.qlack.fuse.workflow.util.Md5ChecksumUtil;
 import java.io.IOException;
 import java.util.Arrays;
 import javax.annotation.PostConstruct;
 import org.activiti.engine.RepositoryService;
-import org.activiti.engine.repository.DeploymentBuilder;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -55,14 +54,13 @@ public class ProcessInitService {
       ProcessFile existingProcessFile = processFileRepository.findOneByFilename(r.getFilename());
 
       try {
-        String md5 = DigestUtils.md5Hex(r.getInputStream());
+        String md5 = Md5ChecksumUtil.getMd5Hex(r.getInputStream());
 
         if (existingProcessFile == null) {
           ProcessFile newProcessFile = new ProcessFile(r.getFilename(), md5);
           processFileRepository.save(newProcessFile);
-          DeploymentBuilder d = repositoryService.createDeployment();
-          DeploymentBuilder d1 = d.addClasspathResource("processes/" + r.getFilename());
-          d1.deploy();
+          repositoryService.createDeployment().addClasspathResource("processes/" + r.getFilename())
+              .deploy();
         } else if (!existingProcessFile.getChecksum().equals(md5)) {
           existingProcessFile.setChecksum(md5);
           processFileRepository.save(existingProcessFile);

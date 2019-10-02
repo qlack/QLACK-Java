@@ -36,14 +36,17 @@ public class WorkflowTaskService {
   public List<TaskDTO> getTasksByProcessInstanceId(String processInstanceId) {
     List<TaskDTO> tasks = new ArrayList<>();
 
-    List<Task> foundTasks = taskService.createTaskQuery().processInstanceId(processInstanceId).includeProcessVariables().list();
-    foundTasks.stream().forEach(t -> tasks.add(new TaskDTO(t.getId(), t.getName(), t.getProcessInstanceId(), t.getProcessVariables())));
+    List<Task> foundTasks = taskService.createTaskQuery().processInstanceId(processInstanceId)
+        .includeProcessVariables().list();
+    foundTasks.stream().forEach(t -> tasks.add(
+        new TaskDTO(t.getId(), t.getName(), t.getProcessInstanceId(), t.getProcessVariables())));
 
     return tasks;
   }
 
   /**
-   * Given the id of a task, it completes the related task. If no task is found, an exception is thrown.
+   * Given the id of a task, it completes the related task. If no task is found, an exception is
+   * thrown.
    *
    * @param taskId the id of the task
    */

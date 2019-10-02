@@ -15,33 +15,33 @@ public class TaskDTOTest {
   private TaskDTO taskDTO;
 
   @Before
-  public void init(){
+  public void init() {
     taskDTO = new TaskDTO();
   }
 
   @Test
-  public void idTest(){
+  public void idTest() {
     String id = "id";
     taskDTO.setId(id);
     assertEquals(id, taskDTO.getId());
   }
 
   @Test
-  public void nameTest(){
+  public void nameTest() {
     String name = "name";
     taskDTO.setName(name);
     assertEquals(name, taskDTO.getName());
   }
 
   @Test
-  public void processInstanceIdTest(){
+  public void processInstanceIdTest() {
     String processInstanceId = "processInstanceId";
     taskDTO.setProcessInstanceId(processInstanceId);
     assertEquals(processInstanceId, taskDTO.getProcessInstanceId());
   }
 
   @Test
-  public void variablesTest(){
+  public void variablesTest() {
     Map<String, Object> variables = new HashMap<>();
     variables.put("key", this);
     taskDTO.setVariables(variables);

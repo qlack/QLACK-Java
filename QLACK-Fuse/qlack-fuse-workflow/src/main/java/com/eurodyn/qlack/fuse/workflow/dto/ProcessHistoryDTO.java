@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
  * This object class contains useful information about the history of workflow processes.
@@ -15,11 +14,10 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class ProcessHistoryDTO {
 
   /**
-   *  the id of the process history
+   * the id of the process history
    */
   private String id;
 
