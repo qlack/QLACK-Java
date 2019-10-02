@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RuntimeService;
@@ -32,6 +33,8 @@ public class WorkflowService {
   private final EntityManager entityManager;
 
   private final ProcessInitService processInitService;
+
+  private static final String NOT_FOUND_EXCEPTION = "There is no instance process with id ";
 
   @Autowired
   public WorkflowService(RuntimeService runtimeService, HistoryService historyService,
@@ -70,7 +73,7 @@ public class WorkflowService {
     try {
       runtimeService.activateProcessInstanceById(processInstanceId);
     } catch (ActivitiObjectNotFoundException e) {
-      throw new QDoesNotExistException("There is no instance process with id " + processInstanceId);
+      throw new QDoesNotExistException(NOT_FOUND_EXCEPTION + processInstanceId);
     }
   }
 
@@ -84,7 +87,7 @@ public class WorkflowService {
     try {
       runtimeService.suspendProcessInstanceById(processInstanceId);
     } catch (ActivitiObjectNotFoundException e) {
-      throw new QDoesNotExistException("There is no instance process with id " + processInstanceId);
+      throw new QDoesNotExistException(NOT_FOUND_EXCEPTION + processInstanceId);
     }
   }
 
@@ -99,7 +102,7 @@ public class WorkflowService {
     try {
       runtimeService.deleteProcessInstance(processInstanceId, reasonOfDeletion);
     } catch (ActivitiObjectNotFoundException e) {
-      throw new QDoesNotExistException("There is no instance process with id " + processInstanceId);
+      throw new QDoesNotExistException(NOT_FOUND_EXCEPTION + processInstanceId);
     }
   }
 
@@ -160,9 +163,10 @@ public class WorkflowService {
    * @return the found data in byte array representation
    */
   private byte[] getProcessData(String deploymentId) {
-    return (byte[]) entityManager.createNativeQuery(
-        "SELECT BYTES_ FROM act_ge_bytearray WHERE DEPLOYMENT_ID_ = " + deploymentId)
-        .getSingleResult();
+    Query query = entityManager
+        .createNativeQuery("SELECT BYTES_ FROM act_ge_bytearray WHERE DEPLOYMENT_ID_ = ?");
+    query.setParameter(1, deploymentId);
+    return (byte[]) query.getSingleResult();
   }
 
 }

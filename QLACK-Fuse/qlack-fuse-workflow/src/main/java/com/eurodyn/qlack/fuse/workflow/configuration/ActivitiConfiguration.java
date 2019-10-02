@@ -16,6 +16,7 @@ import org.springframework.transaction.PlatformTransactionManager;
  * @author European Dynamics SA
  */
 @Configuration
+@SuppressWarnings("squid:S3305")
 public class ActivitiConfiguration {
 
   @Autowired

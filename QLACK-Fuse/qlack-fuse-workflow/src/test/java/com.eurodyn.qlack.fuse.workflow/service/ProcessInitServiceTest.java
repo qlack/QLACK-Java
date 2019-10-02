@@ -94,8 +94,11 @@ public class ProcessInitServiceTest {
   }
 
   @Test
-  public void initExistingProcessSameChecksumTest() {
-    processFile.setChecksum("d83b229cdb7f85dbd0db0196a501c2cc");
+  public void initExistingProcessSameChecksumTest() throws IOException {
+    String checksum = "same_checksum";
+    processFile.setChecksum(checksum);
+    mockStatic(Md5ChecksumUtil.class);
+    when(Md5ChecksumUtil.getMd5Hex(any(InputStream.class))).thenReturn(checksum);
     for (Resource r : resources) {
       when(processFileRepository.findOneByFilename(r.getFilename())).thenReturn(processFile);
     }

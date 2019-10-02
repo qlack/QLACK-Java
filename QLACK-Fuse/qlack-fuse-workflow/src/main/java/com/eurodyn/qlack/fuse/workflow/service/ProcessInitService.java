@@ -5,6 +5,7 @@ import com.eurodyn.qlack.fuse.workflow.repository.ProcessFileRepository;
 import com.eurodyn.qlack.fuse.workflow.util.Md5ChecksumUtil;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import org.activiti.engine.RepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class ProcessInitService {
+
+  private static final Logger LOGGER = Logger.getLogger(ProcessInitService.class.getName());
 
   private final ProcessFileRepository processFileRepository;
 
@@ -68,7 +71,7 @@ public class ProcessInitService {
               .addClasspathResource("processes/" + r.getFilename()).deploy();
         }
       } catch (IOException e) {
-        e.printStackTrace();
+        LOGGER.severe(e.getMessage());
       }
     });
   }
