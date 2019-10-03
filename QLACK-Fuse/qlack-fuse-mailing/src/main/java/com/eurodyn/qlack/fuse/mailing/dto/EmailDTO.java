@@ -1,5 +1,6 @@
 package com.eurodyn.qlack.fuse.mailing.dto;
 
+import com.eurodyn.qlack.fuse.mailing.util.EmailCharset;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,8 +8,6 @@ import java.util.List;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-
-import com.eurodyn.qlack.fuse.mailing.util.EmailCharset;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -33,12 +32,12 @@ public class EmailDTO implements Serializable {
   /**
    * The email subject
    */
-	private @NotBlank String subject;
+	private String subject;
 
   /**
    * The email body
    */
-	private @NotBlank String body;
+	private String body;
 
   /**
    * The sender
