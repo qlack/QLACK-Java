@@ -78,7 +78,7 @@ public class MailService {
 		email.setAddedOnDate(System.currentTimeMillis());
 		emailRepository.save(email);
 
-		// Process attachements.
+		// Process attachments.
 		if (emailDto.getAttachments() != null && !emailDto.getAttachments().isEmpty()) {
 			Set<Attachment> attachments = new HashSet<>();
 			for (AttachmentDTO attachmentDto : emailDto.getAttachments()) {
