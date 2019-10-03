@@ -114,7 +114,7 @@ public class CryptoCAService {
     // Synchronize this part, so that no two certificates can be created with the same timestamp.
     synchronized (this) {
       try {
-        Thread.sleep(1);
+        this.wait(1);
       } catch (InterruptedException e) {
         LOGGER.log(Level.SEVERE, "Could not wait for 1 msec while generating the certificate.");
       }
