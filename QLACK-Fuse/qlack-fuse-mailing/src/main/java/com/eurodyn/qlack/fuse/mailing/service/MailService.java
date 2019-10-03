@@ -10,6 +10,7 @@ import com.eurodyn.qlack.fuse.mailing.monitor.MailQueueMonitor;
 import com.eurodyn.qlack.fuse.mailing.repository.AttachmentRepository;
 import com.eurodyn.qlack.fuse.mailing.repository.EmailRepository;
 import com.eurodyn.qlack.fuse.mailing.util.MailConstants.EMAIL_STATUS;
+import com.eurodyn.qlack.fuse.mailing.validators.EmailValidator;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import javax.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -34,19 +36,22 @@ public class MailService {
 	private final MailQueueMonitor mailQueueMonitor;
 	private final EmailRepository emailRepository;
 	private final AttachmentRepository attachmentRepository;
+  private final EmailValidator emailValidator;
 
 	private EmailMapper emailMapper;
 	private AttachmentMapper attachmentMapper;
 
-	@Autowired
-	public MailService(MailQueueMonitor mailQueueMonitor, EmailMapper emailMapper, EmailRepository emailRepository,
-			AttachmentMapper attachmentMapper, AttachmentRepository attachmentRepository) {
-		this.mailQueueMonitor = mailQueueMonitor;
-		this.emailMapper = emailMapper;
-		this.emailRepository = emailRepository;
-		this.attachmentMapper = attachmentMapper;
-		this.attachmentRepository = attachmentRepository;
-	}
+  @Autowired
+  public MailService(MailQueueMonitor mailQueueMonitor, EmailMapper emailMapper,
+      EmailRepository emailRepository, AttachmentMapper attachmentMapper,
+      AttachmentRepository attachmentRepository, EmailValidator emailValidator) {
+    this.mailQueueMonitor = mailQueueMonitor;
+    this.emailMapper = emailMapper;
+    this.emailRepository = emailRepository;
+    this.attachmentMapper = attachmentMapper;
+    this.attachmentRepository = attachmentRepository;
+    this.emailValidator = emailValidator;
+  }
 
 	/**
 	 * Queue a list of Emails.
@@ -70,9 +75,12 @@ public class MailService {
 	 * @return email id
 	 */
 	public String queueEmail(@Valid EmailDTO emailDto) {
-		Email email;
 
-		email = emailMapper.mapToEntity(emailDto);
+	  if(!emailValidator.isValid(emailDto)){
+	    throw new ValidationException("At least one recipient must be defined");
+    }
+
+		Email email = emailMapper.mapToEntity(emailDto);
 		email.setTries((byte) 0);
 		email.setStatus(EMAIL_STATUS.QUEUED.toString());
 		email.setAddedOnDate(System.currentTimeMillis());

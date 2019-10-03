@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -47,7 +46,7 @@ public class EmailDTO implements Serializable {
   /**
    * The email list of recipients
    */
-	private @NotEmpty List<String> toEmails;
+	private List<String> toEmails;
 
   /**
    * The email list of recipients in Carbon Copy (cc)

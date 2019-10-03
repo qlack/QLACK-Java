@@ -6,16 +6,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import com.eurodyn.qlack.fuse.mailing.InitTestValues;
 import com.eurodyn.qlack.fuse.mailing.dto.AttachmentDTO;
 import com.eurodyn.qlack.fuse.mailing.dto.EmailDTO;
@@ -27,6 +17,17 @@ import com.eurodyn.qlack.fuse.mailing.monitor.MailQueueMonitor;
 import com.eurodyn.qlack.fuse.mailing.repository.AttachmentRepository;
 import com.eurodyn.qlack.fuse.mailing.repository.EmailRepository;
 import com.eurodyn.qlack.fuse.mailing.util.MailConstants;
+import com.eurodyn.qlack.fuse.mailing.validators.EmailValidator;
+import java.util.ArrayList;
+import java.util.List;
+import javax.validation.ValidationException;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
 
 /**
  * @author European Dynamics
@@ -42,6 +43,7 @@ public class MailServiceTest {
 
   private EmailRepository emailRepository = mock(EmailRepository.class);
   private AttachmentRepository attachmentRepository = mock(AttachmentRepository.class);
+  private EmailValidator emailValidator = new EmailValidator();
 
   @Spy
   private EmailMapper emailMapper;
@@ -67,8 +69,7 @@ public class MailServiceTest {
   @Before
   public void init() {
     mailService = new MailService(mailQueueMonitor, emailMapper, emailRepository,
-                                  attachmentMapper, attachmentRepository
-    );
+                                  attachmentMapper, attachmentRepository, emailValidator);
     initTestValues = new InitTestValues();
     email = initTestValues.createEmail();
     emailDTO = initTestValues.createEmailDTO();
@@ -170,4 +171,14 @@ public class MailServiceTest {
     mailService.sendToDistributionList(emailId, distributionListId);
     verify(mailQueueMonitor, times(1)).sendToDistributionList(emailId, distributionListId);
   }
+
+  @Test(expected = ValidationException.class)
+  public void sendWithoutRecipients(){
+
+      emailDTO.setToEmails(new ArrayList<>());
+      emailDTO.setCcEmails(new ArrayList<>());
+      emailDTO.setBccEmails(new ArrayList<>());
+      mailService.queueEmail(emailDTO);
+  }
+
 }
