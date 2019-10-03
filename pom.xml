@@ -364,6 +364,7 @@
                   <excludes>
                     <exclude>com/eurodyn/qlack/**/**/model/Q*</exclude>
                     <exclude>com/eurodyn/qlack/fuse/rules/util/classloader/*</exclude>
+                    <exclude>com/eurodyn/qlack/util/clamav/util/*</exclude>
                   </excludes>
                 </configuration>
               </execution>
