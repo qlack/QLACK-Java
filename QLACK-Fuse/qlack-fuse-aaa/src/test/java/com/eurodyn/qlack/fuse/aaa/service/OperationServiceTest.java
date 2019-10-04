@@ -5,7 +5,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.booleanThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -98,6 +100,8 @@ public class OperationServiceTest {
 
   private int countUsers;
   private long blockedUsers;
+  private final String dynamicCode =
+      "retVal = (userId != null && groupdId != null && resourceID != null)";
 
 
   @Before
@@ -420,6 +424,7 @@ public class OperationServiceTest {
   @Test
   public void testIsPermittedForUserNotDynamicOperation() {
     user.setSuperadmin(false);
+    userHasOperation.setDeny(true);
     when(userRepository.fetchById(user.getId())).thenReturn(user);
     when(operationRepository.findByName(operation.getName())).thenReturn(operation);
     when(userHasOperationRepository.findByUserIdAndOperationName(user.getId(), operation.getName())).thenReturn(userHasOperation);
@@ -441,7 +446,6 @@ public class OperationServiceTest {
 
   @Test
   public void testIsPermittedForUserWithDynamicOperation() {
-    String dynamicCode = "retVal = (userId != null && groupdId != null && resourceID != null)";
     user.setSuperadmin(false);
     operation.setDynamic(true);
     operation.setDynamicCode(dynamicCode);
@@ -472,7 +476,7 @@ public class OperationServiceTest {
     user.setUserGroups(new ArrayList<>());
     when(userRepository.fetchById(user.getId())).thenReturn(user);
     Boolean permitted = operationService.isPermitted(user.getId(), operation.getName());
-    assertNull(permitted);
+    assertFalse(permitted);
   }
 
   @Test
@@ -486,7 +490,42 @@ public class OperationServiceTest {
           .thenReturn(userGroupHasOperation);
     }
     Boolean permitted = operationService.isPermitted(user.getId(), operation.getName());
-    assertTrue(permitted);
+    assertFalse(permitted);
+  }
+
+  @Test
+  public void testIsPermittedGroupPermission() {
+    user.setSuperadmin(false);
+    user.setUserGroups(userGroups);
+    operation.setDynamic(true);
+    operation.setDynamicCode("retVal = false");
+    userGroupHasOperation.setDeny(true);
+    operationService.setPrioritisePositive(false);
+    when(userRepository.fetchById(user.getId())).thenReturn(user);
+    when(operationRepository.findByName(operation.getName())).thenReturn(operation);
+    for (UserGroup userGroup : user.getUserGroups()) {
+      when(userGroupHasOperationRepository.findByUserGroupIdAndOperationName(userGroup.getId(), operation.getName()))
+          .thenReturn(userGroupHasOperation);
+    }
+    when(userHasOperationRepository.findByUserIdAndOperationName(any(), any())).thenReturn(null);
+    Boolean permitted = operationService.isPermitted(user.getId(), operation.getName());
+    assertFalse(permitted);
+  }
+
+  @Test
+  public void testIsPermittedNullGroupPermission() {
+    user.setSuperadmin(false);
+    user.setUserGroups(userGroups);
+    userGroup.setParent(null);
+    when(userRepository.fetchById(user.getId())).thenReturn(user);
+    when(userGroupRepository.fetchById(any())).thenReturn(userGroup);
+    when(operationRepository.findByName(operation.getName())).thenReturn(operation);
+    for (UserGroup userGroup : user.getUserGroups()) {
+      when(userGroupHasOperationRepository.findByUserGroupIdAndOperationName(userGroup.getId(), operation.getName()))
+          .thenReturn(null);
+    }
+    Boolean permitted = operationService.isPermitted(user.getId(), operation.getName());
+    assertFalse(permitted);
   }
 
   @Test
@@ -543,6 +582,11 @@ public class OperationServiceTest {
             .thenReturn(userGroupHasOperation);
     Boolean permittedForGroupByResource = operationService.isPermittedForGroupByResource(userGroup.getId(), operation.getName(),resource.getName(),resource.getObjectId());
     assertEquals(!userGroupHasOperation.isDeny(), permittedForGroupByResource);
+
+    userGroupHasOperation.setDeny(true);
+    operationService.isPermittedForGroupByResource(userGroup.getId(), operation.getName(),resource.getName(),resource.getObjectId());
+    verify(userGroupHasOperationRepository, times(2)).
+        findByUserGroupIdAndOperationNameAndResourceNameAndResourceObjectId(any(), any(), any(), any());
   }
 
   @Test
@@ -554,6 +598,11 @@ public class OperationServiceTest {
     when(resourceRepository.findByObjectId(resource.getObjectId())).thenReturn(resource);
     Boolean permittedForGroupByResource = operationService.isPermittedForGroupByResource(userGroup.getId(), operation.getName(),resource.getName(),resource.getObjectId());
     assertNull(permittedForGroupByResource);
+
+    userGroup.setParent(null);
+    permittedForGroupByResource = operationService.isPermittedForGroupByResource(userGroup.getId(), operation.getName(),resource.getName(),resource.getObjectId());
+    assertNull(permittedForGroupByResource);
+    verify(userGroupRepository, times(3)).fetchById(any());
   }
 
   @Test
@@ -562,7 +611,8 @@ public class OperationServiceTest {
     when(userRepository.getUserIds(true)).thenReturn(superadminsID);
     when(userHasOperationRepository.findByOperationName(operation.getName())).thenReturn(userHasOperations);
 
-    Set<String> allowedUsersForOperation = operationService.getAllowedUsersForOperation(operation.getName(), false);
+    Set<String> allowedUsersForOperation = operationService.
+        getAllowedUsersForOperation(operation.getName(), false);
     assertEquals(countUsers - 1, allowedUsersForOperation.size());
   }
 
@@ -573,13 +623,30 @@ public class OperationServiceTest {
     when(userRepository.fetchById(any())).thenReturn(user);
     user.setUserGroups(userGroups);
     when(userGroupRepository.fetchById(any())).thenReturn(new UserGroup());
+    when(operationRepository.findByName(any())).thenReturn(operation);
+    when(userGroupHasOperationRepository.findByUserGroupIdAndOperationName(any(), any())).thenReturn(userGroupHasOperation);
 
     operationService.getAllowedUsersForOperation(operation.getName(), true);
     verify(userRepository, times(2)).fetchById(any());
   }
 
   @Test
+  public void testGetBlockedUsersForOperationNoAllowed() {
+    when(userRepository.getUserIds(false)).thenReturn(usersID);
+    when(userRepository.getUserIds(true)).thenReturn(superadminsID);
+    when(userRepository.fetchById(any())).thenReturn(user);
+    user.setUserGroups(userGroups);
+    when(userGroupRepository.fetchById(any())).thenReturn(new UserGroup());
+    when(operationRepository.findByName(any())).thenReturn(operation);
+    when(userGroupHasOperationRepository.findByUserGroupIdAndOperationName(any(), any())).thenReturn(userGroupHasOperation);
+
+    operationService.getBlockedUsersForOperation(operation.getName(), true);
+    //verify(userRepository, times(2)).fetchById(any());
+  }
+
+  @Test
   public void testGetAllowedUsersForOperationResourceId() {
+    userGroupHasOperation.setDeny(true);
     when(userRepository.getUserIds(false)).thenReturn(usersID);
     when(userRepository.getUserIds(true)).thenReturn(superadminsID);
     when(userRepository.fetchById(any())).thenReturn(user);
@@ -593,6 +660,41 @@ public class OperationServiceTest {
     when(resourceRepository.findByObjectId(resource.getObjectId())).thenReturn(resource);
 
     operationService.getAllowedUsersForOperation(operation.getName(), resource.getObjectId(), true);
+    verify(userRepository, times(2)).getUserIds(any());
+  }
+
+  @Test
+  public void testGetAllowedUsersForOperationNullGroupPermission() {
+    userGroupHasOperation.setDeny(true);
+    when(userRepository.getUserIds(false)).thenReturn(usersID);
+    when(userRepository.getUserIds(true)).thenReturn(superadminsID);
+    when(userRepository.fetchById(any())).thenReturn(user);
+    user.setUserGroups(userGroups);
+    userGroup.setParent(null);
+    when(userGroupRepository.fetchById(userGroup.getId())).thenReturn(userGroup);
+    when(operationRepository.findByName(operation.getName())).thenReturn(operation);
+    when(resourceRepository.findByObjectId(resource.getObjectId())).thenReturn(resource);
+
+    operationService.getAllowedUsersForOperation(operation.getName(), resource.getObjectId(), true);
+    verify(userRepository, times(2)).getUserIds(any());
+  }
+
+  @Test
+  public void testGetBlockedUsersForOperationNotGetAllowed() {
+    userGroupHasOperation.setDeny(true);
+    when(userRepository.getUserIds(false)).thenReturn(usersID);
+    when(userRepository.getUserIds(true)).thenReturn(superadminsID);
+    when(userRepository.fetchById(any())).thenReturn(user);
+    user.setUserGroups(userGroups);
+    when(userGroupRepository.fetchById(userGroup.getId())).thenReturn(userGroup);
+    when(userGroupRepository.fetchById(userGroup.getParent().getId())).thenReturn(new UserGroup());
+    when(userGroupHasOperationRepository.
+        findByUserGroupIdAndResourceIdAndOperationName(userGroup.getParent().getId(), resource.getId(), operation.getName()))
+        .thenReturn(userGroupHasOperation);
+    when(operationRepository.findByName(operation.getName())).thenReturn(operation);
+    when(resourceRepository.findByObjectId(resource.getObjectId())).thenReturn(resource);
+
+    operationService.getBlockedUsersForOperation(operation.getName(), resource.getObjectId(), true);
     verify(userRepository, times(2)).getUserIds(any());
   }
 
@@ -620,8 +722,23 @@ public class OperationServiceTest {
     when(userRepository.getUserIds(true)).thenReturn(superadminsID);
     when(userHasOperationRepository.findByOperationName(operation.getName())).thenReturn(userHasOperations);
 
-    Set<String> allowedUsersForOperation = operationService.getAllowedUsersForOperation(operation.getName(), false);
+    Set<String> allowedUsersForOperation = operationService.
+        getAllowedUsersForOperation(operation.getName(), false);
     assertEquals(countUsers - blockedUsers, allowedUsersForOperation.size());
+  }
+
+  @Test
+  public void testGetUsersForOperationWithDynamicCodeByOperationNameDynamicResultNull() {
+    userHasOperations.stream().forEach(uho -> uho.getOperation().setDynamic(true));
+    userHasOperations.stream().forEach(uho -> uho.getOperation().setDynamicCode(dynamicCode));
+
+    when(userRepository.getUserIds(false)).thenReturn(usersID);
+    when(userRepository.getUserIds(true)).thenReturn(superadminsID);
+    when(userHasOperationRepository.findByOperationName(operation.getName())).thenReturn(userHasOperations);
+
+    Set<String> allowedUsersForOperation = operationService.
+        getAllowedUsersForOperation(operation.getName(), false);
+    assertEquals(countUsers, allowedUsersForOperation.size());
   }
 
   @Test
@@ -679,9 +796,56 @@ public class OperationServiceTest {
   }
 
   @Test
-  public void testGetAllowedGroupsForOperationResourceId(){
+  public void testGetAllowedGroupsForOperationNullResourceId(){
     operationService.getAllowedGroupsForOperation(operation.getName(), null, false);
     verify(userGroupRepository, times(1)).getAllIds();
+  }
+
+  @Test
+  public void testGetAllowedGroupsForOperationResourceId(){
+    when(resourceRepository.findByObjectId(any())).thenReturn(resource);
+    when(userGroupHasOperationRepository.findByResourceIdAndOperationName(any(), any())).thenReturn(userGroupHasOperationList);
+    userGroupHasOperationList.forEach(userGroupHasOperation1 -> userGroupHasOperation1.setUserGroup(userGroup));
+    userGroupHasOperationList.forEach(userGroupHasOperation1 -> userGroupHasOperation1.setOperation(operation));
+    operationService.getAllowedGroupsForOperation(operation.getName(), "resourceId", false);
+
+    operation.setDynamic(true);
+    operation.setDynamicCode(dynamicCode);
+    operationService.getAllowedGroupsForOperation(operation.getName(), "resourceId", false);
+
+    userGroupHasOperationList.forEach(userGroupHasOperation1 -> userGroupHasOperation1.getOperation().setDynamic(false));
+    operationService.getBlockedGroupsForOperation(operation.getName(), "resourceId", false);
+
+    userGroupHasOperationList.forEach(userGroupHasOperation1 -> userGroupHasOperation1.setDeny(true));
+    operationService.getBlockedGroupsForOperation(operation.getName(), "resourceId", false);
+    verify(userGroupRepository, times(4)).getAllIds();
+  }
+
+  @Test
+  public void testGetBlockedGroupsForOperationGetAllowed(){
+    when(resourceRepository.findByObjectId(any())).thenReturn(resource);
+    when(userGroupHasOperationRepository.findByResourceIdAndOperationName(any(), any())).thenReturn(userGroupHasOperationList);
+    userGroupHasOperationList.forEach(userGroupHasOperation1 -> userGroupHasOperation1.setUserGroup(userGroup));
+    userGroupHasOperationList.forEach(userGroupHasOperation1 -> userGroupHasOperation1.setOperation(operation));
+    operation.setDynamic(true);
+    operation.setDynamicCode(dynamicCode);
+    operationService.getBlockedGroupsForOperation(operation.getName(), "resourceId", false);
+
+    Set<String> setIds = new HashSet<>();
+    setIds.add(userGroup.getId());
+    when(userGroupRepository.getAllIds()).thenReturn(setIds);
+    when(userGroupHasOperationRepository.findByUserGroupIdAndOperationName(any(), any())).thenReturn(userGroupHasOperation);
+    when(operationRepository.findByName(any())).thenReturn(operation);
+    operationService.getBlockedGroupsForOperation(operation.getName(), null, true);
+
+    when(userGroupHasOperationRepository.findByResourceIdAndOperationName(any(), any())).thenReturn(new ArrayList<>());
+    operationService.getAllowedGroupsForOperation(operation.getName(), null, true);
+
+    when(userGroupHasOperationRepository.findByResourceIdAndOperationName(any(), any())).thenReturn(new ArrayList<>());
+    when(userGroupRepository.fetchById(userGroup.getId())).thenReturn(new UserGroup());
+    operationService.getBlockedGroupsForOperation(operation.getName(), "resourceId", true);
+
+    verify(userGroupRepository, times(4)).getAllIds();
   }
 
   @Test
@@ -753,6 +917,42 @@ public class OperationServiceTest {
     verify(resourceRepository, times(2)).findByObjectId(any());
   }
 
+  @Test
+  public void testGetPermittedOperationsForUserIsDynamic(){
+    user.setSuperadmin(false);
+    user.getUserHasOperations().forEach(uho -> uho.setResource(resource));
+    user.getUserHasOperations().forEach(uho -> uho.getOperation().setDynamic(true));
+    user.getUserHasOperations().forEach(uho -> uho.getOperation().setDynamicCode("retVal = false"));
+    user.getUserHasOperations().forEach(uho -> uho.setDeny(false));
+    when(userRepository.fetchById(user.getId())).thenReturn(user);
+    when(resourceRepository.findByObjectId(any())).thenReturn(resource);
+    operationService
+        .getPermittedOperationsForUser(user.getId(), null, false);
+
+    user.getUserHasOperations().forEach(uho -> uho.setDeny(true));
+    operationService
+        .getPermittedOperationsForUser(user.getId(), null, false);
+
+    verify(userRepository, times(2)).fetchById(any());
+    verify(resourceRepository, times(2)).findByObjectId(any());
+  }
+
+  @Test
+  public void testGetPermittedOperationsForUserIsDynamicBranchCoverage(){
+    user.setSuperadmin(false);
+    user.getUserHasOperations().forEach(uho -> uho.setResource(resource));
+    user.getUserHasOperations().forEach(uho -> uho.getOperation().setDynamic(true));
+    user.getUserHasOperations().forEach(uho -> uho.getOperation().setDynamicCode("retVal = true"));
+    user.getUserHasOperations().forEach(uho -> uho.setDeny(false));
+    when(userRepository.fetchById(user.getId())).thenReturn(user);
+    when(resourceRepository.findByObjectId(any())).thenReturn(resource);
+    operationService
+        .getPermittedOperationsForUser(user.getId(), null, false);
+
+    verify(userRepository, times(1)).fetchById(any());
+    verify(resourceRepository, times(1)).findByObjectId(any());
+  }
+
   @Test(expected = DynamicOperationException.class)
   public void testGetPermittedOperationsForUserEx(){
     user.setSuperadmin(false);
@@ -791,6 +991,88 @@ public class OperationServiceTest {
   }
 
   @Test
+  public void testGetPermittedOperationsForUserGetOperationsForGroup(){
+    userGroupHasOperationList.forEach(userGroupHasOperation1 -> userGroupHasOperation1.setResource(resource));
+    userGroupHasOperationList.forEach(userGroupHasOperation1 -> userGroupHasOperation1.setOperation(operation));
+    userGroupHasOperationList.forEach(userGroupHasOperation1 -> userGroupHasOperation1.getOperation().setDynamic(true));
+    userGroupHasOperationList.forEach(userGroupHasOperation1 -> userGroupHasOperation1.getOperation().setDynamicCode("retVal = true"));
+    List<UserGroup> userGroups1 = new ArrayList<>();
+    userGroupHasOperation.setResource(resource);
+    userGroupHasOperation.setOperation(operation);
+    user.setSuperadmin(false);
+    userGroups1.add(initTestValues.createUserGroupNoParent());
+    userGroups1.forEach(usergroup -> usergroup.setUserGroupHasOperations(userGroupHasOperationList));
+    user.setUserGroups(userGroups1);
+    user.getUserHasOperations().forEach(uho -> uho.setResource(resource));
+    when(userRepository.fetchById(user.getId())).thenReturn(user);
+    when(resourceRepository.findByObjectId(any())).thenReturn(resource);
+
+    user.getUserHasOperations().forEach(uho -> uho.getOperation().setDynamic(false));
+    operationService
+        .getPermittedOperationsForUser(user.getId(), null, true);
+
+    userGroupHasOperationList.forEach(userGroupHasOperation1 -> userGroupHasOperation1.getOperation().setDynamic(false));
+    userGroupHasOperationList.forEach(userGroupHasOperation1 -> userGroupHasOperation1.getOperation().setDynamicCode("retVal = true"));
+    userGroupHasOperationList.forEach(userGroupHasOperation1 -> userGroupHasOperation1.setDeny(true));
+    operationService
+        .getPermittedOperationsForUser(user.getId(), null, true);
+
+    verify(userRepository, times(2)).fetchById(any());
+    verify(resourceRepository, times(2)).findByObjectId(any());
+  }
+
+  @Test
+  public void testGetPermittedOperationsForUserGetOperationsForGroupNoResourceId(){
+    userGroupHasOperationList.forEach(userGroupHasOperation1 -> userGroupHasOperation1.setResource(null));
+    userGroupHasOperationList.forEach(userGroupHasOperation1 -> userGroupHasOperation1.setOperation(operation));
+    List<UserGroup> userGroups1 = new ArrayList<>();
+    userGroupHasOperation.setResource(resource);
+    userGroupHasOperation.setOperation(operation);
+    user.setSuperadmin(false);
+    userGroups1.add(initTestValues.createUserGroupNoParent());
+    userGroups1.forEach(usergroup -> usergroup.setUserGroupHasOperations(userGroupHasOperationList));
+    user.setUserGroups(userGroups1);
+    user.getUserHasOperations().forEach(uho -> uho.setResource(resource));
+    when(userRepository.fetchById(user.getId())).thenReturn(user);
+    when(resourceRepository.findByObjectId(any())).thenReturn(null);
+
+    user.getUserHasOperations().forEach(uho -> uho.getOperation().setDynamic(false));
+    operationService
+        .getPermittedOperationsForUser(user.getId(), null, true);
+
+    verify(userRepository, times(1)).fetchById(any());
+    verify(resourceRepository, times(1)).findByObjectId(any());
+  }
+
+  @Test
+  public void testGetPermittedOperationsForUserGetOperationsForGroupDeniedOperations(){
+    userGroupHasOperationList.forEach(userGroupHasOperation1 -> userGroupHasOperation1.setResource(resource));
+    userGroupHasOperationList.forEach(userGroupHasOperation1 -> userGroupHasOperation1.setOperation(operation));
+    List<UserGroup> userGroups1 = new ArrayList<>();
+    userGroupHasOperation.setResource(resource);
+    userGroupHasOperation.setOperation(operation);
+    user.setSuperadmin(false);
+    userGroups1.add(initTestValues.createUserGroupNoParent());
+    userGroups1.forEach(usergroup -> usergroup.setUserGroupHasOperations(userGroupHasOperationList));
+    user.setUserGroups(userGroups1);
+    user.getUserHasOperations().forEach(uho -> uho.setResource(resource));
+    when(userRepository.fetchById(user.getId())).thenReturn(user);
+    when(resourceRepository.findByObjectId(any())).thenReturn(resource);
+
+    user.getUserHasOperations().forEach(uho -> uho.getOperation().setDynamic(false));
+    user.getUserHasOperations().forEach(uho -> uho.setDeny(true));
+    operationService
+        .getPermittedOperationsForUser(user.getId(), null, true);
+
+    operationService.setPrioritisePositive(true);
+    operationService
+        .getPermittedOperationsForUser(user.getId(), null, true);
+
+    verify(userRepository, times(2)).fetchById(any());
+    verify(resourceRepository, times(2)).findByObjectId(any());
+  }
+
+  @Test
   public void testGetResourceForOperation(){
     when(userRepository.fetchById(user.getId())).thenReturn(user);
     user.getUserHasOperations().get(0).setResource(resource);
@@ -810,6 +1092,7 @@ public class OperationServiceTest {
 
   @Test
   public void testGetResourceForOperationCheckUserGroups(){
+    user.setUserHasOperations(userHasOperations);
     user.getUserHasOperations().forEach(user -> user.setResource(resource));
     userGroupHasOperationList.forEach(user -> user.setOperation(operation));
     userGroupHasOperationList.forEach(user -> user.setResource(resource));
@@ -818,7 +1101,14 @@ public class OperationServiceTest {
     when(userRepository.fetchById(user.getId())).thenReturn(user);
     operationService
         .getResourceForOperation(user.getId(), true, true, "Test operation");
-    verify(userRepository, times(1)).fetchById(any());
+
+    operationService
+        .getResourceForOperation(user.getId(), false, true, "operation");
+
+    user.getUserGroups().get(0).getUserGroupHasOperations().get(0).setDeny(true);
+    operationService
+        .getResourceForOperation(user.getId(), false, true, "operation");
+    verify(userRepository, times(3)).fetchById(any());
   }
 
   @Test

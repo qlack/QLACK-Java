@@ -381,7 +381,7 @@ public class OperationService {
     Operation operation = operationRepository.findByName(operationName);
       String resourceId = (resourceObjectID == null) ? null : resourceRepository.findByObjectId(resourceObjectID).getId();
 
-    Boolean retVal = null;
+    Boolean retVal = false;
     UserHasOperation uho = (resourceId == null)
         ? userHasOperationRepository.findByUserIdAndOperationName(userId, operationName)
         : userHasOperationRepository.findByUserIdAndResourceIdAndOperationName(userId, resourceId, operationName);
@@ -401,10 +401,9 @@ public class OperationService {
           Boolean groupPermission = isPermittedForGroup(userGroup.getId(), operationName, resourceObjectID);
         if (groupPermission != null) {
           // Assign the permission we got for the userGroup to the return value only if
-          // a. We haven't found another permission for this user so far
-          // b. The groupPermission is true and we are prioritising positive permissions or
-          // the groupPermission is false and we are prioritising negative permissions.
-          if ((retVal == null) || (groupPermission == prioritisePositive)) {
+          // a. group permission is true and we are prioritising positive
+          // b. or the groupPermission is false and we are prioritising negative permissions.
+          if (groupPermission == prioritisePositive) {
             retVal = groupPermission;
           }
 
