@@ -24,6 +24,7 @@ public class Md5ChecksumUtil {
    * @return the md5 checksum
    * @throws IOException exception occurred during the stream parsin
    */
+  @SuppressWarnings("squid:S4790")
   public static String getMd5Hex(InputStream inputStream) throws IOException {
     return DigestUtils.md5Hex(inputStream);
   }
