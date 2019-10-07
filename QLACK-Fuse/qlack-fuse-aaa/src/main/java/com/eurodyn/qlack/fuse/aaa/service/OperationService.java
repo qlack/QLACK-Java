@@ -727,7 +727,7 @@ public class OperationService {
           } else if ((uho.getOperation().isDynamic() && !evaluateDynamicOperation(
               uho.getOperation(), user.getId(), null, resource.getObjectId()))
               || (!uho.getOperation().isDynamic() && uho.isDeny())) {
-            deniedOperations.add(uho.getOperation().getId());
+            deniedOperations.add(uho.getOperation().getName());
           }
         }
       }
@@ -735,7 +735,7 @@ public class OperationService {
         // Then check operations the user may have via their userGroups
         Set<String> allowedGroupOperations = new HashSet<>();
         Set<String> deniedGroupOperations = new HashSet<>();
-        // First get all the operations allowed or denied through the user userGroups
+        // First get all the ids of operations allowed or denied through the user userGroups
         for (UserGroup userGroup : user.getUserGroups()) {
           while (userGroup != null) {
             allowedGroupOperations.addAll(getOperationsForGroup(userGroup, resource, true));
