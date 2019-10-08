@@ -21,12 +21,12 @@ public class InitTestValues {
 
   public <J extends Job> Trigger createTrigger(Class<J> clazz, String cronExpression) {
     return TriggerBuilder
-      .newTrigger()
-      .forJob(clazz.getName())
-      .withIdentity(clazz.getName() + "_trigger")
-      .startNow()
-      .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression))
-      .build();
+        .newTrigger()
+        .forJob(clazz.getName())
+        .withIdentity(clazz.getName() + "_trigger")
+        .startNow()
+        .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression))
+        .build();
   }
 
   public JobDetail createJobDetail(boolean addData) {
@@ -37,11 +37,11 @@ public class InitTestValues {
     }
 
     return JobBuilder
-      .newJob(TestJob.class)
-      .withIdentity(TestJob.class.getName())
-      .storeDurably()
-      .setJobData(jobDataMap)
-      .build();
+        .newJob(TestJob.class)
+        .withIdentity(TestJob.class.getName())
+        .storeDurably()
+        .setJobData(jobDataMap)
+        .build();
   }
 
   public Map<String, Object> createMap() {

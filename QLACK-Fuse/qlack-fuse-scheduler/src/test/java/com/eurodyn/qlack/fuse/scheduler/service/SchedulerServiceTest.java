@@ -6,6 +6,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -13,6 +15,8 @@ import static org.mockito.Mockito.when;
 import com.eurodyn.qlack.fuse.scheduler.InitTestValues;
 import com.eurodyn.qlack.fuse.scheduler.TestJob;
 import com.eurodyn.qlack.fuse.scheduler.dto.JobDTO;
+import com.eurodyn.qlack.fuse.scheduler.exception.QSchedulerException;
+import com.eurodyn.qlack.fuse.scheduler.utils.SchedulerProperties;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -76,6 +80,8 @@ public class SchedulerServiceTest {
   private Trigger trigger;
   private TriggerKey triggerKey;
 
+  private SchedulerProperties schedulerProperties;
+
   @Before
   public void init() {
     schedulerService = new SchedulerService(scheduler);
@@ -85,6 +91,7 @@ public class SchedulerServiceTest {
     cronExpDaily = "0 0 12 1/1 * ? *";
     cronExp5Min = "0 0/5 * 1/1 * ? *";
     jobKey = JobKey.jobKey(testJobClass.getName());
+    schedulerProperties = new SchedulerProperties();
   }
 
   @Test
@@ -101,308 +108,350 @@ public class SchedulerServiceTest {
   }
 
   @Test
-  public void testGetSchedulerName() {
+  public void getSchedulerNameTest() throws SchedulerException {
     String schedulerName = schedulerService.getSchedulerName();
-    try {
-      assertEquals(scheduler.getSchedulerName(), schedulerName);
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
+    assertEquals(scheduler.getSchedulerName(), schedulerName);
+  }
+
+  @Test(expected = QSchedulerException.class)
+  public void getSchedulerNameSchedulerExceptionTest() throws SchedulerException {
+    when(scheduler.getSchedulerName()).thenThrow(new SchedulerException());
+    schedulerService.getSchedulerName();
   }
 
   @Test
-  public void testGetSchedulerInstanceId() {
+  public void getSchedulerInstanceIdTest() throws SchedulerException {
     String schedulerInstanceID = schedulerService.getSchedulerInstanceID();
-    try {
-      assertEquals(scheduler.getSchedulerInstanceId(), schedulerInstanceID);
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
+    assertEquals(scheduler.getSchedulerInstanceId(), schedulerInstanceID);
+  }
+
+  @Test(expected = QSchedulerException.class)
+  public void getSchedulerInstanceIdSchedulerExceptionTest() throws SchedulerException {
+    when(scheduler.getSchedulerInstanceId()).thenThrow(new SchedulerException());
+    schedulerService.getSchedulerInstanceID();
   }
 
   @Test
-  public void testStart() {
+  public void startTest() throws SchedulerException {
     schedulerService.start();
-    try {
-      verify(scheduler, times(1)).start();
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
+    verify(scheduler, times(1)).start();
+  }
+
+  @Test(expected = QSchedulerException.class)
+  public void startSchedulerExceptionTest() throws SchedulerException {
+    doThrow(new SchedulerException()).when(scheduler).start();
+    schedulerService.start();
   }
 
   @Test
-  public void testShutdown() {
+  public void shutdownTest() throws SchedulerException {
     schedulerService.shutdown();
-    try {
-      verify(scheduler, times(1)).shutdown();
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
+    verify(scheduler, times(1)).shutdown();
+  }
+
+  @Test(expected = QSchedulerException.class)
+  public void shutdownSchedulerExceptionTest() throws SchedulerException {
+    doThrow(new SchedulerException()).when(scheduler).shutdown();
+    schedulerService.shutdown();
   }
 
   @Test
-  public void testStandBy() {
+  public void standByTest() throws SchedulerException {
     schedulerService.standby();
-    try {
-      verify(scheduler, times(1)).standby();
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
+    verify(scheduler, times(1)).standby();
+  }
+
+  @Test(expected = QSchedulerException.class)
+  public void standBySchedulerExceptionTest() throws SchedulerException {
+    doThrow(new SchedulerException()).when(scheduler).standby();
+    schedulerService.standby();
   }
 
   @Test
-  public void testIsStarted() {
+  public void isStartedTest() throws SchedulerException {
     schedulerService.isStarted();
-    try {
-      verify(scheduler, times(1)).isStarted();
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
+    verify(scheduler, times(1)).isStarted();
+  }
+
+  @Test(expected = QSchedulerException.class)
+  public void isStartedSchedulerExceptionTest() throws SchedulerException {
+    when(scheduler.isStarted()).thenThrow(new SchedulerException());
+    schedulerService.isStarted();
   }
 
   @Test
-  public void testIsShutdown() {
+  public void isShutdownTest() throws SchedulerException {
     schedulerService.isShutdown();
-    try {
-      verify(scheduler, times(1)).isShutdown();
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
+    verify(scheduler, times(1)).isShutdown();
+  }
+
+  @Test(expected = QSchedulerException.class)
+  public void isShutdownSchedulerExceptionTest() throws SchedulerException {
+    when(scheduler.isShutdown()).thenThrow(new SchedulerException());
+    schedulerService.isShutdown();
   }
 
   @Test
-  public void testIsInStandByMode() {
+  public void isInStandByModeTest() throws SchedulerException {
     schedulerService.isInStandbyMode();
-    try {
-      verify(scheduler, times(1)).isInStandbyMode();
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
+    verify(scheduler, times(1)).isInStandbyMode();
+  }
+
+  @Test(expected = QSchedulerException.class)
+  public void isInStandByModeSchedulerExceptionTest() throws SchedulerException {
+    when(scheduler.isInStandbyMode()).thenThrow(new SchedulerException());
+    schedulerService.isInStandbyMode();
   }
 
   @Test
-  public void testRegisterJob() {
+  public void registerJobTest() throws SchedulerException {
     jobDetail = initTestValues.createJobDetail(false);
     schedulerService.registerJob(testJobClass);
 
-    try {
-      verify(scheduler, times(1)).addJob(jobDetailArgumentCaptor.capture(), eq(true));
-      assertEquals(jobDetailArgumentCaptor.getValue().getJobDataMap().size(), 0);
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
+    verify(scheduler, times(1)).addJob(jobDetailArgumentCaptor.capture(), eq(true));
+    assertEquals(jobDetailArgumentCaptor.getValue().getJobDataMap().size(), 0);
+  }
+
+  @Test(expected = QSchedulerException.class)
+  public void registerJobSchedulerExceptionTest() throws SchedulerException {
+    doThrow(new SchedulerException()).when(scheduler).addJob(any(), anyBoolean());
+    schedulerService.registerJob(testJobClass);
   }
 
   @Test
-  public void testRegisterJobWithMap() {
+  public void registerJobWithMapTest() throws SchedulerException {
     jobDetail = initTestValues.createJobDetail(true);
     JobDataMap jobDataMap = jobDetail.getJobDataMap();
     schedulerService.registerJob(testJobClass, initTestValues.createMap());
 
-    try {
-      verify(scheduler, times(1)).addJob(jobDetailArgumentCaptor.capture(), eq(true));
-      assertTrue(jobDetailArgumentCaptor.getValue().getJobDataMap().equals(jobDataMap));
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
+    verify(scheduler, times(1)).addJob(jobDetailArgumentCaptor.capture(), eq(true));
+    assertTrue(jobDetailArgumentCaptor.getValue().getJobDataMap().equals(jobDataMap));
   }
 
   @Test
-  public void testRegisterExistingJob() {
+  public void registerExistingJobTest() throws SchedulerException {
     when(schedulerService.isJobExisting(testJobClass)).thenReturn(true);
     schedulerService.registerJob(testJobClass);
-
-    try {
-      verify(scheduler, times(0)).addJob(any(), anyBoolean());
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
+    verify(scheduler, times(0)).addJob(any(), anyBoolean());
   }
 
   @Test
-  public void testScheduleJob() {
+  public void scheduleJobTest() throws SchedulerException {
     jobDetail = initTestValues.createJobDetail(false);
     trigger = initTestValues.createTrigger(TestJob.class, cronExpDaily);
     schedulerService.scheduleJob(testJobClass, cronExpDaily);
 
-    try {
-      verify(scheduler, times(1)).scheduleJob(jobDetailArgumentCaptor.capture(), triggerArgumentCaptor.capture());
-      assertTrue(jobDetailArgumentCaptor.getValue().getJobDataMap().equals(jobDetail.getJobDataMap()));
-      assertEquals(triggerArgumentCaptor.getValue(), trigger);
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
+    verify(scheduler, times(1))
+        .scheduleJob(jobDetailArgumentCaptor.capture(), triggerArgumentCaptor.capture());
+    assertTrue(
+        jobDetailArgumentCaptor.getValue().getJobDataMap().equals(jobDetail.getJobDataMap()));
+    assertEquals(triggerArgumentCaptor.getValue(), trigger);
+  }
+
+  @Test(expected = QSchedulerException.class)
+  public void scheduleJobSchedulerExceptionTest() throws SchedulerException {
+    when(scheduler.scheduleJob(any(JobDetail.class), any(Trigger.class)))
+        .thenThrow(new SchedulerException());
+    schedulerService.scheduleJob(testJobClass, cronExpDaily);
   }
 
   @Test
-  public void testScheduleJobWithMap() {
+  public void scheduleJobWithMapTest() throws SchedulerException {
     jobDetail = initTestValues.createJobDetail(true);
     trigger = initTestValues.createTrigger(TestJob.class, cronExpDaily);
     schedulerService.scheduleJob(testJobClass, cronExpDaily, initTestValues.createMap());
 
-    try {
-      verify(scheduler, times(1)).scheduleJob(jobDetailArgumentCaptor.capture(), triggerArgumentCaptor.capture());
-      assertTrue(jobDetailArgumentCaptor.getValue().getJobDataMap().equals(jobDetail.getJobDataMap()));
-      assertEquals(triggerArgumentCaptor.getValue(), trigger);
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
+    verify(scheduler, times(1))
+        .scheduleJob(jobDetailArgumentCaptor.capture(), triggerArgumentCaptor.capture());
+    assertTrue(
+        jobDetailArgumentCaptor.getValue().getJobDataMap().equals(jobDetail.getJobDataMap()));
+    assertEquals(triggerArgumentCaptor.getValue(), trigger);
   }
 
   @Test
-  public void testScheduleExistingJob() {
+  public void scheduleExistingJobTest() throws SchedulerException {
     when(schedulerService.isJobExisting(testJobClass)).thenReturn(true);
     schedulerService.scheduleJob(testJobClass, cronExp5Min);
     verifyReschedule();
   }
 
   @Test
-  public void testRescheduleJob() {
+  public void rescheduleJobTest() throws SchedulerException {
     schedulerService.rescheduleJob(testJobClass, cronExp5Min);
     verifyReschedule();
   }
 
-  public void verifyReschedule() {
+  @Test(expected = QSchedulerException.class)
+  public void rescheduleJobSchedulerExceptionTest() throws SchedulerException {
+    when(scheduler.rescheduleJob(any(TriggerKey.class), any(Trigger.class)))
+        .thenThrow(new SchedulerException());
+    schedulerService.rescheduleJob(testJobClass, cronExp5Min);
+  }
+
+  public void verifyReschedule() throws SchedulerException {
     trigger = initTestValues.createTrigger(testJobClass, cronExpDaily);
-    try {
-      verify(scheduler, times(1)).rescheduleJob(triggerKeyArgumentCaptor.capture(), triggerArgumentCaptor.capture());
-      CronTrigger actualTrigger = (CronTrigger) triggerArgumentCaptor.getValue();
-      String newCronExp = actualTrigger.getCronExpression();
-      assertEquals(triggerKeyArgumentCaptor.getValue(), trigger.getKey());
-      assertEquals(newCronExp, cronExp5Min);
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
+    verify(scheduler, times(1))
+        .rescheduleJob(triggerKeyArgumentCaptor.capture(), triggerArgumentCaptor.capture());
+    CronTrigger actualTrigger = (CronTrigger) triggerArgumentCaptor.getValue();
+    String newCronExp = actualTrigger.getCronExpression();
+    assertEquals(triggerKeyArgumentCaptor.getValue(), trigger.getKey());
+    assertEquals(newCronExp, cronExp5Min);
   }
 
   @Test
-  public void testDeleteJob() {
+  public void deleteJobTest() throws SchedulerException {
     String jobName = testJobClass.getName();
     schedulerService.deleteJob(jobName);
-    try {
-      verify(scheduler, times(1)).deleteJob(any());
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
+    verify(scheduler, times(1)).deleteJob(any());
+  }
+
+  @Test(expected = QSchedulerException.class)
+  public void deleteJobSchedulerExceptionTest() throws SchedulerException {
+    String jobName = testJobClass.getName();
+    when(scheduler.deleteJob(any(JobKey.class))).thenThrow(new SchedulerException());
+    schedulerService.deleteJob(jobName);
   }
 
   @Test
-  public void testDeleteJobs() {
+  public void deleteJobsTest() throws SchedulerException {
     List<String> jobNames = new ArrayList<>();
     jobNames.add(testJobClass.getName());
     jobNames.add(testJobClass.getName() + "_new");
 
     schedulerService.deleteJobs(jobNames);
-
-    try {
-      verify(scheduler, times(2)).deleteJob(any());
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
+    verify(scheduler, times(2)).deleteJob(any());
   }
 
   @Test
-  public void testTriggerJob() {
+  public void deleteJobsFalseTest() throws SchedulerException {
+    List<String> jobNames = new ArrayList<>();
+    jobNames.add(testJobClass.getName());
+
+    SchedulerService schedulerServiceMock = spy(schedulerService);
+    when(schedulerServiceMock.deleteJob(testJobClass.getName())).thenReturn(true);
+    schedulerServiceMock.deleteJobs(jobNames);
+    verify(scheduler, times(1)).deleteJob(any());
+  }
+
+  @Test
+  public void triggerJobTest() throws SchedulerException {
     schedulerService.triggerJob(testJobClass);
-    try {
-      verify(scheduler, times(1)).triggerJob(any(), jobDataMapArgumentCaptor.capture());
-      assertEquals(jobDataMapArgumentCaptor.getValue().size(), 0);
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
+    verify(scheduler, times(1)).triggerJob(any(), jobDataMapArgumentCaptor.capture());
+    assertEquals(jobDataMapArgumentCaptor.getValue().size(), 0);
+  }
+
+  @Test(expected = QSchedulerException.class)
+  public void triggerJobSchedulerExceptionTest() throws SchedulerException {
+    doThrow(new SchedulerException()).when(scheduler)
+        .triggerJob(any(JobKey.class), any(JobDataMap.class));
+    schedulerService.triggerJob(testJobClass);
   }
 
   @Test
-  public void testTriggerJobWithMap() {
+  public void triggerJobWithMapTest() throws SchedulerException {
     jobDetail = initTestValues.createJobDetail(true);
     JobDataMap jobDataMap = jobDetail.getJobDataMap();
 
     schedulerService.triggerJob(testJobClass, initTestValues.createMap());
-    try {
-      verify(scheduler, times(1)).triggerJob(any(), jobDataMapArgumentCaptor.capture());
-      assertTrue(jobDataMapArgumentCaptor.getValue().equals(jobDataMap));
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
+    verify(scheduler, times(1)).triggerJob(any(), jobDataMapArgumentCaptor.capture());
+    assertTrue(jobDataMapArgumentCaptor.getValue().equals(jobDataMap));
   }
 
   @Test
-  public void testPauseJob() {
+  public void pauseJobTest() throws SchedulerException {
     schedulerService.pauseJob(testJobClass);
-    try {
-      verify(scheduler, times(1)).pauseJob(jobKey);
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
+    verify(scheduler, times(1)).pauseJob(jobKey);
+  }
+
+  @Test(expected = QSchedulerException.class)
+  public void pauseJobSchedulerExceptionTest() throws SchedulerException {
+    doThrow(new SchedulerException()).when(scheduler)
+        .pauseJob(any(JobKey.class));
+    schedulerService.pauseJob(testJobClass);
   }
 
   @Test
-  public void testPauseAllTriggers() {
+  public void pauseAllTriggersTest() throws SchedulerException {
     schedulerService.pauseAllTriggers();
-    try {
-      verify(scheduler, times(1)).pauseAll();
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
+    verify(scheduler, times(1)).pauseAll();
+  }
+
+  @Test(expected = QSchedulerException.class)
+  public void pauseAllTriggersSchedulerExceptionTest() throws SchedulerException {
+    doThrow(new SchedulerException()).when(scheduler)
+        .pauseAll();
+    schedulerService.pauseAllTriggers();
   }
 
   @Test
-  public void resumeAllTriggers() {
+  public void resumeAllTriggersTest() throws SchedulerException {
     schedulerService.resumeAllTriggers();
-    try {
-      verify(scheduler, times(1)).resumeAll();
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
+    verify(scheduler, times(1)).resumeAll();
+  }
+
+  @Test(expected = QSchedulerException.class)
+  public void resumeAllTriggersSchedulerExceptionTest() throws SchedulerException {
+    doThrow(new SchedulerException()).when(scheduler)
+        .resumeAll();
+    schedulerService.resumeAllTriggers();
   }
 
   @Test
-  public void clear() {
+  public void clearTest() throws SchedulerException {
     schedulerService.clear();
-    try {
-      verify(scheduler, times(1)).clear();
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
+    verify(scheduler, times(1)).clear();
+  }
+
+  @Test(expected = QSchedulerException.class)
+  public void clearSchedulerExceptionTest() throws SchedulerException {
+    doThrow(new SchedulerException()).when(scheduler)
+        .clear();
+    schedulerService.clear();
   }
 
   @Test
-  public void testGetNextFireForJob() {
+  public void getNextFireForJobTest() throws SchedulerException {
     trigger = initTestValues.createTrigger(testJobClass, cronExp5Min);
     triggerKey = trigger.getKey();
-    try {
-      when(scheduler.getTrigger(triggerKey)).thenReturn(trigger);
-      schedulerService.getNextFireForJob(testJobClass);
-      verify(scheduler, times(1)).getTrigger(triggerKey);
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
+    when(scheduler.getTrigger(triggerKey)).thenReturn(trigger);
+    schedulerService.getNextFireForJob(testJobClass);
+    verify(scheduler, times(1)).getTrigger(triggerKey);
+  }
+
+  @Test(expected = QSchedulerException.class)
+  public void getNextFireForJobSchedulerExceptionTest() throws SchedulerException {
+    when(scheduler.getTrigger(any(TriggerKey.class))).thenThrow(new SchedulerException());
+    schedulerService.getNextFireForJob(testJobClass);
   }
 
   @Test
-  public void testIsJobExisting() {
+  public void isJobExistingTest() throws SchedulerException {
     schedulerService.isJobExisting(testJobClass);
-    try {
-      verify(scheduler, times(1)).checkExists(jobKey);
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
+    verify(scheduler, times(1)).checkExists(jobKey);
+  }
+
+  @Test(expected = QSchedulerException.class)
+  public void isJobExistingSchedulerExceptionTest() throws SchedulerException {
+    when(scheduler.checkExists(any(JobKey.class))).thenThrow(new SchedulerException());
+    schedulerService.isJobExisting(testJobClass);
   }
 
   @Test
-  public void testIsTriggerExisting() {
+  public void isTriggerExistingTest() throws SchedulerException {
     schedulerService.isTriggerExisting(testJobClass);
     trigger = initTestValues.createTrigger(testJobClass, cronExp5Min);
     triggerKey = trigger.getKey();
-    try {
-      verify(scheduler, times(1)).checkExists(triggerKey);
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
+    verify(scheduler, times(1)).checkExists(triggerKey);
+  }
+
+  @Test(expected = QSchedulerException.class)
+  public void isTriggerExistingSchedulerExceptionTest() throws SchedulerException {
+    when(scheduler.checkExists(any(TriggerKey.class))).thenThrow(new SchedulerException());
+    schedulerService.isTriggerExisting(testJobClass);
   }
 
   @Test
-  public void testGetCurrentlyRunningJobs() {
+  public void getCurrentlyRunningJobsTest() throws SchedulerException {
     jobDetail = initTestValues.createJobDetail(false);
 
     List<JobExecutionContext> jobs = new ArrayList<>();
@@ -411,19 +460,21 @@ public class SchedulerServiceTest {
     List<String> expectedNames = new ArrayList<>();
     expectedNames.add(jobDetail.getKey().getName());
 
-    try {
-      when(scheduler.getCurrentlyExecutingJobs()).thenReturn(jobs);
-      when(jobExecutionContext.getJobDetail()).thenReturn(jobDetail);
-      List<String> currentlyExecutingJobsNames = schedulerService.getCurrentlyExecutingJobsNames();
-      verify(scheduler, times(1)).getCurrentlyExecutingJobs();
-      assertEquals(expectedNames, currentlyExecutingJobsNames);
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
+    when(scheduler.getCurrentlyExecutingJobs()).thenReturn(jobs);
+    when(jobExecutionContext.getJobDetail()).thenReturn(jobDetail);
+    List<String> currentlyExecutingJobsNames = schedulerService.getCurrentlyExecutingJobsNames();
+    verify(scheduler, times(1)).getCurrentlyExecutingJobs();
+    assertEquals(expectedNames, currentlyExecutingJobsNames);
+  }
+
+  @Test(expected = QSchedulerException.class)
+  public void getCurrentlyRunningJobsSchedulerExceptionTest() throws SchedulerException {
+    when(scheduler.getCurrentlyExecutingJobs()).thenThrow(new SchedulerException());
+    schedulerService.getCurrentlyExecutingJobsNames();
   }
 
   @Test
-  public void testGetJobInfo() {
+  public void getJobInfoTest() throws SchedulerException {
     String groupName = "DEFAULT";
     List<String> groupNames = new ArrayList<>();
     groupNames.add(groupName);
@@ -435,20 +486,24 @@ public class SchedulerServiceTest {
     List<Trigger> triggers = new ArrayList<>();
     triggers.add(trigger);
 
-    JobDTO jobDTO = initTestValues.createJobDTO(testJobClass.getName(), groupName, trigger.getNextFireTime());
+    JobDTO jobDTO = initTestValues
+        .createJobDTO(testJobClass.getName(), groupName, trigger.getNextFireTime());
     List<JobDTO> expectedInfo = new ArrayList<>();
     expectedInfo.add(jobDTO);
 
-    try {
-      when(scheduler.getJobGroupNames()).thenReturn(groupNames);
-      when(scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))).thenReturn(jobKeys);
-      doReturn(triggers).when(scheduler).getTriggersOfJob(jobKey);
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
+    when(scheduler.getJobGroupNames()).thenReturn(groupNames);
+    when(scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))).thenReturn(jobKeys);
+    doReturn(triggers).when(scheduler).getTriggersOfJob(jobKey);
 
     List<JobDTO> actualJobInfo = schedulerService.getJobInfo();
 
     assertEquals(expectedInfo.size(), actualJobInfo.size());
   }
+
+  @Test(expected = QSchedulerException.class)
+  public void getJobInfoSchedulerExceptionTest() throws SchedulerException {
+    when(scheduler.getJobGroupNames()).thenThrow(new SchedulerException());
+    schedulerService.getJobInfo();
+  }
+
 }
