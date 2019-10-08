@@ -1,5 +1,6 @@
 package com.eurodyn.qlack.fuse.acv;
 
+import javax.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -9,6 +10,7 @@ import lombok.ToString;
 @ToString
 public class PersonDTO {
 
+  @Id
   private String name;
   private String email;
   private int age;
