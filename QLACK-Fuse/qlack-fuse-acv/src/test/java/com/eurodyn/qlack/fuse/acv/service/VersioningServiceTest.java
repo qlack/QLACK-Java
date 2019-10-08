@@ -4,13 +4,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import com.eurodyn.qlack.fuse.acv.dto.ChangeDTO;
-import com.eurodyn.qlack.fuse.acv.dto.PersonDTO;
-import com.eurodyn.qlack.fuse.acv.dto.RoleDTO;
+import com.eurodyn.qlack.fuse.acv.PersonDTO;
+import com.eurodyn.qlack.fuse.acv.RoleDTO;
 import com.eurodyn.qlack.fuse.acv.dto.VersionDTO;
 import java.util.List;
 import org.javers.core.Javers;
 import org.javers.core.JaversBuilder;
-import org.javers.repository.jql.QueryBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +33,7 @@ public class VersioningServiceTest {
   public void testVersionService() {
 
     // create first version
-    PersonDTO personDTO = createPersonDTO("username", null, 22);
+   PersonDTO personDTO = createPersonDTO("username", null, 22);
 
     long commitId = service.createVersion("user1", personDTO, "message 1");
     assertEquals(1, commitId);

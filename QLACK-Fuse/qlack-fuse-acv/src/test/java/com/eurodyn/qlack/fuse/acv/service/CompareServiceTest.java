@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import com.eurodyn.qlack.fuse.acv.dto.ChangeDTO;
-import com.eurodyn.qlack.fuse.acv.dto.PersonDTO;
-import com.eurodyn.qlack.fuse.acv.dto.RoleDTO;
+import com.eurodyn.qlack.fuse.acv.PersonDTO;
+import com.eurodyn.qlack.fuse.acv.RoleDTO;
 import java.util.List;
 import org.javers.core.JaversBuilder;
 import org.junit.Before;
