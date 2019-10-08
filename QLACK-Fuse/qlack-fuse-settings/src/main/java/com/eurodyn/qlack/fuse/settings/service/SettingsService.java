@@ -5,7 +5,7 @@ import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.common.exception.QMismatchException;
 import com.eurodyn.qlack.fuse.settings.dto.GroupDTO;
 import com.eurodyn.qlack.fuse.settings.dto.SettingDTO;
-import com.eurodyn.qlack.fuse.settings.mappers.SettingMapper;
+import com.eurodyn.qlack.fuse.settings.mapper.SettingMapper;
 import com.eurodyn.qlack.fuse.settings.model.QSetting;
 import com.eurodyn.qlack.fuse.settings.model.Setting;
 import com.eurodyn.qlack.fuse.settings.repository.SettingRepository;
@@ -58,7 +58,8 @@ public class SettingsService {
    * Finds all the settings that are owned by the given owner.
    *
    * @param owner the owner of the persisted settings
-   * @param includeSensitive flag determines whether to include the sensitive settings in the results
+   * @param includeSensitive flag determines whether to include the sensitive settings in the
+   * results
    * @return a list of settings owned by the specific owner
    */
   public List<SettingDTO> getSettings(String owner, boolean includeSensitive) {
@@ -77,11 +78,12 @@ public class SettingsService {
    * @param owner The owner of the settings.
    * @param keys The list of settings to return.
    * @param group The group of the settings.
+   * @return a list containing the found settings
    */
   public List<SettingDTO> getSettings(String owner, List<String> keys, String group) {
     return keys.stream()
-      .map(key -> getSetting(owner, key, group))
-      .collect(Collectors.toList());
+        .map(key -> getSetting(owner, key, group))
+        .collect(Collectors.toList());
   }
 
   /**
@@ -108,13 +110,13 @@ public class SettingsService {
   public SettingDTO getSetting(String owner, String key, String group) {
     Optional<Setting> setting = getOptionalSetting(owner, key, group);
     log.info(
-      MessageFormat
-        .format("Retrieving setting with key: {0}, owned by: {1} and in group: {2} ", key,
-          owner, group));
+        MessageFormat
+            .format("Retrieving setting with key: {0}, owned by: {1} and in group: {2} ", key,
+                owner, group));
 
     return settingMapper.map(setting.orElseThrow(
-      () -> new QDoesNotExistException(MessageFormat.format(
-        "Did not find a setting with key: {0}.", key))));
+        () -> new QDoesNotExistException(MessageFormat.format(
+            "Did not find a setting with key: {0}.", key))));
   }
 
   /**
@@ -126,7 +128,7 @@ public class SettingsService {
    */
   public List<SettingDTO> getGroupSettings(String owner, String group) {
     log.info(
-      MessageFormat.format("Retrieving settings owned by: {0} and in group: {1} ", owner, group));
+        MessageFormat.format("Retrieving settings owned by: {0} and in group: {1} ", owner, group));
     Predicate predicate = qsetting.owner.eq(owner).and(qsetting.group.eq(group));
     return settingMapper.map(settingRepository.findAll(predicate));
   }
@@ -142,13 +144,13 @@ public class SettingsService {
     String group = dto.getGroup();
 
     log.info(
-      MessageFormat
-        .format("Creating setting with key: {0}, owned by: {1} and in group: {2} ", key, owner,
-          group));
+        MessageFormat
+            .format("Creating setting with key: {0}, owned by: {1} and in group: {2} ", key, owner,
+                group));
     try {
       getSetting(dto.getOwner(), key, group);
       throw new QAlreadyExistsException(MessageFormat.format(
-        "A setting already exists with key: {0}.", key));
+          "A setting already exists with key: {0}.", key));
     } catch (QDoesNotExistException e) {
       Setting setting = settingMapper.mapToEntity(dto);
 
@@ -166,11 +168,11 @@ public class SettingsService {
    */
   public void setVal(String owner, String key, String val, String group) {
     log.info(MessageFormat
-      .format("Setting the value of setting with key: {0}, owned by: {1} and in group: {2} ", key,
-        owner, group));
+        .format("Setting the value of setting with key: {0}, owned by: {1} and in group: {2} ", key,
+            owner, group));
     Setting setting = getOptionalSetting(owner, key, group).orElseThrow(
-      () -> new QDoesNotExistException(
-        MessageFormat.format("Did not find a setting with key: {0}.", key)));
+        () -> new QDoesNotExistException(
+            MessageFormat.format("Did not find a setting with key: {0}.", key)));
     setting.setVal(val);
   }
 
@@ -188,7 +190,7 @@ public class SettingsService {
     }
 
     IntStream.range(0, keys.size())
-      .forEach(idx -> setVal(owner, keys.get(idx), vals.get(idx), group));
+        .forEach(idx -> setVal(owner, keys.get(idx), vals.get(idx), group));
   }
 
   /**
@@ -201,8 +203,8 @@ public class SettingsService {
    */
   private Optional<Setting> getOptionalSetting(String owner, String key, String group) {
     Predicate predicate = qsetting.owner.eq(owner)
-      .and(qsetting.key.eq(key))
-      .and(qsetting.group.eq(group));
+        .and(qsetting.key.eq(key))
+        .and(qsetting.group.eq(group));
     return settingRepository.findOne(predicate);
   }
 }

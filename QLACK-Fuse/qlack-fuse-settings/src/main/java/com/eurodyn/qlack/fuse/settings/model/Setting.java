@@ -75,8 +75,8 @@ public class Setting extends QlackBaseModel {
   @Override
   public String toString() {
     return "Setting [id=" + getId() + ", dbversion=" + dbversion + ", owner=" + owner + ", group="
-      + group + ", key="
-      + key + ", val=" + val + ", createdOn=" + createdOn + "]";
+        + group + ", key="
+        + key + ", val=" + val + ", createdOn=" + createdOn + "]";
   }
 
 }

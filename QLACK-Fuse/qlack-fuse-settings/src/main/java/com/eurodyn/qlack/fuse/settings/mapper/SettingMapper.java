@@ -1,4 +1,4 @@
-package com.eurodyn.qlack.fuse.settings.mappers;
+package com.eurodyn.qlack.fuse.settings.mapper;
 
 import com.eurodyn.qlack.fuse.settings.dto.GroupDTO;
 import com.eurodyn.qlack.fuse.settings.dto.SettingDTO;
@@ -17,6 +17,7 @@ public interface SettingMapper {
 
   /**
    * Maps a list of {@link Setting} objects to a list of {@link SettingDTO} objects
+   *
    * @param o the list of {@link Setting} objects
    * @return a list of {@link SettingDTO}
    */
@@ -24,14 +25,16 @@ public interface SettingMapper {
 
   /**
    * Maps a {@link Setting} to a {@link SettingDTO}
+   *
    * @param o the {@link Setting} object
    * @return a {@link SettingDTO} object
    */
   SettingDTO map(Setting o);
 
   /**
-   * Maps the group property of {@link Setting} class to the name property of
-   * the {@link GroupDTO} class
+   * Maps the group property of {@link Setting} class to the name property of the {@link GroupDTO}
+   * class
+   *
    * @param o the {@link Setting} object
    * @return a {@link GroupDTO} object
    */
@@ -40,6 +43,7 @@ public interface SettingMapper {
 
   /**
    * Maps a list of {@link Setting} objects to a listof {@link GroupDTO} objects
+   *
    * @param o the list of {@link Setting} objects
    * @return a list of {@link GroupDTO} objects
    */
@@ -48,6 +52,7 @@ public interface SettingMapper {
   /**
    * Maps a {@link SettingDTO} to entity. The properties 'id', 'dbversion' are excluded from
    * mapping.
+   *
    * @param dto the {@link SettingDTO} object
    * @return a {@link Setting} object
    */

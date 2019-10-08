@@ -1,4 +1,4 @@
-package com.eurodyn.qlack.fuse.settings.mappers;
+package com.eurodyn.qlack.fuse.settings.mapper;
 
 import static org.junit.Assert.assertEquals;
 

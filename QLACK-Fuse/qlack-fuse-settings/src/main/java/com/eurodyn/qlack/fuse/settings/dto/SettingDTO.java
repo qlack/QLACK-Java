@@ -59,6 +59,7 @@ public class SettingDTO implements Serializable {
 
   /**
    * Copy constructor
+   *
    * @param key key
    * @param val value
    */
@@ -69,6 +70,7 @@ public class SettingDTO implements Serializable {
 
   /**
    * Returns value as int
+   *
    * @return value as integer
    */
   public int getValAsInt() {
@@ -77,6 +79,7 @@ public class SettingDTO implements Serializable {
 
   /**
    * Returns value as long
+   *
    * @return value as long
    */
   public long getValAsLong() {
@@ -85,6 +88,7 @@ public class SettingDTO implements Serializable {
 
   /**
    * Returns value as boolean
+   *
    * @return value as boolean
    */
   public boolean getValAsBoolean() {
