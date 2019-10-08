@@ -6,17 +6,17 @@ import com.eurodyn.qlack.fuse.tokenserver.mapper.TokenMapper;
 import com.eurodyn.qlack.fuse.tokenserver.model.Token;
 import com.eurodyn.qlack.fuse.tokenserver.repository.TokenRepository;
 import com.querydsl.core.types.Predicate;
+import java.text.MessageFormat;
+import java.time.Instant;
+import java.util.Collection;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-
-import java.text.MessageFormat;
-import java.time.Instant;
-import java.util.Collection;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -25,6 +25,7 @@ import java.util.List;
 public class TokenServerService {
 
   private final TokenMapper mapper;
+
   private final TokenRepository repository;
 
   @Value("${qlack.fuse.tokenserver.enableCleanup:false}")
@@ -34,6 +35,7 @@ public class TokenServerService {
   @Value("${qlack.fuse.tokenserver.cleanupRevoked:false}")
   private boolean cleanupRevoked;
 
+  @Autowired
   public TokenServerService(TokenMapper mapper, TokenRepository repository) {
     this.mapper = mapper;
     this.repository = repository;
@@ -63,7 +65,8 @@ public class TokenServerService {
       retVal = true;
     }
 
-    if (retVal && token.getValidUntil() != null && token.getAutoExtendDuration() != null && token.getAutoExtendDuration() > 0) {
+    if (retVal && token.getValidUntil() != null && token.getAutoExtendDuration() != null
+        && token.getAutoExtendDuration() > 0) {
       Instant now = Instant.now();
       Instant newValidUntil;
       if (token.getAutoExtendUntil() == null

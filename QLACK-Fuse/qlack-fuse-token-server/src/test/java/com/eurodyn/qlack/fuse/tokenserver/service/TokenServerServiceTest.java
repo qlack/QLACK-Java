@@ -6,10 +6,12 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.eurodyn.qlack.fuse.tokenserver.InitTestValues;
 import com.eurodyn.qlack.fuse.tokenserver.dto.TokenDTO;
 import com.eurodyn.qlack.fuse.tokenserver.exception.QTokenRevokedException;
 import com.eurodyn.qlack.fuse.tokenserver.mapper.TokenMapper;
@@ -17,13 +19,6 @@ import com.eurodyn.qlack.fuse.tokenserver.model.QToken;
 import com.eurodyn.qlack.fuse.tokenserver.model.Token;
 import com.eurodyn.qlack.fuse.tokenserver.repository.TokenRepository;
 import com.querydsl.core.types.Predicate;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -31,20 +26,42 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TokenServerServiceTest {
 
   @InjectMocks
-  @Spy
   private TokenServerService service;
+
+  private TokenServerService mockService;
+
   @Mock
   private TokenMapper mapper;
+
   @Mock
   private TokenRepository repository;
 
-  private static final String PAYLOAD = "payload";
-  private final Instant now = Instant.now();
+  private InitTestValues initTestValues;
+
+  private Token token;
+
+  private TokenDTO tokenDTO;
+
+  @Before
+  public void init() {
+    service = new TokenServerService(mapper, repository);
+    mockService = spy(service);
+    initTestValues = new InitTestValues();
+    token = initTestValues.createToken();
+    tokenDTO = initTestValues.createTokenDTO();
+  }
 
   @Test
   public void cleanupExpiredSuccessfully() {
@@ -86,9 +103,6 @@ public class TokenServerServiceTest {
   public void getTokenSuccessfully() {
     String tokenId = UUID.randomUUID().toString();
 
-    TokenDTO tokenDTO = createTokenDTO(tokenId);
-
-    Token token = createToken();
     token.setId(tokenId);
 
     when(repository.fetchById(tokenId)).thenReturn(token);
@@ -104,8 +118,6 @@ public class TokenServerServiceTest {
   @Test
   public void createTokenSuccessfully() {
     String tokenId = UUID.randomUUID().toString();
-    TokenDTO tokenDTO = createTokenDTO(tokenId);
-    Token token = createToken();
     token.setId(tokenId);
 
     when(mapper.mapToEntity(tokenDTO)).thenReturn(token);
@@ -138,9 +150,7 @@ public class TokenServerServiceTest {
   @Test
   public void getValidUntilSuccessfully() {
     String tokenId = UUID.randomUUID().toString();
-    Instant expectedValidUntil = now.plus(1, ChronoUnit.HOURS);
-
-    Token token = new Token();
+    Instant expectedValidUntil = token.getValidUntil().plus(1, ChronoUnit.HOURS);
     token.setValidUntil(expectedValidUntil);
     token.setId(tokenId);
 
@@ -155,8 +165,6 @@ public class TokenServerServiceTest {
   @Test
   public void revokeTokenSuccessfully() {
     String tokenId = UUID.randomUUID().toString();
-
-    Token token = new Token();
     token.setId(tokenId);
 
     when(repository.fetchById(tokenId)).thenReturn(token);
@@ -170,9 +178,9 @@ public class TokenServerServiceTest {
     List<String> tokenIds = Stream.generate(() -> UUID.randomUUID().toString()).limit(tokenIdsSize)
         .collect(Collectors.toList());
 
-    doNothing().when(service).revoke(anyString());
-    service.revoke(tokenIds);
-    verify(service, times(tokenIdsSize)).revoke(anyString());
+    doNothing().when(mockService).revoke(anyString());
+    mockService.revoke(tokenIds);
+    verify(mockService, times(tokenIdsSize)).revoke(anyString());
 
   }
 
@@ -191,9 +199,8 @@ public class TokenServerServiceTest {
   @Test
   public void extendTokenValiditySuccessfully() {
     String tokenId = UUID.randomUUID().toString();
-    Instant expectedValidUntil = now.plus(1, ChronoUnit.HOURS);
+    Instant expectedValidUntil = token.getValidUntil().plus(1, ChronoUnit.HOURS);
 
-    Token token = new Token();
     token.setId(tokenId);
 
     when(repository.fetchById(tokenId)).thenReturn(token);
@@ -204,9 +211,7 @@ public class TokenServerServiceTest {
   @Test(expected = QTokenRevokedException.class)
   public void extendTokenValidityThrowsExpectedException() {
     String tokenId = UUID.randomUUID().toString();
-    Instant expectedValidUntil = now.plus(1, ChronoUnit.HOURS);
-
-    Token token = new Token();
+    Instant expectedValidUntil = token.getValidUntil().plus(1, ChronoUnit.HOURS);
     token.setId(tokenId);
     token.setRevoked(true);
 
@@ -217,9 +222,7 @@ public class TokenServerServiceTest {
   @Test
   public void extendTokenAutoExtendValiditySuccessfully() {
     String tokenId = UUID.randomUUID().toString();
-    Instant autoExtendUntil = now.plus(1, ChronoUnit.HOURS);
-
-    Token token = new Token();
+    Instant autoExtendUntil = token.getValidUntil().plus(1, ChronoUnit.HOURS);
     token.setId(tokenId);
 
     when(repository.fetchById(tokenId)).thenReturn(token);
@@ -230,9 +233,7 @@ public class TokenServerServiceTest {
   @Test(expected = QTokenRevokedException.class)
   public void extendTokenAutoExtendValidityThrowsExpectedException() {
     String tokenId = UUID.randomUUID().toString();
-    Instant autoExtendUntil = now.plus(1, ChronoUnit.HOURS);
-
-    Token token = new Token();
+    Instant autoExtendUntil = token.getValidUntil().plus(1, ChronoUnit.HOURS);
     token.setId(tokenId);
     token.setRevoked(true);
 
@@ -243,7 +244,6 @@ public class TokenServerServiceTest {
   @Test
   public void nonRevokedTokenAndNoExpiryIsValid() {
     String tokenId = UUID.randomUUID().toString();
-    Token token = new Token();
     token.setId(tokenId);
 
     when(repository.fetchById(tokenId)).thenReturn(token);
@@ -254,9 +254,8 @@ public class TokenServerServiceTest {
   @Test
   public void nonRevokedTokenAndNotExpiredIsValid() {
     String tokenId = UUID.randomUUID().toString();
-    Token token = new Token();
     token.setId(tokenId);
-    token.setValidUntil(now.plus(1, ChronoUnit.HOURS));
+    token.setValidUntil(token.getValidUntil().plus(1, ChronoUnit.HOURS));
 
     when(repository.fetchById(tokenId)).thenReturn(token);
     boolean actualResult = service.isValid(tokenId);
@@ -266,9 +265,8 @@ public class TokenServerServiceTest {
   @Test
   public void validTokenWithNonPositiveAutoExtendDuration() {
     String tokenId = UUID.randomUUID().toString();
-    Token token = new Token();
     token.setId(tokenId);
-    token.setValidUntil(now.plus(1, ChronoUnit.HOURS));
+    token.setValidUntil(token.getValidUntil().plus(1, ChronoUnit.HOURS));
     token.setAutoExtendDuration(0L);
 
     when(repository.fetchById(tokenId)).thenReturn(token);
@@ -279,46 +277,85 @@ public class TokenServerServiceTest {
   @Test
   public void validTokenWithPositiveAutoExtendDuration() {
     String tokenId = UUID.randomUUID().toString();
-    Token token = new Token();
     token.setId(tokenId);
-    token.setValidUntil(now.plus(1, ChronoUnit.HOURS));
+    token.setValidUntil(token.getValidUntil().plus(1, ChronoUnit.HOURS));
     token.setAutoExtendDuration(1000L);
     Instant autoExtendUntil = Instant.now().plus(1, ChronoUnit.SECONDS);
     token.setAutoExtendUntil(autoExtendUntil);
 
     when(repository.fetchById(tokenId)).thenReturn(token);
-    boolean actualResult = service.isValid(tokenId);
+    service.isValid(tokenId);
     assertEquals(autoExtendUntil, token.getValidUntil());
   }
 
   @Test
   public void nonRevokedTokenAndExpiredIsNotValid() {
     String tokenId = UUID.randomUUID().toString();
-    Token token = new Token();
     token.setId(tokenId);
-    token.setValidUntil(now.minus(1, ChronoUnit.HOURS));
+    token.setValidUntil(token.getValidUntil().minus(1, ChronoUnit.HOURS));
 
     when(repository.fetchById(tokenId)).thenReturn(token);
     boolean actualResult = service.isValid(tokenId);
     assertFalse(actualResult);
   }
 
-  private Token createToken() {
-    Token token = new Token();
-    token.setCreatedAt(now);
-    token.setLastModifiedAt(now);
-    token.setPayload(PAYLOAD);
-    token.setValidUntil(now.plus(1, ChronoUnit.HOURS));
-    return token;
+  @Test
+  @SuppressWarnings("squid:S2699")
+  public void checkAndSendQueuedCleanupDisabledTest() {
+    service.checkAndSendQueued();
   }
 
-  private TokenDTO createTokenDTO(String tokenId) {
-    return TokenDTO.builder()
-        .id(tokenId)
-        .createdAt(now)
-        .lastModifiedAt(now)
-        .payload(PAYLOAD)
-        .validUntil(now.plus(1, ChronoUnit.HOURS))
-        .build();
+  @Test
+  public void checkAndSendQueuedTest() {
+    ReflectionTestUtils.setField(service, "enableCleanup", true);
+    ReflectionTestUtils.setField(service, "cleanupExpired", true);
+    ReflectionTestUtils.setField(service, "cleanupRevoked", true);
+    service.checkAndSendQueued();
+    verify(repository, times(1)).deleteAllByValidUntilIsBefore(any(Instant.class));
+    verify(repository, times(1)).deleteAllByRevokedIsTrue();
   }
+
+  @Test
+  @SuppressWarnings("squid:S2699")
+  public void checkAndSendQueuedDisabledTest() {
+    ReflectionTestUtils.setField(service, "enableCleanup", true);
+    ReflectionTestUtils.setField(service, "cleanupExpired", false);
+    ReflectionTestUtils.setField(service, "cleanupRevoked", false);
+    service.checkAndSendQueued();
+  }
+
+  @Test
+  public void isValidScenarioTwoTest() {
+    token.setValidUntil(null);
+    when(repository.fetchById("id")).thenReturn(token);
+    assertTrue(service.isValid("id"));
+  }
+
+  @Test
+  public void isValidScenarioThreeTest() {
+    token.setRevoked(true);
+    when(repository.fetchById("id")).thenReturn(token);
+    assertFalse(service.isValid("id"));
+  }
+
+  @Test
+  public void isValidScenarioFourthTest() {
+    token.setValidUntil(token.getValidUntil().plus(1, ChronoUnit.HOURS));
+    token.setAutoExtendDuration(1L);
+    token.setAutoExtendUntil(null);
+
+    when(repository.fetchById("id")).thenReturn(token);
+    assertTrue(service.isValid("id"));
+  }
+
+  @Test
+  public void isValidScenarioFifthTest() {
+    token.setValidUntil(token.getValidUntil().plus(1, ChronoUnit.HOURS));
+    token.setAutoExtendDuration(1L);
+    token.setAutoExtendUntil(Instant.now().plusMillis(10000L));
+
+    when(repository.fetchById("id")).thenReturn(token);
+    assertTrue(service.isValid("id"));
+  }
+
 }
