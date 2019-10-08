@@ -62,3 +62,7 @@ Only `api-classes` and `swagger.basePath` should be edited.
 The documentation can be found on the path **/documentation/index.html** and Swagger-UI is accessible at **/documentation/ui/index.html** 
 
 If your application has secured endpoints using JWT, they can be accessed by including the JWT value in the api_token filed of the navbar.
+
+#### If your project pom.xml does not have QLACK as its parent, then the 'documentation' profile will not be found.
+#### You will have to copy it from the [QLACK pom.xml](https://github.com/qlack/QLACK-Java/blob/master/pom.xml) and include it your pom.xml.
+#### NOTE: Make sure to change the version of the qlack-util-documentation artifact of the 'unpack' goal to match the QLACK version you are using on your project.

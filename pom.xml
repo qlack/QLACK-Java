@@ -394,6 +394,7 @@
             <executions>
               <execution>
                 <id>documentation</id>
+                <phase>package</phase>
                 <goals>
                   <goal>docs</goal>
                 </goals>
@@ -406,6 +407,7 @@
             <executions>
               <execution>
                 <id>documentation</id>
+                <phase>package</phase>
                 <goals>
                   <goal>unpack</goal>
                 </goals>
@@ -431,7 +433,7 @@
             <executions>
               <execution>
                 <id>documentation</id>
-                <phase>compile</phase>
+                <phase>package</phase>
                 <goals>
                   <goal>run</goal>
                 </goals>
