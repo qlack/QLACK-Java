@@ -85,12 +85,12 @@
     <sonar.jacoco.reportPath>${project.build.directory}/jacoco.exec</sonar.jacoco.reportPath>
     <sonar.jacoco.itReportPath>${project.build.directory}/jacoco-it.exec</sonar.jacoco.itReportPath>
     <sonar.coverage.exclusions>
-      com/eurodyn/qlack/**/**/model/*,
-      com/eurodyn/qlack/**/**/model/**/*,
-      com/eurodyn/qlack/**/**/dto/*,
-      com/eurodyn/qlack/**/**/dto/**/*,
-      com/eurodyn/qlack/fuse/rules/util/classloader/*,
-      com/eurodyn/qlack/util/clamav/util/*
+      src/main/java/com/eurodyn/qlack/**/**/model/*,
+      src/main/java/com/eurodyn/qlack/**/**/model/**/*,
+      src/main/java/com/eurodyn/qlack/**/**/dto/*,
+      src/main/java/com/eurodyn/qlack/**/**/dto/**/*,
+      src/main/java/com/eurodyn/qlack/fuse/rules/util/classloader/*,
+      src/main/java/com/eurodyn/qlack/util/clamav/util/*
     </sonar.coverage.exclusions>
   </properties>
 
