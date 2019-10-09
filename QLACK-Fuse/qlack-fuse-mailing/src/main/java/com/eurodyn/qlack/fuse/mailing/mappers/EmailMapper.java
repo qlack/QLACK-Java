@@ -59,7 +59,7 @@ public interface EmailMapper extends MailingMapper<Email, EmailDTO> {
   default List<String> mapCsvToList(String emails) {
     List<String> contacts = new ArrayList<>();
     if (emails == null) {
-      return null;
+      return new ArrayList<>();
     }
 
 		StringTokenizer st = new StringTokenizer(emails, ",");

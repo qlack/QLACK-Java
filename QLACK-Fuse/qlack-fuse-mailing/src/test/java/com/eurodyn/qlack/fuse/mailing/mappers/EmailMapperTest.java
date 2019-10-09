@@ -2,25 +2,24 @@ package com.eurodyn.qlack.fuse.mailing.mappers;/**
  * @author European Dynamics
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
+import com.eurodyn.qlack.fuse.mailing.InitTestValues;
 import com.eurodyn.qlack.fuse.mailing.dto.AttachmentDTO;
+import com.eurodyn.qlack.fuse.mailing.dto.EmailDTO;
 import com.eurodyn.qlack.fuse.mailing.model.Attachment;
+import com.eurodyn.qlack.fuse.mailing.model.Email;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import com.eurodyn.qlack.fuse.mailing.InitTestValues;
-import com.eurodyn.qlack.fuse.mailing.dto.EmailDTO;
-import com.eurodyn.qlack.fuse.mailing.model.Email;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EmailMapperTest {
@@ -311,8 +310,10 @@ public class EmailMapperTest {
 
   @Test
   public void testMapCsvToListNull(){
-    assertNull(emailMapperImpl.mapCsvToList(null));
+    List<String>emails = emailMapperImpl.mapCsvToList(null);
+    assertTrue(emails.isEmpty());
   }
+
 
   @Test
   public void testMapCsvToListEmpty(){
