@@ -2,6 +2,7 @@ package com.eurodyn.qlack.fuse.cm.model;
 
 import com.eurodyn.qlack.common.model.QlackBaseModel;
 import com.eurodyn.qlack.fuse.cm.enums.NodeType;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,8 +17,6 @@ import javax.persistence.Version;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @Entity
 @Table(name = "cm_node")

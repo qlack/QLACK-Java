@@ -14,7 +14,9 @@
  */
 package com.eurodyn.qlack.fuse.cm.exception;
 
-public class QSelectedNodeLockException extends QNodeLockException {
+import com.eurodyn.qlack.common.exception.QException;
+
+public class QSelectedNodeLockException extends QException {
 
   private static final long serialVersionUID = -5410115071738347719L;
 

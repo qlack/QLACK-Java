@@ -1,4 +1,4 @@
-package com.eurodyn.qlack.fuse.cm.mappers;
+package com.eurodyn.qlack.fuse.cm.mapper;
 
 import com.eurodyn.qlack.fuse.cm.dto.BreadcrumbPartDTO;
 import com.eurodyn.qlack.fuse.cm.dto.FileDTO;
@@ -9,19 +9,19 @@ import com.eurodyn.qlack.fuse.cm.enums.RelativesType;
 import com.eurodyn.qlack.fuse.cm.model.Node;
 import com.eurodyn.qlack.fuse.cm.model.NodeAttribute;
 import com.eurodyn.qlack.fuse.cm.util.CMConstants;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
+import org.mapstruct.ReportingPolicy;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface NodeMapper extends CMBaseMapper<Node, NodeDTO> {
 
   @Mapping(source = "attributes", target = "name", qualifiedByName = "mapName")

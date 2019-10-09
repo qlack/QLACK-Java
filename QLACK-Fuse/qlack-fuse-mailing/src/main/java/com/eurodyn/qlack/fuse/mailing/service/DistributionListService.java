@@ -2,8 +2,8 @@ package com.eurodyn.qlack.fuse.mailing.service;
 
 import com.eurodyn.qlack.fuse.mailing.dto.ContactDTO;
 import com.eurodyn.qlack.fuse.mailing.dto.DistributionListDTO;
-import com.eurodyn.qlack.fuse.mailing.mappers.ContactMapper;
-import com.eurodyn.qlack.fuse.mailing.mappers.DistributionListMapper;
+import com.eurodyn.qlack.fuse.mailing.mapper.ContactMapper;
+import com.eurodyn.qlack.fuse.mailing.mapper.DistributionListMapper;
 import com.eurodyn.qlack.fuse.mailing.model.Contact;
 import com.eurodyn.qlack.fuse.mailing.model.DistributionList;
 import com.eurodyn.qlack.fuse.mailing.repository.ContactRepository;
@@ -149,7 +149,7 @@ public class DistributionListService {
     dlist.getContacts().remove(contact);
   }
 
-  private void createOrUpdateDitrubtionList(DistributionListDTO dto){
+  private void createOrUpdateDitrubtionList(DistributionListDTO dto) {
     DistributionList dlist = distributionListMapper.mapToEntity(dto);
     distributionListRepository.save(dlist);
   }

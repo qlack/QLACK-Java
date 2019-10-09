@@ -25,4 +25,11 @@ public class CMConstants {
   public static final String CREATED_ON = "CREATED ON";
   public static final String LOCKABLE = "LOCKABLE";
   public static final String VERSIONABLE = "VERSIONABLE";
+
+  /**
+   * Private Constructor
+   */
+  private CMConstants(){
+
+  }
 }

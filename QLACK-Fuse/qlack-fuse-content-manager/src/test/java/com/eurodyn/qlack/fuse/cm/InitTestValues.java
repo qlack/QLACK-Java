@@ -13,7 +13,6 @@ import com.eurodyn.qlack.fuse.cm.model.Version;
 import com.eurodyn.qlack.fuse.cm.model.VersionAttribute;
 import com.eurodyn.qlack.fuse.cm.model.VersionBin;
 import com.eurodyn.qlack.fuse.cm.util.CMConstants;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -55,13 +54,13 @@ public class InitTestValues {
     return attributes;
   }
 
-  public Set<NodeAttributeDTO> createNodeAttributesDTOSet(NodeAttributeDTO nodeAttributeDTO){
+  public Set<NodeAttributeDTO> createNodeAttributesDTOSet(NodeAttributeDTO nodeAttributeDTO) {
     Set<NodeAttributeDTO> nodeAttributeDTOSet = new HashSet<>();
     nodeAttributeDTOSet.add(nodeAttributeDTO);
     return nodeAttributeDTOSet;
   }
 
-  public List<NodeAttributeDTO> createNodeAttributesDTOList(NodeAttributeDTO nodeAttributeDTO){
+  public List<NodeAttributeDTO> createNodeAttributesDTOList(NodeAttributeDTO nodeAttributeDTO) {
     List<NodeAttributeDTO> nodeAttributeDTOList = new ArrayList<>();
     nodeAttributeDTOList.add(nodeAttributeDTO);
     return nodeAttributeDTOList;
@@ -165,21 +164,21 @@ public class InitTestValues {
     return versionAttributes;
   }
 
-  public List<NodeDTO> createListNodeDTO(){
+  public List<NodeDTO> createListNodeDTO() {
     List<NodeDTO> nodeDTOS = new ArrayList<>();
     nodeDTOS.add(createNodeDTO("nodeDTOId"));
 
     return nodeDTOS;
   }
 
-  public List<Node> createListNode(){
+  public List<Node> createListNode() {
     List<Node> nodeList = new ArrayList<>();
     nodeList.add(createNode("nodeId"));
 
     return nodeList;
   }
 
-  public VersionBin createVersionBin(){
+  public VersionBin createVersionBin() {
     VersionBin versionBin = new VersionBin();
     versionBin.setId("binId");
     versionBin.setVersion(createVersion());
@@ -187,20 +186,20 @@ public class InitTestValues {
     return versionBin;
   }
 
-  public List<VersionBin> createVersionBinList(){
+  public List<VersionBin> createVersionBinList() {
     List<VersionBin> versionBinList = new ArrayList<>();
     versionBinList.add(createVersionBin());
     return versionBinList;
   }
 
-  public BinChunkDTO createBinChunkDTO(){
+  public BinChunkDTO createBinChunkDTO() {
     BinChunkDTO binChunkDTO = new BinChunkDTO();
     binChunkDTO.setVersionID("versionId");
     binChunkDTO.setBinContent(new byte[1024]);
     return binChunkDTO;
   }
 
-  public List<BinChunkDTO> createBinChunkDTOList(){
+  public List<BinChunkDTO> createBinChunkDTOList() {
     List<BinChunkDTO> binChunkDTOList = new ArrayList<>();
     binChunkDTOList.add(createBinChunkDTO());
     return binChunkDTOList;

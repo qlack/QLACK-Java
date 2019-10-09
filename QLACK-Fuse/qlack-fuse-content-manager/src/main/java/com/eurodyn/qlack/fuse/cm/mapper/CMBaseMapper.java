@@ -1,4 +1,4 @@
-package com.eurodyn.qlack.fuse.cm.mappers;
+package com.eurodyn.qlack.fuse.cm.mapper;
 
 import java.util.List;
 

@@ -14,12 +14,10 @@ import com.eurodyn.qlack.fuse.mailing.model.DistributionList;
 import com.eurodyn.qlack.fuse.mailing.model.Email;
 import com.eurodyn.qlack.fuse.mailing.model.InternalAttachment;
 import com.eurodyn.qlack.fuse.mailing.model.InternalMessage;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import org.hibernate.mapping.Collection;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -177,14 +175,14 @@ public class ConverterUtilTest {
   }
 
   @Test
-  public void internalMessageConvertNullAttachmentsTest(){
+  public void internalMessageConvertNullAttachmentsTest() {
     internalMessage.setAttachments(null);
     InternalMessageDTO result = ConverterUtil.internalMessageConvert(internalMessage);
     assertEquals(internalMessage.getMessage(), result.getMessage());
   }
 
   @Test
-  public void internalMessageConvertEmptyAttachmentsTest(){
+  public void internalMessageConvertEmptyAttachmentsTest() {
     internalMessage.setAttachments(Collections.emptySet());
     InternalMessageDTO result = ConverterUtil.internalMessageConvert(internalMessage);
     assertEquals(internalMessage.getMessage(), result.getMessage());

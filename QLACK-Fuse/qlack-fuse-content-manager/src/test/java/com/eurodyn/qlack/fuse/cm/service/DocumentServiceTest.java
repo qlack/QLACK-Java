@@ -22,10 +22,15 @@ import com.eurodyn.qlack.fuse.cm.exception.QAncestorFolderLockException;
 import com.eurodyn.qlack.fuse.cm.exception.QDescendantNodeLockException;
 import com.eurodyn.qlack.fuse.cm.exception.QInvalidPathException;
 import com.eurodyn.qlack.fuse.cm.exception.QSelectedNodeLockException;
-import com.eurodyn.qlack.fuse.cm.mappers.NodeMapper;
+import com.eurodyn.qlack.fuse.cm.mapper.NodeMapper;
 import com.eurodyn.qlack.fuse.cm.model.Node;
 import com.eurodyn.qlack.fuse.cm.repository.NodeRepository;
 import com.eurodyn.qlack.fuse.cm.util.CMConstants;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.persistence.EntityManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,12 +39,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author European Dynamics

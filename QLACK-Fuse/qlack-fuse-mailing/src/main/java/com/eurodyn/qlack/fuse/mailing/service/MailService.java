@@ -2,8 +2,8 @@ package com.eurodyn.qlack.fuse.mailing.service;
 
 import com.eurodyn.qlack.fuse.mailing.dto.AttachmentDTO;
 import com.eurodyn.qlack.fuse.mailing.dto.EmailDTO;
-import com.eurodyn.qlack.fuse.mailing.mappers.AttachmentMapper;
-import com.eurodyn.qlack.fuse.mailing.mappers.EmailMapper;
+import com.eurodyn.qlack.fuse.mailing.mapper.AttachmentMapper;
+import com.eurodyn.qlack.fuse.mailing.mapper.EmailMapper;
 import com.eurodyn.qlack.fuse.mailing.model.Attachment;
 import com.eurodyn.qlack.fuse.mailing.model.Email;
 import com.eurodyn.qlack.fuse.mailing.monitor.MailQueueMonitor;

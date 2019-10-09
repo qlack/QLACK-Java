@@ -2,8 +2,8 @@ package com.eurodyn.qlack.fuse.mailing.service;
 
 import com.eurodyn.qlack.fuse.mailing.dto.InternalAttachmentDTO;
 import com.eurodyn.qlack.fuse.mailing.dto.InternalMessageDTO;
-import com.eurodyn.qlack.fuse.mailing.mappers.InternalAttachmentMapper;
-import com.eurodyn.qlack.fuse.mailing.mappers.InternalMessageMapper;
+import com.eurodyn.qlack.fuse.mailing.mapper.InternalAttachmentMapper;
+import com.eurodyn.qlack.fuse.mailing.mapper.InternalMessageMapper;
 import com.eurodyn.qlack.fuse.mailing.model.InternalAttachment;
 import com.eurodyn.qlack.fuse.mailing.model.InternalMessage;
 import com.eurodyn.qlack.fuse.mailing.model.QInternalMessage;

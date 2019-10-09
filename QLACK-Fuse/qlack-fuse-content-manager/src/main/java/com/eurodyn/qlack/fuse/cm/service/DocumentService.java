@@ -13,7 +13,7 @@ import com.eurodyn.qlack.fuse.cm.exception.QIOException;
 import com.eurodyn.qlack.fuse.cm.exception.QInvalidPathException;
 import com.eurodyn.qlack.fuse.cm.exception.QNodeLockException;
 import com.eurodyn.qlack.fuse.cm.exception.QSelectedNodeLockException;
-import com.eurodyn.qlack.fuse.cm.mappers.NodeMapper;
+import com.eurodyn.qlack.fuse.cm.mapper.NodeMapper;
 import com.eurodyn.qlack.fuse.cm.model.Node;
 import com.eurodyn.qlack.fuse.cm.model.NodeAttribute;
 import com.eurodyn.qlack.fuse.cm.model.QNode;
@@ -23,14 +23,6 @@ import com.eurodyn.qlack.fuse.cm.util.CMConstants;
 import com.eurodyn.qlack.fuse.cm.util.NodeAttributeStringBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,6 +31,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 /**
  * @author European Dynamics
@@ -54,6 +53,8 @@ public class DocumentService {
   private NodeMapper nodeMapper;
   @PersistenceContext()
   private EntityManager em;
+
+  private static final String NODE_WITH_ID_MSG = "Node with ID ";
 
   @Autowired
   public DocumentService(ConcurrencyControlService concurrencyControlService,
@@ -431,11 +432,7 @@ public class DocumentService {
 
     if (attributes != null && !attributes.isEmpty()) {
 
-      int i = 0;
-
-      for (@SuppressWarnings("unused")
-          Map.Entry<String, String> entry : attributes.entrySet()) {
-        i++;
+      for (int i = 0; i < attributes.size(); i++) {
         sbQuery.append("INNER JOIN  n.attributes attr").append(i).append(" WITH ( ");
         sbQuery.append("attr").append(i).append(".name = :attr_").append(i).append(" AND attr")
             .append(i).append(".value = :value_").append(i).append(")");
@@ -494,8 +491,8 @@ public class DocumentService {
     Node node = nodeRepository.fetchById(nodeId);
 
     checkNodeConflict(nodeId, lockToken,
-        "Node with ID " + nodeId
-            + " is locked and an invalid lock token was passed; the file attributes cannot be updated.");
+        NODE_WITH_ID_MSG + nodeId
+            + "is locked and an invalid lock token was passed; the file attributes cannot be updated.");
 
     NodeAttribute attribute = new NodeAttribute(attributeName, attributeValue, node);
     node.getAttributes().add(attribute);
@@ -529,7 +526,7 @@ public class DocumentService {
     Node node = nodeRepository.fetchById(nodeID);
 
     checkNodeConflict(nodeID, lockToken,
-        "Node with ID " + nodeID
+        NODE_WITH_ID_MSG + nodeID
             + " is locked and an invalid lock token was passed; the file attributes cannot be updated.");
 
     node.setAttribute(attributeName, attributeValue);
@@ -557,11 +554,11 @@ public class DocumentService {
     Node node = nodeRepository.fetchById(nodeID);
 
     checkNodeConflict(nodeID, lockToken,
-        "Node with ID " + nodeID
+        NODE_WITH_ID_MSG + nodeID
             + " is locked and an invalid lock token was passed; the file attributes cannot be updated.");
 
-    for (String attributeName : attributes.keySet()) {
-      node.setAttribute(attributeName, attributes.get(attributeName));
+    for (Map.Entry<String, String> attribute : attributes.entrySet()) {
+      node.setAttribute(attribute.getKey(), attribute.getValue());
     }
 
     // Update last modified information
@@ -583,12 +580,13 @@ public class DocumentService {
    * @param lockToken the lock token
    * @throws QNodeLockException the q node lock exception
    */
-  public void deleteAttribute(String nodeID, String attributeName, String userID, String lockToken) {
+  public void deleteAttribute(String nodeID, String attributeName, String userID,
+      String lockToken) {
 
     Node node = nodeRepository.fetchById(nodeID);
 
     checkNodeConflict(nodeID, lockToken,
-        "Node with ID " + nodeID
+        NODE_WITH_ID_MSG + nodeID
             + " is locked and an invalid lock token was passed; the file attributes cannot be deleted.");
 
     node.removeAttribute(attributeName);
@@ -617,7 +615,7 @@ public class DocumentService {
 
     Node newParent = nodeRepository.fetchById(newParentID);
     checkNodeConflict(newParentID, lockToken,
-        "Node with ID " + newParentID
+        NODE_WITH_ID_MSG + newParentID
             + " is locked and an invalid lock token was passed; a new node cannot be copied into it.");
 
     checkCyclicPath(nodeID, newParent);
@@ -637,7 +635,7 @@ public class DocumentService {
     Node node = nodeRepository.fetchById(nodeID);
 
     checkNodeConflict(nodeID, lockToken,
-        "Node with ID " + nodeID
+        NODE_WITH_ID_MSG + nodeID
             + " is locked and an invalid lock token was passed; it cannot be moved.");
 
     Node newParent = nodeRepository.fetchById(newParentID);
@@ -645,7 +643,7 @@ public class DocumentService {
         .getAncestorFolderWithLockConflict(newParentID, lockToken);
     if (ancConflict != null && ancConflict.getId() != null) {
       throw new QAncestorFolderLockException(
-          "Node with ID " + newParentID
+          NODE_WITH_ID_MSG + newParentID
               + " is locked and an invalid lock token was passed; a new node cannot be moved into it.",
           ancConflict.getId(), ancConflict.getName());
     }
@@ -739,7 +737,7 @@ public class DocumentService {
    * searched.
    * @return a lists on the duplicates.
    */
-  private List<String> duplicateFileNamesInDirectory(List<String> fileNames, String parentId) {
+  public List<String> duplicateFileNamesInDirectory(List<String> fileNames, String parentId) {
     QNode qNode = QNode.node;
     QNodeAttribute qNodeAttribute = new QNodeAttribute("nodeAttribute");
 

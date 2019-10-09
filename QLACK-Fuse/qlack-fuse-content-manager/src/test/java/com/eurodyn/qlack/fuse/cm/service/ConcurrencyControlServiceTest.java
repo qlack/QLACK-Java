@@ -16,12 +16,16 @@ import com.eurodyn.qlack.fuse.cm.dto.FolderDTO;
 import com.eurodyn.qlack.fuse.cm.dto.NodeDTO;
 import com.eurodyn.qlack.fuse.cm.enums.NodeType;
 import com.eurodyn.qlack.fuse.cm.enums.RelativesType;
+import com.eurodyn.qlack.fuse.cm.exception.QAncestorFolderLockException;
+import com.eurodyn.qlack.fuse.cm.exception.QDescendantNodeLockException;
 import com.eurodyn.qlack.fuse.cm.exception.QNodeLockException;
 import com.eurodyn.qlack.fuse.cm.exception.QSelectedNodeLockException;
-import com.eurodyn.qlack.fuse.cm.mappers.NodeMapper;
+import com.eurodyn.qlack.fuse.cm.mapper.NodeMapper;
 import com.eurodyn.qlack.fuse.cm.model.Node;
 import com.eurodyn.qlack.fuse.cm.repository.NodeRepository;
 import com.eurodyn.qlack.fuse.cm.util.CMConstants;
+import java.util.ArrayList;
+import java.util.Calendar;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,9 +33,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.ArrayList;
-import java.util.Calendar;
 
 /**
  * @author European Dynamics
@@ -123,7 +124,7 @@ public class ConcurrencyControlServiceTest {
     assertNotNull(node.getAttribute(CMConstants.ATTR_LOCKED_ON).getValue());
   }
 
-  @Test(expected = QNodeLockException.class)
+  @Test(expected = QAncestorFolderLockException.class)
   public void testLockNodeWithParentConflict() {
     parent.setLockToken("lockToken");
 
@@ -133,7 +134,7 @@ public class ConcurrencyControlServiceTest {
     concurrencyControlService.lock(node.getId(), "token123", false, userId);
   }
 
-  @Test(expected = QNodeLockException.class)
+  @Test(expected = QDescendantNodeLockException.class)
   public void testLockNodeWithChildConflict() {
     parent.setLockToken("token123");
     child.setLockToken(LOCK_TOKEN);

@@ -19,7 +19,7 @@ import com.eurodyn.qlack.fuse.cm.dto.VersionDTO;
 import com.eurodyn.qlack.fuse.cm.enums.NodeType;
 import com.eurodyn.qlack.fuse.cm.exception.QAncestorFolderLockException;
 import com.eurodyn.qlack.fuse.cm.exception.QSelectedNodeLockException;
-import com.eurodyn.qlack.fuse.cm.mappers.VersionMapper;
+import com.eurodyn.qlack.fuse.cm.mapper.VersionMapper;
 import com.eurodyn.qlack.fuse.cm.model.Node;
 import com.eurodyn.qlack.fuse.cm.model.QVersion;
 import com.eurodyn.qlack.fuse.cm.model.Version;
@@ -33,6 +33,13 @@ import com.eurodyn.qlack.fuse.cm.storage.StorageEngine;
 import com.eurodyn.qlack.fuse.cm.storage.StorageEngineFactory;
 import com.eurodyn.qlack.fuse.cm.util.CMConstants;
 import com.querydsl.core.types.Predicate;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import org.apache.tika.exception.TikaException;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,14 +48,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Sort;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * @author European Dynamics
@@ -104,8 +103,7 @@ public class VersionServiceTest {
   @Before
   public void init() {
     versionService = new VersionService(concurrencyControlService, storageEngineFactory,
-        nodeRepository, versionRepository,
-        versionBinRepository, versionDeletedRepository, versionMapper);
+        nodeRepository, versionRepository, versionDeletedRepository, versionMapper);
 
     try {
       when(storageEngineFactory.getEngine())

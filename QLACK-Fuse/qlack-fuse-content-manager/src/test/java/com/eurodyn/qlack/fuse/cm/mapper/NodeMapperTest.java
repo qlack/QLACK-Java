@@ -1,4 +1,4 @@
-package com.eurodyn.qlack.fuse.cm.mappers;
+package com.eurodyn.qlack.fuse.cm.mapper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -16,15 +16,14 @@ import com.eurodyn.qlack.fuse.cm.enums.RelativesType;
 import com.eurodyn.qlack.fuse.cm.model.Node;
 import com.eurodyn.qlack.fuse.cm.model.NodeAttribute;
 import com.eurodyn.qlack.fuse.cm.util.CMConstants;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 /**
  * @author European Dynamics
@@ -187,28 +186,28 @@ public class NodeMapperTest {
 
   @Test
   public void nodeAttributeToNodeAttributeDTO1NullTest() {
-    NodeAttributeDTO  nodeAttributeDTO = nodeMapper.
+    NodeAttributeDTO nodeAttributeDTO = nodeMapper.
         nodeAttributeToNodeAttributeDTO1(null, false);
     assertNull(nodeAttributeDTO);
   }
 
   @Test
   public void nodeAttributeListToNodeAttributeDTOSet1NullTest() {
-    Set<NodeAttributeDTO>  nodeAttributeDTOSet1 = nodeMapper.
+    Set<NodeAttributeDTO> nodeAttributeDTOSet1 = nodeMapper.
         nodeAttributeListToNodeAttributeDTOSet1(null, false);
     assertNull(nodeAttributeDTOSet1);
   }
 
   @Test
   public void nodeAttributeToNodeAttributeDTO2NullTest() {
-    NodeAttributeDTO  nodeAttributeDTO2 = nodeMapper.
+    NodeAttributeDTO nodeAttributeDTO2 = nodeMapper.
         nodeAttributeToNodeAttributeDTO2(null, RelativesType.EAGER, false);
     assertNull(nodeAttributeDTO2);
   }
 
   @Test
   public void nodeAttributeListToNodeAttributeDTOSet2NullTest() {
-    Set<NodeAttributeDTO>  nodeAttributeDTOSet2 = nodeMapper.
+    Set<NodeAttributeDTO> nodeAttributeDTOSet2 = nodeMapper.
         nodeAttributeListToNodeAttributeDTOSet2(null, RelativesType.EAGER, false);
     assertNull(nodeAttributeDTOSet2);
   }
@@ -242,13 +241,13 @@ public class NodeMapperTest {
   }
 
   @Test
-  public void mapToDTOListTest(){
+  public void mapToDTOListTest() {
     List<NodeDTO> nodesDTO = nodeMapper.mapToDTO(nodeList);
     assertEquals(nodesDTO.size(), nodeList.size());
   }
 
   @Test
-  public void mapLastModifiedOnTest(){
+  public void mapLastModifiedOnTest() {
     nodeAttributeList.get(0).setName(CMConstants.ATTR_LAST_MODIFIED_ON);
     nodeAttributeList.get(0).setValue("2019");
     long result = nodeMapper.mapLastModifiedOn(nodeAttributeList);
@@ -256,7 +255,7 @@ public class NodeMapperTest {
   }
 
   @Test
-  public void mapLastModifiedByTest(){
+  public void mapLastModifiedByTest() {
     nodeAttributeList.get(0).setName(CMConstants.ATTR_LAST_MODIFIED_BY);
     nodeAttributeList.get(0).setValue("user");
     String result = nodeMapper.mapLastModifiedBy(nodeAttributeList);
@@ -264,7 +263,7 @@ public class NodeMapperTest {
   }
 
   @Test
-  public void mapLockedOnTest(){
+  public void mapLockedOnTest() {
     nodeAttributeList.get(0).setName(CMConstants.ATTR_LOCKED_ON);
     nodeAttributeList.get(0).setValue("2019");
     long result = nodeMapper.mapLockedOn(nodeAttributeList);
@@ -272,7 +271,7 @@ public class NodeMapperTest {
   }
 
   @Test
-  public void mapLockedByTest(){
+  public void mapLockedByTest() {
     nodeAttributeList.get(0).setName(CMConstants.ATTR_LOCKED_BY);
     nodeAttributeList.get(0).setValue("user1");
     String result = nodeMapper.mapLockedBy(nodeAttributeList);
@@ -280,7 +279,7 @@ public class NodeMapperTest {
   }
 
   @Test
-  public void mapVersionableTest(){
+  public void mapVersionableTest() {
     nodeAttributeList.get(0).setName(CMConstants.VERSIONABLE);
     nodeAttributeList.get(0).setValue("true");
     boolean result = nodeMapper.mapVersionable(nodeAttributeList);
@@ -288,7 +287,7 @@ public class NodeMapperTest {
   }
 
   @Test
-  public void setTypeTest(){
+  public void setTypeTest() {
     nodeMapper.setType(nodeDTO, node);
     assertTrue(nodeDTO instanceof FolderDTO);
 
@@ -298,7 +297,7 @@ public class NodeMapperTest {
   }
 
   @Test
-  public void setParentTest(){
+  public void setParentTest() {
     nodeMapper.setParent(node, null);
     assertNull(node.getParent());
 
@@ -307,7 +306,7 @@ public class NodeMapperTest {
   }
 
   @Test
-  public void mapNameNullTest(){
+  public void mapNameNullTest() {
     nodeAttributeList = new ArrayList<>();
     //expects different constant
     nodeAttributeList.add(new NodeAttribute(CMConstants.LOCKABLE, "true", node));
@@ -318,14 +317,14 @@ public class NodeMapperTest {
   }
 
   @Test
-  public void mapLockableTest(){
+  public void mapLockableTest() {
     nodeAttributeList = new ArrayList<>();
     nodeAttributeList.add(new NodeAttribute(CMConstants.ATTR_NAME, "true", node));
     assertFalse(nodeMapper.mapLockable(nodeAttributeList));
   }
 
   @Test
-  public void mapCreatedByTest(){
+  public void mapCreatedByTest() {
     nodeAttributeList = new ArrayList<>();
     nodeAttributeList.add(new NodeAttribute(CMConstants.ATTR_NAME, "true", node));
     String result = nodeMapper.mapCreatedBy(nodeAttributeList);
@@ -335,13 +334,13 @@ public class NodeMapperTest {
   }
 
   @Test
-  public void mapChildrenTest(){
+  public void mapChildrenTest() {
     Set<NodeDTO> childrenDTO = nodeMapper.mapChildren(nodeList, RelativesType.EAGER);
     assertEquals(nodeList.size(), childrenDTO.size());
   }
 
   @Test
-  public void mapPathTest(){
+  public void mapPathTest() {
     node.setParent(new Node());
     nodeMapper.mapPath(node, nodeDTO, true);
     assertNotNull(nodeDTO.getPath());

@@ -13,7 +13,7 @@ public class StorageEngineFactory {
   @Autowired
   private FSStorage fsStorage;
 
-  @Value("${qlack.fuse.cm.storageStrategy:DBStorage}")
+  @Value("${qlack.fuse.cm.storageStrategy:DB_STORAGE}")
   private String defaultStorageStrategy;
 
   /**
@@ -32,9 +32,9 @@ public class StorageEngineFactory {
 
   public StorageEngine getEngine(StorageEngineType type) {
     switch (type) {
-      case FSStorage:
+      case FS_STORAGE:
         return fsStorage;
-      case DBStorage:
+      case DB_STORAGE:
       default:
         return dbStorage;
     }

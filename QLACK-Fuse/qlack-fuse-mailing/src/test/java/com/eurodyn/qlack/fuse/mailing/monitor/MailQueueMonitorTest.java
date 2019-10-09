@@ -13,7 +13,7 @@ import static org.mockito.Mockito.when;
 import com.eurodyn.qlack.fuse.mailing.InitTestValues;
 import com.eurodyn.qlack.fuse.mailing.dto.EmailDTO;
 import com.eurodyn.qlack.fuse.mailing.exception.MailingException;
-import com.eurodyn.qlack.fuse.mailing.mappers.EmailMapper;
+import com.eurodyn.qlack.fuse.mailing.mapper.EmailMapper;
 import com.eurodyn.qlack.fuse.mailing.model.DistributionList;
 import com.eurodyn.qlack.fuse.mailing.model.Email;
 import com.eurodyn.qlack.fuse.mailing.model.QEmail;

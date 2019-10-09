@@ -1,31 +1,28 @@
 package com.eurodyn.qlack.fuse.cm.storage;
 
 import com.eurodyn.qlack.fuse.cm.dto.BinChunkDTO;
-import com.eurodyn.qlack.fuse.cm.mappers.BinChunkDTOMapper;
+import com.eurodyn.qlack.fuse.cm.mapper.BinChunkDTOMapper;
 import com.eurodyn.qlack.fuse.cm.model.QVersionBin;
 import com.eurodyn.qlack.fuse.cm.model.Version;
 import com.eurodyn.qlack.fuse.cm.model.VersionBin;
 import com.eurodyn.qlack.fuse.cm.repository.VersionBinRepository;
 import com.eurodyn.qlack.fuse.cm.repository.VersionRepository;
 import com.querydsl.core.types.Predicate;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-import java.util.logging.Logger;
-
 @Transactional
 @Service
 public class DBStorage implements StorageEngine {
 
-  private static final Logger LOGGER = Logger.getLogger(DBStorage.class.getName());
   QVersionBin qVersionBin = QVersionBin.versionBin;
 
   private VersionRepository versionRepository;
@@ -111,6 +108,6 @@ public class DBStorage implements StorageEngine {
 
   @Override
   public void deleteVersionBinaries(String versionID) {
-    //In DBStorage VersionBinaries are removed automatically by Hibernate's orphan removal
+    //In DB_STORAGE VersionBinaries are removed automatically by Hibernate's orphan removal
   }
 }

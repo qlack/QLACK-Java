@@ -2,11 +2,6 @@ package com.eurodyn.qlack.fuse.cm.storage;
 
 import com.eurodyn.qlack.fuse.cm.dto.BinChunkDTO;
 import com.eurodyn.qlack.fuse.cm.exception.QStorageException;
-import javax.transaction.Transactional;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -16,6 +11,10 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.transaction.Transactional;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 @Service
 @Transactional
@@ -38,7 +37,7 @@ public class FSStorage implements StorageEngine {
    * Converts a uuid to a file-system path using a bucketing algorithm.
    */
   private String bucketise(String uuid) {
-    return StringUtils.join(new String[]{rootFS, String.valueOf(Math.abs(uuid.hashCode()))
+    return StringUtils.join(new String[]{rootFS, String.valueOf(uuid.hashCode())
         .substring(0, (int) Math.log10(numberOfBuckets)), uuid + ".bin"}, File.separator);
   }
 
@@ -74,7 +73,10 @@ public class FSStorage implements StorageEngine {
     File f = new File(bucketise(versionID));
     try {
       Files.createDirectories(f.getParentFile().toPath());
-      f.createNewFile();
+      boolean created = f.createNewFile();
+      if (Boolean.FALSE.equals(created)){
+        LOGGER.severe("Filename already exists");
+      }
       Files.write(f.toPath(), content, StandardOpenOption.APPEND);
     } catch (IOException ex) {
       throw new QStorageException("Could not persist file into " + f.getAbsolutePath(), ex);
@@ -91,7 +93,7 @@ public class FSStorage implements StorageEngine {
 
     try (RandomAccessFile fileStore = new RandomAccessFile(file, "r")) {
       LOGGER.log(Level.FINEST, "Reading from file: {0}.", fileLocation);
-      long startingPosition = chunkIndex * chunkSize;
+      long startingPosition = (long) chunkIndex * chunkSize;
 
       fileStore.seek(startingPosition);
       byte[] bb = new byte[chunkSize];

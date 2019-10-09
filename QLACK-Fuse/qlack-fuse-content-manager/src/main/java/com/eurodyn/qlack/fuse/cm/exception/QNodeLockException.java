@@ -9,11 +9,13 @@ import lombok.Setter;
 public class QNodeLockException extends QException {
 
   private static final long serialVersionUID = 7102005836737307268L;
-  private String conflictNodeID;
-  private String conflictNodeName;
+  private final String conflictNodeID;
+  private final String conflictNodeName;
 
   public QNodeLockException(String message) {
     super(message);
+    this.conflictNodeID = "";
+    this.conflictNodeName = "";
   }
 
   public QNodeLockException(String message, String conflictNodeID, String conflictNodeName) {
