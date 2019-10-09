@@ -26,6 +26,7 @@ import com.eurodyn.qlack.fuse.cm.repository.NodeRepository;
 import com.eurodyn.qlack.fuse.cm.util.CMConstants;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -315,4 +316,64 @@ public class ConcurrencyControlServiceTest {
     allNodes.forEach(n -> verify(nodeRepository, times(1)).fetchById(n.getId()));
     assertNull(descendantWithConflict);
   }
+
+  @Test
+  public void lockNodeConflictWithoutName() {
+    FolderDTO ancNode = initTestValues.createFolderDTO(null);
+    ancNode.setId(null);
+    node.setLockToken("lockToken");
+    nodeDTO.setName(null);
+
+    Node childDescNode = initTestValues.createNode("null");
+    childDescNode.setChildren(Collections.emptyList());
+    when(nodeRepository.fetchById(node.getId())).thenReturn(node);
+    when(nodeRepository.fetchById(child.getId())).thenReturn(childDescNode);
+    when(nodeMapper.mapToFolderDTO(node, RelativesType.LAZY, false)).thenReturn(nodeDTO)
+        .thenReturn(ancNode);
+
+    concurrencyControlService.lock(node.getId(), "token123", false, userId);
+    verify(nodeRepository, times(1)).save(any(Node.class));
+  }
+
+  @Test
+  public void lockNodeWithChildConflictWithoutTest() {
+    parent.setLockToken("token123");
+    child.setLockToken(LOCK_TOKEN);
+    node.getChildren().add(child);
+    childDTO.setId(null);
+
+    when(nodeRepository.fetchById(parent.getId())).thenReturn(parent);
+    when(nodeRepository.fetchById(node.getId())).thenReturn(node);
+    when(nodeMapper.mapToFolderDTO(child, RelativesType.LAZY, false)).thenReturn(childDTO);
+    concurrencyControlService.lock(node.getId(), "token123", false, userId);
+    verify(nodeRepository, times(1)).save(any(Node.class));
+  }
+
+  @Test
+  public void unlockWithConflictAndNullIdTest() {
+    nodeDTO.setName(null);
+    when(nodeRepository.fetchById(node.getId())).thenReturn(node);
+    when(nodeMapper.mapToFolderDTO(node, RelativesType.LAZY, false)).thenReturn(nodeDTO);
+    node.setAttribute(CMConstants.ATTR_LOCKED_ON, anyString());
+    node.setAttribute(CMConstants.ATTR_LOCKED_BY, userId);
+    node.setLockToken(LOCK_TOKEN);
+
+    concurrencyControlService.unlock(node.getId(), "438972", false, userId);
+
+    verify(nodeRepository, times(0)).save(node);
+  }
+
+  @Test
+  public void getSelectedFileWithConflictWithNullType() {
+    file.setLockToken(LOCK_TOKEN);
+
+    file.setType(null);
+    when(nodeRepository.fetchById(file.getId())).thenReturn(file);
+
+    concurrencyControlService
+        .getSelectedNodeWithLockConflict(file.getId(), "differentLockToken");
+
+    verify(nodeRepository, times(1)).fetchById(anyString());
+  }
+
 }

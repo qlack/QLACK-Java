@@ -143,6 +143,7 @@ public class ConcurrencyControlService {
   /**
    * Checks whether a specific node has lock conflict, by examining if the provided lock token, is
    * different from the lockTocken of the node.
+   *
    * @param nodeID the UUID of the node to check
    * @param lockToken the provided lock token to check for
    * @return the NodeDTO with the conflict or null
@@ -197,11 +198,12 @@ public class ConcurrencyControlService {
        Returns the first node it will find with conflict, otherwise recursively look for conflicts with descendant nodes.
       */
       NodeDTO nodeDTO = commonLockConflictCheck(child, lockToken);
-      if (nodeDTO != null){
+      if (nodeDTO != null) {
         return nodeDTO;
       } else {
-        NodeDTO descendantNodeWithLock = getDescendantNodeWithLockConflict(child.getId(), lockToken);
-        if (descendantNodeWithLock != null){
+        NodeDTO descendantNodeWithLock = getDescendantNodeWithLockConflict(child.getId(),
+            lockToken);
+        if (descendantNodeWithLock != null) {
           return descendantNodeWithLock;
         }
       }
@@ -214,10 +216,11 @@ public class ConcurrencyControlService {
   }
 
   private NodeDTO commonLockConflictCheck(Node node, String lockToken) {
-    if (node.getLockToken() != null && !node.getLockToken().equals(lockToken)) {
+    if (node.getLockToken() != null && !node.getLockToken().equals(lockToken)
+        && node.getType() != null) {
       if (node.getType().equals(NodeType.FOLDER)) {
         return nodeMapper.mapToFolderDTO(node, RelativesType.LAZY, false);
-      } else if (node.getType().equals(NodeType.FILE)) {
+      } else {
         return nodeMapper.mapToFileDTO(node, false);
       }
     }

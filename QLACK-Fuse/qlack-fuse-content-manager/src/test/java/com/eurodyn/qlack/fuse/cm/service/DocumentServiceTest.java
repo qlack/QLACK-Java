@@ -28,6 +28,7 @@ import com.eurodyn.qlack.fuse.cm.repository.NodeRepository;
 import com.eurodyn.qlack.fuse.cm.util.CMConstants;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -228,6 +229,16 @@ public class DocumentServiceTest {
 
     verify(nodeRepository, times(1)).fetchById(parentDTO.getId());
     verify(nodeMapper, times(1)).mapToFolderDTO(parent, RelativesType.LAZY, false);
+  }
+
+  @Test
+  public void getFolderByIdEagerTest() {
+    when(nodeRepository.fetchById(parentDTO.getId())).thenReturn(parent);
+
+    documentService.getFolderByID(parentDTO.getId(), false, false);
+
+    verify(nodeRepository, times(1)).fetchById(parentDTO.getId());
+    verify(nodeMapper, times(1)).mapToFolderDTO(parent, RelativesType.EAGER, false);
   }
 
   @Test
@@ -475,7 +486,7 @@ public class DocumentServiceTest {
         .createAttribute(node.getId(), "TEST_ATTRIBUTE", "test value", "user2", LOCK_TOKEN);
 
     verify(nodeRepository, times(1)).save(node);
-    assertEquals(node.getAttribute(CMConstants.ATTR_LAST_MODIFIED_BY).getValue(), "user2");
+    assertEquals("user2", node.getAttribute(CMConstants.ATTR_LAST_MODIFIED_BY).getValue());
     assertNotNull(node.getAttribute("TEST_ATTRIBUTE"));
   }
 
@@ -701,7 +712,7 @@ public class DocumentServiceTest {
     assertEquals(parent, child.getParent());
   }
 
-  @Test()
+  @Test
   public void testCreateFileAndVersion() {
 
     when(nodeMapper.mapToEntity(fileDTO, null)).thenReturn(fileChild);
@@ -713,5 +724,80 @@ public class DocumentServiceTest {
     byte[] content = new byte[3];
     Arrays.fill(content, (byte) 1);
     documentService.createFileAndVersion(fileDTO, versionDTO, content, userId, LOCK_TOKEN);
+    verify(nodeRepository, times(1)).save(any(Node.class));
   }
+
+  @Test
+  public void renameFolderWithConflictAndNullNameTest() {
+    nodeDTO.setName(null);
+    when(nodeRepository.fetchById(nodeDTO.getId())).thenReturn(node);
+    when(concurrencyControlService
+        .getSelectedNodeWithLockConflict(nodeDTO.getId(), node.getLockToken())).thenReturn(nodeDTO);
+    documentService.renameFolder(nodeDTO.getId(), "New Name", null, node.getLockToken());
+    verify(nodeRepository, times(1)).save(node);
+    assertEquals("New Name", node.getAttribute(CMConstants.ATTR_NAME).getValue());
+  }
+
+  @Test
+  public void createFolderWithNoParentTest() {
+    node.setAttributes(null);
+    when(nodeRepository.fetchById(parent.getId())).thenReturn(null);
+    when(nodeMapper.mapToEntity(nodeDTO, null)).thenReturn(new Node());
+    documentService.createFolder(nodeDTO, userId, node.getLockToken());
+    verify(nodeRepository, times(1)).save(any());
+  }
+
+  @Test
+  public void createFolderWithParentConflictAndNullIdTest() {
+    parentDTO.setId(null);
+
+    when(nodeRepository.fetchById(parent.getId())).thenReturn(parent);
+    when(nodeMapper.mapToEntity(nodeDTO, parent)).thenReturn(new Node());
+    when(concurrencyControlService
+        .getAncestorFolderWithLockConflict(parent.getId(), node.getLockToken()))
+        .thenReturn(parentDTO);
+
+    documentService.createFolder(nodeDTO, userId, node.getLockToken());
+
+    verify(nodeRepository, times(1)).save(any());
+  }
+
+  @Test(expected = QDescendantNodeLockException.class)
+  public void deleteFolderNoParentTest() {
+    node.setParent(null);
+    when(nodeRepository.fetchById(nodeDTO.getId())).thenReturn(node);
+    when(concurrencyControlService
+        .getDescendantNodeWithLockConflict(node.getId(), node.getLockToken())).thenReturn(childDTO);
+    documentService.deleteFolder(nodeDTO.getId(), node.getLockToken());
+  }
+
+  @Test
+  public void deleteFolderWithAncestorNullIdTest() {
+    parentDTO.setId(null);
+    when(nodeRepository.fetchById(nodeDTO.getId())).thenReturn(node);
+    when(concurrencyControlService
+        .getAncestorFolderWithLockConflict(parent.getId(), node.getLockToken()))
+        .thenReturn(parentDTO);
+    documentService.deleteFolder(nodeDTO.getId(), node.getLockToken());
+    verify(nodeRepository, times(1)).delete(node);
+  }
+
+  @Test
+  public void deleteFolderNoChildrenTest() {
+    node.setChildren(Collections.emptyList());
+    when(nodeRepository.fetchById(nodeDTO.getId())).thenReturn(node);
+    documentService.deleteFolder(nodeDTO.getId(), node.getLockToken());
+    verify(nodeRepository, times(1)).delete(node);
+  }
+
+  @Test
+  public void deleteFolderWithDescendantNullIdTest() {
+    childDTO.setId(null);
+    when(nodeRepository.fetchById(nodeDTO.getId())).thenReturn(node);
+    when(concurrencyControlService
+        .getDescendantNodeWithLockConflict(node.getId(), node.getLockToken())).thenReturn(childDTO);
+    documentService.deleteFolder(nodeDTO.getId(), node.getLockToken());
+    verify(nodeRepository, times(1)).delete(node);
+  }
+
 }
