@@ -1,4 +1,4 @@
-package com.eurodyn.qlack.fuse.audit.mappers;
+package com.eurodyn.qlack.fuse.audit.mapper;
 
 import com.eurodyn.qlack.common.model.QlackBaseModel;
 import com.eurodyn.qlack.fuse.audit.dto.AuditBaseDTO;

@@ -1,4 +1,4 @@
-package com.eurodyn.qlack.fuse.audit.mappers;
+package com.eurodyn.qlack.fuse.audit.mapper;
 
 import static org.junit.Assert.assertEquals;
 
@@ -202,7 +202,7 @@ public class AuditMapperTest {
 
   @Test
   public void testMapToExistingEntity() {
-    auditDTO.setEvent("New event");
+    auditDTO.setEvent("New EVENT");
     auditMapperImpl.mapToExistingEntity(auditDTO, audit);
     assertEquals(auditDTO.getEvent(), audit.getEvent());
   }

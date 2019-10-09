@@ -44,15 +44,15 @@ public class Audit extends QlackBaseModel {
   private String prinSessionId;
 
   /**
-   * a short description of the Audit event
+   * a short description of the Audit EVENT
    */
   @Column(name = "short_description")
   private String shortDescription;
 
   /**
-   * the actual Audit event
+   * the actual Audit EVENT
    */
-  @Column(name = "event")
+  @Column(name = "EVENT")
   private String event;
 
   /**

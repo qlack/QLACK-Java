@@ -21,6 +21,7 @@ public class AuditTraceDTO extends AuditBaseDTO {
 
   /**
    * Copy constructor
+   *
    * @param traceData the data of the Audit trace
    */
   public AuditTraceDTO(String traceData) {

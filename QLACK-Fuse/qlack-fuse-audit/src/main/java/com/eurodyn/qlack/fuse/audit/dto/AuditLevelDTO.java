@@ -13,6 +13,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class AuditLevelDTO extends AuditBaseDTO {
+
   /**
    * the name of the Audit level
    */

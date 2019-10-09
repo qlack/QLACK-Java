@@ -1,11 +1,10 @@
 package com.eurodyn.qlack.fuse.audit.dto;
 
+import java.text.MessageFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
-import java.text.MessageFormat;
 
 /**
  * The Audit DTO, that holds the data of an Audit.
@@ -29,12 +28,12 @@ public class AuditDTO extends AuditBaseDTO {
   private String prinSessionId;
 
   /**
-   * a short description of the Audit event
+   * a short description of the Audit EVENT
    */
   private String shortDescription;
 
   /**
-   * the actual Audit event
+   * the actual Audit EVENT
    */
   private String event;
 
@@ -79,7 +78,7 @@ public class AuditDTO extends AuditBaseDTO {
   private AuditTraceDTO trace;
 
   public AuditDTO(String level, String event, String groupName,
-    String description, String sessionID) {
+      String description, String sessionID) {
     this.level = level;
     this.event = event;
     this.groupName = groupName;
@@ -89,6 +88,7 @@ public class AuditDTO extends AuditBaseDTO {
 
   /**
    * Sets the short description of the Audit as a formatted <tt>String</tt>.
+   *
    * @param message a formatted <tt>String</tt>
    * @param args formatted <tt>String</tt> values
    * @return an AuditDTO object
@@ -100,6 +100,7 @@ public class AuditDTO extends AuditBaseDTO {
 
   /**
    * Sets the short description of the Audit.
+   *
    * @param shortDescription a short description
    * @return an AuditDTO object
    */

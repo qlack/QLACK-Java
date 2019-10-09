@@ -68,7 +68,7 @@ databaseChangeLog:
                      nullable: false
                      defaultValueNumeric: '3'
                - column:
-                   name: event
+                   name: EVENT
                    type: varchar(40)
                    constraints:
                      nullable: false
@@ -103,7 +103,7 @@ databaseChangeLog:
              tableName: al_audit
              columns:
              - column:
-                 name: event
+                 name: EVENT
                  type: varchar(40)
 
         - createIndex:

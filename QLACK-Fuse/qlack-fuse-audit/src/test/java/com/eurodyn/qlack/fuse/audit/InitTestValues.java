@@ -34,9 +34,9 @@ public class InitTestValues {
 
   private String auditTraceId = "311a084c-1109-4965-b6ba-be2d2199c612";
   private String auditTraceData = "{\n" +
-    "\tcolor: \"red\",\n" +
-    "\tvalue: \"#f00\"\n" +
-    "}";
+      "\tcolor: \"red\",\n" +
+      "\tvalue: \"#f00\"\n" +
+      "}";
 
   public AuditDTO createAuditDTO() {
     AuditDTO auditDTO = new AuditDTO();

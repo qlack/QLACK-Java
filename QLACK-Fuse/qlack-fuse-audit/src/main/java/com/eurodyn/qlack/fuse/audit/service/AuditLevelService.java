@@ -3,7 +3,7 @@ package com.eurodyn.qlack.fuse.audit.service;
 
 import com.eurodyn.qlack.common.exception.QAlreadyExistsException;
 import com.eurodyn.qlack.fuse.audit.dto.AuditLevelDTO;
-import com.eurodyn.qlack.fuse.audit.mappers.AuditLevelMapper;
+import com.eurodyn.qlack.fuse.audit.mapper.AuditLevelMapper;
 import com.eurodyn.qlack.fuse.audit.model.AuditLevel;
 import com.eurodyn.qlack.fuse.audit.repository.AuditLevelRepository;
 import java.text.MessageFormat;
@@ -51,7 +51,8 @@ public class AuditLevelService {
     if (auditLevelRepository.findByName(level.getName()) == null) {
       return addLevel(level);
     } else {
-      throw new QAlreadyExistsException("Level: " + level.getName() + " already exists and will not be added.");
+      throw new QAlreadyExistsException(
+          "Level: " + level.getName() + " already exists and will not be added.");
     }
   }
 

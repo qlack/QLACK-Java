@@ -1,22 +1,21 @@
 package com.eurodyn.qlack.fuse.audit.service;
 
 import com.eurodyn.qlack.fuse.audit.dto.AuditDTO;
-import com.eurodyn.qlack.fuse.audit.mappers.AuditMapper;
+import com.eurodyn.qlack.fuse.audit.mapper.AuditMapper;
 import com.eurodyn.qlack.fuse.audit.repository.AuditLevelRepository;
 import com.eurodyn.qlack.fuse.audit.repository.AuditRepository;
 import com.eurodyn.qlack.fuse.audit.util.AuditProperties;
+import java.text.MessageFormat;
+import java.util.Date;
 import javax.transaction.Transactional;
 import lombok.extern.java.Log;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import java.text.MessageFormat;
-import java.util.Date;
-
 /**
- * Provides Audit CRUD functionality. {@link Async} ensures that each method will be executed at
- * a separate thread
+ * Provides Audit CRUD functionality. {@link Async} ensures that each method will be executed at a
+ * separate thread
  *
  * @author European Dynamics SA.
  */
@@ -26,8 +25,9 @@ import java.util.Date;
 @Transactional
 public class AuditAsyncService extends AuditService {
 
-  public AuditAsyncService(AuditProperties auditProperties, AuditRepository auditRepository, AuditMapper auditMapper,
-    AuditLevelRepository auditLevelRepository) {
+  public AuditAsyncService(AuditProperties auditProperties, AuditRepository auditRepository,
+      AuditMapper auditMapper,
+      AuditLevelRepository auditLevelRepository) {
     super(auditProperties, auditRepository, auditMapper, auditLevelRepository);
   }
 
@@ -45,20 +45,24 @@ public class AuditAsyncService extends AuditService {
 
   @Async
   @Override
-  public void audit(String level, String event, String groupName, String description, String sessionID, Object traceData) {
+  public void audit(String level, String event, String groupName, String description,
+      String sessionID, Object traceData) {
     super.audit(level, event, groupName, description, sessionID, traceData);
   }
 
   @Async
   @Override
-  public String audit(String level, String event, String groupName, String description, String sessionID, Object traceData,
-    String referenceId) { log.info(MessageFormat.format("Async: Adding audit with referenceId: {0} ", referenceId));
+  public String audit(String level, String event, String groupName, String description,
+      String sessionID, Object traceData,
+      String referenceId) {
+    log.info(MessageFormat.format("Async: Adding audit with referenceId: {0} ", referenceId));
     return super.audit(level, event, groupName, description, sessionID, traceData, referenceId);
   }
 
   @Async
   @Override
-  public void audit(String level, String event, String groupName, String description, String sessionID, String traceData) {
+  public void audit(String level, String event, String groupName, String description,
+      String sessionID, String traceData) {
     super.audit(level, event, groupName, description, sessionID, traceData);
   }
 
