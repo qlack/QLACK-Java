@@ -4,16 +4,15 @@ import com.eurodyn.qlack.fuse.fileupload.model.DBFile;
 import com.eurodyn.qlack.fuse.fileupload.model.DBFilePK;
 import com.eurodyn.qlack.fuse.fileupload.model.QDBFile;
 import com.querydsl.core.types.Predicate;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.lang.NonNull;
 
-import java.util.List;
-import java.util.Optional;
-
 public interface DBFileRepository extends JpaRepository<DBFile, DBFilePK>,
-  QuerydslPredicateExecutor<DBFile> {
+    QuerydslPredicateExecutor<DBFile> {
 
 
   @Override
@@ -34,7 +33,7 @@ public interface DBFileRepository extends JpaRepository<DBFile, DBFilePK>,
   default DBFile getChunk(String id, Long chunkOrder) {
     QDBFile qdbFile = QDBFile.dBFile;
     Predicate predicate = qdbFile.dbFilePK.id.eq(id)
-      .and(qdbFile.dbFilePK.chunkOrder.eq(chunkOrder));
+        .and(qdbFile.dbFilePK.chunkOrder.eq(chunkOrder));
     Optional<DBFile> optional = findOne(predicate);
     return optional.orElse(null);
   }
@@ -49,9 +48,10 @@ public interface DBFileRepository extends JpaRepository<DBFile, DBFilePK>,
     QDBFile qdbFile = QDBFile.dBFile;
     Predicate predicate = qdbFile.dbFilePK.id.eq(id);
 
-    return findAll(predicate).stream()
-      .peek(this::delete)
-      .count();
+    List<DBFile> dbFiles = findAll(predicate);
+    dbFiles.stream().forEach(this::delete);
+
+    return dbFiles.size();
   }
 
 }

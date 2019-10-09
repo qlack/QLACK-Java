@@ -1,7 +1,8 @@
 package com.eurodyn.qlack.fuse.fileupload.exception;
 
-public class QFileNotCompletedException extends
-  com.eurodyn.qlack.fuse.fileupload.exception.QFileUploadException {
+import com.eurodyn.qlack.common.exception.QException;
+
+public class QFileNotCompletedException extends QException {
 
   private static final long serialVersionUID = 5531077934812390168L;
 

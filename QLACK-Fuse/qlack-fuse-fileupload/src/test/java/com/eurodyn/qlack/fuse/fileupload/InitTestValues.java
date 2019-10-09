@@ -1,13 +1,13 @@
 package com.eurodyn.qlack.fuse.fileupload;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.eurodyn.qlack.fuse.fileupload.dto.DBFileDTO;
 import com.eurodyn.qlack.fuse.fileupload.model.DBFile;
 import com.eurodyn.qlack.fuse.fileupload.model.DBFilePK;
 import com.eurodyn.qlack.util.av.api.dto.VirusScanDTO;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author European Dynamics
@@ -74,7 +74,7 @@ public class InitTestValues {
 
   public DBFile createChunkNo2() {
     DBFile dbFile = new DBFile();
-    dbFile.setDbFilePK(new DBFilePK("",2));
+    dbFile.setDbFilePK(new DBFilePK("", 2));
     dbFile.setDbversion(1L);
     dbFile.setFileName("document.pdf");
     dbFile.setFileSize(1024156);
@@ -102,15 +102,7 @@ public class InitTestValues {
   public List<DBFile> createDBFiles() {
     List<DBFile> dbFiles = new ArrayList<>();
     dbFiles.add(createDBFile());
-    //    dbFiles.add(createDBFile2());
     return dbFiles;
-  }
-
-  public List<DBFile> createDBFiles2() {
-    List<DBFile> dbFiles2 = new ArrayList<>();
-    dbFiles2.add(createDBFile());
-    dbFiles2.add(createDBFile2());
-    return dbFiles2;
   }
 
   public DBFileDTO createDBFileDTO() {
@@ -129,16 +121,25 @@ public class InitTestValues {
     return dbFileDTO;
   }
 
-  public List<DBFileDTO> createDBFileDTOs() {
-    List<DBFileDTO> dbFileDTOs = new ArrayList<>();
-    dbFileDTOs.add(createDBFileDTO());
-    return dbFileDTOs;
-  }
-
   public VirusScanDTO createVirusScanVirusFreeDTO() {
     VirusScanDTO virusScanDTO = new VirusScanDTO();
     virusScanDTO.setVirusFree(true);
     virusScanDTO.setVirusScanDescription("OK");
     return virusScanDTO;
   }
+
+  public List<DBFile> createTwoDbFiles() {
+    List<DBFile> dbFiles = new ArrayList<>();
+    DBFile dbFile1 = createDBFile();
+    dbFile1.setExpectedChunks(2);
+    dbFile1.setUploadedAt(Instant.now().minusMillis(10000L).toEpochMilli());
+    DBFile dbFile2 = createDBFile2();
+    dbFile2.setUploadedAt(Instant.now().plusMillis(100000L).toEpochMilli());
+    dbFile2.setExpectedChunks(2);
+    dbFiles.add(dbFile1);
+    dbFiles.add(dbFile2);
+
+    return dbFiles;
+  }
+
 }

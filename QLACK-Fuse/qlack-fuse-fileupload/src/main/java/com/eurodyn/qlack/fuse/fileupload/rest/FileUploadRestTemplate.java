@@ -2,6 +2,9 @@ package com.eurodyn.qlack.fuse.fileupload.rest;
 
 import com.eurodyn.qlack.fuse.fileupload.dto.DBFileDTO;
 import com.eurodyn.qlack.fuse.fileupload.service.FileUpload;
+import java.io.IOException;
+import java.util.Objects;
+import java.util.logging.Level;
 import lombok.NoArgsConstructor;
 import lombok.extern.java.Log;
 import org.apache.commons.io.IOUtils;
@@ -10,10 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-
-import java.io.IOException;
-import java.util.Objects;
-import java.util.logging.Level;
 
 
 /**
@@ -37,7 +36,7 @@ public abstract class FileUploadRestTemplate {
    */
   public ResponseEntity checkChunk(String id, long chunkNumber) {
     return fileUpload.checkChunk(id, chunkNumber) ? ResponseEntity.ok().build()
-      : ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        : ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 
   /**
@@ -76,23 +75,23 @@ public abstract class FileUploadRestTemplate {
     dbFileDTO.setFileData(getBin("file", body));
 
     if (body.getParameter("flowChunkNumber") != null) {
-      dbFileDTO.setChunkNumber(getLong("flowChunkNumber", body).longValue());
+      dbFileDTO.setChunkNumber(Long.valueOf(body.getParameter("flowChunkNumber")));
     } else {
       dbFileDTO.setChunkNumber(1); // Support for older browsers, where there is always one chunk.
     }
 
     if (body.getParameter("flowChunkSize") != null) {
-      dbFileDTO.setChunkSize(getLong("flowChunkSize", body).longValue());
+      dbFileDTO.setChunkSize(Long.valueOf(body.getParameter("flowChunkSize")));
     }
 
     if (body.getParameter("flowTotalChunks") != null) {
-      dbFileDTO.setTotalChunks(getLong("flowTotalChunks", body).longValue());
+      dbFileDTO.setTotalChunks(Long.valueOf(body.getParameter("flowTotalChunks")));
     } else {
       dbFileDTO.setTotalChunks(1); // Support for older browsers, where there is always one chunk.
     }
 
     if (body.getParameter("flowTotalSize") != null) {
-      dbFileDTO.setTotalSize(getLong("flowTotalSize", body).longValue());
+      dbFileDTO.setTotalSize(Long.valueOf(body.getParameter("flowTotalSize")));
     }
 
     return dbFileDTO;
@@ -107,9 +106,9 @@ public abstract class FileUploadRestTemplate {
    * @throws IOException if error occurs during multipart data inputstream reading
    */
   private byte[] getBin(String fieldName, MultipartHttpServletRequest body)
-    throws IOException {
+      throws IOException {
     return body.getFile(fieldName) != null ? IOUtils
-      .toByteArray(Objects.requireNonNull(body.getFile(fieldName)).getInputStream()) : null;
+        .toByteArray(Objects.requireNonNull(body.getFile(fieldName)).getInputStream()) : null;
   }
 
   /**
@@ -122,17 +121,5 @@ public abstract class FileUploadRestTemplate {
   private String getString(String fieldName, MultipartHttpServletRequest body) {
     return body.getParameter(fieldName);
   }
-
-  /**
-   * Extracts a Multipart parameter to a {@link Long} variable
-   *
-   * @param fieldName the name of the data Multipart parameter
-   * @param body a {@link MultipartHttpServletRequest} body
-   * @return a {@link Long} variable
-   */
-  private Long getLong(String fieldName, MultipartHttpServletRequest body) {
-    return body.getParameter(fieldName) != null ? Long.valueOf(body.getParameter(fieldName)) : null;
-  }
-
 
 }

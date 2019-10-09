@@ -9,18 +9,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.data.domain.Sort;
-import org.springframework.test.util.ReflectionTestUtils;
-
 import com.eurodyn.qlack.fuse.fileupload.InitTestValues;
 import com.eurodyn.qlack.fuse.fileupload.dto.DBFileDTO;
 import com.eurodyn.qlack.fuse.fileupload.exception.QFileNotCompletedException;
@@ -28,8 +16,17 @@ import com.eurodyn.qlack.fuse.fileupload.exception.QFileNotFoundException;
 import com.eurodyn.qlack.fuse.fileupload.model.DBFile;
 import com.eurodyn.qlack.fuse.fileupload.repository.DBFileRepository;
 import com.eurodyn.qlack.fuse.fileupload.service.impl.FileUploadImpl;
-import com.eurodyn.qlack.util.av.api.service.AvService;
 import com.querydsl.core.types.Predicate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Sort;
+import org.springframework.test.util.ReflectionTestUtils;
 
 /**
  * @author European Dynamics
@@ -41,7 +38,6 @@ public class FileUploadImplTest {
   private FileUploadImpl fileUploadImpl;
 
   private DBFileRepository dbFileRepository = mock(DBFileRepository.class);
-  private AvService clamAvService = mock(AvService.class);
   private InitTestValues initTestValues;
   private DBFile chunk;
   private DBFileDTO dbFileDTO;
@@ -52,14 +48,17 @@ public class FileUploadImplTest {
   private final Long chunkNumber = 1L;
   private final Long chunkIndex = 1L;
 
+  private List<DBFile> multipleDbFiles;
+
   @Before
   public void init() {
-    fileUploadImpl = new FileUploadImpl(dbFileRepository, Optional.of(clamAvService));
+    fileUploadImpl = new FileUploadImpl(dbFileRepository, Optional.empty());
     initTestValues = new InitTestValues();
     dbFileDTO = initTestValues.createDBFileDTO();
     dbFiles = initTestValues.createDBFiles();
     chunk = initTestValues.createChunkNo1();
     chunksIds = initTestValues.createChunkIds();
+    multipleDbFiles = initTestValues.createTwoDbFiles();
   }
 
   @Test
@@ -93,7 +92,8 @@ public class FileUploadImplTest {
 
   @Test(expected = QFileNotFoundException.class)
   public void testGetByIDAndChunkFileNotFoundException() {
-    when(dbFileRepository.findAll(any(Predicate.class), any(Sort.class))).thenReturn(new ArrayList<>());
+    when(dbFileRepository.findAll(any(Predicate.class), any(Sort.class)))
+        .thenReturn(new ArrayList<>());
     DBFileDTO dbfDTO = fileUploadImpl.getByIDAndChunk(dbFileId, chunkIndex);
     assertEquals(dbFileDTO.getId(), dbfDTO.getId());
     assertEquals(dbFileDTO.getChunkNumber(), dbfDTO.getChunkNumber());
@@ -148,6 +148,7 @@ public class FileUploadImplTest {
     ReflectionTestUtils.setField(fileUploadImpl, "cleanupEnabled", true);
     when(dbFileRepository.findAll()).thenReturn(new ArrayList<>());
     fileUploadImpl.cleanupExpired();
+    verify(dbFileRepository, times(1)).findAll();
   }
 
   @Test
@@ -155,6 +156,7 @@ public class FileUploadImplTest {
     ReflectionTestUtils.setField(fileUploadImpl, "cleanupEnabled", true);
     when(dbFileRepository.findAll()).thenReturn(new ArrayList<>());
     fileUploadImpl.cleanupExpired(System.currentTimeMillis());
+    verify(dbFileRepository, times(1)).findAll();
   }
 
   @Test
@@ -185,4 +187,77 @@ public class FileUploadImplTest {
     List<DBFileDTO> dbFileDTOList = fileUploadImpl.listFilesForConsole(false);
     assertEquals(chunksIds.size(), dbFileDTOList.size());
   }
+
+  @Test
+  public void getByIdMultipleFilesTest() {
+    when(dbFileRepository.findAll()).thenReturn(multipleDbFiles);
+
+    fileUploadImpl.getByID("ad1f5bb0-e1a9-4960-b0ca-1998fa5a1d6c");
+    assertEquals(dbFileDTO.getId(), dbFiles.get(0).getDbFilePK().getId());
+  }
+
+  @Test
+  public void getByIDAndChunkMyltipleResults() {
+    when(dbFileRepository.findAll(any(Predicate.class), any(Sort.class)))
+        .thenReturn(multipleDbFiles);
+    DBFileDTO dbfDTO = fileUploadImpl.getByIDAndChunk(dbFileId, chunkIndex);
+    assertEquals(dbFileDTO.getId(), dbfDTO.getId());
+    assertEquals(dbFileDTO.getChunkNumber(), dbfDTO.getChunkNumber());
+  }
+
+  @Test
+  @SuppressWarnings("squid:S2699")
+  public void cleanupExpiredDisabledTest() {
+    ReflectionTestUtils.setField(fileUploadImpl, "cleanupEnabled", false);
+    fileUploadImpl.cleanupExpired();
+  }
+
+  @Test
+  public void cleanupExpiredResultsTest() {
+    ReflectionTestUtils.setField(fileUploadImpl, "cleanupEnabled", true);
+    when(dbFileRepository.findAll()).thenReturn(multipleDbFiles);
+    fileUploadImpl.cleanupExpired();
+    verify(dbFileRepository, times(1)).findAll();
+  }
+
+  @Test
+  @SuppressWarnings("squid:S2699")
+  public void cleanupExpiredWithMillisDisabledTest() {
+    ReflectionTestUtils.setField(fileUploadImpl, "cleanupEnabled", false);
+    fileUploadImpl.cleanupExpired(System.currentTimeMillis());
+  }
+
+  @Test
+  public void cleanupExpiredWithMillisResultsTest() {
+    ReflectionTestUtils.setField(fileUploadImpl, "cleanupEnabled", true);
+    when(dbFileRepository.findAll()).thenReturn(multipleDbFiles);
+    fileUploadImpl.cleanupExpired(System.currentTimeMillis());
+    verify(dbFileRepository, times(1)).findAll();
+  }
+
+  @Test
+  public void uploadTest() {
+    fileUploadImpl.upload(dbFileDTO);
+    verify(dbFileRepository, times(1)).getChunk(dbFileDTO.getId(), dbFileDTO.getChunkNumber());
+    verify(dbFileRepository, times(1)).save(any(DBFile.class));
+  }
+
+  @Test
+  public void uploadTotalSizeZeroTest() {
+    ReflectionTestUtils.setField(fileUploadImpl, "isVirusScanEnabled", true);
+    dbFileDTO.setTotalSize(0);
+    fileUploadImpl.upload(dbFileDTO);
+    verify(dbFileRepository, times(1)).getChunk(dbFileDTO.getId(), dbFileDTO.getChunkNumber());
+    verify(dbFileRepository, times(1)).save(any(DBFile.class));
+  }
+
+  @Test
+  public void uploadExistingChunkTest() {
+    when(dbFileRepository.getChunk(dbFileDTO.getId(), dbFileDTO.getChunkNumber()))
+        .thenReturn(new DBFile());
+    fileUploadImpl.upload(dbFileDTO);
+    verify(dbFileRepository, times(1)).getChunk(dbFileDTO.getId(), dbFileDTO.getChunkNumber());
+    verify(dbFileRepository, times(1)).save(any(DBFile.class));
+  }
+
 }

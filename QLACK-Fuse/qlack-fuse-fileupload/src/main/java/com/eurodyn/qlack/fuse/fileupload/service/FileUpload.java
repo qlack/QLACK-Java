@@ -1,10 +1,9 @@
 package com.eurodyn.qlack.fuse.fileupload.service;
 
 import com.eurodyn.qlack.fuse.fileupload.dto.DBFileDTO;
-import org.springframework.scheduling.annotation.Scheduled;
-
 import java.io.FileNotFoundException;
 import java.util.List;
+import org.springframework.scheduling.annotation.Scheduled;
 
 
 public interface FileUpload {
@@ -35,7 +34,6 @@ public interface FileUpload {
    *
    * @param fileID the ID of the file from which a chunk will be retrieved
    * @param chunkNbr The number of the chunk
-   *
    * @return ChunkGetResponse The response which will contain the retrieved chunk
    * @throws FileNotFoundException FileNotFoundException
    */
