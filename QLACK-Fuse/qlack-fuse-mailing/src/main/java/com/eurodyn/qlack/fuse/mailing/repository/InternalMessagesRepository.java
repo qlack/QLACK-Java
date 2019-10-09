@@ -7,7 +7,7 @@ import com.eurodyn.qlack.fuse.mailing.model.InternalMessage;
  *
  * @author European Dynamics SA.
  */
-public interface InternalMessagesRepository extends MailingRepository<InternalMessage, String>{
+public interface InternalMessagesRepository extends MailingRepository<InternalMessage, String> {
 
-	 
+
 }

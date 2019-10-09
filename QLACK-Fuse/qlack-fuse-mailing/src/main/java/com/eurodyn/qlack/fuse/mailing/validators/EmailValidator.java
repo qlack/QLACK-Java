@@ -10,11 +10,7 @@ public class EmailValidator {
   public boolean isValid(EmailDTO emailDTO) {
 
     // At least one recipient must be defined
-    if (CollectionUtils.isEmpty(emailDTO.getToEmails()) && CollectionUtils
-        .isEmpty(emailDTO.getCcEmails()) && CollectionUtils.isEmpty(emailDTO.getBccEmails())) {
-      return false;
-    }
-
-    return true;
+    return !CollectionUtils.isEmpty(emailDTO.getToEmails()) || !CollectionUtils
+        .isEmpty(emailDTO.getCcEmails()) || !CollectionUtils.isEmpty(emailDTO.getBccEmails());
   }
 }

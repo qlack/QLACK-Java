@@ -89,6 +89,7 @@
       src/main/java/com/eurodyn/qlack/**/**/model/**/*,
       src/main/java/com/eurodyn/qlack/**/**/dto/*,
       src/main/java/com/eurodyn/qlack/**/**/dto/**/*,
+      src/main/java/com/eurodyn/qlack/**/**/repository/*,
       src/main/java/com/eurodyn/qlack/fuse/rules/util/classloader/*,
       src/main/java/com/eurodyn/qlack/util/clamav/util/*
     </sonar.coverage.exclusions>
@@ -393,6 +394,7 @@
                     <exclude>com/eurodyn/qlack/**/**/model/**/*</exclude>
                     <exclude>com/eurodyn/qlack/**/**/dto/*</exclude>
                     <exclude>com/eurodyn/qlack/**/**/dto/**/*</exclude>
+                    <exclude>com/eurodyn/qlack/**/**/repository/*</exclude>
                     <exclude>com/eurodyn/qlack/fuse/rules/util/classloader/*</exclude>
                     <exclude>com/eurodyn/qlack/util/clamav/util/*</exclude>
                   </excludes>

@@ -23,20 +23,18 @@ import com.eurodyn.qlack.common.exception.QException;
  */
 public class MailingException extends QException {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public MailingException(String message) {
-		super(message);
-	}
+  public MailingException(String message) {
+    super(message);
+  }
 
-	public MailingException(String message, Throwable cause) {
-		super(message, cause);
-	}
+  public MailingException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-	public MailingException(Throwable cause) {
-		super(cause);
-	}
+  public MailingException(Throwable cause) {
+    super(cause);
+  }
 
-	public MailingException() {
-	}
 }

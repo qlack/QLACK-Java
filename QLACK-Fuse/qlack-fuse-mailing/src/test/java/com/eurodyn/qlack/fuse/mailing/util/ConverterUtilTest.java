@@ -1,5 +1,8 @@
 package com.eurodyn.qlack.fuse.mailing.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import com.eurodyn.qlack.fuse.mailing.InitTestValues;
 import com.eurodyn.qlack.fuse.mailing.dto.ContactDTO;
 import com.eurodyn.qlack.fuse.mailing.dto.DistributionListDTO;
@@ -11,23 +14,23 @@ import com.eurodyn.qlack.fuse.mailing.model.DistributionList;
 import com.eurodyn.qlack.fuse.mailing.model.Email;
 import com.eurodyn.qlack.fuse.mailing.model.InternalAttachment;
 import com.eurodyn.qlack.fuse.mailing.model.InternalMessage;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import org.hibernate.mapping.Collection;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 @RunWith(MockitoJUnitRunner.class)
 public class ConverterUtilTest {
 
-  @InjectMocks private ConverterUtil converterUtil;
+  @InjectMocks
+  private ConverterUtil converterUtil;
 
   private DistributionList distributionList;
   private DistributionListDTO distributionListDTO;
@@ -39,8 +42,10 @@ public class ConverterUtilTest {
   private Set<InternalAttachment> internalAttachmentWithMessagesSet;
   private List<InternalMessage> internalMessageListWithMessages;
 
+  private MailConstants mailConstants;
+
   @Before
-  public void init(){
+  public void init() {
     InitTestValues initTestValues = new InitTestValues();
     distributionList = initTestValues.createDistributionList();
     distributionListDTO = initTestValues.createDistributionListDTO();
@@ -50,123 +55,138 @@ public class ConverterUtilTest {
     email = initTestValues.createEmail();
     internalAttachmentDTO = initTestValues.createFwdInternalAttachmentDTO();
     internalAttachmentWithMessagesSet = initTestValues.createInternalAttachmentsWithMessages();
-    internalMessageListWithMessages =  initTestValues.createInternalMessagesWithMessages();
+    internalMessageListWithMessages = initTestValues.createInternalMessagesWithMessages();
+    mailConstants = new MailConstants();
   }
 
   @Test
-  public void dlistConvertNullTest(){
+  public void dlistConvertNullTest() {
     DistributionList distributionList = null;
     DistributionListDTO result =
-        converterUtil.dlistConvert(distributionList);
+        ConverterUtil.dlistConvert(distributionList);
     assertNull(result);
   }
 
   @Test
-  public void dlistConvertTest(){
+  public void dlistConvertTest() {
     DistributionListDTO result =
-        converterUtil.dlistConvert(distributionList);
+        ConverterUtil.dlistConvert(distributionList);
     assertEquals(distributionList.getId(), result.getId());
   }
 
   @Test
-  public void dlistConvertDTONullTest(){
+  public void dlistConvertDTONullTest() {
     DistributionListDTO distributionListDTO = null;
     DistributionList result =
-        converterUtil.dlistConvert(distributionListDTO);
+        ConverterUtil.dlistConvert(distributionListDTO);
     assertNull(result);
   }
 
   @Test
-  public void dlistConvertDTOTest(){
+  public void dlistConvertDTOTest() {
     DistributionList result =
-        converterUtil.dlistConvert(distributionListDTO);
+        ConverterUtil.dlistConvert(distributionListDTO);
     assertEquals(distributionListDTO.getName(), result.getName());
   }
 
   @Test
-  public void contactConvertTest(){
-    Contact result = converterUtil.contactConvert(contactDTO);
+  public void contactConvertTest() {
+    Contact result = ConverterUtil.contactConvert(contactDTO);
     assertEquals(contactDTO.getUserID(), result.getUserId());
   }
 
   @Test
-  public void createRecepientListNullTest(){
+  public void createRecepientListNullTest() {
     contactDTO.setEmail("");
-    List<String> result = converterUtil.createRecepientlist(contactDTO.getEmail());
+    List<String> result = ConverterUtil.createRecepientlist(contactDTO.getEmail());
     assertNull(result);
   }
 
   @Test
-  public void createRecepientListTest(){
+  public void createRecepientListTest() {
     String[] expected = email.getToEmails().split(",");
-        List<String> result = converterUtil.createRecepientlist(email.getToEmails());
+    List<String> result = ConverterUtil.createRecepientlist(email.getToEmails());
     assertEquals(Arrays.asList(expected).size(), result.size());
   }
 
   @Test
-  public void internalMessageConvertNullTest(){
+  public void internalMessageConvertNullTest() {
     InternalMessageDTO internalMessageDTO = null;
-    Object result = converterUtil.internalMessageConvert(internalMessageDTO);
+    Object result = ConverterUtil.internalMessageConvert(internalMessageDTO);
     assertNull(result);
   }
 
   @Test
-  public void internalMessageConvertDTONullTest(){
+  public void internalMessageConvertDTONullTest() {
     InternalMessage internalMessage = null;
-    Object result = converterUtil.internalMessageConvert(internalMessage);
+    Object result = ConverterUtil.internalMessageConvert(internalMessage);
     assertNull(result);
   }
 
   @Test
-  public void internalMessageConvertTest(){
-    InternalMessage  result = converterUtil.internalMessageConvert(internalMessageDTO);
+  public void internalMessageConvertTest() {
+    InternalMessage result = ConverterUtil.internalMessageConvert(internalMessageDTO);
     assertEquals(internalMessageDTO.getMessage(), result.getMessage());
   }
 
   @Test
-  public void internalMessageConvertDTOTest(){
+  public void internalMessageConvertDTOTest() {
     internalMessage.setAttachments(internalAttachmentWithMessagesSet);
-    InternalMessageDTO  result = converterUtil.internalMessageConvert(internalMessage);
+    InternalMessageDTO result = ConverterUtil.internalMessageConvert(internalMessage);
     assertEquals(internalMessage.getMessage(), result.getMessage());
   }
 
   @Test
-  public void internalAttachmentConvertNullTest(){
+  public void internalAttachmentConvertNullTest() {
     InternalAttachmentDTO internalAttachmentDTO = null;
-    Object result = converterUtil.internalAttachmentConvert(internalAttachmentDTO);
+    Object result = ConverterUtil.internalAttachmentConvert(internalAttachmentDTO);
     assertNull(result);
   }
 
   @Test
-  public void internalAttachmentConvertDTONullTest(){
+  public void internalAttachmentConvertDTONullTest() {
     InternalAttachment internalAttachment = null;
-    InternalAttachmentDTO result = converterUtil.internalAttachmentConvert(internalAttachment);
+    InternalAttachmentDTO result = ConverterUtil.internalAttachmentConvert(internalAttachment);
     assertNull(result);
   }
 
   @Test
-  public void internalAttachmentConvertTest(){
-    InternalAttachment result = converterUtil.internalAttachmentConvert(internalAttachmentDTO);
+  public void internalAttachmentConvertTest() {
+    InternalAttachment result = ConverterUtil.internalAttachmentConvert(internalAttachmentDTO);
     assertEquals(internalAttachmentDTO.getFilename(), result.getFilename());
   }
 
   @Test
-  public void internalMessageConvertListTest(){
-    List<InternalMessageDTO> result = converterUtil.internalMessageConvertList(
+  public void internalMessageConvertListTest() {
+    List<InternalMessageDTO> result = ConverterUtil.internalMessageConvertList(
         internalMessageListWithMessages);
     assertEquals(internalMessageListWithMessages.size(), result.size());
   }
 
   @Test
-  public void emailConvertNullTest(){
+  public void emailConvertNullTest() {
     Email email = null;
-    EmailDTO result = converterUtil.emailConvert(email);
+    EmailDTO result = ConverterUtil.emailConvert(email);
     assertNull(result);
   }
 
   @Test
-  public void emailConvertTest(){
-    EmailDTO result = converterUtil.emailConvert(email);
+  public void emailConvertTest() {
+    EmailDTO result = ConverterUtil.emailConvert(email);
     assertEquals(email.getId(), result.getId());
+  }
+
+  @Test
+  public void internalMessageConvertNullAttachmentsTest(){
+    internalMessage.setAttachments(null);
+    InternalMessageDTO result = ConverterUtil.internalMessageConvert(internalMessage);
+    assertEquals(internalMessage.getMessage(), result.getMessage());
+  }
+
+  @Test
+  public void internalMessageConvertEmptyAttachmentsTest(){
+    internalMessage.setAttachments(Collections.emptySet());
+    InternalMessageDTO result = ConverterUtil.internalMessageConvert(internalMessage);
+    assertEquals(internalMessage.getMessage(), result.getMessage());
   }
 }

@@ -209,7 +209,7 @@ public class SchedulerServiceTest {
     schedulerService.registerJob(testJobClass);
 
     verify(scheduler, times(1)).addJob(jobDetailArgumentCaptor.capture(), eq(true));
-    assertEquals(jobDetailArgumentCaptor.getValue().getJobDataMap().size(), 0);
+    assertEquals(0, jobDetailArgumentCaptor.getValue().getJobDataMap().size());
   }
 
   @Test(expected = QSchedulerException.class)
@@ -337,7 +337,7 @@ public class SchedulerServiceTest {
   public void triggerJobTest() throws SchedulerException {
     schedulerService.triggerJob(testJobClass);
     verify(scheduler, times(1)).triggerJob(any(), jobDataMapArgumentCaptor.capture());
-    assertEquals(jobDataMapArgumentCaptor.getValue().size(), 0);
+    assertEquals(0, jobDataMapArgumentCaptor.getValue().size());
   }
 
   @Test(expected = QSchedulerException.class)

@@ -8,15 +8,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import com.eurodyn.qlack.fuse.mailing.InitTestValues;
 import com.eurodyn.qlack.fuse.mailing.dto.ContactDTO;
 import com.eurodyn.qlack.fuse.mailing.dto.DistributionListDTO;
@@ -26,6 +17,13 @@ import com.eurodyn.qlack.fuse.mailing.model.Contact;
 import com.eurodyn.qlack.fuse.mailing.model.DistributionList;
 import com.eurodyn.qlack.fuse.mailing.repository.ContactRepository;
 import com.eurodyn.qlack.fuse.mailing.repository.DistributionListRepository;
+import java.util.List;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
 
 /**
  * @author European Dynamics
@@ -36,7 +34,8 @@ public class DistributionListTest {
   @InjectMocks
   private DistributionListService distributionListService;
 
-  private DistributionListRepository distributionListRepository = mock(DistributionListRepository.class);
+  private DistributionListRepository distributionListRepository = mock(
+      DistributionListRepository.class);
   private ContactRepository contactRepository = mock(ContactRepository.class);
 
   @Spy
@@ -59,8 +58,9 @@ public class DistributionListTest {
 
   @Before
   public void init() {
-    distributionListService = new DistributionListService(distributionListRepository, contactRepository,
-                                                          distributionListMapper, contactMapper
+    distributionListService = new DistributionListService(distributionListRepository,
+        contactRepository,
+        distributionListMapper, contactMapper
     );
 
     initTestValues = new InitTestValues();

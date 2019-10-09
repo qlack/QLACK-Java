@@ -1,22 +1,14 @@
 package com.eurodyn.qlack.fuse.mailing.monitor;
 
-import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.util.HashSet;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import com.eurodyn.qlack.fuse.mailing.InitTestValues;
 import com.eurodyn.qlack.fuse.mailing.dto.EmailDTO;
@@ -28,8 +20,17 @@ import com.eurodyn.qlack.fuse.mailing.model.QEmail;
 import com.eurodyn.qlack.fuse.mailing.repository.DistributionListRepository;
 import com.eurodyn.qlack.fuse.mailing.repository.EmailRepository;
 import com.eurodyn.qlack.fuse.mailing.util.MailConstants;
+import com.eurodyn.qlack.fuse.mailing.util.MailConstants.EMAIL_STATUS;
 import com.eurodyn.qlack.fuse.mailing.util.MailingProperties;
 import com.querydsl.core.types.Predicate;
+import java.util.HashSet;
+import java.util.List;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
 
 /**
  * @author European Dynamics
@@ -43,7 +44,8 @@ public class MailQueueMonitorTest {
   private MailQueueSender mailQueueSender;
 
   private EmailRepository emailRepository = mock(EmailRepository.class);
-  private DistributionListRepository distributionListRepository = mock(DistributionListRepository.class);
+  private DistributionListRepository distributionListRepository = mock(
+      DistributionListRepository.class);
 
   private MailingProperties mailingProperties = mock(MailingProperties.class);
 
@@ -65,7 +67,7 @@ public class MailQueueMonitorTest {
   @Before
   public void init() {
     mailQueueMonitor = new MailQueueMonitor(mailQueueSender, mailingProperties, emailRepository,
-                                            distributionListRepository, emailMapper
+        distributionListRepository, emailMapper
     );
     initTestValues = new InitTestValues();
     email = initTestValues.createEmail();
@@ -75,13 +77,39 @@ public class MailQueueMonitorTest {
   }
 
   @Test
-  public void testSendOne() {
+  public void sendOneTest() {
     when(emailMapper.mapToDTO(email)).thenReturn(emailDTO);
     when(emailMapper.mapToDTOWithRecipients(email, true)).thenReturn(emailDTO);
     when(emailRepository.fetchById(emailId)).thenReturn(email);
     mailQueueMonitor.sendOne(emailId);
     assertNotNull(email.getDateSent());
     assertEquals(email.getStatus(), MailConstants.EMAIL_STATUS.SENT.name());
+    verify(emailRepository, times(1)).save(email);
+  }
+
+  @Test
+  public void sendOneCauseExceptionTest() {
+    when(emailRepository.fetchById(emailId)).thenReturn(email);
+    when(emailMapper.mapToDTO(email)).thenReturn(emailDTO);
+    when(emailMapper.mapToDTOWithRecipients(email, true)).thenReturn(emailDTO);
+    doThrow(new MailingException("ex")).when(mailQueueSender).send(emailDTO);
+    mailQueueMonitor.sendOne(emailId);
+    assertNull(email.getDateSent());
+    assertEquals(email.getStatus(), EMAIL_STATUS.FAILED.name());
+    verify(emailRepository, times(1)).save(email);
+  }
+
+  @Test
+  public void sendOneCauseExceptionSecondScenarioTest() {
+    email.setTries((byte) 0);
+    when(mailingProperties.getMaxTries()).thenReturn((byte) 3);
+    when(emailRepository.fetchById(emailId)).thenReturn(email);
+    when(emailMapper.mapToDTO(email)).thenReturn(emailDTO);
+    when(emailMapper.mapToDTOWithRecipients(email, true)).thenReturn(emailDTO);
+    doThrow(new MailingException("ex", new Throwable())).when(mailQueueSender).send(emailDTO);
+    mailQueueMonitor.sendOne(emailId);
+    assertNull(email.getDateSent());
+    assertEquals(email.getStatus(), EMAIL_STATUS.QUEUED.name());
     verify(emailRepository, times(1)).save(email);
   }
 
@@ -143,7 +171,7 @@ public class MailQueueMonitorTest {
   @Test
   public void testCheckAndSendQueuedWithPollingEnabled() {
     Predicate predicate = qEmail.status.eq(MailConstants.EMAIL_STATUS.QUEUED.toString())
-                                       .and(qEmail.tries.lt(mailingProperties.getMaxTries()));
+        .and(qEmail.tries.lt(mailingProperties.getMaxTries()));
     for (Email e : emails) {
       when(emailMapper.mapToDTO(e)).thenReturn(emailDTO);
       when(emailMapper.mapToDTOWithRecipients(e, true)).thenReturn(emailDTO);
@@ -156,5 +184,18 @@ public class MailQueueMonitorTest {
       assertEquals(e.getStatus(), MailConstants.EMAIL_STATUS.SENT.name());
       verify(emailRepository, times(1)).save(e);
     }
+  }
+
+  @Test
+  public void testCheckAndSendQueuedWithPollingDisabled() {
+    when(mailingProperties.isPolling()).thenReturn(false);
+    mailQueueMonitor.checkAndSendQueued();
+    verify(emailRepository, times(0)).save(any());
+  }
+
+  @Test(expected = MailingException.class)
+  public void sendToDistributionListEmptyListTest() {
+    when(emailRepository.fetchById(emailId)).thenReturn(email);
+    mailQueueMonitor.sendToDistributionList(emailId, "");
   }
 }

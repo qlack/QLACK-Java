@@ -19,6 +19,7 @@ import com.eurodyn.qlack.fuse.mailing.repository.EmailRepository;
 import com.eurodyn.qlack.fuse.mailing.util.MailConstants;
 import com.eurodyn.qlack.fuse.mailing.validators.EmailValidator;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.validation.ValidationException;
 import org.junit.Before;
@@ -69,7 +70,7 @@ public class MailServiceTest {
   @Before
   public void init() {
     mailService = new MailService(mailQueueMonitor, emailMapper, emailRepository,
-                                  attachmentMapper, attachmentRepository, emailValidator);
+        attachmentMapper, attachmentRepository, emailValidator);
     initTestValues = new InitTestValues();
     email = initTestValues.createEmail();
     emailDTO = initTestValues.createEmailDTO();
@@ -108,19 +109,33 @@ public class MailServiceTest {
   }
 
   @Test
+  public void testQueueEmailWithEmptyAttachments() {
+    email.setTries((byte) 0);
+    email.setStatus(MailConstants.EMAIL_STATUS.QUEUED.name());
+    email.setAddedOnDate(System.currentTimeMillis());
+    emailDTO.setAttachments(Collections.emptyList());
+    when(emailMapper.mapToEntity(emailDTO)).thenReturn(email);
+    String queuedEmailId = mailService.queueEmail(emailDTO);
+    verify(emailRepository, times(1)).save(email);
+    assertEquals(emailDTO.getId(), queuedEmailId);
+  }
+
+  @Test
   public void testQueueEmails() {
     for (EmailDTO e : emailsDTO) {
       e.setAttachments(null);
-      when(emailMapper.mapToEntity(e)).thenReturn(emails.stream().filter(em -> em.getId().equals(e.getId())).findFirst()
-                                                        .get());
+      when(emailMapper.mapToEntity(e))
+          .thenReturn(emails.stream().filter(em -> em.getId().equals(e.getId())).findFirst()
+              .get());
     }
     List<String> queuedEmailsIds = mailService.queueEmails(emailsDTO);
     assertEquals(emailsDTO.size(), queuedEmailsIds.size());
-}
+  }
 
   @Test
   public void testCleanup() {
-    when(emailRepository.findByAddedOnDateAndStatus(emailDate, MailConstants.EMAIL_STATUS.QUEUED)).thenReturn(emails);
+    when(emailRepository.findByAddedOnDateAndStatus(emailDate, MailConstants.EMAIL_STATUS.QUEUED))
+        .thenReturn(emails);
     mailService.cleanup(emailDate, statuses);
     for (Email email : emails) {
       verify(emailRepository, times(1)).delete(email);
@@ -151,10 +166,12 @@ public class MailServiceTest {
 
   @Test
   public void testGetByStatus() {
-    when(emailRepository.findByAddedOnDateAndStatus(null, MailConstants.EMAIL_STATUS.QUEUED)).thenReturn(emails);
+    when(emailRepository.findByAddedOnDateAndStatus(null, MailConstants.EMAIL_STATUS.QUEUED))
+        .thenReturn(emails);
     for (Email e : emails) {
-      when(emailMapper.mapToDTO(e)).thenReturn(emailsDTO.stream().filter(em -> em.getId().equals(e.getId())).findFirst()
-                                                        .get());
+      when(emailMapper.mapToDTO(e))
+          .thenReturn(emailsDTO.stream().filter(em -> em.getId().equals(e.getId())).findFirst()
+              .get());
     }
     List<EmailDTO> byStatus = mailService.getByStatus(MailConstants.EMAIL_STATUS.QUEUED);
     assertEquals(emails.size(), byStatus.size());
@@ -173,12 +190,12 @@ public class MailServiceTest {
   }
 
   @Test(expected = ValidationException.class)
-  public void sendWithoutRecipients(){
+  public void sendWithoutRecipients() {
 
-      emailDTO.setToEmails(new ArrayList<>());
-      emailDTO.setCcEmails(new ArrayList<>());
-      emailDTO.setBccEmails(new ArrayList<>());
-      mailService.queueEmail(emailDTO);
+    emailDTO.setToEmails(new ArrayList<>());
+    emailDTO.setCcEmails(new ArrayList<>());
+    emailDTO.setBccEmails(new ArrayList<>());
+    mailService.queueEmail(emailDTO);
   }
 
 }

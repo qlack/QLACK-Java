@@ -21,114 +21,113 @@ import lombok.ToString;
 @ToString
 public class EmailDTO implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
   /**
    * Id
    */
-	private String id;
+  private String id;
 
   /**
    * The email subject
    */
-	private String subject;
+  private String subject;
 
   /**
    * The email body
    */
-	private String body;
+  private String body;
 
   /**
    * The sender
    */
-	private @NotBlank String fromEmail;
+  private @NotBlank String fromEmail;
 
   /**
    * The email list of recipients
    */
-	private List<String> toEmails;
+  private List<String> toEmails;
 
   /**
    * The email list of recipients in Carbon Copy (cc)
    */
-	private List<String> ccEmails;
+  private List<String> ccEmails;
 
   /**
    * The email list of recipients in Blind Carbon Copy (Bcc)
    */
-	private List<String> bccEmails;
+  private List<String> bccEmails;
 
   /**
    * The 'Reply to' email list
    */
-	private List<String> replyToEmails;
+  private List<String> replyToEmails;
 
   /**
    * The {@link EMAIL_TYPE} email type
    */
-	private @NotNull EMAIL_TYPE emailType;
+  private @NotNull EMAIL_TYPE emailType;
 
   /**
    * The email status
    */
-	private String status;
+  private String status;
 
   /**
    * List of email attachments
    */
-	private List<AttachmentDTO> attachments;
+  private List<AttachmentDTO> attachments;
 
   /**
    * The date the email was sent
    */
-	private Date dateSent;
+  private Date dateSent;
 
   /**
    * A server response string
    */
-	private String serverResponse;
+  private String serverResponse;
 
   /**
-   * The date that the response was sent
-   * from the server
+   * The date that the response was sent from the server
    */
-	private Date serverResponseDate;
-	private String charset = EmailCharset.UTF_8.getValue();
+  private Date serverResponseDate;
+  private String charset = EmailCharset.UTF_8.getValue();
 
-	public EmailDTO() {
-		this.emailType = EMAIL_TYPE.TEXT;
-	}
+  public EmailDTO() {
+    this.emailType = EMAIL_TYPE.TEXT;
+  }
 
-	public void setToContact(List<String> toEmails) {
-		this.toEmails = toEmails;
-	}
+  public void setToContact(List<String> toEmails) {
+    this.toEmails = toEmails;
+  }
 
-	public void setToContact(String toContact) {
-		List<String> l = new ArrayList<>();
-		l.add(toContact);
-		setToContact(l);
-	}
+  public void setToContact(String toContact) {
+    List<String> l = new ArrayList<>();
+    l.add(toContact);
+    setToContact(l);
+  }
 
-	public void addAttachment(AttachmentDTO attachmentDTO) {
-		if (attachments == null) {
-			attachments = new ArrayList<>();
-		}
-		attachments.add(attachmentDTO);
-	}
+  public void addAttachment(AttachmentDTO attachmentDTO) {
+    if (attachments == null) {
+      attachments = new ArrayList<>();
+    }
+    attachments.add(attachmentDTO);
+  }
 
-	public void setDateSent(Long dateSent) {
-		if (dateSent != null) {
-			this.dateSent = new Date(dateSent);
-		}
-	}
+  public void setDateSent(Long dateSent) {
+    if (dateSent != null) {
+      this.dateSent = new Date(dateSent);
+    }
+  }
 
-	public void resetAllRecipients() {
-		this.toEmails = null;
-		this.ccEmails = null;
-		this.bccEmails = null;
-	}
+  public void resetAllRecipients() {
+    this.toEmails = null;
+    this.ccEmails = null;
+    this.bccEmails = null;
+  }
 
-	public enum EMAIL_TYPE {
-		TEXT, HTML
-	}
+  public enum EMAIL_TYPE {
+    TEXT, HTML
+  }
 }

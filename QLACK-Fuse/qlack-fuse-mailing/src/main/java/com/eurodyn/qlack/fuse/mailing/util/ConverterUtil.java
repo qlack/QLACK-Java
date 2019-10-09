@@ -11,7 +11,6 @@ import com.eurodyn.qlack.fuse.mailing.model.DistributionList;
 import com.eurodyn.qlack.fuse.mailing.model.Email;
 import com.eurodyn.qlack.fuse.mailing.model.InternalAttachment;
 import com.eurodyn.qlack.fuse.mailing.model.InternalMessage;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -23,6 +22,13 @@ import java.util.StringTokenizer;
  * @author European Dynamics SA.
  */
 public class ConverterUtil {
+
+  /**
+   * Private Constructor
+   */
+  private ConverterUtil() {
+
+  }
 
   /**
    * Converts the entity DistributionList to data transfer object DistributionListDTO
@@ -65,8 +71,9 @@ public class ConverterUtil {
 
   /**
    * Converts the entity data transfer object ContactDTO to Contact.
-   * @param dto
-   * @return
+   *
+   * @param dto the dto to be converted
+   * @return the converted entity
    */
   public static Contact contactConvert(ContactDTO dto) {
     Contact entity = new Contact();
@@ -97,28 +104,6 @@ public class ConverterUtil {
     return contacts.isEmpty() ? null : contacts;
   }
 
-  /**
-   * Create e-mails string separated by token
-   *
-   * @param emails List of e-mails.
-   * @return String of token separated e-mails.
-   */
-//  public static String createRecepientlist(List<String> emails) {
-//
-//    StringBuilder emailAddress = new StringBuilder();
-//    if (emails != null && !emails.isEmpty()) {
-//      for (String email : emails) {
-//        if (emailAddress.length() > 0) {
-//          emailAddress.append(",");
-//        }
-//        emailAddress.append(email);
-//      }
-//    }
-//
-//    return emailAddress.length() > 0 ? emailAddress.toString() : null;
-//  }
-
-  
   /**
    * Converts InternalMessageDTO DTO to InternalMessage without attachments.
    *

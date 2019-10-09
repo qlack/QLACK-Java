@@ -12,31 +12,31 @@ import lombok.Setter;
 @Setter
 public class InternalAttachmentDTO extends MailBaseDTO {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
   /**
    * The id of the message the attachment is attached to
    */
-	private String messagesId;
+  private String messagesId;
 
   /**
    * The attachment filename
    */
-	private String filename;
+  private String filename;
 
   /**
    * A {@link java.lang.String} representing the Content-Type of the attachment
    */
-	private String contentType;
+  private String contentType;
 
   /**
    * The attachment actual data
    */
-	private byte[] data;
+  private byte[] data;
 
   /**
    * The attachment format
    */
-	private String format;
+  private String format;
 
 }

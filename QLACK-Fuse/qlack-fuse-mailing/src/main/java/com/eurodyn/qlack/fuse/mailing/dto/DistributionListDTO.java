@@ -13,27 +13,25 @@ import lombok.Setter;
 @Setter
 public class DistributionListDTO extends MailBaseDTO {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
   /**
    * Distribution list name
    */
-	private String name;
+  private String name;
 
   /**
    * Description of the distribution list
    */
-	private String description;
+  private String description;
 
   /**
-   * The username of the user that created
-   * the distribution list
+   * The username of the user that created the distribution list
    */
-	private String createdBy;
+  private String createdBy;
 
   /**
-   * The date the distribution list was created
-   * represented as a {@link java.lang.Long} number
+   * The date the distribution list was created represented as a {@link java.lang.Long} number
    */
   private Long createdOn;
 

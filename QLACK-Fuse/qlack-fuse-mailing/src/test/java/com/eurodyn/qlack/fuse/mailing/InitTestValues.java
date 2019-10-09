@@ -1,21 +1,5 @@
 package com.eurodyn.qlack.fuse.mailing;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-
 import com.eurodyn.qlack.fuse.mailing.dto.AttachmentDTO;
 import com.eurodyn.qlack.fuse.mailing.dto.ContactDTO;
 import com.eurodyn.qlack.fuse.mailing.dto.DistributionListDTO;
@@ -30,6 +14,17 @@ import com.eurodyn.qlack.fuse.mailing.model.Email;
 import com.eurodyn.qlack.fuse.mailing.model.InternalAttachment;
 import com.eurodyn.qlack.fuse.mailing.model.InternalMessage;
 import com.eurodyn.qlack.fuse.mailing.util.MailConstants.EMAIL_STATUS;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 
 /**
  * @author European Dynamics
@@ -37,8 +32,7 @@ import com.eurodyn.qlack.fuse.mailing.util.MailConstants.EMAIL_STATUS;
 public class InitTestValues {
 
   /**
-   * This byte array stands for an attachment
-   * actual data for testing purposes
+   * This byte array stands for an attachment actual data for testing purposes
    */
   byte[] data = {80, 65, 78, 75, 65, 74};
   @Autowired
@@ -90,6 +84,18 @@ public class InitTestValues {
     return contact;
   }
 
+  public Contact createContact2() {
+    Contact contact = new Contact();
+
+    contact.setId("0f932472-cde0-44a6-ba3d-8e6099234043d");
+    contact.setFirstName("ED");
+    contact.setLastName("USer");
+    contact.setEmail("eduser@eurodyn.com");
+    contact.setLocale("el");
+
+    return contact;
+  }
+
   public ContactDTO createContactDTO() {
     ContactDTO contactDTO = new ContactDTO();
 
@@ -105,6 +111,8 @@ public class InitTestValues {
   public Set<Contact> createContacts() {
     Set<Contact> contacts = new HashSet<>();
     contacts.add(createContact());
+    contacts.add(createContact2());
+
     return contacts;
   }
 
@@ -182,6 +190,7 @@ public class InitTestValues {
     List<String> replyToEmails = Arrays.asList("test@eurodyn.com", "test2@eurodyn.com");
 
     emailDTO.setId("ad1f5bb0-e1a9-4960-b0ca-1998fa5a1d6c");
+    emailDTO.setFromEmail("from@eurodyn.com");
     emailDTO.setToEmails(toEmails);
     emailDTO.setCcEmails(ccEmails);
     emailDTO.setBccEmails(bccEmails);
@@ -286,7 +295,6 @@ public class InitTestValues {
     internalMessage.setDateSent(new Long("2121545432165"));
     internalMessage.setDeleteType("I");
 
-
     return internalMessage;
   }
 
@@ -302,7 +310,6 @@ public class InitTestValues {
     internalMessage.setDateReceived(new Long("2121545432165"));
     internalMessage.setDateSent(new Long("2121545432165"));
     internalMessage.setDeleteType("I");
-
 
     return internalMessage;
   }

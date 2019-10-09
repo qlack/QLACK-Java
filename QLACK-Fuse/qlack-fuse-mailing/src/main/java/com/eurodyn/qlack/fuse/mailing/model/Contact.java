@@ -2,7 +2,6 @@ package com.eurodyn.qlack.fuse.mailing.model;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,7 +9,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,46 +23,45 @@ import lombok.Setter;
 @Setter
 public class Contact extends MailingModel {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
   /**
    * Email
    */
-	@Column(name = "email", nullable = false, length = 45)
-	private String email;
+  @Column(name = "email", nullable = false, length = 45)
+  private String email;
 
   /**
    * The contact first name
    */
-	@Column(name = "first_name", length = 254)
-	private String firstName;
+  @Column(name = "first_name", length = 254)
+  private String firstName;
 
   /**
    * The contact last name
    */
-	@Column(name = "last_name", length = 254)
-	private String lastName;
+  @Column(name = "last_name", length = 254)
+  private String lastName;
 
   /**
    * The contact default locale
    */
-	@Column(name = "locale", length = 5)
-	private String locale;
+  @Column(name = "locale", length = 5)
+  private String locale;
 
   /**
    * The id of the corresponding user
    */
-	@Column(name = "user_id", length = 36)
-	private String userId;
+  @Column(name = "user_id", length = 36)
+  private String userId;
 
   /**
-   * The distribution lists in which
-   * this contact is included
+   * The distribution lists in which this contact is included
    */
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "mai_distr_list_has_contact", joinColumns = {
-			@JoinColumn(name = "contact_id", nullable = false, updatable = false) }, inverseJoinColumns = {
-					@JoinColumn(name = "distribution_list_id", nullable = false, updatable = false) })
-	private Set<DistributionList> distributionLists = new HashSet<>(0);
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(name = "mai_distr_list_has_contact", joinColumns = {
+      @JoinColumn(name = "contact_id", nullable = false, updatable = false)}, inverseJoinColumns = {
+      @JoinColumn(name = "distribution_list_id", nullable = false, updatable = false)})
+  private Set<DistributionList> distributionLists = new HashSet<>(0);
 
 }

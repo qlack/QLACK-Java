@@ -7,18 +7,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import com.eurodyn.qlack.fuse.mailing.InitTestValues;
 import com.eurodyn.qlack.fuse.mailing.dto.InternalAttachmentDTO;
 import com.eurodyn.qlack.fuse.mailing.dto.InternalMessageDTO;
@@ -32,6 +20,16 @@ import com.eurodyn.qlack.fuse.mailing.repository.InternalMessagesRepository;
 import com.eurodyn.qlack.fuse.mailing.util.MailConstants;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
 
 /**
  * @author European Dynamics
@@ -42,8 +40,10 @@ public class InternalMessageServiceTest {
   @InjectMocks
   private InternalMessageService internalMessageService;
 
-  private InternalMessagesRepository internalMessageRepository = mock(InternalMessagesRepository.class);
-  private InternalAttachmentRepository internalAttachmentRepository = mock(InternalAttachmentRepository.class);
+  private InternalMessagesRepository internalMessageRepository = mock(
+      InternalMessagesRepository.class);
+  private InternalAttachmentRepository internalAttachmentRepository = mock(
+      InternalAttachmentRepository.class);
 
   @Spy
   private InternalMessageMapper internalMessageMapper;
@@ -72,8 +72,9 @@ public class InternalMessageServiceTest {
 
   @Before
   public void init() {
-    internalMessageService = new InternalMessageService(internalMessageRepository, internalAttachmentRepository,
-                                                        internalMessageMapper, internalAttachmentMapper
+    internalMessageService = new InternalMessageService(internalMessageRepository,
+        internalAttachmentRepository,
+        internalMessageMapper, internalAttachmentMapper
     );
     qInternalMessage = new QInternalMessage("internalMessage");
 
@@ -99,8 +100,9 @@ public class InternalMessageServiceTest {
   @Test
   public void testSendInternalMailWithoutAttachment() {
     when(internalMessageMapper.mapToEntity(internalMessageDTOWithoutAttachments)).thenReturn(
-      internalMessageWithoutAttachments);
-    String internalMessageId = internalMessageService.sendInternalMail(internalMessageDTOWithoutAttachments);
+        internalMessageWithoutAttachments);
+    String internalMessageId = internalMessageService
+        .sendInternalMail(internalMessageDTOWithoutAttachments);
     verify(internalMessageRepository, times(1)).save(internalMessageWithoutAttachments);
     assertEquals(internalMessageDTOWithoutAttachments.getId(), internalMessageId);
   }
@@ -110,16 +112,19 @@ public class InternalMessageServiceTest {
     when(internalMessageMapper.mapToEntity(internalMessageDTO)).thenReturn(internalMessage);
 
     int index = 0;
-    for (Iterator<InternalAttachment> iter = internalMessage.getAttachments().iterator(); iter.hasNext(); ) {
+    for (Iterator<InternalAttachment> iter = internalMessage.getAttachments().iterator();
+        iter.hasNext(); ) {
       InternalAttachment internalAttachmentIter = iter.next();
-      when(internalAttachmentMapper.mapToEntity(internalMessageDTO.getAttachments().get(index))).thenReturn(
-        internalAttachmentIter);
+      when(internalAttachmentMapper.mapToEntity(internalMessageDTO.getAttachments().get(index)))
+          .thenReturn(
+              internalAttachmentIter);
       index++;
     }
 
     String internalMessageId = internalMessageService.sendInternalMail(internalMessageDTO);
     verify(internalMessageRepository, times(1)).save(internalMessage);
-    for (Iterator<InternalAttachment> iter = internalMessage.getAttachments().iterator(); iter.hasNext(); ) {
+    for (Iterator<InternalAttachment> iter = internalMessage.getAttachments().iterator();
+        iter.hasNext(); ) {
       InternalAttachment internalAttachmentIter = iter.next();
       verify(internalAttachmentRepository, times(1)).save(internalAttachmentIter);
     }
@@ -130,23 +135,28 @@ public class InternalMessageServiceTest {
   public void testSendInternalMailWithForwardAttachmentId() {
     final String fwdAttachmentId = "0f9a2472-cde0-44a6-ba3d-9e60492902fb";
     when(internalAttachmentRepository.fetchById(fwdAttachmentId)).thenReturn(fwdInternalAttachment);
-    when(internalAttachmentMapper.mapToDTO(fwdInternalAttachment)).thenReturn(fwdInternalAttachmentDTO);
-    when(internalAttachmentMapper.mapToEntity(fwdInternalAttachmentDTO)).thenReturn(fwdInternalAttachment);
+    when(internalAttachmentMapper.mapToDTO(fwdInternalAttachment))
+        .thenReturn(fwdInternalAttachmentDTO);
+    when(internalAttachmentMapper.mapToEntity(fwdInternalAttachmentDTO))
+        .thenReturn(fwdInternalAttachment);
 
     internalMessageDTO.setFwdAttachmentId(fwdAttachmentId);
     when(internalMessageMapper.mapToEntity(internalMessageDTO)).thenReturn(internalMessage);
 
     int index = 0;
-    for (Iterator<InternalAttachment> iter = internalMessage.getAttachments().iterator(); iter.hasNext(); ) {
+    for (Iterator<InternalAttachment> iter = internalMessage.getAttachments().iterator();
+        iter.hasNext(); ) {
       InternalAttachment internalAttachmentIter = iter.next();
-      when(internalAttachmentMapper.mapToEntity(internalMessageDTO.getAttachments().get(index))).thenReturn(
-        internalAttachmentIter);
+      when(internalAttachmentMapper.mapToEntity(internalMessageDTO.getAttachments().get(index)))
+          .thenReturn(
+              internalAttachmentIter);
       index++;
     }
 
     String internalMessageId = internalMessageService.sendInternalMail(internalMessageDTO);
     verify(internalMessageRepository, times(1)).save(internalMessage);
-    for (Iterator<InternalAttachment> iter = internalMessage.getAttachments().iterator(); iter.hasNext(); ) {
+    for (Iterator<InternalAttachment> iter = internalMessage.getAttachments().iterator();
+        iter.hasNext(); ) {
       InternalAttachment internalAttachmentIter = iter.next();
       verify(internalAttachmentRepository, times(1)).save(internalAttachmentIter);
     }
@@ -185,9 +195,11 @@ public class InternalMessageServiceTest {
 
   @Test
   public void testInternalAttachment() {
-    when(internalAttachmentRepository.fetchById(internalAttachmentId)).thenReturn(internalAttachment);
+    when(internalAttachmentRepository.fetchById(internalAttachmentId))
+        .thenReturn(internalAttachment);
     when(internalAttachmentMapper.mapToDTO(internalAttachment)).thenReturn(internalAttachmentDTO);
-    InternalAttachmentDTO iaDTO = internalMessageService.getInternalAttachment(internalAttachmentId);
+    InternalAttachmentDTO iaDTO = internalMessageService
+        .getInternalAttachment(internalAttachmentId);
     assertEquals(iaDTO, internalAttachmentDTO);
   }
 
@@ -226,8 +238,8 @@ public class InternalMessageServiceTest {
   @Test
   public void testGetInternalInboxFolder() {
     Predicate predicate =
-      qInternalMessage.mailTo.eq(userId).and(qInternalMessage.deleteType.notEqualsIgnoreCase(
-        "I"));
+        qInternalMessage.mailTo.eq(userId).and(qInternalMessage.deleteType.notEqualsIgnoreCase(
+            "I"));
     when(internalMessageRepository.findAll(predicate)).thenReturn(internalMessages);
     when(internalMessageMapper.mapToDTO(internalMessages)).thenReturn(internalMessagesDTO);
     List<InternalMessageDTO> intMessagesDTO = internalMessageService.getInternalInboxFolder(userId);
@@ -237,7 +249,7 @@ public class InternalMessageServiceTest {
   @Test
   public void testGetInternalSentFolder() {
     Predicate predicate = qInternalMessage.mailTo.eq(userId)
-                                                 .and(qInternalMessage.deleteType.notEqualsIgnoreCase("S"));
+        .and(qInternalMessage.deleteType.notEqualsIgnoreCase("S"));
     when(internalMessageRepository.findAll(predicate)).thenReturn(internalMessages);
     when(internalMessageMapper.mapToDTO(internalMessages)).thenReturn(internalMessagesDTO);
     List<InternalMessageDTO> intMessagesDTO = internalMessageService.getInternalSentFolder(userId);
@@ -256,7 +268,8 @@ public class InternalMessageServiceTest {
   public void testGetMailCountWithStatusId() {
     when(internalMessageRepository.findAll(any(Predicate.class))).thenReturn(internalMessages);
     long expected = (long) internalMessages.size();
-    long actual = internalMessageService.getMailCount(null, MailConstants.EMAIL_STATUS.QUEUED.name());
+    long actual = internalMessageService
+        .getMailCount(null, MailConstants.EMAIL_STATUS.QUEUED.name());
     assertEquals(expected, actual);
   }
 
@@ -264,7 +277,8 @@ public class InternalMessageServiceTest {
   public void testGetMailCountWithUserIdAndStatusId() {
     when(internalMessageRepository.findAll(any(Predicate.class))).thenReturn(internalMessages);
     long expected = (long) internalMessages.size();
-    long actual = internalMessageService.getMailCount(userId, MailConstants.EMAIL_STATUS.QUEUED.name());
+    long actual = internalMessageService
+        .getMailCount(userId, MailConstants.EMAIL_STATUS.QUEUED.name());
     assertEquals(expected, actual);
 
   }
@@ -281,13 +295,14 @@ public class InternalMessageServiceTest {
   @Test
   public void testInternalMessageAttachments() {
     when(internalAttachmentRepository.findByMessagesId(internalMessageId)).thenReturn(
-      internalAttachments.stream().collect(Collectors.toList()));
+        internalAttachments.stream().collect(Collectors.toList()));
     for (InternalAttachment intAttachment : internalAttachments) {
-      when(internalAttachmentMapper.mapToDTO(intAttachment)).thenReturn(internalAttachmentsDTO.stream().filter(
-        ia -> ia.getId().equals(intAttachment.getId())).findFirst().get());
+      when(internalAttachmentMapper.mapToDTO(intAttachment))
+          .thenReturn(internalAttachmentsDTO.stream().filter(
+              ia -> ia.getId().equals(intAttachment.getId())).findFirst().get());
     }
     List<InternalAttachmentDTO> intMessagesDTO =
-      internalMessageService.getInternalMessageAttachments(internalMessageId);
+        internalMessageService.getInternalMessageAttachments(internalMessageId);
     assertEquals(intMessagesDTO.size(), internalAttachmentsDTO.size());
   }
 }

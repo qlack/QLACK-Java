@@ -17,7 +17,7 @@ public enum EmailCharset {
    */
   private String value;
 
-  EmailCharset(String value){
+  EmailCharset(String value) {
     this.value = value;
   }
 

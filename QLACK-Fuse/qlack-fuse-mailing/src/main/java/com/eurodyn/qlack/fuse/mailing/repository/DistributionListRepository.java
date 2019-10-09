@@ -1,8 +1,7 @@
 package com.eurodyn.qlack.fuse.mailing.repository;
 
-import java.util.List;
-
 import com.eurodyn.qlack.fuse.mailing.model.DistributionList;
+import java.util.List;
 
 /**
  * Repository interface for <tt>DistributionList</tt> entities
@@ -11,5 +10,5 @@ import com.eurodyn.qlack.fuse.mailing.model.DistributionList;
  */
 public interface DistributionListRepository extends MailingRepository<DistributionList, String> {
 
-	List<DistributionList> findByName(String name);
+  List<DistributionList> findByName(String name);
 }
