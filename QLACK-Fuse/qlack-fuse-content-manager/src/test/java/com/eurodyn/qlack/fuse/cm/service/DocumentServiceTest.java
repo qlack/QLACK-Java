@@ -32,7 +32,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.persistence.EntityManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,9 +61,6 @@ public class DocumentServiceTest {
 
   @Spy
   private NodeMapper nodeMapper;
-
-  @Spy
-  private EntityManager em;
 
   private InitTestValues initTestValues;
   private Node node;
@@ -798,6 +794,110 @@ public class DocumentServiceTest {
         .getDescendantNodeWithLockConflict(node.getId(), node.getLockToken())).thenReturn(childDTO);
     documentService.deleteFolder(nodeDTO.getId(), node.getLockToken());
     verify(nodeRepository, times(1)).delete(node);
+  }
+
+  @Test
+  public void getFolderAsZipWithChildrenDeepFalseTest() {
+    for (Node n : folderNodes) {
+      when(nodeRepository.fetchById(n.getId())).thenReturn(n);
+    }
+
+    documentService.getFolderAsZip(parentDTO.getId(), false, false);
+    verify(nodeRepository, times(1)).fetchById(any());
+  }
+
+  @Test
+  public void getFolderAsZipWithChildrenWithoutRetvalTest() {
+    List<Node> ch = new ArrayList<>();
+    Node ch1 = child.getChildren().get(0);
+    ch1.setType(NodeType.FOLDER);
+    ch1.setChildren(Collections.EMPTY_LIST);
+    ch.add(ch1);
+    child.setChildren(ch);
+    when(nodeRepository.fetchById(childDTO.getId())).thenReturn(child);
+    when(nodeRepository.fetchById(ch1.getId())).thenReturn(ch1);
+
+    documentService.getFolderAsZip(childDTO.getId(), false, true);
+    verify(nodeRepository, times(2)).fetchById(any());
+  }
+
+  @Test
+  public void getFolderAsZipWithChildrenWithoutTypeTest() {
+    List<Node> ch = new ArrayList<>();
+    Node ch1 = child.getChildren().get(0);
+    ch1.setType(null);
+    ch1.setChildren(Collections.EMPTY_LIST);
+    ch.add(ch1);
+    child.setChildren(ch);
+    when(nodeRepository.fetchById(childDTO.getId())).thenReturn(child);
+
+    documentService.getFolderAsZip(childDTO.getId(), false, true);
+    verify(nodeRepository, times(1)).fetchById(any());
+  }
+
+  @Test
+  public void createFileWithConflictingParentWithoutIdTest() {
+    fileDTO.setParentId(child.getId());
+    parentDTO.setId(null);
+    when(nodeRepository.fetchById(child.getId())).thenReturn(child);
+    when(nodeMapper.mapToEntity(fileDTO, child)).thenReturn(child);
+    when(concurrencyControlService.getAncestorFolderWithLockConflict(child.getId(), LOCK_TOKEN))
+        .thenReturn(parentDTO);
+    documentService.createFile(fileDTO, fileDTO.getCreatedBy(), LOCK_TOKEN);
+    verify(nodeRepository, times(1)).save(any(Node.class));
+  }
+
+  @Test
+  public void deleteFileWithoutParentTest() {
+    fileChild.setParent(null);
+    when(nodeRepository.fetchById(fileDTO.getId())).thenReturn(fileChild);
+    when(concurrencyControlService.getSelectedNodeWithLockConflict(fileDTO.getId(), LOCK_TOKEN))
+        .thenReturn(null);
+
+    documentService.deleteFile(fileDTO.getId(), LOCK_TOKEN);
+    verify(nodeRepository, times(1)).delete(fileChild);
+  }
+
+  @Test
+  public void deleteFileWithoutParentIdTest() {
+    parentDTO.setId(null);
+    when(nodeRepository.fetchById(fileDTO.getId())).thenReturn(fileChild);
+    when(concurrencyControlService.getSelectedNodeWithLockConflict(fileDTO.getId(), LOCK_TOKEN))
+        .thenReturn(null);
+    when(concurrencyControlService.getAncestorFolderWithLockConflict(child.getId(), LOCK_TOKEN))
+        .thenReturn(parentDTO);
+
+    documentService.deleteFile(fileDTO.getId(), LOCK_TOKEN);
+    verify(nodeRepository, times(1)).delete(fileChild);
+  }
+
+  @Test
+  public void renameFileTest() {
+    String oldName = fileChild.getAttribute(CMConstants.ATTR_NAME).getValue();
+
+    when(nodeRepository.fetchById(fileDTO.getId())).thenReturn(fileChild);
+
+    documentService.renameFile(fileDTO.getId(), "New Name", userId, node.getLockToken());
+    String newName = fileChild.getAttribute(CMConstants.ATTR_NAME).getValue();
+
+    verify(nodeRepository, times(1)).save(fileChild);
+    assertEquals("New Name", newName);
+    assertNotEquals(oldName, newName);
+  }
+
+  @Test
+  public void moveNodeToParentWithNullIdTest() {
+    parentDTO.setId(null);
+    when(nodeRepository.fetchById(child.getId())).thenReturn(child);
+    when(nodeRepository.fetchById(parent.getId())).thenReturn(parent);
+    when(concurrencyControlService.getSelectedNodeWithLockConflict(child.getId(), LOCK_TOKEN))
+        .thenReturn(null);
+    when(concurrencyControlService.getAncestorFolderWithLockConflict(parent.getId(), LOCK_TOKEN))
+        .thenReturn(parentDTO);
+
+    documentService.move(child.getId(), parent.getId(), userId, LOCK_TOKEN);
+
+    verify(nodeRepository, times(1)).save(any());
   }
 
 }

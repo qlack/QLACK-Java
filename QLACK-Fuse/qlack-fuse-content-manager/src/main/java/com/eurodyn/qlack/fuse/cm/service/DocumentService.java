@@ -16,13 +16,12 @@ import com.eurodyn.qlack.fuse.cm.exception.QSelectedNodeLockException;
 import com.eurodyn.qlack.fuse.cm.mapper.NodeMapper;
 import com.eurodyn.qlack.fuse.cm.model.Node;
 import com.eurodyn.qlack.fuse.cm.model.NodeAttribute;
-import com.eurodyn.qlack.fuse.cm.model.QNode;
-import com.eurodyn.qlack.fuse.cm.model.QNodeAttribute;
 import com.eurodyn.qlack.fuse.cm.repository.NodeRepository;
 import com.eurodyn.qlack.fuse.cm.util.CMConstants;
+import com.eurodyn.qlack.fuse.cm.util.JPAQueryUtil;
 import com.eurodyn.qlack.fuse.cm.util.NodeAttributeStringBuilder;
+import com.eurodyn.qlack.fuse.cm.util.ZipOutputStreamUtil;
 import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -264,27 +263,30 @@ public class DocumentService {
 
     boolean hasEntries = false;
     ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-    ZipOutputStream out = new ZipOutputStream(outStream);
+    ZipOutputStream out = ZipOutputStreamUtil.createZipOutputStream(outStream);
 
     try {
       for (Node child : folder.getChildren()) {
-        if (child.getType() == NodeType.FILE) {
-          byte[] fileRetVal = versionService.getFileAsZip(child.getId(), includeProperties);
-          if (fileRetVal != null) {
-            hasEntries = true;
-            ZipEntry entry = new ZipEntry(
-                child.getAttribute(CMConstants.ATTR_NAME).getValue() + ".zip");
-            out.putNextEntry(entry);
-            out.write(fileRetVal, 0, fileRetVal.length);
-          }
-        } else if ((child.getType() == NodeType.FOLDER) && isDeep) {
-          byte[] folderRetVal = getFolderAsZip(child.getId(), includeProperties, true);
-          if (folderRetVal != null) {
-            hasEntries = true;
-            ZipEntry entry = new ZipEntry(
-                child.getAttribute(CMConstants.ATTR_NAME).getValue() + ".zip");
-            out.putNextEntry(entry);
-            out.write(folderRetVal, 0, folderRetVal.length);
+        if (child.getType() != null) {
+          if (child.getType() == NodeType.FILE) {
+            byte[] fileRetVal = versionService.getFileAsZip(child.getId(), includeProperties);
+            if (fileRetVal != null) {
+              hasEntries = true;
+              ZipEntry entry = new ZipEntry(
+                  child.getAttribute(CMConstants.ATTR_NAME).getValue() + ".zip");
+              out.putNextEntry(entry);
+              out.write(fileRetVal, 0, fileRetVal.length);
+            }
+            //if type if FOLDER and isDeep is true
+          } else if (isDeep) {
+            byte[] folderRetVal = getFolderAsZip(child.getId(), includeProperties, true);
+            if (folderRetVal != null) {
+              hasEntries = true;
+              ZipEntry entry = new ZipEntry(
+                  child.getAttribute(CMConstants.ATTR_NAME).getValue() + ".zip");
+              out.putNextEntry(entry);
+              out.write(folderRetVal, 0, folderRetVal.length);
+            }
           }
         }
       }
@@ -708,16 +710,10 @@ public class DocumentService {
    * @return true if the specified file name is unique in the folder.
    */
   public boolean isFileNameUnique(String name, String parentNodeID) {
-    QNode qNode = QNode.node;
-    QNodeAttribute qNodeAttribute = new QNodeAttribute("nodeAttribute");
-    boolean isFileNameUnique = true;
-    // Query retrieving the nodes (folder/file) which have a required
-    // node attribute name.
+    JPAQuery<Node> q = JPAQueryUtil.createJpaQueryForName(em, name, parentNodeID);
 
-    JPAQuery<Node> q = new JPAQueryFactory(em)
-        .selectFrom(qNode).innerJoin(qNode.attributes, qNodeAttribute)
-        .where(qNode.parent.id.eq(parentNodeID).and(qNodeAttribute.name.eq(CMConstants.ATTR_NAME))
-            .and(qNodeAttribute.value.eq(name)));
+    boolean isFileNameUnique = true;
+
     // Get the count of nodes which the specific name in odrer to find out whether the name is not unique
     long count = q.fetchCount();
     // In case the number is larger than zero it mean that the file name already exist
@@ -738,14 +734,7 @@ public class DocumentService {
    * @return a lists on the duplicates.
    */
   public List<String> duplicateFileNamesInDirectory(List<String> fileNames, String parentId) {
-    QNode qNode = QNode.node;
-    QNodeAttribute qNodeAttribute = new QNodeAttribute("nodeAttribute");
-
-    // Selects all the nodes that their name is contained in a list of strings
-    JPAQuery<Node> q = new JPAQueryFactory(em).selectFrom(qNode)
-        .innerJoin(qNode.attributes, qNodeAttribute)
-        .where(qNode.parent.id.eq(parentId).and(qNodeAttribute.name.eq(CMConstants.ATTR_NAME))
-            .and(qNodeAttribute.value.in(fileNames)));
+    JPAQuery<Node> q = JPAQueryUtil.createJpaQueryForMultipleNames(em, fileNames, parentId);
 
     List<Node> nodeResultList = q.fetchResults().getResults();
     List<String> namesList = new ArrayList<>();

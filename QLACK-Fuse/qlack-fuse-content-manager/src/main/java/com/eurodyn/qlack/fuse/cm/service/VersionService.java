@@ -22,6 +22,7 @@ import com.eurodyn.qlack.fuse.cm.storage.StorageEngine;
 import com.eurodyn.qlack.fuse.cm.storage.StorageEngineFactory;
 import com.eurodyn.qlack.fuse.cm.util.CMConstants;
 import com.eurodyn.qlack.fuse.cm.util.NodeAttributeStringBuilder;
+import com.eurodyn.qlack.fuse.cm.util.ZipOutputStreamUtil;
 import com.querydsl.core.types.Predicate;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -423,7 +424,7 @@ public class VersionService {
     }
 
     ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-    ZipOutputStream zipFile = new ZipOutputStream(outStream);
+    ZipOutputStream zipFile = ZipOutputStreamUtil.createZipOutputStream(outStream);
 
     try {
       // Write binary content
