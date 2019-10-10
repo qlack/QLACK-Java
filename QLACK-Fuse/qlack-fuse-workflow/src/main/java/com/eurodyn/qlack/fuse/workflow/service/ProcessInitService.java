@@ -2,7 +2,7 @@ package com.eurodyn.qlack.fuse.workflow.service;
 
 import com.eurodyn.qlack.fuse.workflow.model.ProcessFile;
 import com.eurodyn.qlack.fuse.workflow.repository.ProcessFileRepository;
-import com.eurodyn.qlack.fuse.workflow.util.Md5ChecksumUtil;
+import com.eurodyn.qlack.common.util.Md5ChecksumUtil;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.logging.Logger;

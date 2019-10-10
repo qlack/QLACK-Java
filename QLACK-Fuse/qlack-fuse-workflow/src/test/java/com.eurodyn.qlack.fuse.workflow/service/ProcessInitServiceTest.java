@@ -10,7 +10,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import com.eurodyn.qlack.fuse.workflow.InitTestValues;
 import com.eurodyn.qlack.fuse.workflow.model.ProcessFile;
 import com.eurodyn.qlack.fuse.workflow.repository.ProcessFileRepository;
-import com.eurodyn.qlack.fuse.workflow.util.Md5ChecksumUtil;
+import com.eurodyn.qlack.common.util.Md5ChecksumUtil;
 import java.io.IOException;
 import java.io.InputStream;
 import org.activiti.engine.RepositoryService;
