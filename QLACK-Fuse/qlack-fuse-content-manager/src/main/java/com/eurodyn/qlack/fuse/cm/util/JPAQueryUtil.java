@@ -34,7 +34,8 @@ public class JPAQueryUtil {
    * @param parentNodeID the id of the parent folder
    * @return the created query
    */
-  public static JPAQuery<Node> createJpaQueryForName(EntityManager em, String name, String parentNodeID) {
+  public static JPAQuery<Node> createJpaQueryForName(EntityManager em, String name,
+      String parentNodeID) {
     return new JPAQueryFactory(em)
         .selectFrom(Q_NODE).innerJoin(Q_NODE.attributes, Q_NODE_ATTRIBUTE)
         .where(Q_NODE.parent.id.eq(parentNodeID)
@@ -51,7 +52,8 @@ public class JPAQueryUtil {
    * @param parentNodeID the id of the parent folder
    * @return the created query
    */
-  public static JPAQuery<Node> createJpaQueryForMultipleNames(EntityManager em, List<String> fileNames,
+  public static JPAQuery<Node> createJpaQueryForMultipleNames(EntityManager em,
+      List<String> fileNames,
       String parentNodeID) {
     return new JPAQueryFactory(em)
         .selectFrom(Q_NODE).innerJoin(Q_NODE.attributes, Q_NODE_ATTRIBUTE)

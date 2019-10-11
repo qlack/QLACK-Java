@@ -1,6 +1,8 @@
 package com.eurodyn.qlack.fuse.cm.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.zip.ZipOutputStream;
 
 /**
@@ -8,12 +10,12 @@ import java.util.zip.ZipOutputStream;
  *
  * @author European Dynamics SA
  */
-public class ZipOutputStreamUtil {
+public class StreamsUtil {
 
   /**
    * Private Constructor
    */
-  private ZipOutputStreamUtil() {
+  private StreamsUtil() {
   }
 
   /**
@@ -24,6 +26,16 @@ public class ZipOutputStreamUtil {
    */
   public static ZipOutputStream createZipOutputStream(ByteArrayOutputStream outStream) {
     return new ZipOutputStream(outStream);
+  }
+
+  /**
+   * Creates a new instance of the InputStream class.
+   *
+   * @param fileContent the byte content
+   * @return the InputStream instance
+   */
+  public static InputStream createInputStream(byte[] fileContent) {
+    return new ByteArrayInputStream(fileContent);
   }
 
 }

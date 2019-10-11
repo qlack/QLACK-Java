@@ -1,8 +1,7 @@
 package com.eurodyn.qlack.fuse.cm.exception;
 
-import com.eurodyn.qlack.common.exception.QException;
-
-public class QAncestorFolderLockException extends QException {
+@SuppressWarnings("squid:MaximumInheritanceDepth")
+public class QAncestorFolderLockException extends QNodeLockException {
 
   private static final long serialVersionUID = 2789638483007504036L;
 
@@ -14,6 +13,5 @@ public class QAncestorFolderLockException extends QException {
       String conflictNodeName) {
     super(message, conflictNodeID, conflictNodeName);
   }
-
 
 }

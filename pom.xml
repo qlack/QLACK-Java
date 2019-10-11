@@ -91,7 +91,8 @@
       src/main/java/com/eurodyn/qlack/**/**/dto/**/*,
       src/main/java/com/eurodyn/qlack/**/**/repository/*,
       src/main/java/com/eurodyn/qlack/**/**/enums/*,
-      src/main/java/com/eurodyn/qlack/fuse/cm/util/JPAQueryUtil.class,
+      src/main/java/com/eurodyn/qlack/fuse/cm/util/JPAQueryUtil.java,
+      src/main/java/com/eurodyn/qlack/fuse/cm/storage/FSStorage.java,
       src/main/java/com/eurodyn/qlack/fuse/rules/util/classloader/*,
       src/main/java/com/eurodyn/qlack/util/clamav/util/*
     </sonar.coverage.exclusions>
@@ -399,6 +400,7 @@
                     <exclude>com/eurodyn/qlack/**/**/repository/*</exclude>
                     <exclude>com/eurodyn/qlack/**/**/enums/*</exclude>
                     <exclude>com/eurodyn/qlack/fuse/cm/util/JPAQueryUtil.class</exclude>
+                    <exclude>com/eurodyn/qlack/fuse/cm/storage/FSStorage.class</exclude>
                     <exclude>com/eurodyn/qlack/fuse/rules/util/classloader/*</exclude>
                     <exclude>com/eurodyn/qlack/util/clamav/util/*</exclude>
                   </excludes>

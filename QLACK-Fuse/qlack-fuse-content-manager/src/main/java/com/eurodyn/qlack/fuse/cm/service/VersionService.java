@@ -22,9 +22,8 @@ import com.eurodyn.qlack.fuse.cm.storage.StorageEngine;
 import com.eurodyn.qlack.fuse.cm.storage.StorageEngineFactory;
 import com.eurodyn.qlack.fuse.cm.util.CMConstants;
 import com.eurodyn.qlack.fuse.cm.util.NodeAttributeStringBuilder;
-import com.eurodyn.qlack.fuse.cm.util.ZipOutputStreamUtil;
+import com.eurodyn.qlack.fuse.cm.util.StreamsUtil;
 import com.querydsl.core.types.Predicate;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -255,9 +254,8 @@ public class VersionService {
             && versionDTO.getAttributes() != null && versionDTO.getAttributes().stream().filter(
             versionAttributeDTO -> versionAttributeDTO.getName()
                 .equals(attrEntity.getName()))
-            .findFirst().orElse(null) != null) {
+            .findFirst().orElse(null) == null) {
           attributeToRemove.add(version.getAttribute(attrEntity.getName()));
-          version.removeAttribute(attrEntity.getName());
         }
       }
     }
@@ -271,12 +269,13 @@ public class VersionService {
 
   /**
    * Update last modified information and if not existing, create a new.
+   *
    * @param userID the uuid of the user
    * @param version the version object to edit
-   * @param  the requested DTO
+   * @param the requested DTO
    * @return the updated version
    */
-  private Version updateVersionExtended(String userID, Version version, VersionDTO versionDTO){
+  private Version updateVersionExtended(String userID, Version version, VersionDTO versionDTO) {
 
     if (userID != null) {
       long timeInMillis = Calendar.getInstance().getTimeInMillis();
@@ -424,9 +423,8 @@ public class VersionService {
     }
 
     ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-    ZipOutputStream zipFile = ZipOutputStreamUtil.createZipOutputStream(outStream);
 
-    try {
+    try (ZipOutputStream zipFile = StreamsUtil.createZipOutputStream(outStream)) {
       // Write binary content
       ZipEntry entry = new ZipEntry(version.getFilename());
       zipFile.putNextEntry(entry);
@@ -457,7 +455,6 @@ public class VersionService {
 
         zipFile.write(buf.toString().getBytes());
       }
-      zipFile.close();
       outStream.close();
     } catch (IOException ex) {
       log.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -658,7 +655,7 @@ public class VersionService {
    */
   public String getMimeType(byte[] fileContent) {
     String retVal = DEFAULT_MIME_TYPE;
-    InputStream stream = new ByteArrayInputStream(fileContent);
+    InputStream stream = StreamsUtil.createInputStream(fileContent);
     try {
       retVal = tika.getDetector().detect(TikaInputStream.get(stream), new Metadata()).toString();
     } catch (IOException e) {

@@ -20,7 +20,7 @@ import com.eurodyn.qlack.fuse.cm.repository.NodeRepository;
 import com.eurodyn.qlack.fuse.cm.util.CMConstants;
 import com.eurodyn.qlack.fuse.cm.util.JPAQueryUtil;
 import com.eurodyn.qlack.fuse.cm.util.NodeAttributeStringBuilder;
-import com.eurodyn.qlack.fuse.cm.util.ZipOutputStreamUtil;
+import com.eurodyn.qlack.fuse.cm.util.StreamsUtil;
 import com.querydsl.jpa.impl.JPAQuery;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.persistence.EntityManager;
@@ -263,48 +264,58 @@ public class DocumentService {
 
     boolean hasEntries = false;
     ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-    ZipOutputStream out = ZipOutputStreamUtil.createZipOutputStream(outStream);
 
-    try {
-      for (Node child : folder.getChildren()) {
-        if (child.getType() != null) {
-          if (child.getType() == NodeType.FILE) {
-            byte[] fileRetVal = versionService.getFileAsZip(child.getId(), includeProperties);
-            if (fileRetVal != null) {
-              hasEntries = true;
-              ZipEntry entry = new ZipEntry(
-                  child.getAttribute(CMConstants.ATTR_NAME).getValue() + ".zip");
-              out.putNextEntry(entry);
-              out.write(fileRetVal, 0, fileRetVal.length);
-            }
-            //if type if FOLDER and isDeep is true
-          } else if (isDeep) {
-            byte[] folderRetVal = getFolderAsZip(child.getId(), includeProperties, true);
-            if (folderRetVal != null) {
-              hasEntries = true;
-              ZipEntry entry = new ZipEntry(
-                  child.getAttribute(CMConstants.ATTR_NAME).getValue() + ".zip");
-              out.putNextEntry(entry);
-              out.write(folderRetVal, 0, folderRetVal.length);
-            }
+    try (ZipOutputStream out = StreamsUtil.createZipOutputStream(outStream)) {
+      List<Node> filteredChilden = folder.getChildren().stream()
+          .filter(child -> child.getType() != null).collect(
+              Collectors.toList());
+
+      for (Node child : filteredChilden) {
+        if (child.getType() == NodeType.FILE) {
+          byte[] fileRetVal = versionService.getFileAsZip(child.getId(), includeProperties);
+          if (fileRetVal != null) {
+            hasEntries = true;
+            getFolderAsZipZip(child, out, fileRetVal);
+          }
+          //if type if FOLDER and isDeep is true
+        } else if (isDeep) {
+          byte[] folderRetVal = getFolderAsZip(child.getId(), includeProperties, true);
+          if (folderRetVal != null) {
+            hasEntries = true;
+            getFolderAsZipZip(child, out, folderRetVal);
           }
         }
       }
-
-      if (includeProperties) {
-        hasEntries = true;
-        ZipEntry entry = new ZipEntry(nodeName + ".properties");
-        out.putNextEntry(entry);
-
-        StringBuilder buf = new NodeAttributeStringBuilder().nodeAttributeBuilder(folder);
-        out.write(buf.toString().getBytes());
-      }
-      if (hasEntries) {
-        out.close();
-        retVal = outStream.toByteArray();
-      }
+      retVal = getFolderAsZipIncludeProperties(hasEntries, includeProperties, nodeName, out, folder,
+          outStream, retVal);
     } catch (IOException ex) {
       throw new QIOException("Error writing ZIP for folder  with ID " + folderID);
+    }
+
+    return retVal;
+  }
+
+  private void getFolderAsZipZip(Node child, ZipOutputStream out, byte[] fileRetVal)
+      throws IOException {
+    ZipEntry entry = new ZipEntry(
+        child.getAttribute(CMConstants.ATTR_NAME).getValue() + ".zip");
+    out.putNextEntry(entry);
+    out.write(fileRetVal, 0, fileRetVal.length);
+  }
+
+  private byte[] getFolderAsZipIncludeProperties(boolean hasEntries, boolean includeProperties,
+      String nodeName, ZipOutputStream out, Node folder, ByteArrayOutputStream outStream,
+      byte[] retVal) throws IOException {
+    if (includeProperties) {
+      hasEntries = true;
+      ZipEntry entry = new ZipEntry(nodeName + ".properties");
+      out.putNextEntry(entry);
+
+      StringBuilder buf = new NodeAttributeStringBuilder().nodeAttributeBuilder(folder);
+      out.write(buf.toString().getBytes());
+    }
+    if (hasEntries) {
+      retVal = outStream.toByteArray();
     }
 
     return retVal;

@@ -1,8 +1,7 @@
 package com.eurodyn.qlack.fuse.cm.exception;
 
-import com.eurodyn.qlack.common.exception.QException;
-
-public class QDescendantNodeLockException extends QException {
+@SuppressWarnings("squid:MaximumInheritanceDepth")
+public class QDescendantNodeLockException extends QNodeLockException {
 
   private static final long serialVersionUID = 9055719925828944313L;
 

@@ -19,7 +19,7 @@ import com.eurodyn.qlack.fuse.cm.mapper.NodeMapper;
 import com.eurodyn.qlack.fuse.cm.model.Node;
 import com.eurodyn.qlack.fuse.cm.repository.NodeRepository;
 import com.eurodyn.qlack.fuse.cm.util.JPAQueryUtil;
-import com.eurodyn.qlack.fuse.cm.util.ZipOutputStreamUtil;
+import com.eurodyn.qlack.fuse.cm.util.StreamsUtil;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.CollectionExpression;
 import com.querydsl.core.types.EntityPath;
@@ -47,7 +47,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({JPAQueryUtil.class, QueryResults.class, ZipOutputStreamUtil.class})
+@PrepareForTest({JPAQueryUtil.class, QueryResults.class, StreamsUtil.class})
 public class DocumentServiceEMTest {
 
   @InjectMocks
@@ -158,7 +158,7 @@ public class DocumentServiceEMTest {
 
   @Test(expected = QIOException.class)
   public void getFolderAsZipNoChildrenException() throws IOException {
-    PowerMockito.mockStatic(ZipOutputStreamUtil.class);
+    PowerMockito.mockStatic(StreamsUtil.class);
     InitTestValues initTestValues = new InitTestValues();
     Node node = initTestValues.createNode(null);
     NodeDTO nodeDTO = initTestValues.createNodeDTO(null);
@@ -166,7 +166,7 @@ public class DocumentServiceEMTest {
     node.setChildren(new ArrayList<>());
     when(nodeRepository.fetchById(nodeDTO.getId())).thenReturn(node);
 
-    when(ZipOutputStreamUtil.createZipOutputStream(any())).thenReturn(zipOutputStream);
+    when(StreamsUtil.createZipOutputStream(any())).thenReturn(zipOutputStream);
     doThrow(new IOException()).when(zipOutputStream).close();
     documentService.getFolderAsZip(nodeDTO.getId(), true, true);
   }

@@ -45,11 +45,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.StoredProcedureQuery;
 import org.apache.tika.config.TikaConfig;
@@ -253,17 +251,7 @@ public class VersionServiceTest {
     versionDTO.setName("New Name");
     versionDTO.setSize(size);
 
-    Set<VersionAttributeDTO> attributes = new HashSet<>();
-    attributes.add(new VersionAttributeDTO(CMConstants.ATTR_NAME, "one", ""));
-    attributes.add(new VersionAttributeDTO(CMConstants.ATTR_CREATED_BY, "two", ""));
-    attributes.add(new VersionAttributeDTO(CMConstants.ATTR_LAST_MODIFIED_ON, "three", ""));
-    attributes.add(new VersionAttributeDTO(CMConstants.ATTR_LAST_MODIFIED_BY, "four", ""));
-    attributes.add(new VersionAttributeDTO(CMConstants.ATTR_LOCKED_ON, "five", ""));
-    attributes.add(new VersionAttributeDTO(CMConstants.ATTR_LOCKED_BY, "six", ""));
-    attributes.add(new VersionAttributeDTO(CMConstants.CREATED_ON, "seven", ""));
-    attributes.add(new VersionAttributeDTO(CMConstants.LOCKABLE, "eight", ""));
-    attributes.add(new VersionAttributeDTO(CMConstants.VERSIONABLE, "nine", ""));
-    versionDTO.setAttributes(attributes);
+    versionDTO.setAttributes(initTestValues.createAttributeDTOS());
 
     versionService.updateVersion(file.getId(), versionDTO, null, USER_ID, false, LOCK_TOKEN);
 
@@ -280,19 +268,33 @@ public class VersionServiceTest {
         .thenReturn(null);
     when(versionRepository.findOne(any(Predicate.class))).thenReturn(Optional.of(version));
 
-    version.setAttribute(CMConstants.ATTR_NAME, "one");
-    version.setAttribute(CMConstants.ATTR_CREATED_BY, "two");
-    version.setAttribute(CMConstants.ATTR_LAST_MODIFIED_ON, "three");
-    version.setAttribute(CMConstants.ATTR_LAST_MODIFIED_BY, "four");
-    version.setAttribute(CMConstants.ATTR_LOCKED_ON, "five");
-    version.setAttribute(CMConstants.ATTR_LOCKED_BY, "six");
-    version.setAttribute(CMConstants.CREATED_ON, "seven");
-    version.setAttribute(CMConstants.LOCKABLE, "eight");
-    version.setAttribute(CMConstants.VERSIONABLE, "nine");
+    version = initTestValues.addAttributes(version);
 
     versionDTO.setName("New Name");
     versionDTO.setSize(size);
     versionDTO.setMimetype("mimetype");
+    versionDTO.setAttributes(initTestValues.createAttributeDTOS());
+    versionService.updateVersion(file.getId(), versionDTO, null, USER_ID, true, LOCK_TOKEN);
+
+    verify(versionRepository, times(1)).save(version);
+    assertEquals("New Name", version.getName());
+  }
+
+  @Test
+  public void updateVersionWithoutContentOrMimetypeNullAttributesTest() {
+    long size = 123456789L;
+
+    when(nodeRepository.fetchById(any())).thenReturn(file);
+    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+        .thenReturn(null);
+    when(versionRepository.findOne(any(Predicate.class))).thenReturn(Optional.of(version));
+
+    version = initTestValues.addAttributes(version);
+
+    versionDTO.setName("New Name");
+    versionDTO.setSize(size);
+    versionDTO.setMimetype("mimetype");
+    versionDTO.setAttributes(null);
     versionService.updateVersion(file.getId(), versionDTO, null, USER_ID, true, LOCK_TOKEN);
 
     verify(versionRepository, times(1)).save(version);
@@ -788,7 +790,6 @@ public class VersionServiceTest {
 
   @Test
   public void setBinChunkNoMimetypeTest() {
-
     VersionService mockVersionService = spy(versionService);
     when(mockVersionService.getMimeType(content)).thenReturn("");
     when(versionRepository.fetchById(version.getId())).thenReturn(version);
@@ -852,6 +853,11 @@ public class VersionServiceTest {
     verify(versionRepository, times(1)).save(version);
   }
 
-
+  @Test
+  public void initTest() throws TikaException, IOException {
+    ReflectionTestUtils.setField(versionService, "storageEngine", storageEngine);
+    versionService.init();
+    verify(storageEngineFactory, times(1)).getEngine();
+  }
 
 }

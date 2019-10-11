@@ -5,6 +5,7 @@ import com.eurodyn.qlack.fuse.cm.dto.FileDTO;
 import com.eurodyn.qlack.fuse.cm.dto.FolderDTO;
 import com.eurodyn.qlack.fuse.cm.dto.NodeAttributeDTO;
 import com.eurodyn.qlack.fuse.cm.dto.NodeDTO;
+import com.eurodyn.qlack.fuse.cm.dto.VersionAttributeDTO;
 import com.eurodyn.qlack.fuse.cm.dto.VersionDTO;
 import com.eurodyn.qlack.fuse.cm.enums.NodeType;
 import com.eurodyn.qlack.fuse.cm.model.Node;
@@ -203,6 +204,34 @@ public class InitTestValues {
     List<BinChunkDTO> binChunkDTOList = new ArrayList<>();
     binChunkDTOList.add(createBinChunkDTO());
     return binChunkDTOList;
+  }
+
+  public Set<VersionAttributeDTO> createAttributeDTOS() {
+    Set<VersionAttributeDTO> attributes = new HashSet<>();
+    attributes.add(new VersionAttributeDTO(CMConstants.ATTR_NAME, "one", ""));
+    attributes.add(new VersionAttributeDTO(CMConstants.ATTR_CREATED_BY, "two", ""));
+    attributes.add(new VersionAttributeDTO(CMConstants.ATTR_LAST_MODIFIED_ON, "three", ""));
+    attributes.add(new VersionAttributeDTO(CMConstants.ATTR_LAST_MODIFIED_BY, "four", ""));
+    attributes.add(new VersionAttributeDTO(CMConstants.ATTR_LOCKED_ON, "five", ""));
+    attributes.add(new VersionAttributeDTO(CMConstants.ATTR_LOCKED_BY, "six", ""));
+    attributes.add(new VersionAttributeDTO(CMConstants.LOCKABLE, "eight", ""));
+    attributes.add(new VersionAttributeDTO(CMConstants.VERSIONABLE, "nine", ""));
+
+    return attributes;
+  }
+
+  public Version addAttributes(Version version) {
+    version.setAttribute(CMConstants.ATTR_NAME, "one");
+    version.setAttribute(CMConstants.ATTR_CREATED_BY, "two");
+    version.setAttribute(CMConstants.ATTR_LAST_MODIFIED_ON, "three");
+    version.setAttribute(CMConstants.ATTR_LAST_MODIFIED_BY, "four");
+    version.setAttribute(CMConstants.ATTR_LOCKED_ON, "five");
+    version.setAttribute(CMConstants.ATTR_LOCKED_BY, "six");
+    version.setAttribute(CMConstants.CREATED_ON, "seven");
+    version.setAttribute(CMConstants.LOCKABLE, "eight");
+    version.setAttribute(CMConstants.VERSIONABLE, "nine");
+
+    return version;
   }
 
 }

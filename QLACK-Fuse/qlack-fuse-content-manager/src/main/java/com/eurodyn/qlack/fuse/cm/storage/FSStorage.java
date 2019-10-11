@@ -74,7 +74,7 @@ public class FSStorage implements StorageEngine {
     try {
       Files.createDirectories(f.getParentFile().toPath());
       boolean created = f.createNewFile();
-      if (Boolean.FALSE.equals(created)){
+      if (Boolean.FALSE.equals(created)) {
         LOGGER.severe("Filename already exists");
       }
       Files.write(f.toPath(), content, StandardOpenOption.APPEND);

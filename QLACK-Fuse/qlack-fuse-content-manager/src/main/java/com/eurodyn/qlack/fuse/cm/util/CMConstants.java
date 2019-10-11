@@ -29,7 +29,7 @@ public class CMConstants {
   /**
    * Private Constructor
    */
-  private CMConstants(){
+  private CMConstants() {
 
   }
 }
