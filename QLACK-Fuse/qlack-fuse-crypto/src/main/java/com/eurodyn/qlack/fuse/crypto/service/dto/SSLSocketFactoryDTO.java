@@ -1,5 +1,6 @@
-package com.eurodyn.qlack.fuse.crypto.dto;
+package com.eurodyn.qlack.fuse.crypto.service.dto;
 
+import java.util.List;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -7,8 +8,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
-
-import java.util.List;
 
 /**
  * SSL socket factory construction details encapsulation.

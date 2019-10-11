@@ -1,4 +1,4 @@
-package com.eurodyn.qlack.fuse.crypto.dto;
+package com.eurodyn.qlack.fuse.crypto.service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,7 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * An encapsulation of a key comprising of a public key, a private key and a certificate in PEM format.
+ * An encapsulation of a key comprising of a public key, a private key and a certificate in PEM
+ * format.
  */
 @Data
 @AllArgsConstructor

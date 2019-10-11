@@ -1,4 +1,4 @@
-package com.eurodyn.qlack.fuse.crypto.dto;
+package com.eurodyn.qlack.fuse.crypto.service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

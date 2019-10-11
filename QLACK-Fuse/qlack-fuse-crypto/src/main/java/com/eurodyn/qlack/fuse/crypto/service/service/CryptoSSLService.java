@@ -1,15 +1,7 @@
-package com.eurodyn.qlack.fuse.crypto;
+package com.eurodyn.qlack.fuse.crypto.service.service;
 
-import com.eurodyn.qlack.fuse.crypto.dto.SSLSocketFactoryCertificateDTO;
-import com.eurodyn.qlack.fuse.crypto.dto.SSLSocketFactoryDTO;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManagerFactory;
-import javax.validation.Valid;
-import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
-
+import com.eurodyn.qlack.fuse.crypto.service.dto.SSLSocketFactoryCertificateDTO;
+import com.eurodyn.qlack.fuse.crypto.service.dto.SSLSocketFactoryDTO;
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
@@ -19,6 +11,13 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.UUID;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManagerFactory;
+import javax.validation.Valid;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 /**
  * SSL utilities.
@@ -41,11 +40,19 @@ public class CryptoSSLService {
    * Creates an SSL socket factory to be used in clients requiring certificate-based
    * authentication.
    *
-   * @param sslSocketFactoryDTO The details of the SSL socket factory to create.
+   * @param sslSocketFactoryDTO the details of the SSL socket factory to create
+   * @return the generated SSL socker factory
+   * @throws CertificateException thrown when the certificate cannot be generated
+   * @throws IOException thrown when something unexpected happens
+   * @throws KeyStoreException thrown when the required keystore is not available
+   * @throws NoSuchAlgorithmException thrown when no algorithm is found for encryption
+   * @throws UnrecoverableKeyException thrown when the provided key is invalid
+   * @throws KeyManagementException thrown when the provided key is invalid
+   * @throws InvalidKeySpecException thrown when the provided key is invalid
    */
   public SSLSocketFactory getSocketFactory(@Valid SSLSocketFactoryDTO sslSocketFactoryDTO)
-  throws CertificateException, IOException, KeyStoreException, NoSuchAlgorithmException,
-         UnrecoverableKeyException, KeyManagementException, InvalidKeySpecException {
+      throws CertificateException, IOException, KeyStoreException, NoSuchAlgorithmException,
+      UnrecoverableKeyException, KeyManagementException, InvalidKeySpecException {
 
     // Certificates to trust.
     KeyStore caKs = KeyStore.getInstance(KeyStore.getDefaultType());

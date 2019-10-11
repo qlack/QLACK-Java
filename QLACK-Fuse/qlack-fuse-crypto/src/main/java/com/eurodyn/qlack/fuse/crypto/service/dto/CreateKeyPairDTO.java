@@ -1,5 +1,9 @@
-package com.eurodyn.qlack.fuse.crypto.dto;
+package com.eurodyn.qlack.fuse.crypto.service.dto;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -10,11 +14,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * A request to create a key pair.
  */
@@ -23,6 +22,7 @@ import java.util.logging.Logger;
 @NoArgsConstructor
 @Builder
 public class CreateKeyPairDTO {
+
   // JUL reference.
   @Getter(AccessLevel.NONE)
   @Setter(AccessLevel.NONE)

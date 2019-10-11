@@ -1,16 +1,11 @@
-package com.eurodyn.qlack.fuse.crypto;
+package com.eurodyn.qlack.fuse.crypto.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import com.eurodyn.qlack.fuse.crypto.dto.CreateKeyPairDTO;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import org.apache.commons.codec.binary.Base64;
-import org.junit.Test;
-
+import com.eurodyn.qlack.fuse.crypto.service.dto.CreateKeyPairDTO;
+import com.eurodyn.qlack.fuse.crypto.service.service.CryptoAsymmetricService;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
@@ -20,6 +15,11 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import org.apache.commons.codec.binary.Base64;
+import org.junit.Test;
 
 public class CryptoAsymmetricServiceTest {
 
@@ -58,7 +58,7 @@ public class CryptoAsymmetricServiceTest {
 
   @Test
   public void pemToPublicKey()
-  throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+      throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
     final String publicKeyToPEM = cryptoAsymmetricService.publicKeyToPEM(createKeyPair());
     final PublicKey rsa = cryptoAsymmetricService.pemToPublicKey(publicKeyToPEM, "RSA");
     assertNotNull(rsa);
@@ -66,7 +66,7 @@ public class CryptoAsymmetricServiceTest {
 
   @Test
   public void pemToPrivateKey()
-  throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+      throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
     final String privateKeyToPEM = cryptoAsymmetricService.privateKeyToPEM(createKeyPair());
     final PrivateKey rsa = cryptoAsymmetricService.pemToPrivateKey(privateKeyToPEM, "RSA");
     assertNotNull(rsa);
@@ -74,61 +74,61 @@ public class CryptoAsymmetricServiceTest {
 
   @Test
   public void sign()
-  throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, InvalidKeyException,
-         SignatureException {
+      throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, InvalidKeyException,
+      SignatureException {
     final String privateKeyToPEM = cryptoAsymmetricService.privateKeyToPEM(createKeyPair());
     String plainText = "Hello World!";
     final byte[] signature = cryptoAsymmetricService
-      .sign(privateKeyToPEM, plainText.getBytes(StandardCharsets.UTF_8), "SHA256withRSA", "RSA");
+        .sign(privateKeyToPEM, plainText.getBytes(StandardCharsets.UTF_8), "SHA256withRSA", "RSA");
     assertNotNull(signature);
   }
 
   @Test
   public void verifySignature()
-  throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, InvalidKeyException,
-         SignatureException {
+      throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, InvalidKeyException,
+      SignatureException {
     final KeyPair keyPair = createKeyPair();
 
     // Generate a signature to compare it later.
     final String privateKeyToPEM = cryptoAsymmetricService.privateKeyToPEM(keyPair);
     byte[] plaintext = "Hello World!".getBytes(StandardCharsets.UTF_8);
     final String signature = Base64.encodeBase64String(cryptoAsymmetricService
-      .sign(privateKeyToPEM, plaintext, "SHA256withRSA", "RSA"));
+        .sign(privateKeyToPEM, plaintext, "SHA256withRSA", "RSA"));
 
     // Calculate and compare signature.
     final String publicKeyToPEM = cryptoAsymmetricService.publicKeyToPEM(keyPair);
     assertTrue(cryptoAsymmetricService
-      .verifySignature(publicKeyToPEM, plaintext, signature, "SHA256withRSA", "RSA"));
+        .verifySignature(publicKeyToPEM, plaintext, signature, "SHA256withRSA", "RSA"));
   }
 
   @Test
   public void encrypt()
-  throws NoSuchAlgorithmException, IOException, IllegalBlockSizeException, InvalidKeyException,
-         BadPaddingException, InvalidKeySpecException, NoSuchPaddingException {
+      throws NoSuchAlgorithmException, IOException, IllegalBlockSizeException, InvalidKeyException,
+      BadPaddingException, InvalidKeySpecException, NoSuchPaddingException {
     byte[] plaintext = "Hello World!".getBytes(StandardCharsets.UTF_8);
     final KeyPair keyPair = createKeyPair();
     final String publicKeyToPEM = cryptoAsymmetricService.publicKeyToPEM(keyPair);
     assertNotNull(
-      cryptoAsymmetricService.encrypt(publicKeyToPEM, plaintext, "RSA/ECB/PKCS1Padding", "RSA"));
+        cryptoAsymmetricService.encrypt(publicKeyToPEM, plaintext, "RSA/ECB/PKCS1Padding", "RSA"));
   }
 
   @Test
   public void decrypt()
-  throws NoSuchAlgorithmException, IOException, IllegalBlockSizeException, InvalidKeyException,
-         BadPaddingException, InvalidKeySpecException, NoSuchPaddingException {
+      throws NoSuchAlgorithmException, IOException, IllegalBlockSizeException, InvalidKeyException,
+      BadPaddingException, InvalidKeySpecException, NoSuchPaddingException {
     // Encrypt some text to compare it later.
     byte[] plaintext = "Hello World!".getBytes(StandardCharsets.UTF_8);
     final KeyPair keyPair = createKeyPair();
     final String publicKeyToPEM = cryptoAsymmetricService.publicKeyToPEM(keyPair);
     final byte[] ciphertext = cryptoAsymmetricService
-      .encrypt(publicKeyToPEM, plaintext, "RSA/ECB/PKCS1Padding", "RSA");
+        .encrypt(publicKeyToPEM, plaintext, "RSA/ECB/PKCS1Padding", "RSA");
 
     final String privateKeyToPEM = cryptoAsymmetricService.privateKeyToPEM(keyPair);
     final byte[] plaintextDecrypted = cryptoAsymmetricService
-      .decrypt(privateKeyToPEM, ciphertext, "RSA/ECB/PKCS1Padding", "RSA");
+        .decrypt(privateKeyToPEM, ciphertext, "RSA/ECB/PKCS1Padding", "RSA");
     assertNotNull(plaintextDecrypted);
 
     assertEquals(new String(plaintext, StandardCharsets.UTF_8), new String(plaintextDecrypted,
-      StandardCharsets.UTF_8));
+        StandardCharsets.UTF_8));
   }
 }

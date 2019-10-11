@@ -1,14 +1,13 @@
-package com.eurodyn.qlack.fuse.crypto.dto;
+package com.eurodyn.qlack.fuse.crypto.service.dto;
 
+import java.math.BigInteger;
+import java.time.Instant;
+import java.util.Locale;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.math.BigInteger;
-import java.time.Instant;
-import java.util.Locale;
 
 @Data
 @AllArgsConstructor

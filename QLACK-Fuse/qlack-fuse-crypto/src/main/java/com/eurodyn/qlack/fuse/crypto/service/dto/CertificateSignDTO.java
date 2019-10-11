@@ -1,21 +1,21 @@
-package com.eurodyn.qlack.fuse.crypto.dto;
+package com.eurodyn.qlack.fuse.crypto.service.dto;
 
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.time.Instant;
+import java.util.Locale;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.time.Instant;
-import java.util.Locale;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
 public class CertificateSignDTO {
+
   @NotNull
   private PrivateKey privateKey;
   @NotNull
