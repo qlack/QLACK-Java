@@ -1,6 +1,6 @@
-package com.eurodyn.qlack.fuse.crypto.service.service;
+package com.eurodyn.qlack.fuse.crypto.service;
 
-import com.eurodyn.qlack.fuse.crypto.service.dto.CPPHolderDTO;
+import com.eurodyn.qlack.fuse.crypto.dto.CPPHolderDTO;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;

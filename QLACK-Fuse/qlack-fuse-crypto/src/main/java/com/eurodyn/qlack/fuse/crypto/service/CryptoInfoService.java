@@ -1,7 +1,7 @@
-package com.eurodyn.qlack.fuse.crypto.service.service;
+package com.eurodyn.qlack.fuse.crypto.service;
 
-import com.eurodyn.qlack.fuse.crypto.service.dto.SecurityProviderDTO;
-import com.eurodyn.qlack.fuse.crypto.service.dto.SecurityServiceDTO;
+import com.eurodyn.qlack.fuse.crypto.dto.SecurityProviderDTO;
+import com.eurodyn.qlack.fuse.crypto.dto.SecurityServiceDTO;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import java.util.Arrays;

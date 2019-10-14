@@ -2,7 +2,6 @@ package com.eurodyn.qlack.fuse.crypto.service;
 
 import static org.junit.Assert.assertNotNull;
 
-import com.eurodyn.qlack.fuse.crypto.service.service.CryptoDigestService;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

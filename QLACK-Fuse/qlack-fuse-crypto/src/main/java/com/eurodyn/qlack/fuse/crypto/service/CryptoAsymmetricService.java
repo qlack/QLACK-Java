@@ -1,7 +1,7 @@
-package com.eurodyn.qlack.fuse.crypto.service.service;
+package com.eurodyn.qlack.fuse.crypto.service;
 
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
-import com.eurodyn.qlack.fuse.crypto.service.dto.CreateKeyPairDTO;
+import com.eurodyn.qlack.fuse.crypto.dto.CreateKeyPairDTO;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,7 +48,7 @@ public class CryptoAsymmetricService {
     return matcher.replaceAll("");
   }
 
-  private String convertKeyToPEM(final KeyPair keyPair, final String keyType) throws IOException {
+  protected String convertKeyToPEM(final KeyPair keyPair, final String keyType) throws IOException {
     try (StringWriter pemStrWriter = new StringWriter()) {
       try (JcaPEMWriter pemWriter = new JcaPEMWriter(pemStrWriter)) {
         if (keyType.equals(RSA_PRIVATE_KEY)) {

@@ -1,4 +1,4 @@
-package com.eurodyn.qlack.fuse.crypto.service.dto;
+package com.eurodyn.qlack.fuse.crypto.dto;
 
 import java.util.List;
 import javax.validation.constraints.NotEmpty;

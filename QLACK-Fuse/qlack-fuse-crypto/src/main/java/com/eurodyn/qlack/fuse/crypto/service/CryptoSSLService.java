@@ -1,7 +1,7 @@
-package com.eurodyn.qlack.fuse.crypto.service.service;
+package com.eurodyn.qlack.fuse.crypto.service;
 
-import com.eurodyn.qlack.fuse.crypto.service.dto.SSLSocketFactoryCertificateDTO;
-import com.eurodyn.qlack.fuse.crypto.service.dto.SSLSocketFactoryDTO;
+import com.eurodyn.qlack.fuse.crypto.dto.SSLSocketFactoryCertificateDTO;
+import com.eurodyn.qlack.fuse.crypto.dto.SSLSocketFactoryDTO;
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;

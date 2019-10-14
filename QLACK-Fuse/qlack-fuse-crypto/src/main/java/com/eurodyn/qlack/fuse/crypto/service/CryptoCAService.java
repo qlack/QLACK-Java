@@ -1,8 +1,8 @@
-package com.eurodyn.qlack.fuse.crypto.service.service;
+package com.eurodyn.qlack.fuse.crypto.service;
 
-import com.eurodyn.qlack.fuse.crypto.service.dto.CPPPemHolderDTO;
-import com.eurodyn.qlack.fuse.crypto.service.dto.CertificateSignDTO;
-import com.eurodyn.qlack.fuse.crypto.service.dto.CreateCADTO;
+import com.eurodyn.qlack.fuse.crypto.dto.CPPPemHolderDTO;
+import com.eurodyn.qlack.fuse.crypto.dto.CertificateSignDTO;
+import com.eurodyn.qlack.fuse.crypto.dto.CreateCADTO;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;

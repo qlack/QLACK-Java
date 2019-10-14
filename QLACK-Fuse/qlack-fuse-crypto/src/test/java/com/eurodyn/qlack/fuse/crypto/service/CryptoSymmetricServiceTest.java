@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import com.eurodyn.qlack.fuse.crypto.service.service.CryptoSymmetricService;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -156,15 +155,13 @@ public class CryptoSymmetricServiceTest {
   @SuppressWarnings("squid:S2699")
   public void decryptTest()
       throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException {
-    String execDir = Paths.get("").toAbsolutePath().toString();
     final String aes = Base64.encodeBase64String(cryptoSymmetricService.generateKey(128, "AES"));
     final SecretKey aesKey = cryptoSymmetricService.keyFromString(aes, "AES");
 
-    OutputStream plainFile = new FileOutputStream(
-        Paths.get(execDir, "src", "test", "resources", "file-binary.jpg").toFile());
     InputStream encryptedFile = new FileInputStream(File.createTempFile("encrypted", ".bin"));
     OutputStream decryptedFile = new FileOutputStream(File.createTempFile("decrypted", ".jpg"));
     cryptoSymmetricService.decrypt(encryptedFile, decryptedFile, aesKey, "AES/CBC/PKCS5Padding",
         "AES");
+
   }
 }

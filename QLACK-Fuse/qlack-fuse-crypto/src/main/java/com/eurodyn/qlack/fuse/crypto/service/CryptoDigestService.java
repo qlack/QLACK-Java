@@ -1,4 +1,4 @@
-package com.eurodyn.qlack.fuse.crypto.service.service;
+package com.eurodyn.qlack.fuse.crypto.service;
 
 import java.io.IOException;
 import java.io.InputStream;

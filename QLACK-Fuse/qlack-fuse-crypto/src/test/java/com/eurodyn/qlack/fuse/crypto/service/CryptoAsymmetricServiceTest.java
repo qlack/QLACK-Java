@@ -4,8 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import com.eurodyn.qlack.fuse.crypto.service.dto.CreateKeyPairDTO;
-import com.eurodyn.qlack.fuse.crypto.service.service.CryptoAsymmetricService;
+import com.eurodyn.qlack.common.exception.QDoesNotExistException;
+import com.eurodyn.qlack.fuse.crypto.dto.CreateKeyPairDTO;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
@@ -131,4 +132,52 @@ public class CryptoAsymmetricServiceTest {
     assertEquals(new String(plaintext, StandardCharsets.UTF_8), new String(plaintextDecrypted,
         StandardCharsets.UTF_8));
   }
+
+  @Test
+  public void convertKeyToPEMInvalidKeyTypeTest() throws NoSuchAlgorithmException, IOException {
+    assertEquals("", cryptoAsymmetricService.convertKeyToPEM(createKeyPair(), "keytype"));
+  }
+
+  @Test (expected = QDoesNotExistException.class)
+  public void verifySignatureNullTest()
+      throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException, IOException {
+    cryptoAsymmetricService.verifySignature(null, "".getBytes(), "", null, null);
+  }
+
+  @Test
+  public void signWithInputStreamTest()
+      throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, InvalidKeyException,
+      SignatureException {
+    final String privateKeyToPEM = cryptoAsymmetricService.privateKeyToPEM(createKeyPair());
+    String plainText = "Hello World!";
+    final byte[] signature = cryptoAsymmetricService
+        .sign(privateKeyToPEM, new ByteArrayInputStream(plainText.getBytes(StandardCharsets.UTF_8)), "SHA256withRSA", "RSA");
+    assertNotNull(signature);
+  }
+
+  @Test
+  public void verifySignatureWithInputStreamTest()
+      throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, InvalidKeyException,
+      SignatureException {
+    final KeyPair keyPair = createKeyPair();
+
+    // Generate a signature to compare it later.
+    final String privateKeyToPEM = cryptoAsymmetricService.privateKeyToPEM(keyPair);
+    byte[] plaintext = "Hello World!".getBytes(StandardCharsets.UTF_8);
+    final String signature = Base64.encodeBase64String(cryptoAsymmetricService
+        .sign(privateKeyToPEM, plaintext, "SHA256withRSA", "RSA"));
+
+    // Calculate and compare signature.
+    final String publicKeyToPEM = cryptoAsymmetricService.publicKeyToPEM(keyPair);
+    assertTrue(cryptoAsymmetricService
+        .verifySignature(publicKeyToPEM, new ByteArrayInputStream("Hello World!".getBytes(StandardCharsets.UTF_8)), signature, "SHA256withRSA", "RSA"));
+  }
+
+  @Test (expected = QDoesNotExistException.class)
+  public void verifySignatureNullWithInputStreamTest()
+      throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException, IOException {
+    cryptoAsymmetricService.verifySignature(null, new ByteArrayInputStream("".getBytes()), "", null, null);
+  }
+
+
 }
