@@ -12,8 +12,8 @@
   <dependencies>
     <!-- QLACK dependencies -->
     <dependency>
-      <groupId>com.eurodyn.qlack.common</groupId>
-      <artifactId>qlack-common</artifactId>
+      <groupId>com.eurodyn.qlack.fuse</groupId>
+      <artifactId>qlack-fuse-crypto</artifactId>
       <version>${project.version}</version>
     </dependency>
 

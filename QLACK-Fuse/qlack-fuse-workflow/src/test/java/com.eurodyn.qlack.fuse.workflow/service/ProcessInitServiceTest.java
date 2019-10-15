@@ -5,14 +5,11 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
+import com.eurodyn.qlack.fuse.crypto.service.CryptoDigestService;
 import com.eurodyn.qlack.fuse.workflow.InitTestValues;
 import com.eurodyn.qlack.fuse.workflow.model.ProcessFile;
 import com.eurodyn.qlack.fuse.workflow.repository.ProcessFileRepository;
-import com.eurodyn.qlack.common.util.Md5ChecksumUtil;
-import java.io.IOException;
-import java.io.InputStream;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.junit.Before;
@@ -20,7 +17,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +25,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringJUnit4ClassRunner.class)
-@PrepareForTest(Md5ChecksumUtil.class)
 public class ProcessInitServiceTest {
 
   @InjectMocks
@@ -42,6 +40,9 @@ public class ProcessInitServiceTest {
 
   @Mock
   private RepositoryService repositoryService;
+
+  @Mock
+  private CryptoDigestService cryptoDigestService;
 
   @Autowired
   private ApplicationContext applicationContext;
@@ -58,7 +59,7 @@ public class ProcessInitServiceTest {
   @Before
   public void init() throws IOException {
     processInitService = new ProcessInitService(processFileRepository,
-        repositoryService);
+        repositoryService, cryptoDigestService);
     resources = applicationContext.getResources("/processes/*.xml");
     initTestValues = new InitTestValues();
     processFile = initTestValues.generateProcessFile();
@@ -97,8 +98,7 @@ public class ProcessInitServiceTest {
   public void initExistingProcessSameChecksumTest() throws IOException {
     String checksum = "same_checksum";
     processFile.setChecksum(checksum);
-    mockStatic(Md5ChecksumUtil.class);
-    when(Md5ChecksumUtil.getMd5Hex(any(InputStream.class))).thenReturn(checksum);
+    when(cryptoDigestService.sha256(any(InputStream.class))).thenReturn(checksum);
     for (Resource r : resources) {
       when(processFileRepository.findOneByFilename(r.getFilename())).thenReturn(processFile);
     }
@@ -113,8 +113,7 @@ public class ProcessInitServiceTest {
     for (Resource r : resources) {
       when(processFileRepository.findOneByFilename(r.getFilename())).thenReturn(processFile);
     }
-    mockStatic(Md5ChecksumUtil.class);
-    when(Md5ChecksumUtil.getMd5Hex(any(InputStream.class))).thenThrow(new IOException());
+    when(cryptoDigestService.sha256(any(InputStream.class))).thenThrow(new IOException());
     processInitService.init();
     for (Resource r : resources) {
       verify(processFileRepository, times(1)).findOneByFilename(r.getFilename());
