@@ -24,7 +24,7 @@ public class CryptoInfoService {
   private static final String AES = "AES";
 
   @Value("${qlack.fuse.crypto.aes.weak.length:128}")
-  private int AES_WEAK_LENGTH;
+  private int aesWeakLength;
 
   /**
    * Returns the security providers available in the runtime.
@@ -112,6 +112,6 @@ public class CryptoInfoService {
    * @throws NoSuchAlgorithmException thrown when no algorithm is found for encryption
    */
   public boolean isUnlimitedStrengthActive() throws NoSuchAlgorithmException {
-    return Cipher.getMaxAllowedKeyLength(AES) > AES_WEAK_LENGTH;
+    return Cipher.getMaxAllowedKeyLength(AES) > aesWeakLength;
   }
 }

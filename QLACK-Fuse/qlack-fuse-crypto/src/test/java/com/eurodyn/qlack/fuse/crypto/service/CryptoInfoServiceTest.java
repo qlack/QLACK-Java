@@ -59,13 +59,13 @@ public class CryptoInfoServiceTest {
 
   @Test
   public void isUnlimitedStrengthActiveTest() throws NoSuchAlgorithmException {
-    ReflectionTestUtils.setField(cryptoInfoService, "AES_WEAK_LENGTH", 128);
+    ReflectionTestUtils.setField(cryptoInfoService, "aesWeakLength", 128);
     assertTrue(cryptoInfoService.isUnlimitedStrengthActive());
   }
 
   @Test
   public void isUnlimitedStrengthActiveFalseTest() throws NoSuchAlgorithmException {
-    ReflectionTestUtils.setField(cryptoInfoService, "AES_WEAK_LENGTH", 2147483647);
+    ReflectionTestUtils.setField(cryptoInfoService, "aesWeakLength", 2147483647);
     assertFalse(cryptoInfoService.isUnlimitedStrengthActive());
   }
 
