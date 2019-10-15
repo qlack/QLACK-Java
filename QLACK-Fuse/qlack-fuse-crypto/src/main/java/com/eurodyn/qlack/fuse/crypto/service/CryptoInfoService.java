@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.crypto.Cipher;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -21,8 +22,9 @@ import org.springframework.validation.annotation.Validated;
 public class CryptoInfoService {
 
   private static final String AES = "AES";
-  private static final int AES_WEAK_LENGTH = 128;
 
+  @Value("${qlack.fuse.crypto.aes.weak.length:128}")
+  private int AES_WEAK_LENGTH;
 
   /**
    * Returns the security providers available in the runtime.

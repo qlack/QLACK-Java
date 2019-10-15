@@ -142,7 +142,7 @@ public class CryptoAsymmetricService {
    */
   public PrivateKey pemToPrivateKey(String privateKey, final String algorithm)
       throws NoSuchAlgorithmException, InvalidKeySpecException {
-    PrivateKey key = null;
+    PrivateKey key;
 
     // Cleanup the PEM from unwanted text.
     privateKey = removePEMHeaderFooter(privateKey).trim();
