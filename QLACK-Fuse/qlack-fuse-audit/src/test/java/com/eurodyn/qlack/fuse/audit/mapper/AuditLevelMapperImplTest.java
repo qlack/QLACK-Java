@@ -1,9 +1,7 @@
 package com.eurodyn.qlack.fuse.audit.mapper;
 
 import com.eurodyn.qlack.fuse.audit.InitTestValues;
-import com.eurodyn.qlack.fuse.audit.dto.AuditDTO;
 import com.eurodyn.qlack.fuse.audit.dto.AuditLevelDTO;
-import com.eurodyn.qlack.fuse.audit.model.Audit;
 import com.eurodyn.qlack.fuse.audit.model.AuditLevel;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,9 +12,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AuditLevelMapperImplTest {
