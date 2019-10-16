@@ -82,8 +82,13 @@ public class AuditMapperImplTest {
     auditMapper.mapToExistingEntity(auditDTO, audit);
     auditDTO.setLevel(null);
     assertEquals(null,auditDTO.getLevel());
+  }
 
-
+  @Test
+  public void mapToExistingEntityNullTest(){
+    auditMapper.mapToExistingEntity(null, audit);
+    auditDTO.setLevel(null);
+    assertEquals(null,auditDTO.getLevel());
   }
 
 

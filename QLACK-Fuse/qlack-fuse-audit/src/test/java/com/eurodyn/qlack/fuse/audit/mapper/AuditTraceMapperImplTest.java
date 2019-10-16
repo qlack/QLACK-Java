@@ -95,7 +95,9 @@ public class AuditTraceMapperImplTest {
 
   @Test
   public void mapToExistingEntityTest(){
-    auditTraceMapper.mapToExistingEntity(null,auditTrace);
+    auditTraceMapper.mapToExistingEntity(auditTraceDTO, auditTrace);
+    auditTraceDTO.setTraceData(null);
+    assertEquals(null,auditTraceDTO.getTraceData());
   }
 
   @Test
@@ -111,6 +113,15 @@ public class AuditTraceMapperImplTest {
   public void mapEntityListToListDTOTest(){
     auditTraces =  auditTraceMapper.mapToEntity(auditTraceDTOs);
     assertEquals(auditTraces.size(),auditTraceDTOs.size());
+  }
+
+
+  @Test
+  public void mapToExistingAuditTraceDTONullTest(){
+    AuditTraceDTO auditTraceDTO = initTestValues.createAuditTraceDTO();
+    auditTraceDTO.setTraceData(null);
+    auditTraceMapper.mapToExistingEntity(null,auditTrace);
+    assertEquals(null,auditTraceDTO.getTraceData());
   }
 
 }
