@@ -17,6 +17,7 @@ import com.eurodyn.qlack.fuse.cm.model.Node;
 import com.eurodyn.qlack.fuse.cm.model.NodeAttribute;
 import com.eurodyn.qlack.fuse.cm.util.CMConstants;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import org.junit.Before;
@@ -342,6 +343,14 @@ public class NodeMapperTest {
   @Test
   public void mapPathTest() {
     node.setParent(new Node());
+    nodeMapper.mapPath(node, nodeDTO, true);
+    assertNotNull(nodeDTO.getPath());
+  }
+
+  @Test
+  public void mapPathWithoutAttrNameTest() {
+    node.setParent(new Node());
+    node.setAttributes(Collections.emptyList());
     nodeMapper.mapPath(node, nodeDTO, true);
     assertNotNull(nodeDTO.getPath());
   }

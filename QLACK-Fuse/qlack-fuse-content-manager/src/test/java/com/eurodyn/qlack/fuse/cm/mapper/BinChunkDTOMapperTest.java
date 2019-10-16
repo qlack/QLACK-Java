@@ -39,6 +39,13 @@ public class BinChunkDTOMapperTest {
   }
 
   @Test
+  public void mapToDTONullContentTest() {
+    versionBin.setBinContent(null);
+    BinChunkDTO binChunkDTO = binChunkDTOMapper.mapToDTO(versionBin);
+    assertEquals(versionBin.getId(), binChunkDTO.getId());
+  }
+
+  @Test
   public void mapToDTOSetContentTest() {
     versionBin.getVersion().setId(null);
     versionBin.setBinContent(new byte[1024]);

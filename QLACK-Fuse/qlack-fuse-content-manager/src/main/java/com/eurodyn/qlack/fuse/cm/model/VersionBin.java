@@ -33,6 +33,8 @@ public class VersionBin extends QlackBaseModel {
 
   public void setBinContent(byte[] binContent) {
     this.binContent = binContent;
-    this.chunkSize = binContent.length;
+    if (binContent != null) {
+      this.chunkSize = binContent.length;
+    }
   }
 }

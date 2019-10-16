@@ -32,7 +32,7 @@ public interface NodeMapper extends CMBaseMapper<Node, NodeDTO> {
   @Mapping(source = "attributes", target = "lastModifiedBy", qualifiedByName = "mapLastModifiedBy")
   @Mapping(source = "attributes", target = "lockedOn", qualifiedByName = "mapLockedOn")
   @Mapping(source = "attributes", target = "lockedBy", qualifiedByName = "mapLockedBy")
-  @Mapping(source = "parent.id", target = "parentId")
+  @Mapping(source = "parent", target = "parentId", qualifiedByName = "mapParent")
   NodeDTO mapToDTO(Node node, @Context boolean findPath);
 
   @Mapping(source = "attributes", target = "name", qualifiedByName = "mapName")
@@ -44,7 +44,7 @@ public interface NodeMapper extends CMBaseMapper<Node, NodeDTO> {
   @Mapping(source = "attributes", target = "lockedOn", qualifiedByName = "mapLockedOn")
   @Mapping(source = "attributes", target = "lockedBy", qualifiedByName = "mapLockedBy")
   @Mapping(target = "children", qualifiedByName = "mapChildren")
-  @Mapping(source = "parent.id", target = "parentId")
+  @Mapping(source = "parent", target = "parentId", qualifiedByName = "mapParent")
   FolderDTO mapToFolderDTO(Node node, @Context RelativesType relativesType,
       @Context boolean findPath);
 
@@ -56,7 +56,7 @@ public interface NodeMapper extends CMBaseMapper<Node, NodeDTO> {
   @Mapping(source = "attributes", target = "lastModifiedBy", qualifiedByName = "mapLastModifiedBy")
   @Mapping(source = "attributes", target = "lockedOn", qualifiedByName = "mapLockedOn")
   @Mapping(source = "attributes", target = "lockedBy", qualifiedByName = "mapLockedBy")
-  @Mapping(source = "parent.id", target = "parentId")
+  @Mapping(source = "parent", target = "parentId", qualifiedByName = "mapParent")
   FileDTO mapToFileDTO(Node node, @Context boolean findPath);
 
   @Mapping(target = "parent", ignore = true)
@@ -192,5 +192,23 @@ public interface NodeMapper extends CMBaseMapper<Node, NodeDTO> {
       children.forEach(node -> childrenDTO.add(mapToDTO(node, true)));
     }
     return childrenDTO;
+  }
+
+  /**
+   * Maps the Node Parent value
+   *
+   * @param parenr the Node parent
+   * @return the id of the parent
+   */
+  @Named("mapParent")
+  default String mapParent(Node parent) {
+    if (parent == null) {
+      return null;
+    }
+    String id = parent.getId();
+    if (id == null) {
+      return null;
+    }
+    return id;
   }
 }
