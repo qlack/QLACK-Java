@@ -12,6 +12,8 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
+import static junit.framework.TestCase.assertNotNull;
+
 /**
  * @author European Dynamics
  */
@@ -55,8 +57,8 @@ public class AuditBaseMapperTest {
 
   @Test
   public void mapTest() {
-
     auditBaseMapper.map(auditBaseDTO);
+    assertNotNull(auditBaseDTO);
   }
 
 
