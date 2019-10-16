@@ -48,8 +48,6 @@ public class VersioningService {
     return createVersion(author, obj, commitMessage, new HashMap<>());
   }
 
-  // TODO investigate if not to exposed any create operation
-
   /**
    * Persists a current state of a given domain object, creating so a createVersion of this object.
    *
@@ -57,10 +55,10 @@ public class VersioningService {
    * @param obj the object to be committed
    * @param commitMessage a message regarding the commit
    * @param commitProperties additional commit properties
-   * @return
+   * @return the new version number
    */
   public long createVersion(@NonNull String author, @NonNull Object obj, String commitMessage,
-    @NonNull Map<String, String> commitProperties) {
+      @NonNull Map<String, String> commitProperties) {
 
     commitProperties.put(COMMIT_MESSAGE_KEY, commitMessage);
     Commit commit = javers.commit(author, obj, commitProperties);
@@ -92,12 +90,11 @@ public class VersioningService {
    * @return the object in the requested version
    */
   public <T> T retrieveVersion(T object, long version) {
-
     JqlQuery query = QueryBuilder.byInstance(object).build();
 
     List<T> versions = javers.findShadowsAndStream(query)
-      .filter(shadow -> shadow.getCommitId().getMajorId() == version)
-      .map(shadow -> (T) shadow.get()).collect(Collectors.toList());
+        .filter(shadow -> shadow.getCommitId().getMajorId() == version)
+        .map(shadow -> (T) shadow.get()).collect(Collectors.toList());
 
     if (versions.isEmpty()) {
       throw new QDoesNotExistException("version doesn't exist");
@@ -126,25 +123,23 @@ public class VersioningService {
     } else {
       throw new QDoesNotExistException("none version exists");
     }
-
   }
 
   private List<VersionDTO> findShadowsAndConvertToVersions(JqlQuery query) {
     List<VersionDTO> versions = javers.findShadowsAndStream(query)
-      .map(this::convertToVersionDTO).collect(Collectors.toList());
+        .map(this::convertToVersionDTO).collect(Collectors.toList());
 
     return Collections.unmodifiableList(versions);
   }
 
-  private VersionDTO convertToVersionDTO(Shadow shadow) {
-
+  protected VersionDTO convertToVersionDTO(Shadow shadow) {
     CommitMetadata metadata = shadow.getCommitMetadata();
 
     return VersionDTO.builder().author(metadata.getAuthor())
-      .commitDate(metadata.getCommitDateInstant())
-      .commitMessage(metadata.getProperties().get(COMMIT_MESSAGE_KEY))
-      .version(shadow.getCommitId().getMajorId())
-      .build();
+        .commitDate(metadata.getCommitDateInstant())
+        .commitMessage(metadata.getProperties().get(COMMIT_MESSAGE_KEY))
+        .version(shadow.getCommitId().getMajorId())
+        .build();
   }
 
 }

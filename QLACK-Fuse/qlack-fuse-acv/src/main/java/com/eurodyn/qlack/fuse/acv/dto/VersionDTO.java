@@ -10,20 +10,20 @@ import lombok.Setter;
 @Builder
 public class VersionDTO {
 
-    private String author;
-    private long version;
-    private String commitMessage;
-    private Instant commitDate;
+  private String author;
+  private long version;
+  private String commitMessage;
+  private Instant commitDate;
 
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("VersionDTO{");
-        sb.append("author='").append(author).append('\'');
-        sb.append(", version='").append(version).append('\'');
-        sb.append(", commitMessage='").append(commitMessage).append('\'');
-        sb.append(", commitDate=").append(commitDate);
-        sb.append('}');
-        return sb.toString();
-    }
+  @Override
+  public String toString() {
+    final StringBuilder sb = new StringBuilder("VersionDTO{");
+    sb.append("author='").append(author).append('\'');
+    sb.append(", version='").append(version).append('\'');
+    sb.append(", commitMessage='").append(commitMessage).append('\'');
+    sb.append(", commitDate=").append(commitDate);
+    sb.append('}');
+    return sb.toString();
+  }
 
 }

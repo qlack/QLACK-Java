@@ -9,8 +9,8 @@ import lombok.ToString;
 @ToString
 public class ChangeDTO {
 
-    private String propertyName;
-    private Object from;
-    private Object to;
+  private String propertyName;
+  private Object from;
+  private Object to;
 
 }

@@ -1,34 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>qlack-fuse</artifactId>
-        <groupId>com.eurodyn.qlack.fuse</groupId>
-        <version>3.2.2-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>qlack-fuse</artifactId>
+    <groupId>com.eurodyn.qlack.fuse</groupId>
+    <version>3.2.2-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>qlack-fuse-acv</artifactId>
+  <artifactId>qlack-fuse-acv</artifactId>
 
-    <properties>
-        <javers.version>5.3.4</javers.version>
-    </properties>
+  <properties>
+    <javers.version>5.3.4</javers.version>
+  </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.javers</groupId>
-            <artifactId>javers-spring-boot-starter-sql</artifactId>
-            <version>${javers.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-      <dependency>
-        <groupId>com.eurodyn.qlack.common</groupId>
-        <artifactId>qlack-common</artifactId>
-        <version>3.2.2-SNAPSHOT</version>
-        <scope>compile</scope>
-      </dependency>
-    </dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>org.javers</groupId>
+      <artifactId>javers-spring-boot-starter-sql</artifactId>
+      <version>${javers.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.eurodyn.qlack.common</groupId>
+      <artifactId>qlack-common</artifactId>
+      <version>3.2.2-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
 
 </project>

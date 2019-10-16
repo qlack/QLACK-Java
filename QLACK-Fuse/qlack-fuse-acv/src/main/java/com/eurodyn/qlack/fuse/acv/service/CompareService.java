@@ -58,8 +58,6 @@ public class CompareService {
     List<ChangeDTO> changes = result.getChangesByType(ValueChange.class).parallelStream()
         .map(this::convertToChangeDTO).collect(Collectors.toList());
 
-    //TODO added/removed objects
-
     return Collections.unmodifiableList(changes);
   }
 
@@ -107,7 +105,7 @@ public class CompareService {
     return compare(latestVersion, object);
   }
 
-  private ChangeDTO convertToChangeDTO(ValueChange change) {
+  protected ChangeDTO convertToChangeDTO(ValueChange change) {
     ChangeDTO dto = new ChangeDTO();
     dto.setPropertyName(change.getPropertyNameWithPath());
     dto.setFrom(change.getLeft());

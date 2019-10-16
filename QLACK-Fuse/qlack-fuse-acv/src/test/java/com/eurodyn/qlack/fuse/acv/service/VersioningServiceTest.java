@@ -2,89 +2,149 @@ package com.eurodyn.qlack.fuse.acv.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mock;
 
-import com.eurodyn.qlack.fuse.acv.dto.ChangeDTO;
-import com.eurodyn.qlack.fuse.acv.PersonDTO;
-import com.eurodyn.qlack.fuse.acv.RoleDTO;
-import com.eurodyn.qlack.fuse.acv.dto.VersionDTO;
+import com.eurodyn.qlack.common.exception.QDoesNotExistException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 import org.javers.core.Javers;
-import org.javers.core.JaversBuilder;
+import org.javers.core.commit.Commit;
+import org.javers.core.commit.CommitId;
+import org.javers.core.commit.CommitMetadata;
+import org.javers.repository.jql.JqlQuery;
+import org.javers.shadow.Shadow;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({Commit.class, CommitId.class})
 public class VersioningServiceTest {
 
-  private VersioningService service;
+  @InjectMocks
+  private VersioningService versioningService;
 
-  private CompareService compareService;
+  @Mock
+  private Javers javers;
+
+  @Mock
+  private Stream<Shadow<Object>> shadowStream;
+
+  @Mock
+  private Stream<Object> stream;
+
+  @Mock
+  private List<Object> objectList;
+
+  @Mock
+  private Shadow<Object> objectShadow;
+
+  @Mock
+  private Shadow shadow;
+
+  @Mock
+  private CommitMetadata commitMetadata;
+
+  @Mock
+  private Object object1;
 
   @Before
   public void init() {
-    Javers javers = JaversBuilder.javers().build();
-    this.service = new VersioningService(javers);
-    this.compareService = new CompareService(javers, service);
+    versioningService = new VersioningService(javers);
+    PowerMockito.mockStatic(Commit.class);
+    PowerMockito.mockStatic(CommitId.class);
   }
 
   @Test
-  public void testVersionService() {
+  public void createVersionTest() {
+    Commit commit = mock(Commit.class);
+    CommitId commitId = mock(CommitId.class);
 
-    // create first version
-   PersonDTO personDTO = createPersonDTO("username", null, 22);
-
-    long commitId = service.createVersion("user1", personDTO, "message 1");
-    assertEquals(1, commitId);
-
-    // create second version
-    personDTO.getRole().setPosition("senior_developer");
-    personDTO.getRole().setSalary(2000);
-
-    commitId = service.createVersion("apo", personDTO, "message 2");
-    assertEquals(2, commitId);
-
-    // find all versions
-    List<VersionDTO> versions = service.findVersions(personDTO);
-    assertEquals(2, versions.size());
-
-    // retrieve a specific version
-    PersonDTO dto = service.retrieveVersion(personDTO, 2);
-    assertNotNull(dto);
-    assertEquals("senior_developer", dto.getRole().getPosition());
-    assertEquals(2000, dto.getRole().getSalary());
-
-    // one year passed
-    personDTO.setAge(personDTO.getAge() + 1);
-
-    // compare modified object with specific version
-    List<ChangeDTO> changes = compareService.compareObjectWithVersion(personDTO, 1);
-    assertEquals(3, changes.size());
-
-    // compare modified object with latest commited version
-    changes = compareService.compareObjectWithLatestVersion(personDTO);
-    assertEquals(1, changes.size());
-
-    // compare two object versions
-    changes = compareService.compareVersions(personDTO, 1, 2);
-    assertEquals(2, changes.size());
-
+    when(javers.commit(anyString(), any(), any())).thenReturn(commit);
+    when(commit.getId()).thenReturn(commitId);
+    assertEquals(0, versioningService.createVersion("qlack", object1, "change"));
   }
 
-  private PersonDTO createPersonDTO(String username, String email, int age) {
+  @Test(expected = NullPointerException.class)
+  public void createVersionNullAuthorTest() {
+    versioningService.createVersion(null, object1, "change");
+  }
 
-    PersonDTO dto = new PersonDTO();
-    dto.setName(username);
-    dto.setEmail(email);
-    dto.setAge(age);
+  @Test(expected = NullPointerException.class)
+  public void createVersionNullObjectTest() {
+    versioningService.createVersion("qlack", null, "change");
+  }
 
-    RoleDTO roleDTO = new RoleDTO();
-    roleDTO.setPosition("developer");
-    roleDTO.setSalary(1000);
-    dto.setRole(roleDTO);
+  @Test(expected = NullPointerException.class)
+  public void createVersionWithPropertiesNullAuthorTest() {
+    versioningService.createVersion(null, object1, "change", null);
+  }
 
-    return dto;
+  @Test(expected = NullPointerException.class)
+  public void createVersionWithPropertiesNullObjectTest() {
+    versioningService.createVersion("qlack", null, "change", null);
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void createVersionNullPropertiesTest() {
+    versioningService.createVersion("qlack", object1, "change", null);
+  }
+
+  @Test
+  public void findVersionsTest() {
+    assertEquals(Collections.emptyList(), versioningService.findVersions(object1));
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void findVersionsNullObjectTest() {
+    versioningService.findVersions(null);
+  }
+
+  @Test
+  public void retrieveVersionTest() {
+    when(javers.findShadowsAndStream(any(JqlQuery.class))).thenReturn(shadowStream);
+    when(shadowStream.filter(any(Predicate.class))).thenReturn(shadowStream);
+    when(shadowStream.map(any(Function.class))).thenReturn(stream);
+    when(stream.collect(any())).thenReturn(objectList);
+    assertEquals(objectList.get(0), versioningService.retrieveVersion(object1, 1L));
+  }
+
+  @Test(expected = QDoesNotExistException.class)
+  public void retrieveVersionExceptionTest() {
+    versioningService.retrieveVersion(object1, 1L);
+  }
+
+  @Test
+  public void retrieveLatestVersionTest() {
+    when(javers.findShadowsAndStream(any(JqlQuery.class))).thenReturn(shadowStream);
+    when(shadowStream.findFirst()).thenReturn(Optional.of(objectShadow));
+    assertEquals(Optional.of(objectShadow).get().get(),
+        versioningService.retrieveLatestVersion(object1));
+  }
+
+  @Test(expected = QDoesNotExistException.class)
+  public void retrieveLatestVersionExceptionTest() {
+    versioningService.retrieveLatestVersion(object1);
+  }
+
+  @Test
+  public void convertToVersionDTOTest() {
+    CommitId commitId = mock(CommitId.class);
+    when(shadow.getCommitMetadata()).thenReturn(commitMetadata);
+    when(shadow.getCommitId()).thenReturn(commitId);
+    assertNotNull(versioningService.convertToVersionDTO(shadow));
   }
 
 }
