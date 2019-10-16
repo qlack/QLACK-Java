@@ -1,7 +1,7 @@
 # Base file to create a liquibase container with various database client-drivers included.
 FROM openjdk:8u181-jre-stretch
 
-ENV LIQUIBASE_VERSION 3.6.3
+ENV LIQUIBASE_VERSION 3.7.0
 ENV SLF4J_VERSION 1.7.25
 ENV MARIADB_CLIENT_VERSION 2.3.0
 ENV MYSQL_CLIENT_VERSION 8.0.13

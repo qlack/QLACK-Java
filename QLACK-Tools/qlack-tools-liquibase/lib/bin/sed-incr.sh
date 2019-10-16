@@ -1,5 +1,6 @@
 #!/bin/sed -f
 
+# shellcheck disable=SC2211
 /[^0-9]/ d
 
 # replace all trailing 9s by _ (any other character except digits, could
