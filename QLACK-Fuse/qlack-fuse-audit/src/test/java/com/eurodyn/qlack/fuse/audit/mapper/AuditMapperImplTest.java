@@ -20,6 +20,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AuditMapperImplTest {
@@ -67,7 +68,8 @@ public class AuditMapperImplTest {
     audit.getLevelId().setName(null);
     AuditDTO auditDTO = auditMapper.mapToDTO(audit);
     audit.setLevelId(null);
-    auditMapper.mapToDTO(audit);
+    assertEquals(null,auditDTO.getLevel());
+
   }
   @Test
   public void mapToEntityNullTest() {
@@ -77,7 +79,11 @@ public class AuditMapperImplTest {
 
   @Test
   public void mapToExistingEntityTest(){
-    auditMapper.mapToExistingEntity(null, audit);
+    auditMapper.mapToExistingEntity(auditDTO, audit);
+    auditDTO.setLevel(null);
+    assertEquals(null,auditDTO.getLevel());
+
+
   }
 
 
@@ -114,6 +120,28 @@ public class AuditMapperImplTest {
     List<AuditDTO> audits = auditMapper.mapToDTO((List<Audit> ) null);
     assertEquals(null, audits);
 
+  }
+
+  @Test
+  public void auditLevelIdNameTest() {
+
+    audit.setLevelId(null);
+    auditDTO = auditMapper.mapToDTO(audit);
+    assertEquals(auditDTO.getLevel(), audit.getLevelId());
+  }
+
+  @Test
+  public void versionAttributeNullTest() {
+    auditDTO = auditMapper.mapToDTO((Audit) null);
+    audit.setLevelId(null);
+   assertEquals(null, audit.getLevelId());
+  }
+
+  @Test
+  public void mapToExistingDTONullTest(){
+    auditDTO.setLevel(null);
+    auditMapper.mapToExistingEntity(null,audit);
+    assertEquals(null,auditDTO.getLevel());
   }
 
 }
