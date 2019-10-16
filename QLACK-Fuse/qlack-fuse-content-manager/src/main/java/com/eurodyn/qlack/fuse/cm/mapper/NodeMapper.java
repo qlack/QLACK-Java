@@ -197,7 +197,7 @@ public interface NodeMapper extends CMBaseMapper<Node, NodeDTO> {
   /**
    * Maps the Node Parent value
    *
-   * @param parenr the Node parent
+   * @param parent the Node parent
    * @return the id of the parent
    */
   @Named("mapParent")

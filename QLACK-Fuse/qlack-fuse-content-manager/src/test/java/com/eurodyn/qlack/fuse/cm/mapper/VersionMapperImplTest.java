@@ -1,23 +1,22 @@
 package com.eurodyn.qlack.fuse.cm.mapper;
 
+import static junit.framework.TestCase.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import com.eurodyn.qlack.fuse.cm.InitTestValues;
 import com.eurodyn.qlack.fuse.cm.dto.VersionAttributeDTO;
 import com.eurodyn.qlack.fuse.cm.dto.VersionDTO;
 import com.eurodyn.qlack.fuse.cm.model.Version;
 import com.eurodyn.qlack.fuse.cm.model.VersionAttribute;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import static junit.framework.TestCase.assertNotNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 @RunWith(MockitoJUnitRunner.class)
 public class VersionMapperImplTest {
@@ -41,7 +40,7 @@ public class VersionMapperImplTest {
 
   private Set<VersionAttributeDTO> versionAttributeDTOs;
 
-  private List <VersionAttribute> versionAttributeList;
+  private List<VersionAttribute> versionAttributeList;
 
   @Before
   public void init() {
@@ -65,22 +64,23 @@ public class VersionMapperImplTest {
   }
 
   @Test
-  public void mapToDTOTest(){
+  public void mapToDTOTest() {
     versionDTO = versionMapper.mapToDTO(version);
-    assertEquals(versionDTO.getName(),version.getName());
+    assertEquals(versionDTO.getName(), version.getName());
   }
 
 
   @Test
   public void mapToDTOListNullTest() {
-    versionDTOS = versionMapper.mapToDTO((List<Version> ) null);
+    versionDTOS = versionMapper.mapToDTO((List<Version>) null);
     assertEquals(null, versionDTOS);
 
   }
+
   @Test
-  public void mapListToListDTOTest(){
+  public void mapListToListDTOTest() {
     versionDTOS = versionMapper.mapToDTO(versions);
-    assertEquals(versionDTOS.size(),versions.size());
+    assertEquals(versionDTOS.size(), versions.size());
   }
 
   @Test
@@ -96,68 +96,72 @@ public class VersionMapperImplTest {
   }
 
   @Test
-  public void mapToEntityTest(){
+  public void mapToEntityTest() {
     version = versionMapper.mapToEntity(versionDTO);
     assertEquals(version.getFilename(), versionDTO.getFilename());
   }
 
   @Test
-  public void versionAttributeListToVersionAttributeDTOSetTest(){
+  public void versionAttributeListToVersionAttributeDTOSetTest() {
     assertNull(versionMapper.versionAttributeListToVersionAttributeDTOSet(null));
   }
 
   @Test
-  public void versionAttributeDTOSetToVersionAttributeListTest(){
+  public void versionAttributeDTOSetToVersionAttributeListTest() {
     assertNull(versionMapper.versionAttributeDTOSetToVersionAttributeList(null));
   }
 
   @Test
-  public void versionAttributeDTOToVersionAttributeNullTest(){
-   assertNull(versionMapper.versionAttributeDTOToVersionAttribute(null));
+  public void versionAttributeDTOToVersionAttributeNullTest() {
+    assertNull(versionMapper.versionAttributeDTOToVersionAttribute(null));
   }
 
 
   @Test
-  public void versionAttributeToVersionAttributeDTONullTest(){
+  public void versionAttributeToVersionAttributeDTONullTest() {
     assertNull(versionMapper.versionAttributeToVersionAttributeDTO(null));
   }
 
   @Test
-  public void versionAttributeToVersionAttributeDTOTest(){
+  public void versionAttributeToVersionAttributeDTOTest() {
     versionAttribute.setName("name");
-    VersionAttributeDTO versionAttributeDTO = versionMapper.versionAttributeToVersionAttributeDTO(versionAttribute);
+    VersionAttributeDTO versionAttributeDTO = versionMapper
+        .versionAttributeToVersionAttributeDTO(versionAttribute);
     versionAttributeDTO.setName(versionAttribute.getName());
     assertNotNull(versionAttributeDTO.getName());
 
   }
 
   @Test
-  public void versionAttributeDTOToVersionAttributeTest(){
+  public void versionAttributeDTOToVersionAttributeTest() {
     versionAttributeDTO.setName("name");
-    VersionAttribute versionAttribute = versionMapper.versionAttributeDTOToVersionAttribute(versionAttributeDTO);
+    VersionAttribute versionAttribute = versionMapper
+        .versionAttributeDTOToVersionAttribute(versionAttributeDTO);
     versionAttribute.setName(versionAttributeDTO.getName());
     assertNotNull(versionAttribute.getName());
 
   }
 
   @Test
-  public void mapEntityListToDTOList(){
+  public void mapEntityListToDTOList() {
     versions = versionMapper.mapToEntity(versionDTOS);
-    assertEquals(versions.size(),versionDTOS.size());
+    assertEquals(versions.size(), versionDTOS.size());
   }
 
   @Test
-  public void attributeSetToListTest(){
-    List<VersionAttribute> list = versionMapper.versionAttributeDTOSetToVersionAttributeList(versionAttributeDTOs);
+  public void attributeSetToListTest() {
+    List<VersionAttribute> list = versionMapper
+        .versionAttributeDTOSetToVersionAttributeList(versionAttributeDTOs);
     list.add(versionAttribute);
     assertNotNull(list);
   }
 
   @Test
-  public void attributeListToSetTest(){
+  public void attributeListToSetTest() {
     versionAttributeList.add(versionAttribute);
     assertNotNull(versionAttributeList);
-    Set<VersionAttributeDTO> set  = versionMapper.versionAttributeListToVersionAttributeDTOSet(versionAttributeList);
+    Set<VersionAttributeDTO> set = versionMapper
+        .versionAttributeListToVersionAttributeDTOSet(versionAttributeList);
     set.add(versionAttributeDTO);
     assertNotNull(set);
   }
