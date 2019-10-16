@@ -138,7 +138,7 @@ public class CryptoAsymmetricServiceTest {
     assertEquals("", cryptoAsymmetricService.convertKeyToPEM(createKeyPair(), "keytype"));
   }
 
-  @Test (expected = QDoesNotExistException.class)
+  @Test(expected = QDoesNotExistException.class)
   public void verifySignatureNullTest()
       throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException, IOException {
     cryptoAsymmetricService.verifySignature(null, "".getBytes(), "", null, null);
@@ -151,7 +151,8 @@ public class CryptoAsymmetricServiceTest {
     final String privateKeyToPEM = cryptoAsymmetricService.privateKeyToPEM(createKeyPair());
     String plainText = "Hello World!";
     final byte[] signature = cryptoAsymmetricService
-        .sign(privateKeyToPEM, new ByteArrayInputStream(plainText.getBytes(StandardCharsets.UTF_8)), "SHA256withRSA", "RSA");
+        .sign(privateKeyToPEM, new ByteArrayInputStream(plainText.getBytes(StandardCharsets.UTF_8)),
+            "SHA256withRSA", "RSA");
     assertNotNull(signature);
   }
 
@@ -170,13 +171,16 @@ public class CryptoAsymmetricServiceTest {
     // Calculate and compare signature.
     final String publicKeyToPEM = cryptoAsymmetricService.publicKeyToPEM(keyPair);
     assertTrue(cryptoAsymmetricService
-        .verifySignature(publicKeyToPEM, new ByteArrayInputStream("Hello World!".getBytes(StandardCharsets.UTF_8)), signature, "SHA256withRSA", "RSA"));
+        .verifySignature(publicKeyToPEM,
+            new ByteArrayInputStream("Hello World!".getBytes(StandardCharsets.UTF_8)), signature,
+            "SHA256withRSA", "RSA"));
   }
 
-  @Test (expected = QDoesNotExistException.class)
+  @Test(expected = QDoesNotExistException.class)
   public void verifySignatureNullWithInputStreamTest()
       throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException, IOException {
-    cryptoAsymmetricService.verifySignature(null, new ByteArrayInputStream("".getBytes()), "", null, null);
+    cryptoAsymmetricService
+        .verifySignature(null, new ByteArrayInputStream("".getBytes()), "", null, null);
   }
 
 

@@ -16,7 +16,6 @@ import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
 import java.time.Instant;
 import java.util.Date;
-import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.BasicConstraints;
@@ -39,9 +38,6 @@ import org.springframework.validation.annotation.Validated;
 @Service
 @Validated
 public class CryptoCAService {
-
-  // JUL reference.
-  private static final Logger LOGGER = Logger.getLogger(CryptoCAService.class.getName());
 
   private final CryptoAsymmetricService cryptoAsymmetricService;
   private static final String CN = "CN";
