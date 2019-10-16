@@ -13,6 +13,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AuditLevelMapperImplTest {
@@ -92,11 +93,6 @@ public class AuditLevelMapperImplTest {
   }
 
   @Test
-  public void mapToExistingEntityTest(){
-    auditLevelMapper.mapToExistingEntity(null,auditLevel);
-  }
-
-  @Test
   public void mapToExistingEntitySetTraceNullTest(){
     auditLevelDTO.setName(null);
     assertNull(null,auditLevelDTO.getName());
@@ -109,6 +105,14 @@ public class AuditLevelMapperImplTest {
   public void mapEntityListToListDTOTest(){
     auditLevels =  auditLevelMapper.mapToEntity(auditLevelDTOs);
     assertEquals(auditLevels.size(),auditLevelDTOs.size());
+  }
+
+  @Test
+  public void mapToExistingDTONullTest(){
+    AuditLevelDTO auditLevelDTO = initTestValues.createAuditLevelDTO();
+    auditLevelDTO.setName(null);
+    auditLevelMapper.mapToExistingEntity(null,auditLevel);
+    assertEquals(null,auditLevelDTO.getName());
   }
 
 }
