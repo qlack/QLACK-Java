@@ -231,6 +231,7 @@ public class CryptoSymmetricService {
    * @throws InvalidKeyException thrown when the provided key is invalid
    * @throws IOException thrown when something unexpected happens
    */
+  @SuppressWarnings("squid:S4787")
   public void encrypt(InputStream sourceStream, OutputStream targetStream, final SecretKey key,
       byte[] iv, final String cipherInstance, final String keyAlgorithm, final boolean prefixIv)
       throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException,
@@ -268,6 +269,7 @@ public class CryptoSymmetricService {
    * @throws InvalidKeyException thrown when the provided key is invalid
    * @throws IOException thrown when something unexpected happens
    */
+  @SuppressWarnings("squid:S4787")
   public void decrypt(final File encryptedFile, final File plainFile, final SecretKey key,
       final String cipherInstance, final String keyAlgorithm)
       throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException,

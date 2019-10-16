@@ -291,6 +291,7 @@ public class CryptoAsymmetricService {
    * @throws BadPaddingException thrown when the provided cipherFactory is not valid
    * @throws IllegalBlockSizeException thrown when the provided cipherFactory is not valid
    */
+  @SuppressWarnings("squid:S4787")
   public byte[] encrypt(final String publicKeyPEM, final byte[] payload,
       final String cipherFactory, final String keyAlgorithm)
       throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException,
@@ -317,6 +318,7 @@ public class CryptoAsymmetricService {
    * @throws BadPaddingException thrown when the provided cipherFactory is not valid
    * @throws IllegalBlockSizeException thrown when the provided cipherFactory is not valid
    */
+  @SuppressWarnings("squid:S4787")
   public byte[] decrypt(final String privateKeyPEM, final byte[] payload,
       final String cipherFactory, final String keyAlgorithm)
       throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException,

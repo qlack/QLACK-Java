@@ -47,6 +47,7 @@ public class CryptoDigestService {
    * @param message the message to hash
    * @return the SHA256 values
    */
+  @SuppressWarnings("squid:S4790")
   public String sha256(final String message) {
     return DigestUtils.sha256Hex(message);
   }
@@ -58,6 +59,7 @@ public class CryptoDigestService {
    * @return the SHA256 value
    * @throws IOException thrown when something unexpected happens
    */
+  @SuppressWarnings("squid:S4790")
   public String sha256(final InputStream inputStream) throws IOException {
     return DigestUtils.sha256Hex(inputStream);
   }

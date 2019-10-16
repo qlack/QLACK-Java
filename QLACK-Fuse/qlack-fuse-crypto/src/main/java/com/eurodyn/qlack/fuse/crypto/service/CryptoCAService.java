@@ -16,7 +16,6 @@ import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
 import java.time.Instant;
 import java.util.Date;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.asn1.x500.X500Name;
@@ -124,11 +123,6 @@ public class CryptoCAService {
     final X509v3CertificateBuilder certGenerator;
     // Synchronize this part, so that no two certificates can be created with the same timestamp.
     synchronized (this) {
-      try {
-        this.wait(1);
-      } catch (InterruptedException e) {
-        LOGGER.log(Level.SEVERE, "Could not wait for 1 msec while generating the certificate.");
-      }
       certGenerator = new X509v3CertificateBuilder(
           new X500Name(
               CN + "=" + StringUtils.defaultIfBlank(signDTO.getIssuerCN(), signDTO.getSubjectCN())),
