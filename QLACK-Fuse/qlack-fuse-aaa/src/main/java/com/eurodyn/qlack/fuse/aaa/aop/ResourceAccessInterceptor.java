@@ -1,9 +1,9 @@
-package com.eurodyn.qlack.fuse.aaa.annotations.aop;
+package com.eurodyn.qlack.fuse.aaa.aop;
 
-import com.eurodyn.qlack.fuse.aaa.annotations.annotation.ResourceAccess;
-import com.eurodyn.qlack.fuse.aaa.annotations.annotation.ResourceId;
-import com.eurodyn.qlack.fuse.aaa.annotations.annotation.ResourceOperation;
-import com.eurodyn.qlack.fuse.aaa.annotations.dto.ResourceOperationDTO;
+import com.eurodyn.qlack.fuse.aaa.annotation.ResourceAccess;
+import com.eurodyn.qlack.fuse.aaa.annotation.ResourceId;
+import com.eurodyn.qlack.fuse.aaa.annotation.ResourceOperation;
+import com.eurodyn.qlack.fuse.aaa.dto.ResourceOperationDTO;
 import com.eurodyn.qlack.fuse.aaa.dto.UserDetailsDTO;
 import com.eurodyn.qlack.fuse.aaa.dto.UserGroupDTO;
 import com.eurodyn.qlack.fuse.aaa.dto.UserGroupHasOperationDTO;
@@ -44,7 +44,7 @@ public class ResourceAccessInterceptor {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    @Pointcut("execution(@com.eurodyn.qlack.fuse.aaa.annotations.annotation.ResourceAccess * *(..))")
+    @Pointcut("execution(@com.eurodyn.qlack.fuse.aaa.annotation.ResourceAccess * *(..))")
     public void annotation() {
     }
 

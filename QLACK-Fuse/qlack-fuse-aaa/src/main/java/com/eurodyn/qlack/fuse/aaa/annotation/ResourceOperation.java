@@ -1,4 +1,4 @@
-package com.eurodyn.qlack.fuse.aaa.annotations.annotation;
+package com.eurodyn.qlack.fuse.aaa.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

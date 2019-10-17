@@ -1,4 +1,4 @@
-package com.eurodyn.qlack.fuse.aaa.annotations.dto;
+package com.eurodyn.qlack.fuse.aaa.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
