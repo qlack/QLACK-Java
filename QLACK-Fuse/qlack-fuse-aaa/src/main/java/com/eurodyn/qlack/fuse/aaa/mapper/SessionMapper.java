@@ -1,4 +1,4 @@
-package com.eurodyn.qlack.fuse.aaa.mappers;
+package com.eurodyn.qlack.fuse.aaa.mapper;
 
 import com.eurodyn.qlack.fuse.aaa.dto.SessionDTO;
 import com.eurodyn.qlack.fuse.aaa.model.Session;
@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 
 /**
  * A Mapper for {@link Session} objects.
+ *
  * @author European Dynamics SA
  */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,

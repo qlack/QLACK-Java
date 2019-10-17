@@ -10,6 +10,7 @@ import lombok.Setter;
 
 /**
  * A verification token written
+ *
  * @author European Dynamics SA
  */
 @Entity
@@ -37,7 +38,9 @@ public class VerificationToken extends AAAModel {
    */
   private String data;
 
-  /** bi-directional many-to-one association to User. **/
+  /**
+   * bi-directional many-to-one association to User.
+   **/
   @ManyToOne
   @JoinColumn(name = "user_id")
   private User user;

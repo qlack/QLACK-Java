@@ -14,14 +14,18 @@
  */
 package com.eurodyn.qlack.fuse.aaa.exception;
 
+import com.eurodyn.qlack.common.exception.QException;
+
 /**
  * An Exception class declaration for DynamicOperation Object.
  *
  * @author European Dynamics SA
  */
-public class DynamicOperationException extends AAAException {
+public class DynamicOperationException extends QException {
 
-  /** a constructor declaration that is initialised the message
+  /**
+   * a constructor declaration that is initialised the message
+   *
    * @param msg the throwing exception message
    */
   public DynamicOperationException(String msg) {

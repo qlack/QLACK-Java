@@ -6,12 +6,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Describes a DTO field
- * as a resourceId field
+ * Describes a DTO field as a resourceId field
+ *
  * @author European Dynamics
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ResourceId {
-    String value() default "";
+
+  String value() default "";
 }

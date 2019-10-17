@@ -13,17 +13,19 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.lang.NonNull;
 
 /**
- * A repository interface written for AAA.It is used to define
- * a crud abstract methods for AAA model.
+ * A repository interface written for AAA.It is used to define a crud abstract methods for AAA
+ * model.
+ *
  * @param <T> a generic object
  * @param <I> I serializable object
- *
  * @author European Dynamics SA
  */
 public interface AAARepository<T extends AAAModel, I extends Serializable>
     extends JpaRepository<T, I>, QuerydslPredicateExecutor<T> {
 
-  /**A method that is used to retrieve a list of generic objects
+  /**
+   * A method that is used to retrieve a list of generic objects
+   *
    * @param predicate the predicate type object
    * @return a List of generic objects
    */
@@ -32,6 +34,7 @@ public interface AAARepository<T extends AAAModel, I extends Serializable>
 
   /**
    * A method that retrieves a List of {@link AAAModel} objects
+   *
    * @param predicate the predicate object
    * @param sort a sorting object
    * @return a List of generic objects
@@ -41,6 +44,7 @@ public interface AAARepository<T extends AAAModel, I extends Serializable>
 
   /**
    * A method to retrieve the specified id
+   *
    * @param id the Serializable id
    * @return the relative id
    */

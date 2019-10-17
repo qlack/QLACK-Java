@@ -2,10 +2,10 @@ package com.eurodyn.qlack.fuse.aaa.service;
 
 import com.eurodyn.qlack.fuse.aaa.dto.UserGroupDTO;
 import com.eurodyn.qlack.fuse.aaa.exception.InvalidGroupHierarchyException;
-import com.eurodyn.qlack.fuse.aaa.mappers.UserGroupMapper;
+import com.eurodyn.qlack.fuse.aaa.mapper.UserGroupMapper;
 import com.eurodyn.qlack.fuse.aaa.model.QUserGroup;
-import com.eurodyn.qlack.fuse.aaa.model.UserGroup;
 import com.eurodyn.qlack.fuse.aaa.model.User;
+import com.eurodyn.qlack.fuse.aaa.model.UserGroup;
 import com.eurodyn.qlack.fuse.aaa.repository.UserGroupRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
 import com.querydsl.core.types.Predicate;
@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +37,7 @@ public class UserGroupService {
   private final UserGroupMapper userGroupMapper;
 
   public UserGroupService(UserGroupRepository userGroupRepository,
-                          UserRepository userRepository, UserGroupMapper userGroupMapper) {
+      UserRepository userRepository, UserGroupMapper userGroupMapper) {
     this.userGroupRepository = userGroupRepository;
     this.userRepository = userRepository;
     this.userGroupMapper = userGroupMapper;
@@ -143,15 +142,14 @@ public class UserGroupService {
    * Returns the users belonging to a given userGroup and (optionally) its hierarchy
    *
    * @param userGroup The userGroup the users of which to retrieve
-   * @param includeAncestors true if users belonging to ancestors of this userGroup
-   * (the userGroup's parent and its parent's parent, etc.) should be retrieved
-   * @param includeDescendants true if users belonging to descendants of this
-   * userGroup (the userGroup's children and its children's children, etc.) should
-   * be retrieved
+   * @param includeAncestors true if users belonging to ancestors of this userGroup (the userGroup's
+   * parent and its parent's parent, etc.) should be retrieved
+   * @param includeDescendants true if users belonging to descendants of this userGroup (the
+   * userGroup's children and its children's children, etc.) should be retrieved
    * @return The IDs of the users belonging to the specified userGroup hierarchy.
    */
   private Set<String> getGroupHierarchyUsersIds(UserGroup userGroup, boolean includeAncestors,
-                                                boolean includeDescendants) {
+      boolean includeDescendants) {
     Set<String> retVal = new HashSet<>(userGroup.getUsers().size());
     for (User user : userGroup.getUsers()) {
       retVal.add(user.getId());
@@ -175,7 +173,6 @@ public class UserGroupService {
   private void addUsers(Collection<String> userIDs, UserGroup userGroup) {
     for (String userID : userIDs) {
       User user = userRepository.fetchById(userID);
-      // TODO ask how else we do it
       if (userGroup.getUsers() == null) {
         userGroup.setUsers(new ArrayList<User>());
       }
@@ -246,7 +243,7 @@ public class UserGroupService {
   public Set<String> getGroupUsersNames(Collection<String> groupIDs) {
     List<UserGroup> groups = userGroupRepository.findByIdIn(groupIDs);
     Set<User> users = groups.stream().flatMap(g -> g.getUsers().stream())
-            .collect(Collectors.toSet());
+        .collect(Collectors.toSet());
     return users.stream().map(User::getUsername).collect(Collectors.toSet());
   }
 }

@@ -12,6 +12,7 @@ import lombok.Setter;
 
 /**
  * The persistent class for the aaa_user_attributes database table.
+ *
  * @author European Dynamics SA
  */
 @Entity
@@ -49,7 +50,9 @@ public class UserAttribute extends AAAModel {
    */
   private String name;
 
-  /**bi-directional many-to-one association to User **/
+  /**
+   * bi-directional many-to-one association to User
+   **/
   @ManyToOne
   @JoinColumn(name = "user_id")
   private User user;

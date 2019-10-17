@@ -1,10 +1,18 @@
 package com.eurodyn.qlack.fuse.aaa.service;
 
 
-import com.eurodyn.qlack.fuse.aaa.model.UserGroup;
 import com.eurodyn.qlack.fuse.aaa.model.User;
 import com.eurodyn.qlack.fuse.aaa.model.UserAttribute;
+import com.eurodyn.qlack.fuse.aaa.model.UserGroup;
 import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.naming.AuthenticationException;
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
@@ -18,17 +26,9 @@ import javax.persistence.EntityManager;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * A Util class that is used to configure the LdapUser
+ *
  * @author European Dynamics  SA
  */
 @Service
@@ -91,8 +91,8 @@ public class LdapUserUtil {
   }
 
   /**
-   * Check if the user can be authenticated with LDAP using 'simple'
-   * authentication (bind operation).
+   * Check if the user can be authenticated with LDAP using 'simple' authentication (bind
+   * operation).
    *
    * @param username The LDAP username of the user.
    * @param password The LDAP password of the user.
@@ -126,6 +126,7 @@ public class LdapUserUtil {
     }
   }
 
+  @SuppressWarnings("squid:S1149")
   private DirContext ldapBind(String username, String password) {
     Hashtable<String, String> env = new Hashtable<>();
     env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
@@ -136,7 +137,7 @@ public class LdapUserUtil {
     env.put(Context.SECURITY_CREDENTIALS, password);
 
     try {
-      return  new InitialDirContext(env);
+      return new InitialDirContext(env);
     } catch (AuthenticationException e) {
       LOGGER.log(Level.FINE, "Cannot bind user to ldap service", e);
       return null;
@@ -197,6 +198,7 @@ public class LdapUserUtil {
 
   /**
    * Create a user from ldap
+   *
    * @param username the username
    * @param ldap the ldap
    * @return the userId
@@ -224,6 +226,7 @@ public class LdapUserUtil {
 
   /**
    * Creates a user from ldap
+   *
    * @param user the user
    * @param ldap the ldap
    * @return the groupId
@@ -251,6 +254,7 @@ public class LdapUserUtil {
 
   /**
    * Creates user attributes from ldap
+   *
    * @param user the user the user
    * @param ldap the ldap the ldap
    */
@@ -270,6 +274,7 @@ public class LdapUserUtil {
 
   /**
    * Updates user from ldap
+   *
    * @param user the user
    * @param ldap the ldap
    * @return the user id
@@ -289,6 +294,7 @@ public class LdapUserUtil {
 
   /**
    * Updates the group from ldap
+   *
    * @param user the user
    * @param ldap the ldap
    * @return the updated groupId
@@ -319,6 +325,7 @@ public class LdapUserUtil {
 
   /**
    * Updates the user attributes from ldap
+   *
    * @param user the user
    * @param ldap the ldap
    */
@@ -341,6 +348,7 @@ public class LdapUserUtil {
 
   /**
    * Finds by name the {@link UserAttribute} object
+   *
    * @param attributes a list of attributes
    * @param name the name
    * @return the {@link UserAttribute} object
@@ -356,6 +364,7 @@ public class LdapUserUtil {
 
   /**
    * Retrieves the first value
+   *
    * @param ldap the ldap
    * @param key the key
    * @return the first value from ldap provided by the key

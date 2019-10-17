@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * A simple DTO (Data Transfer Object) for Base that does not contain
- * any business logic . It used only to set and retrieve Base data
+ * A simple DTO (Data Transfer Object) for Base that does not contain any business logic . It used
+ * only to set and retrieve Base data
  *
  * @author European Dynamics SA
  */

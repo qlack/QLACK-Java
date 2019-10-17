@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * A simple DTO for OperationAccess .It is used to store and retrieve the data
- * of Operation Access object.
+ * A simple DTO for OperationAccess .It is used to store and retrieve the data of Operation Access
+ * object.
  *
  * @author European Dynamics SA
  */

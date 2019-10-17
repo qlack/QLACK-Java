@@ -6,11 +6,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * Provides the legacy MD5 password encoder for AAA.
+ *
  * @author European Dynamics SA
  */
 public class Md5PasswordEncoder implements PasswordEncoder {
 
   @Override
+  @SuppressWarnings("squid:S4790")
   public String encode(CharSequence rawPassword) {
     return DigestUtils.md5Hex(rawPassword.toString());
   }
@@ -19,6 +21,7 @@ public class Md5PasswordEncoder implements PasswordEncoder {
    * Constant time comparison to prevent against timing attacks.
    */
   @Override
+  @SuppressWarnings("squid:S4790")
   public boolean matches(CharSequence rawPassword, String encodedPassword) {
     String rawHash = DigestUtils.md5Hex(rawPassword.toString());
     byte[] expected = Hex.decode(rawHash);

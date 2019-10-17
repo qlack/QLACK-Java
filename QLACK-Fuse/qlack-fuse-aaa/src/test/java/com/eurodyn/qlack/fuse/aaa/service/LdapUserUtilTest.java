@@ -1,5 +1,8 @@
 package com.eurodyn.qlack.fuse.aaa.service;
 
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertFalse;
+
 import com.eurodyn.qlack.fuse.aaa.InitTestValues;
 import com.eurodyn.qlack.fuse.aaa.dto.UserDTO;
 import com.eurodyn.qlack.fuse.aaa.model.User;
@@ -11,19 +14,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import javax.naming.NamingException;
-
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertFalse;
-
 @RunWith(MockitoJUnitRunner.class)
 public class LdapUserUtilTest {
 
-  @InjectMocks private LdapUserUtil ldapUserUtil;
+  @InjectMocks
+  private LdapUserUtil ldapUserUtil;
 
-  @Mock private User user;
-  @Mock private UserService userService;
-  @Mock private UserDTO userDTO;
+  @Mock
+  private User user;
+  @Mock
+  private UserService userService;
+  @Mock
+  private UserDTO userDTO;
 
   private InitTestValues initTestValues;
   private UserRepository userRepository;
@@ -44,13 +46,13 @@ public class LdapUserUtilTest {
   }
 
   @Test
-  public void testCanAuthenticateNull(){
+  public void testCanAuthenticateNull() {
     ldapUserUtil.canAuthenticate(user.getUsername(), user.getPassword());
     assertFalse(ldapUserUtil.isLdapEnable());
   }
 
   @Test
-  public void testCanAuthenticate(){
+  public void testCanAuthenticate() {
     ldapUserUtil.setLdapEnable(true);
     ldapUserUtil.setLdapUrl(ldapUrl);
     ldapUserUtil.setLdapBaseDN(ldapBaseDN);

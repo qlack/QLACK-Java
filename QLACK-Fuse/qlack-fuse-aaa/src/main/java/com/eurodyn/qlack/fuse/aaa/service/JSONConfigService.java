@@ -1,9 +1,9 @@
 package com.eurodyn.qlack.fuse.aaa.service;
 
-import com.eurodyn.qlack.fuse.aaa.dto.UserGroupDTO;
 import com.eurodyn.qlack.fuse.aaa.dto.JSONConfig;
 import com.eurodyn.qlack.fuse.aaa.dto.OpTemplateDTO;
 import com.eurodyn.qlack.fuse.aaa.dto.OperationDTO;
+import com.eurodyn.qlack.fuse.aaa.dto.UserGroupDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -22,6 +22,7 @@ import org.springframework.validation.annotation.Validated;
 
 /**
  * A Service class that is used to configure json
+ *
  * @author European Dynamics SA
  */
 @Service
@@ -48,11 +49,12 @@ public class JSONConfigService {
     this.operationService = operationService;
   }
 
+  @SuppressWarnings("squid:S4790")
   private void parseConfig(URL configFileURL) {
     LOGGER.log(Level.FINE, "Handling FUSE AAA configuration: {0}.", configFileURL.toExternalForm());
 
     // Parse the JSON file.
-    JSONConfig config = null;
+    JSONConfig config;
     try {
       config = mapper.readValue(configFileURL, JSONConfig.class);
     } catch (IOException e) {
@@ -71,6 +73,14 @@ public class JSONConfigService {
       return;
     }
 
+    parseConfigUserGroups(config);
+    parseConfigTemplates(config);
+    parseConfigOperations(config);
+    parseConfigUserGroupHasOperations(config);
+    parseConfigTemplateHasOperations(config);
+  }
+
+  private void parseConfigUserGroups(JSONConfig config) {
     // Create userGroups.
     for (JSONConfig.Group g : config.getGroups()) {
       // If the userGroup exists, update it, otherwise create it.
@@ -92,7 +102,9 @@ public class JSONConfigService {
         groupService.updateGroup(userGroupDTO);
       }
     }
+  }
 
+  private void parseConfigTemplates(JSONConfig config) {
     // Create templates.
     for (JSONConfig.Template t : config.getTemplates()) {
       // If the template exists, update it, otherwise create it.
@@ -110,7 +122,9 @@ public class JSONConfigService {
         templateService.updateTemplate(templateDTO);
       }
     }
+  }
 
+  private void parseConfigOperations(JSONConfig config) {
     // Create Operations.
     for (JSONConfig.Operation o : config.getOperations()) {
       // If the operation exists, update it, otherwise create it.
@@ -128,7 +142,9 @@ public class JSONConfigService {
         operationService.updateOperation(opDTO);
       }
     }
+  }
 
+  private void parseConfigUserGroupHasOperations(JSONConfig config) {
     // Create UserGroup has Operations.
     for (JSONConfig.GroupHasOperation gho : config.getGroupHasOperations()) {
       // If the operation exists, update it, otherwise create it.
@@ -141,7 +157,9 @@ public class JSONConfigService {
             userGroupDTO.getId(), gho.getOperationName(), gho.isDeny());
       }
     }
+  }
 
+  private void parseConfigTemplateHasOperations(JSONConfig config) {
     // Create Template has Operations.
     for (JSONConfig.TemplateHasOperation tho : config.getTemplateHasOperations()) {
       // If the operation exists, update it, otherwise create it.

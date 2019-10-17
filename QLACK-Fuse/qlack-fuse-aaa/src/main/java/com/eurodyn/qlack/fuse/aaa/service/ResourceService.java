@@ -1,7 +1,7 @@
 package com.eurodyn.qlack.fuse.aaa.service;
 
 import com.eurodyn.qlack.fuse.aaa.dto.ResourceDTO;
-import com.eurodyn.qlack.fuse.aaa.mappers.ResourceMapper;
+import com.eurodyn.qlack.fuse.aaa.mapper.ResourceMapper;
 import com.eurodyn.qlack.fuse.aaa.model.Resource;
 import com.eurodyn.qlack.fuse.aaa.repository.ResourceRepository;
 import java.util.Collection;
@@ -11,6 +11,7 @@ import org.springframework.validation.annotation.Validated;
 
 /**
  * A Service class that is used to configure {@link Resource} model.
+ *
  * @author European Dynamics SA
  */
 @Service
@@ -29,6 +30,7 @@ public class ResourceService {
 
   /**
    * Creates a {@link Resource} object and retrieves the relative id
+   *
    * @param resourceDTO the {@link ResourceDTO} object
    * @return the id of resource
    */
@@ -41,6 +43,7 @@ public class ResourceService {
 
   /**
    * Updates a {@link Resource} entity
+   *
    * @param resourceDTO the {@link ResourceDTO} object
    */
   public void updateResource(ResourceDTO resourceDTO) {
@@ -50,6 +53,7 @@ public class ResourceService {
 
   /**
    * Deletes a {@link Resource} entity
+   *
    * @param resourceID the resource Id
    */
   public void deleteResource(String resourceID) {
@@ -58,6 +62,7 @@ public class ResourceService {
 
   /**
    * Deletes a {@link Collection} of resourceIds
+   *
    * @param resourceIDs the resourceIds
    */
   public void deleteResources(Collection<String> resourceIDs) {
@@ -68,6 +73,7 @@ public class ResourceService {
 
   /**
    * Deletes a @{@link Resource} by given object id
+   *
    * @param objectID the objectId
    */
   public void deleteResourceByObjectId(String objectID) {
@@ -76,6 +82,7 @@ public class ResourceService {
 
   /**
    * Deletes resources by a collection of objectIDS
+   *
    * @param objectIDs the objectIDs
    */
   public void deleteResourcesByObjectIds(Collection<String> objectIDs) {
@@ -86,6 +93,7 @@ public class ResourceService {
 
   /**
    * Retrieves the resource id
+   *
    * @param resourceID the resource Id
    * @return the {@link ResourceDTO} by its id
    */
@@ -95,6 +103,7 @@ public class ResourceService {
 
   /**
    * Retrieves the {@link Resource} by given objectID
+   *
    * @param objectID the specified objectID
    * @return the according {@link ResourceDTO} by its objectID
    */

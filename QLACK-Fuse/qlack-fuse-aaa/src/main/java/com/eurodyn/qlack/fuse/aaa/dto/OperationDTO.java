@@ -4,7 +4,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/** A simple DTO that is used to retrieve and set data to Operation
+/**
+ * A simple DTO that is used to retrieve and set data to Operation
+ *
  * @author European Dynamics SA
  */
 @Getter
@@ -13,7 +15,7 @@ import lombok.Setter;
 public class OperationDTO extends BaseDTO {
 
   /**
-   *  the name
+   * the name
    */
   private String name;
   /**
@@ -21,11 +23,11 @@ public class OperationDTO extends BaseDTO {
    */
   private boolean dynamic;
   /**
-   *  the dynamic code
+   * the dynamic code
    */
   private String dynamicCode;
   /**
-   *  the description of the operation
+   * the description of the operation
    */
   private String description;
 

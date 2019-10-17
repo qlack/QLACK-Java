@@ -16,6 +16,7 @@ import lombok.Setter;
 
 /**
  * The persistent class for the aaa_session database table.
+ *
  * @author European Dynamics SA
  */
 @Entity
@@ -48,12 +49,16 @@ public class Session extends AAAModel {
   @Column(name = "terminated_on")
   private Long terminatedOn;
 
-  /**bi-directional many-to-one association to User **/
+  /**
+   * bi-directional many-to-one association to User
+   **/
   @ManyToOne
   @JoinColumn(name = "user_id")
   private User user;
 
-  /**bi-directional many-to-one association to SessionAttribute **/
+  /**
+   * bi-directional many-to-one association to SessionAttribute
+   **/
   @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<SessionAttribute> sessionAttributes;
 

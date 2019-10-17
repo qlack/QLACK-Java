@@ -45,6 +45,7 @@ public class AAAProperties {
 
   /**
    * Checks whether the permission priorities is positive or not
+   *
    * @return a {@link Boolean} value whether the permissionPrioritisePositive is true or not
    */
   public boolean isPermissionPrioritisePositive() {
@@ -57,6 +58,7 @@ public class AAAProperties {
 
   /**
    * Checks whether Ldap is enabled or not
+   *
    * @return a {@link Boolean} value if ldap is enabled or not
    */
   public boolean isLdapEnabled() {

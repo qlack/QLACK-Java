@@ -11,6 +11,7 @@ import lombok.Setter;
 
 /**
  * The persistent class for the aaa_session_attributes database table.
+ *
  * @author European Dynamics SA
  */
 @Entity
@@ -37,7 +38,9 @@ public class SessionAttribute extends AAAModel {
    */
   private String value;
 
-  /**bi-directional many-to-one association to Session **/
+  /**
+   * bi-directional many-to-one association to Session
+   **/
   @ManyToOne
   @JoinColumn(name = "session_id")
   private Session session;

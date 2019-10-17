@@ -1,7 +1,7 @@
 package com.eurodyn.qlack.fuse.aaa.service;
 
 import com.eurodyn.qlack.fuse.aaa.dto.OpTemplateDTO;
-import com.eurodyn.qlack.fuse.aaa.mappers.OpTemplateMapper;
+import com.eurodyn.qlack.fuse.aaa.mapper.OpTemplateMapper;
 import com.eurodyn.qlack.fuse.aaa.model.OpTemplate;
 import com.eurodyn.qlack.fuse.aaa.model.OpTemplateHasOperation;
 import com.eurodyn.qlack.fuse.aaa.model.Operation;
@@ -47,6 +47,7 @@ public class OpTemplateService {
 
   /**
    * Creates a Template
+   *
    * @param templateDTO the {@link OpTemplateDTO} object
    * @return the template id
    */
@@ -59,6 +60,7 @@ public class OpTemplateService {
 
   /**
    * Deletes template by its id
+   *
    * @param templateID the templateID
    */
   public void deleteTemplateByID(String templateID) {
@@ -67,6 +69,7 @@ public class OpTemplateService {
 
   /**
    * Deletes Template by its name
+   *
    * @param templateName the templateName
    */
   public void deleteTemplateByName(String templateName) {
@@ -75,6 +78,7 @@ public class OpTemplateService {
 
   /**
    * Retrieves a template by its id
+   *
    * @param templateID the templateID
    * @return the {@link OpTemplateDTO} by its id
    */
@@ -84,6 +88,7 @@ public class OpTemplateService {
 
   /**
    * Retrieves the Template by its name
+   *
    * @param templateName the templateName
    * @return the {@link OpTemplateDTO} by its name
    */
@@ -93,6 +98,7 @@ public class OpTemplateService {
 
   /**
    * Adds operation
+   *
    * @param templateID the templateID
    * @param operationName the operationName
    * @param isDeny the isDeny checking value whether is denied or not
@@ -104,12 +110,13 @@ public class OpTemplateService {
     if (tho != null) {
       tho.setDeny(isDeny);
     } else {
-        opTemplateHasOperationRepository.save(commonAddOperation(templateID, operationName, isDeny));
+      opTemplateHasOperationRepository.save(commonAddOperation(templateID, operationName, isDeny));
     }
   }
 
   /**
    * Adds Operation
+   *
    * @param templateID the templateID
    * @param operationName the operationName
    * @param resourceID the resourceID
@@ -123,32 +130,35 @@ public class OpTemplateService {
     if (tho != null) {
       tho.setDeny(isDeny);
     } else {
-        tho = commonAddOperation(templateID, operationName, isDeny);
-        Resource resource = resourceRepository.fetchById(resourceID);
-        resource.addOpTemplateHasOperation(tho);
-        opTemplateHasOperationRepository.save(tho);
+      tho = commonAddOperation(templateID, operationName, isDeny);
+      Resource resource = resourceRepository.fetchById(resourceID);
+      resource.addOpTemplateHasOperation(tho);
+      opTemplateHasOperationRepository.save(tho);
     }
   }
 
   /**
    * Adds common operation
+   *
    * @param templateID the templateID
    * @param operationName the operationName
    * @param isDeny whether is denied or not
    * @return a {@link OpTemplateHasOperation} object
    */
-    private OpTemplateHasOperation commonAddOperation(String templateID, String operationName, boolean isDeny) {
-        OpTemplate template = opTemplateRepository.fetchById(templateID);
-        Operation operation = operationRepository.findByName(operationName);
-        OpTemplateHasOperation tho = new OpTemplateHasOperation();
-        tho.setDeny(isDeny);
-        template.addOpTemplateHasOperation(tho);
-        operation.addOpTemplateHasOperation(tho);
-        return tho;
+  private OpTemplateHasOperation commonAddOperation(String templateID, String operationName,
+      boolean isDeny) {
+    OpTemplate template = opTemplateRepository.fetchById(templateID);
+    Operation operation = operationRepository.findByName(operationName);
+    OpTemplateHasOperation tho = new OpTemplateHasOperation();
+    tho.setDeny(isDeny);
+    template.addOpTemplateHasOperation(tho);
+    operation.addOpTemplateHasOperation(tho);
+    return tho;
   }
 
   /**
    * Removes operation
+   *
    * @param templateID the templateID
    * @param operationName the operationName
    */
@@ -160,6 +170,7 @@ public class OpTemplateService {
 
   /**
    * Removes Operation provided by its templateID, the operationName and the resourceID
+   *
    * @param templateID the templateID
    * @param operationName the operationName
    * @param resourceID the resourceID
@@ -173,6 +184,7 @@ public class OpTemplateService {
 
   /**
    * Checks the access that operation template
+   *
    * @param templateID the templateID
    * @param operationName the operationName
    * @return a {@link Boolean} type that checks the access of operation
@@ -191,6 +203,7 @@ public class OpTemplateService {
 
   /**
    * Checks the access of operation template
+   *
    * @param templateID the templateID
    * @param operationName the operationName
    * @param resourceID the resourceID
@@ -212,6 +225,7 @@ public class OpTemplateService {
 
   /**
    * Checks if any update happens to Template
+   *
    * @param templateDTO the {@link OpTemplateDTO} object
    * @return a {@link Boolean} type that checks if any update happens to Template
    */

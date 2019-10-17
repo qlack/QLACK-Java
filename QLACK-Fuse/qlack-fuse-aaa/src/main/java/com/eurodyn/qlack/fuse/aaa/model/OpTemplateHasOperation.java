@@ -11,6 +11,7 @@ import lombok.Setter;
 
 /**
  * The persistent class for the aaa_op_template_has_operation database table.
+ *
  * @author European Dynamics SA
  */
 @Entity
@@ -32,17 +33,23 @@ public class OpTemplateHasOperation extends AAAModel {
    */
   private boolean deny;
 
-  /**bi-directional many-to-one association to OpTemplate**/
+  /**
+   * bi-directional many-to-one association to OpTemplate
+   **/
   @ManyToOne
   @JoinColumn(name = "template")
   private OpTemplate template;
 
-  /**bi-directional many-to-one association to Operation**/
+  /**
+   * bi-directional many-to-one association to Operation
+   **/
   @ManyToOne
   @JoinColumn(name = "operation")
   private Operation operation;
 
-  /**bi-directional many-to-one association to Resource**/
+  /**
+   * bi-directional many-to-one association to Resource
+   **/
   @ManyToOne
   @JoinColumn(name = "resource_id")
   private Resource resource;

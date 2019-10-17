@@ -5,8 +5,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * A session Attribute Repository interface written to define a number of crud
- * methods for the SessionAttribute model.
+ * A session Attribute Repository interface written to define a number of crud methods for the
+ * SessionAttribute model.
  *
  * @author European Dynamics SA
  */
@@ -15,6 +15,7 @@ public interface SessionAttributeRepository extends CrudRepository<SessionAttrib
 
   /**
    * A retrieve method to find the @{@link SessionAttribute} object
+   *
    * @param sessionId the id of Session
    * @param name the name
    * @return the {@link SessionAttribute} object by its name and the id

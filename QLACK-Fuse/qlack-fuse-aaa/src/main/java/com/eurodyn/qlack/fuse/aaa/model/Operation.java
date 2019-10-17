@@ -14,6 +14,7 @@ import lombok.Setter;
 
 /**
  * The persistent class for the aaa_operation database table.
+ *
  * @author European Dynamics SA
  */
 @Entity
@@ -52,15 +53,21 @@ public class Operation extends AAAModel {
   @Column(name = "dynamic_code")
   private String dynamicCode;
 
-  /**bi-directional many-to-one association to UserGroupHasOperation**/
+  /**
+   * bi-directional many-to-one association to UserGroupHasOperation
+   **/
   @OneToMany(mappedBy = "operation")
   private List<UserGroupHasOperation> userGroupHasOperations;
 
-  /**bi-directional many-to-one association to OpTemplateHasOperation**/
+  /**
+   * bi-directional many-to-one association to OpTemplateHasOperation
+   **/
   @OneToMany(mappedBy = "operation")
   private List<OpTemplateHasOperation> opTemplateHasOperations;
 
-  /**bi-directional many-to-one association to UserHasOperation**/
+  /**
+   * bi-directional many-to-one association to UserHasOperation
+   **/
   @OneToMany(mappedBy = "operation")
   private List<UserHasOperation> userHasOperations;
 
@@ -68,7 +75,9 @@ public class Operation extends AAAModel {
     setId(UUID.randomUUID().toString());
   }
 
-  /** A method that adds a userGroupHasOperation object
+  /**
+   * A method that adds a userGroupHasOperation object
+   *
    * @param userGroupHasOperation a @{@link UserGroupHasOperation} object
    * @return a @{@link UserGroupHasOperation} object
    */
@@ -82,18 +91,23 @@ public class Operation extends AAAModel {
     return userGroupHasOperation;
   }
 
-  /** A method that removes a userGroupHasOperation object
+  /**
+   * A method that removes a userGroupHasOperation object
+   *
    * @param userGroupHasOperation a @{@link UserGroupHasOperation} object
    * @return the @{@link UserGroupHasOperation} object
    */
-  public UserGroupHasOperation removeGroupHasOperation(UserGroupHasOperation userGroupHasOperation) {
+  public UserGroupHasOperation removeGroupHasOperation(
+      UserGroupHasOperation userGroupHasOperation) {
     this.getUserGroupHasOperations().remove(userGroupHasOperation);
     userGroupHasOperation.setOperation(null);
 
     return userGroupHasOperation;
   }
 
-  /** A method that adds a opTemplateHasOperation object
+  /**
+   * A method that adds a opTemplateHasOperation object
+   *
    * @param opTemplateHasOperation a @{@link OpTemplateHasOperation} object
    * @return a {@link OpTemplateHasOperation} object
    */
@@ -108,7 +122,9 @@ public class Operation extends AAAModel {
     return opTemplateHasOperation;
   }
 
-  /** A method that removes a {@link OpTemplateHasOperation} object
+  /**
+   * A method that removes a {@link OpTemplateHasOperation} object
+   *
    * @param opTemplateHasOperation a {@link OpTemplateHasOperation} object
    * @return a {@link OpTemplateHasOperation} object
    */
@@ -120,7 +136,9 @@ public class Operation extends AAAModel {
     return opTemplateHasOperation;
   }
 
-  /** A method that adds a userHasOperation object
+  /**
+   * A method that adds a userHasOperation object
+   *
    * @param userHasOperation the @{@link UserHasOperation} object
    * @return the {@link UserHasOperation} object
    */
@@ -131,7 +149,9 @@ public class Operation extends AAAModel {
     return userHasOperation;
   }
 
-  /** A method that removes a userHasOperation object
+  /**
+   * A method that removes a userHasOperation object
+   *
    * @param userHasOperation the @{@link UserHasOperation} object
    * @return a {@link UserHasOperation} object
    */

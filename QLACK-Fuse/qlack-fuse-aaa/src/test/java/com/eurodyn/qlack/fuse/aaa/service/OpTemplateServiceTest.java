@@ -10,7 +10,7 @@ import static org.mockito.Mockito.when;
 
 import com.eurodyn.qlack.fuse.aaa.InitTestValues;
 import com.eurodyn.qlack.fuse.aaa.dto.OpTemplateDTO;
-import com.eurodyn.qlack.fuse.aaa.mappers.OpTemplateMapper;
+import com.eurodyn.qlack.fuse.aaa.mapper.OpTemplateMapper;
 import com.eurodyn.qlack.fuse.aaa.model.OpTemplate;
 import com.eurodyn.qlack.fuse.aaa.model.OpTemplateHasOperation;
 import com.eurodyn.qlack.fuse.aaa.model.Operation;
@@ -33,171 +33,180 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class OpTemplateServiceTest {
 
-    @InjectMocks
-    OpTemplateService opTemplateService;
+  @InjectMocks
+  OpTemplateService opTemplateService;
 
-    // Repositories
-    private OpTemplateRepository opTemplateRepository = mock(OpTemplateRepository.class);
-    private OpTemplateHasOperationRepository opTemplateHasOperationRepository = mock(OpTemplateHasOperationRepository.class);
-    private OperationRepository operationRepository = mock(OperationRepository.class);
-    private ResourceRepository resourceRepository = mock(ResourceRepository.class);
+  // Repositories
+  private OpTemplateRepository opTemplateRepository = mock(OpTemplateRepository.class);
+  private OpTemplateHasOperationRepository opTemplateHasOperationRepository = mock(
+      OpTemplateHasOperationRepository.class);
+  private OperationRepository operationRepository = mock(OperationRepository.class);
+  private ResourceRepository resourceRepository = mock(ResourceRepository.class);
 
-    @Spy
-    private OpTemplateMapper opTemplateMapper;
+  @Spy
+  private OpTemplateMapper opTemplateMapper;
 
-    private InitTestValues initTestValues;
+  private InitTestValues initTestValues;
 
-    private OpTemplate template;
-    private OpTemplateDTO templateDTO;
+  private OpTemplate template;
+  private OpTemplateDTO templateDTO;
 
-    private Operation operation;
-    private OpTemplateHasOperation opTemplateHasOperation;
-    private Resource resource;
+  private Operation operation;
+  private OpTemplateHasOperation opTemplateHasOperation;
+  private Resource resource;
 
-    @Before
-    public void init() {
-        opTemplateService = new OpTemplateService(opTemplateRepository, opTemplateHasOperationRepository, operationRepository,
-            resourceRepository, opTemplateMapper);
-        initTestValues = new InitTestValues();
-        template = initTestValues.createOpTemplate();
-        templateDTO = initTestValues.createOpTemplateDTO();
-        operation = initTestValues.createOperation();
-        opTemplateHasOperation = new OpTemplateHasOperation();
-        resource = new Resource();
-    }
+  @Before
+  public void init() {
+    opTemplateService = new OpTemplateService(opTemplateRepository,
+        opTemplateHasOperationRepository, operationRepository,
+        resourceRepository, opTemplateMapper);
+    initTestValues = new InitTestValues();
+    template = initTestValues.createOpTemplate();
+    templateDTO = initTestValues.createOpTemplateDTO();
+    operation = initTestValues.createOperation();
+    opTemplateHasOperation = new OpTemplateHasOperation();
+    resource = new Resource();
+  }
 
-    @Test
-    public void testCreateTemplate() {
-        when(opTemplateMapper.mapToEntity(templateDTO)).thenReturn(template);
-        String createdTemplate = opTemplateService.createTemplate(templateDTO);
-        assertEquals(createdTemplate, templateDTO.getId());
-        verify(opTemplateRepository, times(1)).save(template);
-    }
+  @Test
+  public void testCreateTemplate() {
+    when(opTemplateMapper.mapToEntity(templateDTO)).thenReturn(template);
+    String createdTemplate = opTemplateService.createTemplate(templateDTO);
+    assertEquals(createdTemplate, templateDTO.getId());
+    verify(opTemplateRepository, times(1)).save(template);
+  }
 
-    @Test
-    public void testDeleteTemplateByID() {
-        OpTemplate template2 = initTestValues.createOpTemplate();
-        when(opTemplateRepository.fetchById(template.getId())).thenReturn(template2);
-        opTemplateService.deleteTemplateByID(template.getId());
-        verify(opTemplateRepository, times(1)).delete(template2);
-    }
+  @Test
+  public void testDeleteTemplateByID() {
+    OpTemplate template2 = initTestValues.createOpTemplate();
+    when(opTemplateRepository.fetchById(template.getId())).thenReturn(template2);
+    opTemplateService.deleteTemplateByID(template.getId());
+    verify(opTemplateRepository, times(1)).delete(template2);
+  }
 
-    @Test
-    public void testDeleteTemplateByName() {
-        OpTemplate template2 = initTestValues.createOpTemplate();
-        when(opTemplateRepository.findByName(template.getName())).thenReturn(template2);
-        opTemplateService.deleteTemplateByName(template.getName());
-        verify(opTemplateRepository, times(1)).delete(template2);
-    }
+  @Test
+  public void testDeleteTemplateByName() {
+    OpTemplate template2 = initTestValues.createOpTemplate();
+    when(opTemplateRepository.findByName(template.getName())).thenReturn(template2);
+    opTemplateService.deleteTemplateByName(template.getName());
+    verify(opTemplateRepository, times(1)).delete(template2);
+  }
 
-    @Test
-    public void testGetTemplateByID() {
-        when(opTemplateRepository.fetchById(template.getId())).thenReturn(template);
-        when(opTemplateMapper.mapToDTO(template)).thenReturn(templateDTO);
-        OpTemplateDTO foundTemplate = opTemplateService.getTemplateByID(template.getId());
-        assertEquals(foundTemplate, templateDTO);
-    }
+  @Test
+  public void testGetTemplateByID() {
+    when(opTemplateRepository.fetchById(template.getId())).thenReturn(template);
+    when(opTemplateMapper.mapToDTO(template)).thenReturn(templateDTO);
+    OpTemplateDTO foundTemplate = opTemplateService.getTemplateByID(template.getId());
+    assertEquals(foundTemplate, templateDTO);
+  }
 
-    @Test
-    public void testGetTemplateByName() {
-        when(opTemplateRepository.findByName(template.getName())).thenReturn(template);
-        when(opTemplateMapper.mapToDTO(template)).thenReturn(templateDTO);
-        OpTemplateDTO foundTemplate = opTemplateService.getTemplateByName(template.getName());
-        assertEquals(foundTemplate, templateDTO);
-    }
+  @Test
+  public void testGetTemplateByName() {
+    when(opTemplateRepository.findByName(template.getName())).thenReturn(template);
+    when(opTemplateMapper.mapToDTO(template)).thenReturn(templateDTO);
+    OpTemplateDTO foundTemplate = opTemplateService.getTemplateByName(template.getName());
+    assertEquals(foundTemplate, templateDTO);
+  }
 
-    @Test
-    public void testAddOperationHavingOperation() {
-        when(opTemplateHasOperationRepository.findByTemplateIdAndOperationName(template.getId(),
+  @Test
+  public void testAddOperationHavingOperation() {
+    when(opTemplateHasOperationRepository.findByTemplateIdAndOperationName(template.getId(),
+        operation.getName())).thenReturn(opTemplateHasOperation);
+    opTemplateService.addOperation(template.getId(), operation.getName(), true);
+    verify(opTemplateHasOperationRepository, times(0)).save(opTemplateHasOperation);
+    assertTrue(opTemplateHasOperation.isDeny());
+  }
+
+
+  //Tested method creates new Object...
+  @Test
+  public void testAddOperationNotHavingOperation() {
+    when(opTemplateHasOperationRepository
+        .findByTemplateIdAndOperationName(template.getId(), operation.getName())).thenReturn(null);
+    when(operationRepository.findByName(operation.getName())).thenReturn(operation);
+    when(opTemplateRepository.fetchById(template.getId())).thenReturn(template);
+    opTemplateService.addOperation(template.getId(), operation.getName(), true);
+
+    verify(opTemplateHasOperationRepository, times(1)).save(any());
+  }
+
+  @Test
+  public void testAddOperationWithResourceHavingOperation() {
+
+    when(opTemplateHasOperationRepository
+        .findByTemplateIdAndResourceIdAndOperationName(template.getId(), resource.getId(),
             operation.getName())).thenReturn(opTemplateHasOperation);
-        opTemplateService.addOperation(template.getId(), operation.getName(), true);
-        verify(opTemplateHasOperationRepository, times(0)).save(opTemplateHasOperation);
-        assertTrue(opTemplateHasOperation.isDeny());
-    }
+    opTemplateService.addOperation(template.getId(), operation.getName(), resource.getId(), true);
+    verify(opTemplateHasOperationRepository, times(0)).save(opTemplateHasOperation);
+    assertTrue(opTemplateHasOperation.isDeny());
+  }
 
 
-    //Tested method creates new Object...
-    @Test
-    public void testAddOperationNotHavingOperation() {
-        when(opTemplateHasOperationRepository.findByTemplateIdAndOperationName(template.getId(), operation.getName())).thenReturn(null);
-        when(operationRepository.findByName(operation.getName())).thenReturn(operation);
-        when(opTemplateRepository.fetchById(template.getId())).thenReturn(template);
-        opTemplateService.addOperation(template.getId(), operation.getName(), true);
-
-        verify(opTemplateHasOperationRepository, times(1)).save(any());
-    }
-
-    @Test
-    public void testAddOperationWithResourceHavingOperation() {
-
-        when(opTemplateHasOperationRepository.findByTemplateIdAndResourceIdAndOperationName(template.getId(), resource.getId(),
-            operation.getName())).thenReturn(opTemplateHasOperation);
-        opTemplateService.addOperation(template.getId(), operation.getName(), resource.getId(), true);
-        verify(opTemplateHasOperationRepository, times(0)).save(opTemplateHasOperation);
-        assertTrue(opTemplateHasOperation.isDeny());
-    }
-
-
-    //Tested method creates new Object...
-    @Test
-    public void testAddOperationWithResourceNotHavingOperation() {
-        when(opTemplateHasOperationRepository.findByTemplateIdAndResourceIdAndOperationName(template.getId(), resource.getId(),
+  //Tested method creates new Object...
+  @Test
+  public void testAddOperationWithResourceNotHavingOperation() {
+    when(opTemplateHasOperationRepository
+        .findByTemplateIdAndResourceIdAndOperationName(template.getId(), resource.getId(),
             operation.getName())).thenReturn(null);
-        when(operationRepository.findByName(operation.getName())).thenReturn(operation);
-        when(opTemplateRepository.fetchById(template.getId())).thenReturn(template);
-        when(resourceRepository.fetchById(resource.getId())).thenReturn(resource);
+    when(operationRepository.findByName(operation.getName())).thenReturn(operation);
+    when(opTemplateRepository.fetchById(template.getId())).thenReturn(template);
+    when(resourceRepository.fetchById(resource.getId())).thenReturn(resource);
 
-        opTemplateService.addOperation(template.getId(), operation.getName(), resource.getId(), true);
-        verify(opTemplateHasOperationRepository, times(1)).save(any());
-    }
+    opTemplateService.addOperation(template.getId(), operation.getName(), resource.getId(), true);
+    verify(opTemplateHasOperationRepository, times(1)).save(any());
+  }
 
-    @Test
-    public void testRemoveOperation() {
-        OpTemplateHasOperation opTemplateHasOperation2 = new OpTemplateHasOperation();
-        when(opTemplateHasOperationRepository.findByTemplateIdAndOperationName(template.getId(),
+  @Test
+  public void testRemoveOperation() {
+    OpTemplateHasOperation opTemplateHasOperation2 = new OpTemplateHasOperation();
+    when(opTemplateHasOperationRepository.findByTemplateIdAndOperationName(template.getId(),
+        operation.getName())).thenReturn(opTemplateHasOperation2);
+
+    opTemplateService.removeOperation(template.getId(), operation.getName());
+
+    verify(opTemplateHasOperationRepository, times(1)).delete(opTemplateHasOperation2);
+  }
+
+  @Test
+  public void testRemoveOperationWithResource() {
+    OpTemplateHasOperation opTemplateHasOperation2 = new OpTemplateHasOperation();
+    when(opTemplateHasOperationRepository
+        .findByTemplateIdAndResourceIdAndOperationName(template.getId(), resource.getId(),
             operation.getName())).thenReturn(opTemplateHasOperation2);
 
-        opTemplateService.removeOperation(template.getId(), operation.getName());
+    opTemplateService.removeOperation(template.getId(), resource.getId(), operation.getName());
+    verify(opTemplateHasOperationRepository, times(1)).delete(opTemplateHasOperation2);
+  }
 
-        verify(opTemplateHasOperationRepository, times(1)).delete(opTemplateHasOperation2);
-    }
+  @Test
+  public void testGetOperationAccess() {
+    opTemplateHasOperation.setDeny(true);
+    when(opTemplateHasOperationRepository.findByTemplateIdAndOperationName(template.getId(),
+        operation.getName())).thenReturn(opTemplateHasOperation);
+    Boolean operationAccess = opTemplateService
+        .getOperationAccess(template.getId(), operation.getName());
+    assertEquals(operationAccess, opTemplateHasOperation.isDeny());
+  }
 
-    @Test
-    public void testRemoveOperationWithResource() {
-        OpTemplateHasOperation opTemplateHasOperation2 = new OpTemplateHasOperation();
-        when(opTemplateHasOperationRepository.findByTemplateIdAndResourceIdAndOperationName(template.getId(), resource.getId(),
-            operation.getName())).thenReturn(opTemplateHasOperation2);
-
-        opTemplateService.removeOperation(template.getId(), resource.getId(), operation.getName());
-        verify(opTemplateHasOperationRepository, times(1)).delete(opTemplateHasOperation2);
-    }
-
-    @Test
-    public void testGetOperationAccess() {
-        opTemplateHasOperation.setDeny(true);
-        when(opTemplateHasOperationRepository.findByTemplateIdAndOperationName(template.getId(),
-            operation.getName())).thenReturn(opTemplateHasOperation);
-        Boolean operationAccess = opTemplateService.getOperationAccess(template.getId(), operation.getName());
-        assertEquals(operationAccess, opTemplateHasOperation.isDeny());
-    }
-
-    @Test
-    public void testGetOperationAccessWithResource() {
-        opTemplateHasOperation.setDeny(true);
-        when(opTemplateHasOperationRepository.findByTemplateIdAndResourceIdAndOperationName(template.getId(), operation.getName(),
+  @Test
+  public void testGetOperationAccessWithResource() {
+    opTemplateHasOperation.setDeny(true);
+    when(opTemplateHasOperationRepository
+        .findByTemplateIdAndResourceIdAndOperationName(template.getId(), operation.getName(),
             resource.getId())).thenReturn(opTemplateHasOperation);
-        Boolean operationAccess = opTemplateService.getOperationAccess(template.getId(), resource.getId(), operation.getName());
-        assertEquals(operationAccess, opTemplateHasOperation.isDeny());
-    }
+    Boolean operationAccess = opTemplateService
+        .getOperationAccess(template.getId(), resource.getId(), operation.getName());
+    assertEquals(operationAccess, opTemplateHasOperation.isDeny());
+  }
 
-    @Test
-    public void testUpdateTemplate() {
-        templateDTO.setDescription("Updated description");
-        templateDTO.setName("Updated name");
-        when(opTemplateRepository.fetchById(templateDTO.getId())).thenReturn(template);
-        boolean updated = opTemplateService.updateTemplate(templateDTO);
-        assertEquals(templateDTO.getDescription(), template.getDescription());
-        assertEquals(templateDTO.getName(), template.getName());
-        assertTrue(updated);
-    }
+  @Test
+  public void testUpdateTemplate() {
+    templateDTO.setDescription("Updated description");
+    templateDTO.setName("Updated name");
+    when(opTemplateRepository.fetchById(templateDTO.getId())).thenReturn(template);
+    boolean updated = opTemplateService.updateTemplate(templateDTO);
+    assertEquals(templateDTO.getDescription(), template.getDescription());
+    assertEquals(templateDTO.getName(), template.getName());
+    assertTrue(updated);
+  }
 }

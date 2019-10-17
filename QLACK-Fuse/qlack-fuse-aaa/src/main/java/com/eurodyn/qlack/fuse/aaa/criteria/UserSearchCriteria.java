@@ -1,9 +1,7 @@
 package com.eurodyn.qlack.fuse.aaa.criteria;
 
-import com.eurodyn.qlack.common.search.PagingParams;
 import com.eurodyn.qlack.fuse.aaa.criteria.UserSearchCriteria.UserAttributeCriteria.Type;
 import com.eurodyn.qlack.fuse.aaa.dto.UserAttributeDTO;
-
 import java.util.Arrays;
 import java.util.Collection;
 import lombok.Getter;
@@ -11,8 +9,7 @@ import lombok.Setter;
 import org.springframework.data.domain.Pageable;
 
 /**
- * A UserSearchCriteria class that is used to specify the criteria to
- * search for a User
+ * A UserSearchCriteria class that is used to specify the criteria to search for a User
  *
  * @author European Dynamics SA
  */
@@ -37,7 +34,6 @@ public class UserSearchCriteria {
   public static class UserSearchCriteriaBuilder {
 
     private UserSearchCriteria criteria;
-    private PagingParams paging;
 
     private UserSearchCriteriaBuilder() {
       criteria = new UserSearchCriteria();
@@ -76,11 +72,6 @@ public class UserSearchCriteria {
     }
 
     public UserSearchCriteria build() {
-      // Default sorting if none was specified
-//      if ((criteria.getSortColumn() == null) && (criteria.getSortAttribute() == null)) {
-//        criteria.setSortColumn("username");
-//      }
-//      criteria.setPaging(paging);
       return criteria;
     }
 
@@ -88,7 +79,6 @@ public class UserSearchCriteria {
      * Specify a collection of IDs in which the IDs of the retrieved users should be contained.
      *
      * @param ids the ids of the users
-     *
      * @return UserSearchCriteriaBuilder
      */
     public UserSearchCriteriaBuilder withIdIn(Collection<String> ids) {
@@ -100,7 +90,6 @@ public class UserSearchCriteria {
      * Specify a collection of IDs in which the IDs of the retrieved users should not be contained.
      *
      * @param ids the ids of the users
-     *
      * @return UserSearchCriteriaBuilder
      */
     public UserSearchCriteriaBuilder withIdNotIn(Collection<String> ids) {
@@ -113,7 +102,6 @@ public class UserSearchCriteria {
      * contained.
      *
      * @param ids the ids of the user groups
-     *
      * @return UserSearchCriteriaBuilder
      */
     public UserSearchCriteriaBuilder withGroupIdIn(Collection<String> ids) {
@@ -126,7 +114,6 @@ public class UserSearchCriteria {
      * contained.
      *
      * @param ids the ids of the user groups
-     *
      * @return UserSearchCriteriaBuilder
      */
     public UserSearchCriteriaBuilder withGroupIdNotIn(Collection<String> ids) {
@@ -139,7 +126,6 @@ public class UserSearchCriteria {
      * contained.
      *
      * @param statuses The list of statuses.
-     *
      * @return UserSearchCriteriaBuilder
      */
     public UserSearchCriteriaBuilder withStatusIn(Collection<Byte> statuses) {
@@ -152,7 +138,6 @@ public class UserSearchCriteria {
      * contained.
      *
      * @param statuses The list of statuses.
-     *
      * @return UserSearchCriteriaBuilder
      */
     public UserSearchCriteriaBuilder withStatusNotIn(Collection<Byte> statuses) {
@@ -164,7 +149,6 @@ public class UserSearchCriteria {
      * Spacify a username for which to check
      *
      * @param username the username of the user
-     *
      * @return UserSearchCriteriaBuilder
      */
     public UserSearchCriteriaBuilder withUsernameLike(String username) {
@@ -179,7 +163,6 @@ public class UserSearchCriteria {
      * att2, att3), or (att4, att5), or(att6, att7)))
      *
      * @param attCriteria attributes
-     *
      * @return UserSearchCriteriaBuilder
      */
     public UserSearchCriteriaBuilder withAttributes(UserAttributeCriteria attCriteria) {

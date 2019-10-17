@@ -13,7 +13,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ResourceOperation {
-    String operation();
-    String resourceIdField() default "";
-    String resourceIdParameter() default "";
+
+  String operation();
+
+  String resourceIdField() default "";
+
+  String resourceIdParameter() default "";
 }

@@ -17,6 +17,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 /**
  * The persistent class for the aaa_user database table.
+ *
  * @author European Dynamics SA
  */
 @Entity
@@ -64,25 +65,35 @@ public class User extends AAAModel {
    */
   private boolean external = false;
 
-  /**bi-directional many-to-one association to UserHasOperation **/
+  /**
+   * bi-directional many-to-one association to UserHasOperation
+   **/
   @OneToMany(mappedBy = "user")
   @OnDelete(action = OnDeleteAction.CASCADE)
   private List<UserHasOperation> userHasOperations;
 
-  /**bi-directional many-to-one association to Session **/
+  /**
+   * bi-directional many-to-one association to Session
+   **/
   @OneToMany(mappedBy = "user")
   @OnDelete(action = OnDeleteAction.CASCADE)
   private List<Session> sessions;
 
-  /** bi-directional many-to-many association to UserGroup **/
+  /**
+   * bi-directional many-to-many association to UserGroup
+   **/
   @ManyToMany(mappedBy = "users")
   private List<UserGroup> userGroups;
 
-  /**bi-directional many-to-one association to UserAttribute **/
+  /**
+   * bi-directional many-to-one association to UserAttribute
+   **/
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
   private List<UserAttribute> userAttributes;
 
-  /** bi-directional many-to-one association to VerificationToken. **/
+  /**
+   * bi-directional many-to-one association to VerificationToken.
+   **/
   @OneToMany(mappedBy = "user")
   @OnDelete(action = OnDeleteAction.CASCADE)
   private List<VerificationToken> verificationTokens;
@@ -91,7 +102,9 @@ public class User extends AAAModel {
     setId(UUID.randomUUID().toString());
   }
 
-  /** a method that adds a {@link UserHasOperation} object
+  /**
+   * a method that adds a {@link UserHasOperation} object
+   *
    * @param userHasOperations a {@link UserHasOperation} object
    * @return a userHasOperation object
    */
@@ -105,7 +118,9 @@ public class User extends AAAModel {
     return userHasOperations;
   }
 
-  /** A method that removes a {@link UserHasOperation} object
+  /**
+   * A method that removes a {@link UserHasOperation} object
+   *
    * @param userHasOperations a {@link UserHasOperation} object
    * @return a {@link UserHasOperation} object
    */
@@ -116,7 +131,9 @@ public class User extends AAAModel {
     return userHasOperations;
   }
 
-  /** Adds a session
+  /**
+   * Adds a session
+   *
    * @param session the session object
    * @return the added session
    */
@@ -127,7 +144,9 @@ public class User extends AAAModel {
     return session;
   }
 
-  /** Removes a session
+  /**
+   * Removes a session
+   *
    * @param session the session
    * @return the removed session
    */
@@ -138,7 +157,9 @@ public class User extends AAAModel {
     return session;
   }
 
-  /** Adds a userAttribute
+  /**
+   * Adds a userAttribute
+   *
    * @param userAttribute the userAttribute
    * @return an added userAttribute
    */
@@ -149,7 +170,9 @@ public class User extends AAAModel {
     return userAttribute;
   }
 
-  /** Removes the userAttribute
+  /**
+   * Removes the userAttribute
+   *
    * @param userAttribute the userAttribute object
    * @return the removed userAttribute
    */

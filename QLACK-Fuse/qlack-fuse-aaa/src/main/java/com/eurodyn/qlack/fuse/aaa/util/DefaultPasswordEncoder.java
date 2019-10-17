@@ -1,11 +1,10 @@
 package com.eurodyn.qlack.fuse.aaa.util;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * A default implementation of a {@link PasswordEncoder} based on AAA's legacy MD5 encoder. It is
@@ -22,7 +21,7 @@ public class DefaultPasswordEncoder {
 
   @Bean
   public PasswordEncoder md5PasswordEncoder() {
-    LOGGER.log(Level.CONFIG, "Initialising {0} as password encoder.", this.getClass().toString());
+    LOGGER.log(Level.CONFIG, "Initialising {0} as password encoder.", this.getClass());
     return new Md5PasswordEncoder();
   }
 }

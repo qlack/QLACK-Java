@@ -3,10 +3,9 @@ package com.eurodyn.qlack.fuse.aaa.service;
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.fuse.aaa.dto.SessionAttributeDTO;
 import com.eurodyn.qlack.fuse.aaa.dto.SessionDTO;
-import com.eurodyn.qlack.fuse.aaa.mappers.SessionAttributeMapper;
-import com.eurodyn.qlack.fuse.aaa.mappers.SessionMapper;
+import com.eurodyn.qlack.fuse.aaa.mapper.SessionAttributeMapper;
+import com.eurodyn.qlack.fuse.aaa.mapper.SessionMapper;
 import com.eurodyn.qlack.fuse.aaa.model.QSession;
-import com.eurodyn.qlack.fuse.aaa.model.QSessionAttribute;
 import com.eurodyn.qlack.fuse.aaa.model.Session;
 import com.eurodyn.qlack.fuse.aaa.model.SessionAttribute;
 import com.eurodyn.qlack.fuse.aaa.repository.SessionAttributeRepository;
@@ -50,7 +49,6 @@ public class AccountingService {
 
   // QuertyDSL helpers.
   private static QSession qSession = QSession.session;
-  private static QSessionAttribute qSessionAttribute = QSessionAttribute.sessionAttribute;
 
   // Repositories
   private final SessionRepository sessionRepository;
@@ -74,6 +72,7 @@ public class AccountingService {
 
   /**
    * Creation method for Session
+   *
    * @param sessionDTO the session DTO
    * @return the session id
    */
@@ -94,6 +93,7 @@ public class AccountingService {
 
   /**
    * A termination method for Session
+   *
    * @param sessionID the session id
    */
   public void terminateSession(String sessionID) {
@@ -110,6 +110,7 @@ public class AccountingService {
 
   /**
    * Terminates all sessions of the given user.
+   *
    * @param userId The user id to terminate the sessions of.
    */
   public void terminateSessionByUserId(String userId) {
@@ -122,12 +123,13 @@ public class AccountingService {
 
   /**
    * Terminate the session by its application session id
+   *
    * @param applicationSessionId the application session id
    */
   public void terminateSessionByApplicationSessionId(String applicationSessionId) {
     Predicate predicate = qSession.applicationSessionId.eq(applicationSessionId);
     final Session session = sessionRepository.findOne(predicate)
-        .orElseThrow(()-> new QDoesNotExistException(MessageFormat
+        .orElseThrow(() -> new QDoesNotExistException(MessageFormat
             .format("Session with application session Id {0} could not be found to be terminated.",
                 applicationSessionId)));
 
@@ -136,6 +138,7 @@ public class AccountingService {
 
   /**
    * Retrieves the session
+   *
    * @param sessionID the session id
    * @return the session
    */
@@ -146,6 +149,7 @@ public class AccountingService {
 
   /**
    * Retrieves the duration of Session
+   *
    * @param sessionID the session id
    * @return the duration of session
    */
@@ -160,6 +164,7 @@ public class AccountingService {
 
   /**
    * Retrieves the last login of the user in the app
+   *
    * @param userID the userId
    * @return when the last login of the user was
    */
@@ -176,6 +181,7 @@ public class AccountingService {
 
   /**
    * Retrieves tha last logout of the user in the app
+   *
    * @param userID the userId
    * @return the last logout of the user
    */
@@ -192,6 +198,7 @@ public class AccountingService {
 
   /**
    * Retrieves tha last login duration
+   *
    * @param userID the userId
    * @return the last login duration
    */
@@ -209,6 +216,7 @@ public class AccountingService {
 
   /**
    * Retrieves the number of times the user has logged in
+   *
    * @param userID the userId
    * @return the number of times the user has logged in the app
    */
@@ -220,6 +228,7 @@ public class AccountingService {
 
   /**
    * Retrieves online users
+   *
    * @param userIDs the userIds
    * @return the filtered online users
    */
@@ -234,6 +243,7 @@ public class AccountingService {
 
   /**
    * Update the session attribute
+   *
    * @param attribute the session attribute
    * @param createIfMissing checking value create if missing
    */
@@ -246,6 +256,7 @@ public class AccountingService {
 
   /**
    * Update a collections of {@link SessionAttributeDTO} objects
+   *
    * @param attributes a collection of {@link SessionAttributeDTO} objects
    * @param createIfMissing checking value to create if missing
    */
@@ -259,13 +270,17 @@ public class AccountingService {
         attribute.setName(attributeDTO.getName());
         attribute.setSession(findSession(attributeDTO.getSessionId()));
       }
-      attribute.setValue(attributeDTO.getValue());
-      sessionAttributeRepository.save(attribute);
+
+      if (attribute != null) {
+        attribute.setValue(attributeDTO.getValue());
+        sessionAttributeRepository.save(attribute);
+      }
     }
   }
 
   /**
    * Deletes a session attribute
+   *
    * @param sessionID the session Id
    * @param attributeName the attributeName
    */
@@ -277,6 +292,7 @@ public class AccountingService {
 
   /**
    * Retrieves @{@link SessionAttributeDTO} object
+   *
    * @param sessionID the session id
    * @param attributeName the attributeName
    * @return a @{@link SessionAttributeDTO} object
@@ -289,6 +305,7 @@ public class AccountingService {
 
   /**
    * Retrieves the session ids for attribute
+   *
    * @param sessionIDs the sessionIDs
    * @param attributeName the attributeName
    * @param attributeValue the attribute value
@@ -313,6 +330,7 @@ public class AccountingService {
 
   /**
    * Check if attribute value is unique
+   *
    * @param userId the userId
    * @param attributeName the attributeName
    * @param attributeValue the attributeValue
@@ -329,6 +347,7 @@ public class AccountingService {
 
   /**
    * Deletes the session before given date
+   *
    * @param date the date
    */
   public void deleteSessionsBeforeDate(Date date) {
@@ -337,6 +356,7 @@ public class AccountingService {
 
   /**
    * Terminates the session before given date
+   *
    * @param date the date
    */
   public void terminateSessionsBeforeDate(Date date) {
@@ -347,6 +367,7 @@ public class AccountingService {
 
   /**
    * Retrieves sessions
+   *
    * @param userId the userId
    * @param pageable the pageable
    * @return the sessions
@@ -357,10 +378,11 @@ public class AccountingService {
 
   /**
    * Finds {@link Session} object
+   *
    * @param sessionId the sessionId
    * @return the session
    */
-  private Session findSession(String sessionId){
+  private Session findSession(String sessionId) {
 
     return sessionRepository.fetchById(sessionId);
   }

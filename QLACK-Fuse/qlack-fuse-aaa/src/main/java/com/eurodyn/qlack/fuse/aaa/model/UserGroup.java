@@ -19,6 +19,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 /**
  * The persistent class for the aaa_user_group database table.
+ *
  * @author European Dynamics SA
  */
 @Entity
@@ -64,12 +65,16 @@ public class UserGroup extends AAAModel {
   @OneToMany(mappedBy = "parent")
   private List<UserGroup> children;
 
-  /**bi-directional many-to-one association to UserGroupHasOperation **/
+  /**
+   * bi-directional many-to-one association to UserGroupHasOperation
+   **/
   @OneToMany(mappedBy = "userGroup")
   @OnDelete(action = OnDeleteAction.CASCADE)
   private List<UserGroupHasOperation> userGroupHasOperations;
 
-  /**bi-directional many-to-many association to UserGroup **/
+  /**
+   * bi-directional many-to-many association to UserGroup
+   **/
   @ManyToMany
   @JoinTable(
       name = "aaa_user_has_group",
@@ -85,7 +90,9 @@ public class UserGroup extends AAAModel {
     setId(UUID.randomUUID().toString());
   }
 
-  /** Adds a {@link UserGroupHasOperation} object
+  /**
+   * Adds a {@link UserGroupHasOperation} object
+   *
    * @param userGroupHasOperation a @{@link UserGroupHasOperation} object
    * @return the added {@link UserGroupHasOperation} object
    */
@@ -99,11 +106,14 @@ public class UserGroup extends AAAModel {
     return userGroupHasOperation;
   }
 
-  /** Removes a {@link UserGroupHasOperation} object
+  /**
+   * Removes a {@link UserGroupHasOperation} object
+   *
    * @param userGroupHasOperation the userGroupHasOperation object
    * @return the removed {@link UserGroupHasOperation} object
    */
-  public UserGroupHasOperation removeGroupHasOperation(UserGroupHasOperation userGroupHasOperation) {
+  public UserGroupHasOperation removeGroupHasOperation(
+      UserGroupHasOperation userGroupHasOperation) {
     this.getUserGroupHasOperations().remove(userGroupHasOperation);
     userGroupHasOperation.setUserGroup(null);
 

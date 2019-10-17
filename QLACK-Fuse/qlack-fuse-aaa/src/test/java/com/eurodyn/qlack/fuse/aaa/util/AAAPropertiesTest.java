@@ -1,12 +1,11 @@
 package com.eurodyn.qlack.fuse.aaa.util;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+
+import org.junit.Before;
+import org.junit.Test;
 
 public class AAAPropertiesTest {
 
@@ -16,7 +15,7 @@ public class AAAPropertiesTest {
   private String ldapTest;
 
   @Before
-  public void init(){
+  public void init() {
     aaaProperties = new AAAProperties();
     isTrue = true;
     isFalse = false;
@@ -24,7 +23,7 @@ public class AAAPropertiesTest {
   }
 
   @Test
-  public void isPermissionPrioritisePositiveTest(){
+  public void isPermissionPrioritisePositiveTest() {
     aaaProperties.setPermissionPrioritisePositive(isTrue);
     assertEquals(isTrue, aaaProperties.isPermissionPrioritisePositive());
 
@@ -33,7 +32,7 @@ public class AAAPropertiesTest {
   }
 
   @Test
-  public void isLdapEnabledTest(){
+  public void isLdapEnabledTest() {
     aaaProperties.setLdapEnabled(isTrue);
     assertEquals(isTrue, aaaProperties.isLdapEnabled());
 
@@ -42,7 +41,7 @@ public class AAAPropertiesTest {
   }
 
   @Test
-  public void getLdapUrlTest(){
+  public void getLdapUrlTest() {
     aaaProperties.setLdapUrl(null);
     assertNull(aaaProperties.getLdapUrl());
 
@@ -51,7 +50,7 @@ public class AAAPropertiesTest {
   }
 
   @Test
-  public void setLdapUrlTest(){
+  public void setLdapUrlTest() {
     aaaProperties.setLdapBasedn(null);
     assertNull(aaaProperties.getLdapBasedn());
 
@@ -60,7 +59,7 @@ public class AAAPropertiesTest {
   }
 
   @Test
-  public void getLdapMappingUidTest(){
+  public void getLdapMappingUidTest() {
     aaaProperties.setLdapMappingUid(null);
     assertNull(aaaProperties.getLdapMappingUid());
 
@@ -69,7 +68,7 @@ public class AAAPropertiesTest {
   }
 
   @Test
-  public void getLdapMappingGidTest(){
+  public void getLdapMappingGidTest() {
     aaaProperties.setLdapMappingGid(null);
     assertNull(aaaProperties.getLdapMappingGid());
 
@@ -78,7 +77,7 @@ public class AAAPropertiesTest {
   }
 
   @Test
-  public void getLdapMappingAttrsTest(){
+  public void getLdapMappingAttrsTest() {
     aaaProperties.setLdapMappingAttrs(null);
     assertNull(aaaProperties.getLdapMappingAttrs());
 

@@ -1,32 +1,5 @@
 package com.eurodyn.qlack.fuse.aaa.service;
 
-import com.eurodyn.qlack.fuse.aaa.dto.SessionAttributeDTO;
-import com.eurodyn.qlack.fuse.aaa.dto.SessionDTO;
-import com.eurodyn.qlack.fuse.aaa.mappers.SessionAttributeMapper;
-import com.eurodyn.qlack.fuse.aaa.mappers.SessionMapper;
-import com.eurodyn.qlack.fuse.aaa.model.QSession;
-import com.eurodyn.qlack.fuse.aaa.model.Session;
-import com.eurodyn.qlack.fuse.aaa.model.SessionAttribute;
-import com.eurodyn.qlack.fuse.aaa.repository.SessionAttributeRepository;
-import com.eurodyn.qlack.fuse.aaa.repository.SessionRepository;
-import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
-import com.querydsl.core.types.Predicate;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
@@ -37,32 +10,68 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.eurodyn.qlack.fuse.aaa.dto.SessionAttributeDTO;
+import com.eurodyn.qlack.fuse.aaa.dto.SessionDTO;
+import com.eurodyn.qlack.fuse.aaa.mapper.SessionAttributeMapper;
+import com.eurodyn.qlack.fuse.aaa.mapper.SessionMapper;
+import com.eurodyn.qlack.fuse.aaa.model.QSession;
+import com.eurodyn.qlack.fuse.aaa.model.Session;
+import com.eurodyn.qlack.fuse.aaa.model.SessionAttribute;
+import com.eurodyn.qlack.fuse.aaa.repository.SessionAttributeRepository;
+import com.eurodyn.qlack.fuse.aaa.repository.SessionRepository;
+import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
+import com.querydsl.core.types.Predicate;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
 @RunWith(MockitoJUnitRunner.class)
 public class AccountingServiceTest {
 
   @InjectMocks
   AccountingService accountingService;
 
-  @Mock SessionDTO sessionDTO;
-  @Mock SessionMapper sessionMapper;
-  @Mock Session session;
-  @Mock SessionRepository sessionRepository;
-  @Mock SessionAttribute sessionAttribute;
-  @Mock SessionAttributeDTO sessionAttributeDTO;
-  @Mock SessionAttributeRepository sessionAttributeRepository;
-  @Mock Page<Session> sessionPage;
-  @Mock SessionAttributeMapper sessionAttributeMapper;
-  @Mock UserRepository userRepository;
+  @Mock
+  SessionDTO sessionDTO;
+  @Mock
+  SessionMapper sessionMapper;
+  @Mock
+  Session session;
+  @Mock
+  SessionRepository sessionRepository;
+  @Mock
+  SessionAttribute sessionAttribute;
+  @Mock
+  SessionAttributeDTO sessionAttributeDTO;
+  @Mock
+  SessionAttributeRepository sessionAttributeRepository;
+  @Mock
+  Page<Session> sessionPage;
+  @Mock
+  SessionAttributeMapper sessionAttributeMapper;
+  @Mock
+  UserRepository userRepository;
   private List<SessionAttribute> listSessionAttributes;
   private List<Session> listSession;
   private QSession qSession;
   private Collection<String> stringCollection;
   private Calendar calendar = Calendar.getInstance();
-  private Date date =  calendar.getTime();
+  private Date date = calendar.getTime();
 
 
   @Test
-  public void testCreateSession(){
+  public void testCreateSession() {
     when(sessionMapper.mapToEntity(sessionDTO)).thenReturn(session);
     when(session.getId()).thenReturn("id");
     when(userRepository.fetchById(any())).thenReturn(any());
@@ -81,21 +90,21 @@ public class AccountingServiceTest {
   }
 
   @Test
-  public void testTerminateSession(){
+  public void testTerminateSession() {
     when(sessionRepository.findById(any())).thenReturn(java.util.Optional.ofNullable(session));
     accountingService.terminateSession("id");
     verify(sessionRepository, times(1)).findById(any());
   }
 
   @Test
-  public void testTerminateSessionByUserId(){
+  public void testTerminateSessionByUserId() {
     when(sessionRepository.findByUserId(any(), any())).thenReturn(sessionPage);
     accountingService.terminateSessionByUserId("id");
     verify(sessionRepository, times(1)).findByUserId(any(), any());
   }
 
   @Test
-  public void getTerminateSessionByApplicationSessionId(){
+  public void getTerminateSessionByApplicationSessionId() {
     qSession = new QSession("session");
     when(sessionRepository.findOne(qSession.applicationSessionId.eq("id"))).thenReturn(
         java.util.Optional.ofNullable(session));
@@ -104,7 +113,7 @@ public class AccountingServiceTest {
   }
 
   @Test
-  public void testGetSessionDurationNull(){
+  public void testGetSessionDurationNull() {
     when(sessionRepository.fetchById(any())).thenReturn(session);
     when(session.getTerminatedOn()).thenReturn(null);
     Long result = accountingService.getSessionDuration("id");
@@ -112,7 +121,7 @@ public class AccountingServiceTest {
   }
 
   @Test
-  public void testGetSessionDurationNotNull(){
+  public void testGetSessionDurationNotNull() {
     when(sessionRepository.fetchById(any())).thenReturn(session);
     when(session.getTerminatedOn()).thenReturn(2L);
     Long result = accountingService.getSessionDuration("id");
@@ -120,7 +129,7 @@ public class AccountingServiceTest {
   }
 
   @Test
-  public void testGetSession(){
+  public void testGetSession() {
     when(sessionRepository.fetchById(any())).thenReturn(session);
     when(sessionMapper.mapToDTO(session)).thenReturn(sessionDTO);
     SessionDTO result = accountingService.getSession("id");
@@ -128,13 +137,13 @@ public class AccountingServiceTest {
   }
 
   @Test
-  public void testGetUserLastLogInEmptyList(){
+  public void testGetUserLastLogInEmptyList() {
     assertNull(accountingService.getUserLastLogIn("id"));
     verify(sessionRepository, times(1)).findAll((Predicate) any(), (Sort) any());
   }
 
   @Test
-  public void testGetUserLastLogIn(){
+  public void testGetUserLastLogIn() {
     queryMock();
     when(sessionRepository.findAll(qSession.user.id.eq("id"),
         Sort.by("createdOn").descending())).thenReturn(listSession);
@@ -144,13 +153,13 @@ public class AccountingServiceTest {
   }
 
   @Test
-  public void testGetUserLastLogOutEmptyList(){
+  public void testGetUserLastLogOutEmptyList() {
     assertNull(accountingService.getUserLastLogOut("id"));
     verify(sessionRepository, times(1)).findAll((Predicate) any(), (Sort) any());
   }
 
   @Test
-  public void testGetUserLastLogOut(){
+  public void testGetUserLastLogOut() {
     queryMock();
     when(sessionRepository.findAll(qSession.user.id.eq("id"),
         Sort.by("terminatedOn").descending())).thenReturn(listSession);
@@ -160,29 +169,30 @@ public class AccountingServiceTest {
   }
 
   @Test
-  public void testGetUserLastLogInDurationEmptyList(){
+  public void testGetUserLastLogInDurationEmptyList() {
     accountingService.getUserLastLogInDuration("id");
     verify(sessionRepository, times(1)).findAll((Predicate) any(), (Sort) any());
   }
 
   @Test
-  public void testGetUserLastLogInDuration(){
+  public void testGetUserLastLogInDuration() {
     queryMock();
     when(sessionRepository.findAll(qSession.user.id.eq("id"),
         Sort.by("terminatedOn").descending())).thenReturn(listSession);
-    assertEquals(session.getTerminatedOn() - session.getCreatedOn(), accountingService.getUserLastLogInDuration("id").longValue());
+    assertEquals(session.getTerminatedOn() - session.getCreatedOn(),
+        accountingService.getUserLastLogInDuration("id").longValue());
     verify(sessionRepository, times(1)).findAll(qSession.user.id.eq("id"),
         Sort.by("terminatedOn").descending());
   }
 
   @Test
-  public void testGetNoOfTimesUserLoggedIn(){
+  public void testGetNoOfTimesUserLoggedIn() {
     accountingService.getNoOfTimesUserLoggedIn("id");
     verify(sessionRepository, times(1)).findAll((Predicate) any());
   }
 
   @Test
-  public void testFilterOnlineUsers(){
+  public void testFilterOnlineUsers() {
     qSession = new QSession(("session"));
     stringCollection = new ArrayList<>();
     accountingService.filterOnlineUsers(stringCollection);
@@ -190,7 +200,7 @@ public class AccountingServiceTest {
   }
 
   @Test
-  public void testUpdateAttribute(){
+  public void testUpdateAttribute() {
     when(sessionAttributeDTO.getName()).thenReturn("name");
     when(sessionAttributeDTO.getSessionId()).thenReturn("id");
     accountingService.updateAttribute(sessionAttributeDTO, true);
@@ -200,28 +210,28 @@ public class AccountingServiceTest {
   }
 
   @Test
-  public void testDeleteAttribute(){
+  public void testDeleteAttribute() {
     accountingService.deleteAttribute("id", "name");
     verify(sessionAttributeRepository, times(1))
         .delete(sessionAttributeRepository.findBySessionIdAndName("id", "name"));
   }
 
   @Test
-  public void testGetAttribute(){
+  public void testGetAttribute() {
     //when(sessionAttributeMapper.mapToDTO(sessionAttribute)).thenReturn(sessionAttributeDTO);
     accountingService.getAttribute("id", "name");
     verify(sessionAttributeRepository, times(1)).findBySessionIdAndName("id", "name");
   }
 
   @Test
-  public void testGetSessionIDsForAttributeNullId(){
+  public void testGetSessionIDsForAttributeNullId() {
     qSession = new QSession("session");
     accountingService.getSessionIDsForAttribute(stringCollection, "id", "name");
     verify(sessionRepository, times(1)).findAll((Predicate) any());
   }
 
   @Test
-  public void testGetSessionIDsForAttribute(){
+  public void testGetSessionIDsForAttribute() {
     qSession = new QSession("session");
     stringCollection = new ArrayList<>();
     stringCollection.add("id");
@@ -230,26 +240,26 @@ public class AccountingServiceTest {
   }
 
   @Test
-  public void testIsAttributeValueUnique(){
+  public void testIsAttributeValueUnique() {
     accountingService.isAttributeValueUnique("id", "name", "value");
     verify(sessionRepository, times(1)).findAll((Predicate) any());
   }
 
   @Test
-  public void testDeleteSessionsBeforeDate(){
+  public void testDeleteSessionsBeforeDate() {
     accountingService.deleteSessionsBeforeDate(date);
     verify(sessionRepository, times(1)).deleteByCreatedOnBefore(date.getTime());
   }
 
   @Test
-  public void testTerminateSessionsBeforeDate(){
+  public void testTerminateSessionsBeforeDate() {
     accountingService.terminateSessionsBeforeDate(date);
     verify(sessionRepository, times(1))
         .findByCreatedOnBeforeAndTerminatedOnNull(date.getTime());
   }
 
   @Test
-  public void testGetSessions(){
+  public void testGetSessions() {
     accountingService.getSessions("id", Pageable.unpaged());
     verify(sessionRepository, times(1)).findByUserId(any(), any());
   }

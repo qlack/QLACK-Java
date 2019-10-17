@@ -13,6 +13,7 @@ import lombok.Setter;
 
 /**
  * The persistent class for the aaa_resource database table.
+ *
  * @author European Dynamics SA
  */
 @Entity
@@ -45,15 +46,21 @@ public class Resource extends AAAModel {
   @Column(name = "object_id")
   private String objectId;
 
-  /**bi-directional many-to-one association to UserHasOperation **/
+  /**
+   * bi-directional many-to-one association to UserHasOperation
+   **/
   @OneToMany(mappedBy = "resource")
   private List<UserHasOperation> userHasOperations;
 
-  /**bi-directional many-to-one association to UserGroupHasOperation **/
+  /**
+   * bi-directional many-to-one association to UserGroupHasOperation
+   **/
   @OneToMany(mappedBy = "resource")
   private List<UserGroupHasOperation> userGroupHasOperations;
 
-  /**bi-directional many-to-one association to OpTemplateHasOperation **/
+  /**
+   * bi-directional many-to-one association to OpTemplateHasOperation
+   **/
   @OneToMany(mappedBy = "resource")
   private List<OpTemplateHasOperation> opTemplateHasOperations;
 
@@ -61,7 +68,9 @@ public class Resource extends AAAModel {
     setId(UUID.randomUUID().toString());
   }
 
-  /** A method that adds a {@link UserHasOperation} object
+  /**
+   * A method that adds a {@link UserHasOperation} object
+   *
    * @param userHasOperation a {@link UserHasOperation} type Object
    * @return a userHasOperation object
    */
@@ -75,7 +84,9 @@ public class Resource extends AAAModel {
     return userHasOperation;
   }
 
-  /** A method that removes a {@link UserHasOperation} object
+  /**
+   * A method that removes a {@link UserHasOperation} object
+   *
    * @param userHasOperation a userHasOperation object
    * @return a @{@link UserHasOperation} object
    */
@@ -86,7 +97,9 @@ public class Resource extends AAAModel {
     return userHasOperation;
   }
 
-  /** A method that adds a {@link UserGroupHasOperation} object
+  /**
+   * A method that adds a {@link UserGroupHasOperation} object
+   *
    * @param userGroupHasOperation the {@link UserGroupHasOperation} object
    * @return the {@link UserGroupHasOperation} object
    */
@@ -100,18 +113,23 @@ public class Resource extends AAAModel {
     return userGroupHasOperation;
   }
 
-  /** A method that removes a {@link UserGroupHasOperation} object
+  /**
+   * A method that removes a {@link UserGroupHasOperation} object
+   *
    * @param userGroupHasOperation the {@link UserGroupHasOperation} object
    * @return a {@link UserGroupHasOperation} object
    */
-  public UserGroupHasOperation removeGroupHasOperation(UserGroupHasOperation userGroupHasOperation) {
+  public UserGroupHasOperation removeGroupHasOperation(
+      UserGroupHasOperation userGroupHasOperation) {
     this.getUserGroupHasOperations().remove(userGroupHasOperation);
     userGroupHasOperation.setResource(null);
 
     return userGroupHasOperation;
   }
 
-  /** A method that adds a {@link OpTemplateHasOperation} object
+  /**
+   * A method that adds a {@link OpTemplateHasOperation} object
+   *
    * @param opTemplateHasOperation a OpTemplateHasOperation object
    * @return the {@link OpTemplateHasOperation} object
    */
@@ -126,7 +144,9 @@ public class Resource extends AAAModel {
     return opTemplateHasOperation;
   }
 
-  /** A method that removes a {@link OpTemplateHasOperation} object
+  /**
+   * A method that removes a {@link OpTemplateHasOperation} object
+   *
    * @param opTemplateHasOperation a OpTemplateHasOperation object
    * @return a {@link OpTemplateHasOperation} object
    */

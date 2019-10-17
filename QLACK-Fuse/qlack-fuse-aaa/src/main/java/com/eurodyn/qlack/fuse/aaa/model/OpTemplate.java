@@ -12,6 +12,7 @@ import lombok.Setter;
 
 /**
  * The persistent class for the aaa_op_template database table.
+ *
  * @author European Dynamics SA
  */
 @Entity
@@ -38,7 +39,9 @@ public class OpTemplate extends AAAModel {
    */
   private String name;
 
-  /** bi-directional many-to-one association to OpTemplateHasOperation**/
+  /**
+   * bi-directional many-to-one association to OpTemplateHasOperation
+   **/
   @OneToMany(mappedBy = "template")
   private List<OpTemplateHasOperation> opTemplateHasOperations;
 
@@ -46,7 +49,9 @@ public class OpTemplate extends AAAModel {
     setId(UUID.randomUUID().toString());
   }
 
-  /** A method that adds a {@link OpTemplateHasOperation} object
+  /**
+   * A method that adds a {@link OpTemplateHasOperation} object
+   *
    * @param opTemplateHasOperation a {@link OpTemplateHasOperation} object
    * @return a {@link OpTemplateHasOperation} object
    */
@@ -61,7 +66,9 @@ public class OpTemplate extends AAAModel {
     return opTemplateHasOperation;
   }
 
-  /** A method that removes a {@link OpTemplateHasOperation} object
+  /**
+   * A method that removes a {@link OpTemplateHasOperation} object
+   *
    * @param opTemplateHasOperation a {@link OpTemplateHasOperation} object
    * @return a {@link OpTemplateHasOperation} object
    */

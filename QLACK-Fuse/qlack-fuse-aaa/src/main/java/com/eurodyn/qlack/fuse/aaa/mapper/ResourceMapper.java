@@ -1,4 +1,4 @@
-package com.eurodyn.qlack.fuse.aaa.mappers;
+package com.eurodyn.qlack.fuse.aaa.mapper;
 
 import com.eurodyn.qlack.fuse.aaa.dto.ResourceDTO;
 import com.eurodyn.qlack.fuse.aaa.model.Resource;
@@ -7,6 +7,7 @@ import org.mapstruct.ReportingPolicy;
 
 /**
  * A ResourceMapper interface that is used to map the Resource object values
+ *
  * @author European Dynamics SA
  */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)

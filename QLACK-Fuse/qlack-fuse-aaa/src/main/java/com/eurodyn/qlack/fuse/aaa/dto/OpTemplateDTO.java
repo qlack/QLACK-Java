@@ -4,7 +4,8 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
-/**A simple DTO that is used to retrieve and save data of OpTemplate object
+/**
+ * A simple DTO that is used to retrieve and save data of OpTemplate object
  *
  * @author European Dynamics SA
  */

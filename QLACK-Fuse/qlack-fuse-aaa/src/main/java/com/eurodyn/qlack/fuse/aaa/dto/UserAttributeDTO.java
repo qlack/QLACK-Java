@@ -5,8 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * A simple DTO for Attribute that does not contain any business logic. The usage is to
- * retrieve and save the user's data attributes
+ * A simple DTO for Attribute that does not contain any business logic. The usage is to retrieve and
+ * save the user's data attributes
  *
  * @author European Dynamics
  */
