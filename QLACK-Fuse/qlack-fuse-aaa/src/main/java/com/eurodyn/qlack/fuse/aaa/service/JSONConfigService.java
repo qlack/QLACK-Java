@@ -80,6 +80,7 @@ public class JSONConfigService {
     parseConfigTemplateHasOperations(config);
   }
 
+  @SuppressWarnings("squid:S4834")
   private void parseConfigUserGroups(JSONConfig config) {
     // Create userGroups.
     for (JSONConfig.Group g : config.getGroups()) {

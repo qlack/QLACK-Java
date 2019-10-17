@@ -139,6 +139,7 @@ public class ResourceAccessInterceptor {
     return false;
   }
 
+  @SuppressWarnings("squid:S3011")
   private boolean userHasOperationIsFound(Parameter parameter, String resourceId,
       JoinPoint joinPoint, int index,
       List<ResourceOperationDTO> resourceOperations) throws IllegalAccessException {

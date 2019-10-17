@@ -707,7 +707,7 @@ public class OperationServiceTest {
         .thenReturn(userGroupHasOperation);
 
     operationService.getBlockedUsersForOperation(operation.getName(), true);
-    //verify(userRepository, times(2)).fetchById(any());
+    verify(userRepository, times(2)).fetchById(any());
   }
 
   @Test
