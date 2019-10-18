@@ -13,8 +13,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SettingMapperImplTest {
@@ -39,13 +37,13 @@ public class SettingMapperImplTest {
 
     @Before
     public void init(){
-            initTestValues = new InitTestValues();
-            setting = initTestValues.createSetting();
-            settingDTO = initTestValues.createSettingDTO();
-            settingList = initTestValues.createSettings();
-            settingDTOS = initTestValues.createSettingsDTO();
-            groupDTO = initTestValues.createGroupDTO();
-            groupDTOS = initTestValues.createGroupsDTO();
+        initTestValues = new InitTestValues();
+        setting = initTestValues.createSetting();
+        settingDTO = initTestValues.createSettingDTO();
+        settingList = initTestValues.createSettings();
+        settingDTOS = initTestValues.createSettingsDTO();
+        groupDTO = initTestValues.createGroupDTO();
+        groupDTOS = initTestValues.createGroupsDTO();
     }
 
     @Test
