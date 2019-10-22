@@ -1,10 +1,16 @@
 package com.eurodyn.qlack.fuse.aaa.mapper;
 
+import static com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type.Attribute;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import com.eurodyn.qlack.fuse.aaa.InitTestValues;
 import com.eurodyn.qlack.fuse.aaa.dto.UserAttributeDTO;
+import com.eurodyn.qlack.fuse.aaa.model.User;
 import com.eurodyn.qlack.fuse.aaa.model.UserAttribute;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -110,4 +116,52 @@ public class UserAttributesMapperTest {
     userAttributeMapperImpl.mapToExistingEntity(userAttributeDTO, userAttribute);
     assertEquals(userAttributeDTO.getName(), userAttribute.getName());
   }
+
+  @Test
+  public void mapToDTONullTest(){
+   userAttributesDTO = userAttributeMapperImpl.mapToDTO((List<UserAttribute>) null);
+   assertEquals(null,userAttributesDTO);
+  }
+
+  @Test
+  public void mapToEntityNullTest(){
+    userAttribute = userAttributeMapperImpl.mapToEntity((UserAttributeDTO) null);
+    assertEquals(null, userAttribute);
+  }
+
+  @Test
+  public void mapToExistingEntity(){
+    userAttributeDTO.setData(null);
+    userAttributeMapperImpl.mapToExistingEntity(null,userAttribute);
+    assertEquals(null,userAttributeDTO.getData());
+  }
+
+  @Test
+  public void mapUserAttributeToDTONullTest(){
+    userAttributes = userAttributeMapperImpl.mapToEntity((List<UserAttributeDTO>) null);
+    assertEquals(null,userAttributes);
+
+  }
+
+  @Test
+  public void UserAttributeMapToDTOTest(){
+    userAttributeDTO = userAttributeMapperImpl.mapToDTO((UserAttribute) null);
+    assertEquals(null , userAttributeDTO);
+  }
+
+  @Test
+  public void userAttributeUserIdNulTest(){
+      userAttribute.setUser(null);
+      userAttributeDTO = userAttributeMapperImpl.mapToDTO(userAttribute);
+      assertEquals(userAttribute.getUser(), userAttribute.getUser());
+
+  }
+
+  @Test
+  public void userAttributeNullTest() {
+    userAttribute.getUser().setId(null);
+    userAttributeDTO = userAttributeMapperImpl.mapToDTO(userAttribute);
+    assertEquals(userAttributeDTO.getUserId(),userAttribute.getUser().getId());
+  }
+
 }
