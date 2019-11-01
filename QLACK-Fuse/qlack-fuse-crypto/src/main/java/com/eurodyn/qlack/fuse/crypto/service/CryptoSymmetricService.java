@@ -1,5 +1,17 @@
 package com.eurodyn.qlack.fuse.crypto.service;
 
+import javax.crypto.Cipher;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -12,20 +24,10 @@ import java.io.OutputStream;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.crypto.Cipher;
-import javax.crypto.CipherOutputStream;
-import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
 /**
  * Symmetric encryption/decryption utility methods.
@@ -63,6 +65,23 @@ public class CryptoSymmetricService {
   public byte[] generateKey(final int keyLength, final String algorithm)
       throws NoSuchAlgorithmException {
     final KeyGenerator keyGen = KeyGenerator.getInstance(algorithm);
+    keyGen.init(keyLength, SecureRandom.getInstanceStrong());
+
+    return keyGen.generateKey().getEncoded();
+  }
+
+  /**
+   * Generates a symmetric key.
+   *
+   * @param keyLength the length of the key
+   * @param algorithm the algorithm to use, e.g. AES
+   * @param provider the provider for the algorithm, e.g. SUN
+   * @return the bytes of the generated key
+   * @throws NoSuchAlgorithmException thrown when no algorithm is found for encryption
+   */
+  public byte[] generateKey(final int keyLength, final String algorithm, final String provider)
+  throws NoSuchAlgorithmException, NoSuchProviderException {
+    final KeyGenerator keyGen = KeyGenerator.getInstance(algorithm, provider);
     keyGen.init(keyLength, SecureRandom.getInstanceStrong());
 
     return keyGen.generateKey().getEncoded();

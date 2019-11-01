@@ -6,6 +6,12 @@ import static org.junit.Assert.assertTrue;
 
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.fuse.crypto.dto.CreateKeyPairDTO;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import org.apache.commons.codec.binary.Base64;
+import org.junit.Test;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -16,11 +22,6 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import org.apache.commons.codec.binary.Base64;
-import org.junit.Test;
 
 public class CryptoAsymmetricServiceTest {
 
@@ -182,6 +183,7 @@ public class CryptoAsymmetricServiceTest {
     cryptoAsymmetricService
         .verifySignature(null, new ByteArrayInputStream("".getBytes()), "", null, null);
   }
+
 
 
 }

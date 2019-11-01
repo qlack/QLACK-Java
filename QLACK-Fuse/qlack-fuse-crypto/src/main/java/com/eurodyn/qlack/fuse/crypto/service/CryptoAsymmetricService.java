@@ -2,15 +2,30 @@ package com.eurodyn.qlack.fuse.crypto.service;
 
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.fuse.crypto.dto.CreateKeyPairDTO;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.validation.constraints.NotNull;
+import lombok.extern.java.Log;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
+import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
+import org.bouncycastle.util.io.pem.PemObject;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.security.InvalidKeyException;
+import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
@@ -19,21 +34,13 @@ import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
-import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
-import org.bouncycastle.util.io.pem.PemObject;
-import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
 @Service
 @Validated
+@Log
 public class CryptoAsymmetricService {
 
   private static final String RSA_PUBLIC_KEY = "RSA PUBLIC KEY";
@@ -70,7 +77,7 @@ public class CryptoAsymmetricService {
    * @throws NoSuchAlgorithmException thrown when no algorithm is found for encryption
    */
   public KeyPair createKeyPair(final CreateKeyPairDTO createKeyPairRequest)
-      throws NoSuchAlgorithmException {
+  throws NoSuchAlgorithmException {
     final KeyPairGenerator keyPairGenerator;
 
     // Set the provider.
@@ -79,9 +86,40 @@ public class CryptoAsymmetricService {
 
     // Set the secret provider and generator.
     keyPairGenerator.initialize(createKeyPairRequest.getKeySize(),
-        SecureRandom.getInstance(createKeyPairRequest.getSecureRandomAlgorithm()));
+        SecureRandom.getInstance(
+            getSecureRandomAlgorithm(createKeyPairRequest.getSecureRandomAlgorithm())));
 
     return keyPairGenerator.generateKeyPair();
+  }
+
+  public byte[] keyToByteArray(@NotNull final Key key) {
+    return key.getEncoded();
+  }
+
+  public Key privateKeyFromByteArray(@NotNull final byte[] key, @NotNull final String keyAlgorithm,
+      final String keyProvider)
+  throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeySpecException {
+    KeyFactory keyFactory;
+    if (StringUtils.isNotBlank(keyProvider)) {
+      keyFactory = KeyFactory.getInstance(keyAlgorithm, keyProvider);
+    } else {
+      keyFactory = KeyFactory.getInstance(keyAlgorithm);
+    }
+
+    return keyFactory.generatePrivate(new PKCS8EncodedKeySpec(key));
+  }
+
+  public Key publicKeyFromByteArray(@NotNull final byte[] key, @NotNull final String keyAlgorithm,
+      final String keyProvider)
+  throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeySpecException {
+    KeyFactory keyFactory;
+    if (StringUtils.isNotBlank(keyProvider)) {
+      keyFactory = KeyFactory.getInstance(keyAlgorithm, keyProvider);
+    } else {
+      keyFactory = KeyFactory.getInstance(keyAlgorithm);
+    }
+
+    return keyFactory.generatePublic(new X509EncodedKeySpec(key));
   }
 
   /**
@@ -116,7 +154,7 @@ public class CryptoAsymmetricService {
    * @throws InvalidKeySpecException thrown when the provided key is invalid
    */
   public PublicKey pemToPublicKey(String publicKey, final String algorithm)
-      throws NoSuchAlgorithmException, InvalidKeySpecException {
+  throws NoSuchAlgorithmException, InvalidKeySpecException {
     PublicKey key;
 
     // Cleanup the PEM from unwanted text.
@@ -141,7 +179,7 @@ public class CryptoAsymmetricService {
    * @throws InvalidKeySpecException thrown when the provided key is invalid
    */
   public PrivateKey pemToPrivateKey(String privateKey, final String algorithm)
-      throws NoSuchAlgorithmException, InvalidKeySpecException {
+  throws NoSuchAlgorithmException, InvalidKeySpecException {
     PrivateKey key;
 
     // Cleanup the PEM from unwanted text.
@@ -171,8 +209,8 @@ public class CryptoAsymmetricService {
    */
   public byte[] sign(final String privateKeyPEM, final byte[] payload,
       final String signatureAlgorithm, final String keyAlgorithm)
-      throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException,
-      SignatureException {
+  throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException,
+         SignatureException {
     final Signature signatureInstance = Signature.getInstance(signatureAlgorithm);
     signatureInstance.initSign(pemToPrivateKey(privateKeyPEM, keyAlgorithm));
     signatureInstance.update(payload);
@@ -196,8 +234,8 @@ public class CryptoAsymmetricService {
    */
   public byte[] sign(final String privateKeyPEM, final InputStream payload,
       final String signatureAlgorithm, String keyAlgorithm)
-      throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException,
-      InvalidKeyException {
+  throws IOException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException,
+         InvalidKeyException {
     final Signature signatureInstance = Signature.getInstance(signatureAlgorithm);
     signatureInstance.initSign(pemToPrivateKey(privateKeyPEM, keyAlgorithm));
     try (BufferedInputStream bufin = new BufferedInputStream(payload)) {
@@ -228,8 +266,8 @@ public class CryptoAsymmetricService {
    */
   public boolean verifySignature(final String publicKeyPEM, final byte[] payload,
       final String signature, final String signatureAlgorithm, final String keyAlgorithm)
-      throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException,
-      SignatureException {
+  throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException,
+         SignatureException {
     if (StringUtils.isBlank(signature)) {
       throw new QDoesNotExistException("The signature provided to validate is empty.");
     }
@@ -258,8 +296,8 @@ public class CryptoAsymmetricService {
    */
   public boolean verifySignature(final String publicKeyPEM, final InputStream payload,
       final String signature, final String signatureAlgorithm, final String keyAlgorithm)
-      throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException,
-      SignatureException, IOException {
+  throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException,
+         SignatureException, IOException {
     if (StringUtils.isBlank(signature)) {
       throw new QDoesNotExistException("The signature provided to validate is empty.");
     }
@@ -294,8 +332,8 @@ public class CryptoAsymmetricService {
   @SuppressWarnings("squid:S4787")
   public byte[] encrypt(final String publicKeyPEM, final byte[] payload,
       final String cipherFactory, final String keyAlgorithm)
-      throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException,
-      InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+  throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException,
+         InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
     final Cipher cipher = Cipher.getInstance(cipherFactory);
     cipher.init(Cipher.ENCRYPT_MODE, pemToPublicKey(publicKeyPEM, keyAlgorithm));
 
@@ -321,11 +359,29 @@ public class CryptoAsymmetricService {
   @SuppressWarnings("squid:S4787")
   public byte[] decrypt(final String privateKeyPEM, final byte[] payload,
       final String cipherFactory, final String keyAlgorithm)
-      throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException,
-      InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+  throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException,
+         InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
     final Cipher cipher = Cipher.getInstance(cipherFactory);
     cipher.init(Cipher.DECRYPT_MODE, pemToPrivateKey(privateKeyPEM, keyAlgorithm));
 
     return cipher.doFinal(payload);
+  }
+
+  /**
+   * Finds the requested secure random algorithm or returns the default one.
+   *
+   * @param secureRandomAlgorithm the secure random algorithm to find.
+   */
+  public String getSecureRandomAlgorithm(final String secureRandomAlgorithm) {
+    if (StringUtils.isBlank(secureRandomAlgorithm)) {
+      try {
+        return SecureRandom.getInstanceStrong().getAlgorithm();
+      } catch (NoSuchAlgorithmException e) {
+        log.log(Level.SEVERE, e.getMessage(), e);
+        return secureRandomAlgorithm;
+      }
+    } else {
+      return secureRandomAlgorithm;
+    }
   }
 }

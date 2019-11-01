@@ -1,9 +1,5 @@
 package com.eurodyn.qlack.fuse.crypto.dto;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,15 +8,16 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.commons.lang3.StringUtils;
+
+import java.util.logging.Logger;
 
 /**
  * A request to create a key pair.
  */
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class CreateKeyPairDTO {
 
   // JUL reference.
@@ -40,17 +37,4 @@ public class CreateKeyPairDTO {
   // The default bits of the key, e.g. 2048.
   @NotNull
   private int keySize;
-
-  public String getSecureRandomAlgorithm() {
-    if (StringUtils.isBlank(secureRandomAlgorithm)) {
-      try {
-        return SecureRandom.getInstanceStrong().getAlgorithm();
-      } catch (NoSuchAlgorithmException e) {
-        LOGGER.log(Level.SEVERE, e.getMessage(), e);
-        return secureRandomAlgorithm;
-      }
-    } else {
-      return secureRandomAlgorithm;
-    }
-  }
 }

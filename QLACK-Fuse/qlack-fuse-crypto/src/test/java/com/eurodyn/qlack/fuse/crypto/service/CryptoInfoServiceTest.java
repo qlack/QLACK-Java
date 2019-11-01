@@ -6,14 +6,17 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.security.NoSuchAlgorithmException;
-import java.util.Collections;
+import com.eurodyn.qlack.fuse.crypto.dto.SecurityProviderDTO;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
+import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CryptoInfoServiceTest {
@@ -28,7 +31,11 @@ public class CryptoInfoServiceTest {
 
   @Test
   public void getSecurityProvidersTest() {
+    final List<SecurityProviderDTO> securityProviders = cryptoInfoService.getSecurityProviders();
     assertNotNull(cryptoInfoService.getSecurityProviders());
+    for (SecurityProviderDTO securityProvider : securityProviders) {
+      System.out.println(securityProvider);
+    }
   }
 
   @Test
