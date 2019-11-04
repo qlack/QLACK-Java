@@ -29,6 +29,9 @@ public class CreateKeyPairDTO {
   @NotNull
   private String keyPairGeneratorAlgorithm;
 
+  // The provider for the requested keypair generator algorithm, e.g. RSA.
+  private String keyPairGeneratorProvider;
+
   // The name of algorithm to use while initialising the key-pair generator, e.g. NativePRNG.
   // If you leave this field empty, a system default strong random algorithm will be chosen via
   // SecureRandom.getInstanceStrong().

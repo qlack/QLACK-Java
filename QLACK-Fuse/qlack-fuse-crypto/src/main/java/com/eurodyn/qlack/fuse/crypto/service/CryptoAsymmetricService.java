@@ -77,12 +77,19 @@ public class CryptoAsymmetricService {
    * @throws NoSuchAlgorithmException thrown when no algorithm is found for encryption
    */
   public KeyPair createKeyPair(final CreateKeyPairDTO createKeyPairRequest)
-  throws NoSuchAlgorithmException {
+  throws NoSuchAlgorithmException, NoSuchProviderException {
     final KeyPairGenerator keyPairGenerator;
 
     // Set the provider.
-    keyPairGenerator =
-        KeyPairGenerator.getInstance(createKeyPairRequest.getKeyPairGeneratorAlgorithm());
+    if (StringUtils.isNotBlank(createKeyPairRequest.getKeyPairGeneratorAlgorithm()) &&
+        StringUtils.isNotBlank(createKeyPairRequest.getKeyPairGeneratorProvider())) {
+      keyPairGenerator =
+          KeyPairGenerator.getInstance(createKeyPairRequest.getKeyPairGeneratorAlgorithm(),
+              createKeyPairRequest.getKeyPairGeneratorProvider());
+    } else {
+      keyPairGenerator =
+          KeyPairGenerator.getInstance(createKeyPairRequest.getKeyPairGeneratorAlgorithm());
+    }
 
     // Set the secret provider and generator.
     keyPairGenerator.initialize(createKeyPairRequest.getKeySize(),
