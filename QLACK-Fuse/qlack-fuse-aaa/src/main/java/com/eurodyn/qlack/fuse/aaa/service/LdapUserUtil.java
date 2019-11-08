@@ -416,7 +416,7 @@ public class LdapUserUtil {
       // Close the context when we're done
       ctx.close();
     } catch (NamingException e) {
-      e.printStackTrace();
+      LOGGER.severe("Error while retrieving LDAP users: " + e.toString());
     }
 
     users.remove("");

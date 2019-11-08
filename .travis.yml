@@ -2,15 +2,9 @@ language: java
 
 sudo: false
 
-addons:
-  sonarcloud:
-    organization: "qlack"
-    token:
-      secure: "4974008ea65d326547fbdc7ce803fedc94ef39ad"
-
 jdk: openjdk8
 
-script: mvn clean install -Pcoverage sonar:sonar
+script: mvn clean install -Pcoverage sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=qlack -Dsonar.projectName=Qlack-Java -Dsonar.login=a794de41120844d9bdc7547a961faffc6769f2c7
 
 notifications:
   email:
