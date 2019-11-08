@@ -7,10 +7,12 @@ import com.eurodyn.qlack.fuse.aaa.model.UserGroup;
 import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.AuthenticationException;
@@ -21,6 +23,7 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
+import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.persistence.EntityManager;
 import org.springframework.stereotype.Service;
@@ -376,6 +379,48 @@ public class LdapUserUtil {
     } else {
       return null;
     }
+  }
+
+  /**
+   * This method retrieves all the active users in the LDAP directory based on a search filter and
+   * returns their uid.
+   *
+   * @param searchFilter the filter to search with (ex '(objectClass=*)')
+   * @return a set containing the uid of the found users
+   */
+  public Set<String> retrieveLdapUsers(String searchFilter) {
+    Set<String> users = new HashSet<>();
+    try {
+      Hashtable<String, String> env = new Hashtable<>();
+      env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+      env.put(Context.PROVIDER_URL, ldapUrl);
+
+      // Create initial context
+      DirContext ctx = new InitialDirContext(env);
+
+      String searchBase = ldapBaseDN;
+      SearchControls searchCtls = new SearchControls();
+
+      // Specify the search scope
+      searchCtls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+
+      NamingEnumeration<?> namingEnum = ctx.search(searchBase, searchFilter, searchCtls);
+      while (namingEnum.hasMore()) {
+        SearchResult result = (SearchResult) namingEnum.next();
+
+        Attributes attrs = result.getAttributes();
+
+        users.add(attrs.get("uid") != null ? attrs.get("uid").toString().substring(4).trim() : "");
+      }
+      namingEnum.close();
+      // Close the context when we're done
+      ctx.close();
+    } catch (NamingException e) {
+      e.printStackTrace();
+    }
+
+    users.remove("");
+    return users;
   }
 
 }
