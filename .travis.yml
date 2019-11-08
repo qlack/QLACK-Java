@@ -6,7 +6,7 @@ addons:
   sonarcloud:
     organization: "qlack"
     token:
-      secure: "fc1da1a86f867610c3caf501d93df47e30b07808"
+      secure: "4974008ea65d326547fbdc7ce803fedc94ef39ad"
 
 jdk: openjdk8
 
