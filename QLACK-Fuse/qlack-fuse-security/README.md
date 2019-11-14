@@ -33,6 +33,8 @@ qlack.fuse.security.jwt.expiration=86400000
 qlack.fuse.security.jwt.include.roles=true
 # This paths will require authentication
 qlack.fuse.security.authenticated.paths=/app/secured/**,/app/admin
+# Clock difference between client and application for JWT validity checks
+qlack.fuse.security.jwt.clocks.margin=120
 ```
 
 ### Add the packages in the Spring boot application main class declaration:

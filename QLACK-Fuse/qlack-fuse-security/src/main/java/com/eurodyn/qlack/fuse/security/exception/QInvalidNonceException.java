@@ -17,14 +17,14 @@ package com.eurodyn.qlack.fuse.security.exception;
 import com.eurodyn.qlack.common.exception.QException;
 
 /**
- *  QInvalidException class that is used to throw a
- *  specific exception message.
+ * QInvalidException class that is used to throw a specific exception message.
  *
- *  @author European Dynamics SA
+ * @author European Dynamics SA
  */
 public class QInvalidNonceException extends QException {
 
-  /** An exception method that is used to throw a message
+  /**
+   * An exception method that is used to throw a message
    *
    * @param msg the exception message that is throwing
    */

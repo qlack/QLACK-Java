@@ -27,72 +27,78 @@ import org.springframework.validation.annotation.Validated;
 @Transactional
 public class AuthenticationService {
 
-    @Autowired
-    private AuthenticationProvider authenticationProvider;
+  @Autowired
+  private AuthenticationProvider authenticationProvider;
 
-    @Autowired
-    private UserService userService;
+  @Autowired
+  private UserService userService;
 
-    @Value("${qlack.fuse.security.jwt.secret:qlackjwtsecret}")
-    private String jwtSecret;
+  @Value("${qlack.fuse.security.jwt.secret:qlackjwtsecret}")
+  private String jwtSecret;
 
-    /**
-     * Default expiration set at 24 hours.
-     */
-    @Value("${qlack.fuse.security.jwt.expiration:86400000}")
-    private int jwtExpiration;
+  /**
+   * Default expiration set at 24 hours.
+   */
+  @Value("${qlack.fuse.security.jwt.expiration:86400000}")
+  private int jwtExpiration;
 
-    /**
-     * Define if roles should be added in the JWT claims
-     */
-    @Value("#{new Boolean('${qlack.fuse.security.jwt.include.roles:false}')}")
-    private boolean jwtIncludeRoles;
+  /**
+   * Define if roles should be added in the JWT claims
+   */
+  @Value("#{new Boolean('${qlack.fuse.security.jwt.include.roles:false}')}")
+  private boolean jwtIncludeRoles;
 
-    /**
-     * Provides access to Spring's authentication method.
-     *
-     * @param authentication Authentication object with user credentials
-     * @param applicationSessionId the sessionId of the application the User is using
-     * @return generated jwt
-     * @throws AuthenticationException If authentication fails
-     */
-    public String authenticate(Authentication authentication, String applicationSessionId) throws AuthenticationException {
-        return generateJWT(authenticationProvider.authenticate(authentication), applicationSessionId);
+  /**
+   * Provides access to Spring's authentication method.
+   *
+   * @param authentication Authentication object with user credentials
+   * @param applicationSessionId the sessionId of the application the User is using
+   * @return generated jwt
+   * @throws AuthenticationException If authentication fails
+   */
+  public String authenticate(Authentication authentication, String applicationSessionId)
+      throws AuthenticationException {
+    return generateJWT(authenticationProvider.authenticate(authentication), applicationSessionId);
+  }
+
+  /**
+   * Provides access to Spring's authentication method.
+   *
+   * @param user An object containing the username, the password and the sessionId of the User to be
+   * authenticated
+   * @return generated jwt
+   * @throws AuthenticationException If authentication fails
+   */
+  public String authenticate(UserDetailsDTO user) throws AuthenticationException {
+    return generateJWT(
+        authenticationProvider.authenticate(
+            new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())),
+        user.getSessionId());
+  }
+
+  private String generateJWT(Authentication authentication, String applicationSessionId) {
+    UserDetailsDTO authenticatedUser = (UserDetailsDTO) authentication.getPrincipal();
+
+    String userId = authenticatedUser.getId();
+    String sessionId = userService.login(userId, applicationSessionId, true).getSessionId();
+    authenticatedUser.setSessionId(sessionId);
+
+    if (jwtIncludeRoles) {
+      Map<String, Object> claims = new HashMap<>();
+
+      int idx = 1;
+      for (UserGroupDTO u : authenticatedUser.getUserGroups()) {
+        claims.put("role" + idx, u.getName());
+        idx++;
+      }
+
+      return JWTUtil.generateToken(
+          new JWTGenerateRequestDTO(jwtSecret, authenticatedUser.getUsername(), claims,
+              jwtExpiration));
+    } else {
+      return JWTUtil.generateToken(
+          new JWTGenerateRequestDTO(jwtSecret, authenticatedUser.getUsername(), jwtExpiration));
     }
-
-    /**
-     * Provides access to Spring's authentication method.
-     *
-     * @param user An object containing the username, the password and the sessionId of the User to be authenticated
-     * @return generated jwt
-     * @throws AuthenticationException If authentication fails
-     */
-    public String authenticate(UserDetailsDTO user) throws AuthenticationException {
-        return generateJWT(
-            authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())),
-            user.getSessionId());
-    }
-
-    private String generateJWT(Authentication authentication, String applicationSessionId) {
-        UserDetailsDTO authenticatedUser = (UserDetailsDTO) authentication.getPrincipal();
-
-        String userId = authenticatedUser.getId();
-        String sessionId = userService.login(userId, applicationSessionId, true).getSessionId();
-        authenticatedUser.setSessionId(sessionId);
-
-        if (jwtIncludeRoles) {
-            Map<String, Object> claims = new HashMap<>();
-
-            int idx = 1;
-            for (UserGroupDTO u : authenticatedUser.getUserGroups()) {
-                claims.put("role" + idx, u.getName());
-                idx++;
-            }
-
-            return JWTUtil.generateToken(new JWTGenerateRequestDTO(jwtSecret, authenticatedUser.getUsername(), claims, jwtExpiration));
-        } else {
-            return JWTUtil.generateToken(new JWTGenerateRequestDTO(jwtSecret, authenticatedUser.getUsername(), jwtExpiration));
-        }
-    }
+  }
 
 }
