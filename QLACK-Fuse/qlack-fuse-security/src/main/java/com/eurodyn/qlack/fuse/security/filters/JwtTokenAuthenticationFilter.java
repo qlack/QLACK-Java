@@ -43,7 +43,7 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
     /**
      * Default expiration set at 24 hours.
      */
-    @Value("${qlack.fuse.security.jwt.expiration:#{24*60*60}}")
+    @Value("${qlack.fuse.security.jwt.expiration:86400000}")
     private int jwtExpiration;
 
     @Autowired

@@ -28,9 +28,9 @@ The QLACK-based Spring Security implementation, which provides user authenticati
 # The string that will be used for signing the jwt
 qlack.fuse.security.jwt.secret=qlackjwtsecret
 # The jwt validity will be set to 24 hours
-qlack.fuse.security.jwt.expiration=#{24*60*60}
+qlack.fuse.security.jwt.expiration=86400000
 # Define if user roles will be added in the JWT claims
-qlack.security.jwt.include.roles=true
+qlack.fuse.security.jwt.include.roles=true
 # This paths will require authentication
 qlack.fuse.security.authenticated.paths=/app/secured/**,/app/admin
 ```

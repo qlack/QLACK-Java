@@ -33,19 +33,19 @@ public class AuthenticationService {
     @Autowired
     private UserService userService;
 
-    @Value("${qlack.security.jwt.secret:qlackjwtsecret}")
+    @Value("${qlack.fuse.security.jwt.secret:qlackjwtsecret}")
     private String jwtSecret;
 
     /**
      * Default expiration set at 24 hours.
      */
-    @Value("${qlack.security.jwt.expiration:#{24*60*60}}")
+    @Value("${qlack.fuse.security.jwt.expiration:86400000}")
     private int jwtExpiration;
 
     /**
      * Define if roles should be added in the JWT claims
      */
-    @Value("#{new Boolean('${qlack.security.jwt.include.roles:false}')}")
+    @Value("#{new Boolean('${qlack.fuse.security.jwt.include.roles:false}')}")
     private boolean jwtIncludeRoles;
 
     /**
