@@ -4,18 +4,10 @@ package com.eurodyn.qlack.fuse.aaa.service;
 import com.eurodyn.qlack.fuse.aaa.model.User;
 import com.eurodyn.qlack.fuse.aaa.model.UserAttribute;
 import com.eurodyn.qlack.fuse.aaa.model.UserGroup;
+import com.eurodyn.qlack.fuse.aaa.repository.UserAttributeRepository;
+import com.eurodyn.qlack.fuse.aaa.repository.UserGroupRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.naming.AuthenticationException;
+import com.eurodyn.qlack.fuse.aaa.util.LdapProperties;
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -25,64 +17,53 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
-import javax.persistence.EntityManager;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * A Util class that is used to configure the LdapUser
  *
- * @author European Dynamics  SA
+ * @author European Dynamics SA.
  */
+@Slf4j
+@Getter
+@Setter
 @Service
 @Validated
 public class LdapUserUtil {
 
-  private static final Logger LOGGER = Logger.getLogger(LdapUserUtil.class.getName());
-
-  private EntityManager em;
-
+  private final LdapProperties properties;
   private final UserRepository userRepository;
+  private final UserGroupRepository userGroupRepository;
+  private final UserAttributeRepository userAttributeRepository;
+  private static final String CTX_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
+  private static final String EMPTY_STRING = "";
 
-  public LdapUserUtil(UserRepository userRepository) {
+  public LdapUserUtil(LdapProperties ldapProperties, UserRepository userRepository,
+      UserGroupRepository userGroupRepository,
+      UserAttributeRepository userAttributeRepository) {
+    this.properties = ldapProperties;
     this.userRepository = userRepository;
+    this.userGroupRepository = userGroupRepository;
+    this.userAttributeRepository = userAttributeRepository;
   }
 
-  private boolean ldapEnable;
-  private String ldapUrl;
-  private String ldapBaseDN;
-  private String ldapMappingUid;
-  private String ldapMappingGid;
 
   private Map<String, String> attributesMap;
 
-  public void setEm(EntityManager em) {
-    this.em = em;
-  }
-
-  public boolean isLdapEnable() {
-    return ldapEnable;
-  }
-
-  public void setLdapEnable(boolean ldapEnable) {
-    this.ldapEnable = ldapEnable;
-  }
-
-  public void setLdapUrl(String ldapUrl) {
-    this.ldapUrl = ldapUrl;
-  }
-
-  public void setLdapBaseDN(String ldapBaseDN) {
-    this.ldapBaseDN = ldapBaseDN;
-  }
-
-  public void setLdapMappingUid(String ldapMappingUid) {
-    this.ldapMappingUid = ldapMappingUid;
-  }
-
-  public void setLdapMappingGid(String ldapMappingGid) {
-    this.ldapMappingGid = ldapMappingGid;
-  }
 
   public void setLdapMappingAttrs(String ldapMappingAttrs) {
     attributesMap = new HashMap<>();
@@ -102,7 +83,7 @@ public class LdapUserUtil {
    * @return The AAA ID of the user if authenticated, null otherwise.
    */
   public String canAuthenticate(String username, String password) {
-    if (!ldapEnable) {
+    if (!properties.isEnabled()) {
       return null;
     }
 
@@ -129,23 +110,76 @@ public class LdapUserUtil {
     }
   }
 
+  /**
+   * Searches username in AAA users database. If the user does not exists it is created by verifying
+   * and getting information from the LDAP server
+   *
+   * @param username the username
+   * @return a {@link User}
+   */
+  public User syncUserWithAAA(String username) {
+    User u = null;
+
+    if (properties.isEnabled()) {
+      // Create initial context
+      DirContext ctx = ldapBindAdminAuth(properties.getAdminUid(), properties.getAdminPassword());
+      log.info(String.format("Successful bind to LDAP %s", properties.getUrl()));
+
+      if (ctx == null || ldapSearch(ctx, username) == null) {
+        if (ctx != null) {
+          ldapUnbind(ctx);
+        }
+        log.error("Cannot connect/bind to the LDAP service. Please check your configuration.");
+        return null;
+      }
+
+      User user = userRepository.findByUsername(username);
+
+      if (user != null) {
+        log.trace(String.format("%s is already synced with AAA.", user.getUsername()));
+        ldapUnbind(ctx);
+        return user;
+      }
+
+      u = createUserFromLdapWithoutAttributes(ldapSearch(ctx, username));
+      ldapUnbind(ctx);
+    } else {
+      log.warn("LDAP configuration is not enabled. Please check your configuration properties.");
+    }
+    return u;
+  }
+
   @SuppressWarnings("squid:S1149")
   private DirContext ldapBind(String username, String password) {
     Hashtable<String, String> env = new Hashtable<>();
-    env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-    env.put(Context.PROVIDER_URL, ldapUrl);
-
+    env.put(Context.INITIAL_CONTEXT_FACTORY, CTX_FACTORY);
+    env.put(Context.PROVIDER_URL, properties.getUrl());
     env.put(Context.SECURITY_AUTHENTICATION, "simple");
-    env.put(Context.SECURITY_PRINCIPAL, ldapMappingUid + "=" + username + "," + ldapBaseDN);
+    env.put(Context.SECURITY_PRINCIPAL,
+        properties.getMappingUid() + "=" + username + "," + properties.getBasedn());
     env.put(Context.SECURITY_CREDENTIALS, password);
 
     try {
       return new InitialDirContext(env);
-    } catch (AuthenticationException e) {
-      LOGGER.log(Level.FINE, "Cannot bind user to ldap service", e);
-      return null;
     } catch (NamingException e) {
-      LOGGER.log(Level.WARNING, "Cannot bind user to ldap service", e);
+      log.warn("Cannot bind user to ldap service", e);
+      return null;
+    }
+  }
+
+  private DirContext ldapBindAdminAuth(String adminUsername, String ldapAdminPassword) {
+    Hashtable<String, String> env = new Hashtable<>();
+    env.put(Context.INITIAL_CONTEXT_FACTORY, CTX_FACTORY);
+    env.put(Context.PROVIDER_URL, properties.getUrl());
+    env.put(Context.SECURITY_AUTHENTICATION, "simple");
+    env.put(Context.SECURITY_PRINCIPAL,
+        properties.getMappingUid() + "=" + adminUsername + "," + properties.getBasedn());
+    env.put(Context.SECURITY_CREDENTIALS, ldapAdminPassword);
+
+    try {
+      return new InitialDirContext(env);
+    } catch (NamingException e) {
+      log.info("Cannot bind user to ldap service", e);
       return null;
     }
   }
@@ -153,7 +187,8 @@ public class LdapUserUtil {
   private Map<String, List<String>> ldapSearch(DirContext ctx, String username) {
     try {
       NamingEnumeration<SearchResult> results =
-          ctx.search(ldapBaseDN, "(" + ldapMappingUid + "=" + username + ")", null);
+          ctx.search(properties.getBasedn(),
+              "(" + properties.getMappingUid() + "=" + username + ")", null);
       if (results.hasMore()) {
         SearchResult result = results.next();
         Attributes attributes = result.getAttributes();
@@ -163,13 +198,13 @@ public class LdapUserUtil {
         while (attributesEnumeration.hasMore()) {
           Attribute attribute = attributesEnumeration.next();
           String id = attribute.getID();
-          LOGGER.log(Level.FINEST, "{0}:", id);
+          log.debug(MessageFormat.format("{0}:", id));
 
           List<String> untypedValues = new ArrayList<>();
           NamingEnumeration<?> valuesEnumeration = attribute.getAll();
           while (valuesEnumeration.hasMore()) {
             Object value = valuesEnumeration.next();
-            LOGGER.log(Level.FINEST, "\t{0}", value);
+            log.debug(MessageFormat.format("\t{0}", value));
             if (value instanceof String) {
               String string = (String) value;
               untypedValues.add(string);
@@ -186,7 +221,7 @@ public class LdapUserUtil {
         return null;
       }
     } catch (NamingException e) {
-      LOGGER.log(Level.WARNING, "Cannot search ldap context", e);
+      log.warn("Cannot search ldap context", e);
       return null;
     }
   }
@@ -195,7 +230,7 @@ public class LdapUserUtil {
     try {
       ctx.close();
     } catch (NamingException e) {
-      LOGGER.log(Level.WARNING, "Cannot close ldap context", e);
+      log.warn("Cannot close ldap context", e);
     }
   }
 
@@ -220,11 +255,29 @@ public class LdapUserUtil {
       return null;
     }
 
-    em.persist(user);
-
+    userRepository.save(user);
     createUserAttributesFromLdap(user, ldap);
-
     return userId;
+  }
+
+  /**
+   * Create a user from LDAP
+   *
+   * @param ldapSearchResult an LDAP Search response Map
+   * @return the userId
+   */
+  private User createUserFromLdapWithoutAttributes(Map<String, List<String>> ldapSearchResult) {
+
+    String username = getFirst(ldapSearchResult, properties.getMappingUid());
+
+    User user = new User();
+    user.setUsername(username);
+    user.setPassword(EMPTY_STRING);
+    user.setStatus((byte) 1);
+    user.setSuperadmin(false);
+    user.setExternal(true);
+
+    return userRepository.save(user);
   }
 
   /**
@@ -235,12 +288,12 @@ public class LdapUserUtil {
    * @return the groupId
    */
   private String addGroupFromLdap(User user, Map<String, List<String>> ldap) {
-    String groupId = getFirst(ldap, ldapMappingGid);
+    String groupId = getFirst(ldap, properties.getMappingGid());
     if (groupId == null) {
       return null;
     }
 
-    UserGroup userGroup = em.find(UserGroup.class, groupId);
+    UserGroup userGroup = userGroupRepository.fetchById(groupId);
     if (userGroup == null) {
       return null;
     }
@@ -271,7 +324,7 @@ public class LdapUserUtil {
       attribute.setUser(user);
       attribute.setName(aaaAttr);
       attribute.setData(getFirst(ldap, ldapAttr));
-      em.persist(attribute);
+      userAttributeRepository.save(attribute);
     }
   }
 
@@ -306,12 +359,12 @@ public class LdapUserUtil {
     UserGroup oldUserGroup = user.getUserGroups().get(0);
     String oldGroupId = oldUserGroup.getId();
 
-    String newGroupId = getFirst(ldap, ldapMappingGid);
+    String newGroupId = getFirst(ldap, properties.getMappingGid());
     if (newGroupId == null) {
       return null;
     }
 
-    UserGroup newUserGroup = em.find(UserGroup.class, newGroupId);
+    UserGroup newUserGroup = userGroupRepository.fetchById(newGroupId);
     if (newUserGroup == null) {
       return null;
     }
@@ -392,13 +445,13 @@ public class LdapUserUtil {
     Set<String> users = new HashSet<>();
     try {
       Hashtable<String, String> env = new Hashtable<>();
-      env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-      env.put(Context.PROVIDER_URL, ldapUrl);
+      env.put(Context.INITIAL_CONTEXT_FACTORY, CTX_FACTORY);
+      env.put(Context.PROVIDER_URL, properties.getUrl());
 
       // Create initial context
       DirContext ctx = new InitialDirContext(env);
 
-      String searchBase = ldapBaseDN;
+      String searchBase = properties.getBasedn();
       SearchControls searchCtls = new SearchControls();
 
       // Specify the search scope
@@ -416,7 +469,7 @@ public class LdapUserUtil {
       // Close the context when we're done
       ctx.close();
     } catch (NamingException e) {
-      LOGGER.severe("Error while retrieving LDAP users: " + e.toString());
+      log.error("Error while retrieving LDAP users: " + e.toString());
     }
 
     users.remove("");

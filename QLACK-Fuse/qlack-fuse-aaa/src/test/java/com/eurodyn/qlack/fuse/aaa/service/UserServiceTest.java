@@ -30,6 +30,7 @@ import com.eurodyn.qlack.fuse.aaa.repository.SessionRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserAttributeRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserGroupRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
+import com.eurodyn.qlack.fuse.aaa.util.LdapProperties;
 import com.querydsl.core.types.Predicate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,6 +71,8 @@ public class UserServiceTest {
   private UserGroup userGroupNoChildren;
   @Mock
   private LdapUserUtil ldapUserUtil;
+  @Mock
+  private LdapProperties properties;
   @Mock
   private UserGroupRepository userGroupRepository;
 
@@ -327,6 +330,8 @@ public class UserServiceTest {
   @Test
   public void testCanAuthenticateNullUser() {
     when(userRepository.findByUsername(user.getUsername())).thenReturn(null);
+    when(ldapUserUtil.getProperties()).thenReturn(properties);
+    when(ldapUserUtil.getProperties().isEnabled()).thenReturn(true);
     String userId = userService.canAuthenticate(user.getUsername(), user.getPassword());
     verify(userRepository, times(1)).findByUsername(user.getUsername());
     assertNotEquals(userId, user.getId());
@@ -344,7 +349,8 @@ public class UserServiceTest {
   @Test
   public void testCanAuthenticateLdap() {
     user.setExternal(true);
-    when(ldapUserUtil.isLdapEnable()).thenReturn(true);
+    when(ldapUserUtil.getProperties()).thenReturn(properties);
+    when(ldapUserUtil.getProperties().isEnabled()).thenReturn(true);
     when(ldapUserUtil.canAuthenticate(any(), any())).thenReturn(user.getId());
     when(userRepository.findByUsername(user.getUsername())).thenReturn(user);
     String userId = userService.canAuthenticate(user.getUsername(), user.getPassword());

@@ -6,7 +6,10 @@ import static org.junit.Assert.assertFalse;
 import com.eurodyn.qlack.fuse.aaa.InitTestValues;
 import com.eurodyn.qlack.fuse.aaa.dto.UserDTO;
 import com.eurodyn.qlack.fuse.aaa.model.User;
+import com.eurodyn.qlack.fuse.aaa.repository.UserAttributeRepository;
+import com.eurodyn.qlack.fuse.aaa.repository.UserGroupRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
+import com.eurodyn.qlack.fuse.aaa.util.LdapProperties;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,38 +30,32 @@ public class LdapUserUtilTest {
   @Mock
   private UserDTO userDTO;
 
+  @Mock
+  private LdapProperties ldapProperties;
   private InitTestValues initTestValues;
   private UserRepository userRepository;
-  private String ldapUrl;
-  private String ldapMappingUid;
-  private String ldapBaseDN;
-
+  private UserGroupRepository userGroupRepository;
+  private UserAttributeRepository userAttributeRepository;
 
   @Before
   public void init() {
-    ldapUserUtil = new LdapUserUtil(userRepository);
+    ldapUserUtil = new LdapUserUtil(ldapProperties, userRepository, userGroupRepository,
+        userAttributeRepository);
     initTestValues = new InitTestValues();
     user = initTestValues.createUser();
     userDTO = initTestValues.createUserDTO();
-    ldapUrl = "ldap://localhost:389";
-    ldapMappingUid = "uid";
-    ldapBaseDN = "dc=example,dc=com";
   }
 
   @Test
   public void testCanAuthenticateNull() {
     ldapUserUtil.canAuthenticate(user.getUsername(), user.getPassword());
-    assertFalse(ldapUserUtil.isLdapEnable());
+    assertFalse(ldapUserUtil.getProperties().isEnabled());
   }
 
   @Test
   public void testCanAuthenticate() {
-    ldapUserUtil.setLdapEnable(true);
-    ldapUserUtil.setLdapUrl(ldapUrl);
-    ldapUserUtil.setLdapBaseDN(ldapBaseDN);
-    ldapUserUtil.setLdapMappingUid(ldapMappingUid);
     userService.createUser(userDTO, null);
     ldapUserUtil.canAuthenticate(userDTO.getUsername(), userDTO.getPassword());
-    assertTrue(ldapUserUtil.isLdapEnable());
+    assertTrue(!ldapUserUtil.getProperties().isEnabled());
   }
 }
