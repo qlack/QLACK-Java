@@ -1,6 +1,7 @@
 package com.eurodyn.qlack.fuse.lexicon.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -12,6 +13,7 @@ import com.eurodyn.qlack.common.exception.QAlreadyExistsException;
 import com.eurodyn.qlack.fuse.lexicon.InitTestValues;
 import com.eurodyn.qlack.fuse.lexicon.criteria.KeySearchCriteria;
 import com.eurodyn.qlack.fuse.lexicon.criteria.KeySearchCriteria.SortType;
+import com.eurodyn.qlack.fuse.lexicon.dto.GroupDTO;
 import com.eurodyn.qlack.fuse.lexicon.dto.KeyDTO;
 import com.eurodyn.qlack.fuse.lexicon.mapper.KeyMapper;
 import com.eurodyn.qlack.fuse.lexicon.mapper.LexiconMapper;
@@ -30,9 +32,11 @@ import com.querydsl.core.types.Predicate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,6 +63,7 @@ public class KeyServiceTest {
   private GroupRepository groupRepository = mock(GroupRepository.class);
   private DataRepository dataRepository = mock(DataRepository.class);
   private LanguageRepository languageRepository = mock(LanguageRepository.class);
+  private GroupService groupService = mock(GroupService.class);
   @Spy
   private KeyMapper keyMapper;
   @Spy
@@ -67,6 +72,7 @@ public class KeyServiceTest {
   private Key key;
   private KeyDTO keyDTO;
   private List<KeyDTO> keysDTO;
+  private List<GroupDTO> groupsDTO;
   private List<Key> keys;
   private Group group;
   private List<Group> groups;
@@ -80,7 +86,7 @@ public class KeyServiceTest {
   @Before
   public void init() {
     keyService = new KeyService(keyRepository, groupRepository, keyMapper, dataRepository,
-        languageRepository);
+        languageRepository,groupService);
     initTestValues = new InitTestValues();
     key = initTestValues.createKey();
     keys = initTestValues.createKeys();
@@ -88,6 +94,7 @@ public class KeyServiceTest {
     keysDTO = initTestValues.createKeysDTO();
     group = initTestValues.createGroup();
     groups = initTestValues.createGroups();
+    groupsDTO = initTestValues.createGroupsDTO();
     languages = initTestValues.createLanguages();
     qKey = new QKey("key1");
     qData = new QData("data");
@@ -502,6 +509,16 @@ public class KeyServiceTest {
     Map<String, String> translationsForGroupNameAndLocale = keyService
         .getTranslationsForGroupNameAndLocale(group.getTitle(), language.getLocale());
     assertEquals(dataList.size(), translationsForGroupNameAndLocale.size());
+  }
+
+  @Test
+  public void testGetTranslationsForLocaleGroupByGroupTitle() {
+    when(groupService.getGroups()).thenReturn(new HashSet<>(groupsDTO));
+    Map<String, Map<String, String>> translations = keyService
+        .getTranslationsForLocaleGroupByGroupTitle("en");
+
+    assertEquals(groupsDTO.size(), translations.size());
+    assertNotNull(translations.get(groupsDTO.get(0).getTitle()));
   }
 
   @Test

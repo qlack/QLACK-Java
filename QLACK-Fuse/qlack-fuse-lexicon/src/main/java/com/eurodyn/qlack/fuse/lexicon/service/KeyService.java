@@ -3,6 +3,7 @@ package com.eurodyn.qlack.fuse.lexicon.service;
 import com.eurodyn.qlack.common.exception.QAlreadyExistsException;
 import com.eurodyn.qlack.fuse.lexicon.criteria.KeySearchCriteria;
 import com.eurodyn.qlack.fuse.lexicon.criteria.KeySearchCriteria.SortType;
+import com.eurodyn.qlack.fuse.lexicon.dto.GroupDTO;
 import com.eurodyn.qlack.fuse.lexicon.dto.KeyDTO;
 import com.eurodyn.qlack.fuse.lexicon.mapper.KeyMapper;
 import com.eurodyn.qlack.fuse.lexicon.model.Data;
@@ -27,6 +28,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -53,6 +55,7 @@ public class KeyService {
   private final GroupRepository groupRepository;
   private final DataRepository dataRepository;
   private final LanguageRepository languageRepository;
+  private final GroupService groupService;
   // Entities for queries
   QData qData = QData.data;
   QKey qKey = QKey.key;
@@ -61,12 +64,13 @@ public class KeyService {
   @Autowired
   public KeyService(KeyRepository keyRepository, GroupRepository groupRepository,
       KeyMapper keyMapper,
-      DataRepository dataRepository, LanguageRepository languageRepository) {
+      DataRepository dataRepository, LanguageRepository languageRepository,GroupService groupService) {
     this.keyRepository = keyRepository;
     this.keyMapper = keyMapper;
     this.groupRepository = groupRepository;
     this.dataRepository = dataRepository;
     this.languageRepository = languageRepository;
+    this.groupService = groupService;
   }
 
   /**
@@ -584,6 +588,25 @@ public class KeyService {
       sortedMap.put(x.key, x.value);
     }
     return sortedMap;
+  }
+
+  /**
+   * Fetches all translations from all groups for a specific locale,groupby group title.
+   *
+   * @param locale the language locale
+   * @return a list of translations from all groups for a specific locale
+   */
+  public Map<String, Map<String, String>> getTranslationsForLocaleGroupByGroupTitle(String locale) {
+
+    Set<GroupDTO> groupDTOSet = groupService.getGroups();
+    Map<String, Map<String, String>> translations = new HashMap<>();
+
+    for (GroupDTO groupDTO : groupDTOSet) {
+      translations.put(groupDTO.getTitle(),
+          this.getTranslationsForGroupAndLocale(groupDTO.getId(), locale));
+    }
+
+    return translations;
   }
 
   /**
