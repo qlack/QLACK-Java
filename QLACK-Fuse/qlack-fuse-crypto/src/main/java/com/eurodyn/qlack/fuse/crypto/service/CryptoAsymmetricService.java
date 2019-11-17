@@ -31,6 +31,7 @@ import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Signature;
 import java.security.SignatureException;
+import java.security.spec.EncodedKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
@@ -103,7 +104,17 @@ public class CryptoAsymmetricService {
     return key.getEncoded();
   }
 
-  public Key privateKeyFromByteArray(@NotNull final byte[] key, @NotNull final String keyAlgorithm,
+  /**
+   * Converts a byte array holding a private key in DER format to a private key.
+   * @param key
+   * @param keyAlgorithm
+   * @param keyProvider
+   * @return
+   * @throws NoSuchProviderException
+   * @throws NoSuchAlgorithmException
+   * @throws InvalidKeySpecException
+   */
+  public PrivateKey privateKeyFromByteArray(@NotNull final byte[] key, @NotNull final String keyAlgorithm,
       final String keyProvider)
   throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeySpecException {
     KeyFactory keyFactory;
@@ -112,11 +123,11 @@ public class CryptoAsymmetricService {
     } else {
       keyFactory = KeyFactory.getInstance(keyAlgorithm);
     }
-
-    return keyFactory.generatePrivate(new PKCS8EncodedKeySpec(key));
+    EncodedKeySpec encodedKeySpec = new PKCS8EncodedKeySpec(key);
+    return keyFactory.generatePrivate(encodedKeySpec);
   }
 
-  public Key publicKeyFromByteArray(@NotNull final byte[] key, @NotNull final String keyAlgorithm,
+  public PublicKey publicKeyFromByteArray(@NotNull final byte[] key, @NotNull final String keyAlgorithm,
       final String keyProvider)
   throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeySpecException {
     KeyFactory keyFactory;

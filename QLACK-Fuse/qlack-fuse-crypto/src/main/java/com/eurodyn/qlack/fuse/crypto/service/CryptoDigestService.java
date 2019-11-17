@@ -1,11 +1,5 @@
 package com.eurodyn.qlack.fuse.crypto.service;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.codec.binary.Base64;
@@ -13,6 +7,13 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 /**
  * Message digest algorithms.
@@ -81,5 +82,16 @@ public class CryptoDigestService {
    */
   public String generateSecureRandom(int length) throws NoSuchAlgorithmException {
     return Base64.encodeBase64String(SecureRandom.getInstanceStrong().generateSeed(length));
+  }
+
+  /**
+   * Calculates the MD5 of the given string.
+   *
+   * @param message The message to hash.
+   * @deprecated Prefer the SHA256 alternatives.
+   */
+  @Deprecated
+  public String md5(final String message) {
+    return DigestUtils.md5Hex(message);
   }
 }

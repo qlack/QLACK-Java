@@ -217,7 +217,7 @@ public class CryptoKeystoreService {
    * @param keystoreProvider The provider for the specific type of keystore.
    * @param keystorePassword The password of the keystore.
    * @param keyAlias The alias under which the key will be saved.
-   * @param key The key to save.
+   * @param key The key to save in DER format.
    * @param keyAlgorithm The algorithm the key was generated with.
    * @param keyProvider The provider for the specific key algorithm.
    * @param keyPassword The password of the key.
@@ -242,9 +242,10 @@ public class CryptoKeystoreService {
     }).toArray(Certificate[]::new);
 
     // Add the key.
-    ks.setKeyEntry(keyAlias,
-        cryptoAsymmetricService.privateKeyFromByteArray(key, keyAlgorithm, keyProvider),
-        keyPassword.toCharArray(), certs);
+    final Key privateKey = cryptoAsymmetricService
+        .privateKeyFromByteArray(key, keyAlgorithm, keyProvider);
+    ks.setKeyEntry(keyAlias, privateKey,
+        keyPassword != null ? keyPassword.toCharArray() : "".toCharArray(), certs);
 
     return keystoreToByteArray(ks, keystorePassword);
   }

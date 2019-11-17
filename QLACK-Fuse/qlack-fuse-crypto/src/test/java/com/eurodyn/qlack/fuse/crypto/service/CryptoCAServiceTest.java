@@ -5,14 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import com.eurodyn.qlack.fuse.crypto.dto.CertificateSignDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.CreateCADTO;
 import com.eurodyn.qlack.fuse.crypto.dto.CreateKeyPairDTO;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.spec.InvalidKeySpecException;
-import java.time.Instant;
-import java.util.Locale;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.junit.Before;
@@ -20,6 +12,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.cert.CertificateException;
+import java.security.spec.InvalidKeySpecException;
+import java.time.Instant;
+import java.util.Locale;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CryptoCAServiceTest {
@@ -36,7 +38,8 @@ public class CryptoCAServiceTest {
     cryptoCAService = new CryptoCAService(cryptoAsymmetricService);
   }
 
-  private CreateCADTO createCADTO() throws NoSuchAlgorithmException, IOException {
+  private CreateCADTO createCADTO()
+  throws NoSuchAlgorithmException, IOException, NoSuchProviderException {
     CreateKeyPairDTO createKeyPairDTO = new CreateKeyPairDTO();
     createKeyPairDTO.setKeyPairGeneratorAlgorithm("RSA");
     createKeyPairDTO.setKeySize(2048);
@@ -60,13 +63,15 @@ public class CryptoCAServiceTest {
 
   @Test
   public void createCADefaultTypesTest()
-      throws InvalidKeySpecException, IOException, NoSuchAlgorithmException, OperatorCreationException {
+  throws InvalidKeySpecException, IOException, NoSuchAlgorithmException, OperatorCreationException,
+         NoSuchProviderException {
     assertNotNull(cryptoCAService.createCA(createCADTO()));
   }
 
   @Test
   public void createCANullKeyTest()
-      throws InvalidKeySpecException, IOException, NoSuchAlgorithmException, OperatorCreationException {
+  throws InvalidKeySpecException, IOException, NoSuchAlgorithmException, OperatorCreationException,
+         NoSuchProviderException {
     CreateCADTO createCADTO = createCADTO();
     createCADTO.setIssuerCN("qlack");
 
@@ -75,7 +80,8 @@ public class CryptoCAServiceTest {
 
   @Test
   public void createCATest()
-      throws InvalidKeySpecException, IOException, NoSuchAlgorithmException, OperatorCreationException {
+  throws InvalidKeySpecException, IOException, NoSuchAlgorithmException, OperatorCreationException,
+         NoSuchProviderException {
     CreateCADTO createCADTO = createCADTO();
     createCADTO.setIssuerCN("qlack");
     createCADTO.setIssuerPrivateKey(cryptoAsymmetricService.convertKeyToPEM(
@@ -87,7 +93,8 @@ public class CryptoCAServiceTest {
 
   @Test
   public void pemToCertificateTest()
-      throws IOException, NoSuchAlgorithmException, OperatorCreationException, CertificateException {
+  throws IOException, NoSuchAlgorithmException, OperatorCreationException, CertificateException,
+         NoSuchProviderException {
     CertificateSignDTO certificateSignDTO = new CertificateSignDTO();
     CreateCADTO createCADTO = createCADTO();
 

@@ -6,21 +6,23 @@ import com.eurodyn.qlack.fuse.crypto.dto.CreateKeyPairDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.SSLSocketFactoryCertificateDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.SSLSocketFactoryDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.SSLSocketFactoryPrivateKeyDTO;
-import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CryptoSSLServiceTest {
@@ -42,7 +44,9 @@ public class CryptoSSLServiceTest {
 
   @Test
   public void getSocketFactoryTest()
-      throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException, IOException, KeyManagementException, KeyStoreException, InvalidKeySpecException {
+  throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException, IOException,
+         KeyManagementException, KeyStoreException, InvalidKeySpecException,
+         NoSuchProviderException {
     List<SSLSocketFactoryCertificateDTO> sslSocketFactoryCertificateDTOS = new ArrayList<>();
     SSLSocketFactoryCertificateDTO sslSocketFactoryCertificateDTO = new SSLSocketFactoryCertificateDTO();
     sslSocketFactoryCertificateDTO.setName("certificate");

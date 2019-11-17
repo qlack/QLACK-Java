@@ -3,19 +3,6 @@ package com.eurodyn.qlack.fuse.crypto.service;
 import com.eurodyn.qlack.fuse.crypto.dto.CPPPemHolderDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.CertificateSignDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.CreateCADTO;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
-import java.security.spec.InvalidKeySpecException;
-import java.time.Instant;
-import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.BasicConstraints;
@@ -31,6 +18,21 @@ import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.security.spec.InvalidKeySpecException;
+import java.time.Instant;
+import java.util.Date;
 
 /**
  * Certificate Authority management.
@@ -61,7 +63,8 @@ public class CryptoCAService {
    * @throws IOException thrown when something unexpected happens
    */
   public CPPPemHolderDTO createCA(final CreateCADTO createCADTO)
-      throws NoSuchAlgorithmException, InvalidKeySpecException, OperatorCreationException, IOException {
+  throws NoSuchAlgorithmException, InvalidKeySpecException, OperatorCreationException, IOException,
+         NoSuchProviderException {
     // Create a keypair for this CA.
     final KeyPair keyPair =
         cryptoAsymmetricService.createKeyPair(createCADTO.getCreateKeyPairRequestDTO());

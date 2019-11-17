@@ -18,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SignatureException;
@@ -27,7 +28,7 @@ public class CryptoAsymmetricServiceTest {
 
   CryptoAsymmetricService cryptoAsymmetricService = new CryptoAsymmetricService();
 
-  private KeyPair createKeyPair() throws NoSuchAlgorithmException {
+  private KeyPair createKeyPair() throws NoSuchAlgorithmException, NoSuchProviderException {
     final CreateKeyPairDTO createKeyPairDTO = new CreateKeyPairDTO();
     createKeyPairDTO.setKeyPairGeneratorAlgorithm("RSA");
     createKeyPairDTO.setKeySize(2048);
@@ -35,7 +36,7 @@ public class CryptoAsymmetricServiceTest {
   }
 
   @Test
-  public void createKeyPairTest() throws NoSuchAlgorithmException {
+  public void createKeyPairTest() throws NoSuchAlgorithmException, NoSuchProviderException {
     // Test with default random.
     final CreateKeyPairDTO createKeyPairDTO = new CreateKeyPairDTO();
     createKeyPairDTO.setKeyPairGeneratorAlgorithm("RSA");
@@ -47,20 +48,22 @@ public class CryptoAsymmetricServiceTest {
   }
 
   @Test
-  public void publicKeyToPEM() throws NoSuchAlgorithmException, IOException {
+  public void publicKeyToPEM() throws NoSuchAlgorithmException, IOException,
+                                      NoSuchProviderException {
     final String publicKeyToPEM = cryptoAsymmetricService.publicKeyToPEM(createKeyPair());
     assertNotNull(publicKeyToPEM);
   }
 
   @Test
-  public void privateKeyToPEM() throws NoSuchAlgorithmException, IOException {
+  public void privateKeyToPEM()
+  throws NoSuchAlgorithmException, IOException, NoSuchProviderException {
     final String privateKeyToPEM = cryptoAsymmetricService.privateKeyToPEM(createKeyPair());
     assertNotNull(privateKeyToPEM);
   }
 
   @Test
   public void pemToPublicKey()
-      throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+  throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, NoSuchProviderException {
     final String publicKeyToPEM = cryptoAsymmetricService.publicKeyToPEM(createKeyPair());
     final PublicKey rsa = cryptoAsymmetricService.pemToPublicKey(publicKeyToPEM, "RSA");
     assertNotNull(rsa);
@@ -68,7 +71,7 @@ public class CryptoAsymmetricServiceTest {
 
   @Test
   public void pemToPrivateKey()
-      throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+  throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, NoSuchProviderException {
     final String privateKeyToPEM = cryptoAsymmetricService.privateKeyToPEM(createKeyPair());
     final PrivateKey rsa = cryptoAsymmetricService.pemToPrivateKey(privateKeyToPEM, "RSA");
     assertNotNull(rsa);
@@ -76,8 +79,8 @@ public class CryptoAsymmetricServiceTest {
 
   @Test
   public void sign()
-      throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, InvalidKeyException,
-      SignatureException {
+  throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, InvalidKeyException,
+         SignatureException, NoSuchProviderException {
     final String privateKeyToPEM = cryptoAsymmetricService.privateKeyToPEM(createKeyPair());
     String plainText = "Hello World!";
     final byte[] signature = cryptoAsymmetricService
@@ -87,8 +90,8 @@ public class CryptoAsymmetricServiceTest {
 
   @Test
   public void verifySignature()
-      throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, InvalidKeyException,
-      SignatureException {
+  throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, InvalidKeyException,
+         SignatureException, NoSuchProviderException {
     final KeyPair keyPair = createKeyPair();
 
     // Generate a signature to compare it later.
@@ -105,8 +108,9 @@ public class CryptoAsymmetricServiceTest {
 
   @Test
   public void encrypt()
-      throws NoSuchAlgorithmException, IOException, IllegalBlockSizeException, InvalidKeyException,
-      BadPaddingException, InvalidKeySpecException, NoSuchPaddingException {
+  throws NoSuchAlgorithmException, IOException, IllegalBlockSizeException, InvalidKeyException,
+         BadPaddingException, InvalidKeySpecException, NoSuchPaddingException,
+         NoSuchProviderException {
     byte[] plaintext = "Hello World!".getBytes(StandardCharsets.UTF_8);
     final KeyPair keyPair = createKeyPair();
     final String publicKeyToPEM = cryptoAsymmetricService.publicKeyToPEM(keyPair);
@@ -116,8 +120,9 @@ public class CryptoAsymmetricServiceTest {
 
   @Test
   public void decrypt()
-      throws NoSuchAlgorithmException, IOException, IllegalBlockSizeException, InvalidKeyException,
-      BadPaddingException, InvalidKeySpecException, NoSuchPaddingException {
+  throws NoSuchAlgorithmException, IOException, IllegalBlockSizeException, InvalidKeyException,
+         BadPaddingException, InvalidKeySpecException, NoSuchPaddingException,
+         NoSuchProviderException {
     // Encrypt some text to compare it later.
     byte[] plaintext = "Hello World!".getBytes(StandardCharsets.UTF_8);
     final KeyPair keyPair = createKeyPair();
@@ -135,7 +140,8 @@ public class CryptoAsymmetricServiceTest {
   }
 
   @Test
-  public void convertKeyToPEMInvalidKeyTypeTest() throws NoSuchAlgorithmException, IOException {
+  public void convertKeyToPEMInvalidKeyTypeTest()
+  throws NoSuchAlgorithmException, IOException, NoSuchProviderException {
     assertEquals("", cryptoAsymmetricService.convertKeyToPEM(createKeyPair(), "keytype"));
   }
 
@@ -147,8 +153,8 @@ public class CryptoAsymmetricServiceTest {
 
   @Test
   public void signWithInputStreamTest()
-      throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, InvalidKeyException,
-      SignatureException {
+  throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, InvalidKeyException,
+         SignatureException, NoSuchProviderException {
     final String privateKeyToPEM = cryptoAsymmetricService.privateKeyToPEM(createKeyPair());
     String plainText = "Hello World!";
     final byte[] signature = cryptoAsymmetricService
@@ -159,8 +165,8 @@ public class CryptoAsymmetricServiceTest {
 
   @Test
   public void verifySignatureWithInputStreamTest()
-      throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, InvalidKeyException,
-      SignatureException {
+  throws NoSuchAlgorithmException, IOException, InvalidKeySpecException, InvalidKeyException,
+         SignatureException, NoSuchProviderException {
     final KeyPair keyPair = createKeyPair();
 
     // Generate a signature to compare it later.
