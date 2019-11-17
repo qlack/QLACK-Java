@@ -64,7 +64,7 @@ public class SettingsService {
    * @return a list of settings owned by the specific owner
    */
   public List<SettingDTO> getSettings(String owner, boolean includeSensitive) {
-    log.info(MessageFormat.format("Retrieving settings owned by: {0}.", owner));
+    log.finest(MessageFormat.format("Retrieving settings owned by: {0}.", owner));
     BooleanExpression predicate = qsetting.owner.endsWith(owner);
     if (!includeSensitive) {
       predicate = predicate.and(qsetting.sensitive.ne(true));
@@ -94,7 +94,7 @@ public class SettingsService {
    * @return a list of group names owned by the specific owner
    */
   public List<GroupDTO> getGroupNames(String owner) {
-    log.info(MessageFormat.format("Retrieving groups owned by: {0}.", owner));
+    log.finest(MessageFormat.format("Retrieving groups owned by: {0}.", owner));
     Predicate predicate = qsetting.owner.eq(owner);
 
     return settingMapper.mapToGroupDTO(settingRepository.findAll(predicate));
@@ -110,7 +110,7 @@ public class SettingsService {
    */
   public SettingDTO getSetting(String owner, String key, String group) {
     Optional<Setting> setting = getOptionalSetting(owner, key, group);
-    log.info(
+    log.finest(
         MessageFormat
             .format("Retrieving setting with key: {0}, owned by: {1} and in group: {2} ", key,
                 owner, group));
