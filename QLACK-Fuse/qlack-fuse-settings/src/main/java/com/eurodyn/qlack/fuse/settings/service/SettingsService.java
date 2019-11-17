@@ -11,16 +11,17 @@ import com.eurodyn.qlack.fuse.settings.model.Setting;
 import com.eurodyn.qlack.fuse.settings.repository.SettingRepository;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import javax.transaction.Transactional;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Provides settings administration functionality
@@ -127,7 +128,7 @@ public class SettingsService {
    * @return a list of settings owned by specific owner and in specific group
    */
   public List<SettingDTO> getGroupSettings(String owner, String group) {
-    log.info(
+    log.finest(
         MessageFormat.format("Retrieving settings owned by: {0} and in group: {1} ", owner, group));
     Predicate predicate = qsetting.owner.eq(owner).and(qsetting.group.eq(group));
     return settingMapper.map(settingRepository.findAll(predicate));
@@ -143,7 +144,7 @@ public class SettingsService {
     String key = dto.getKey();
     String group = dto.getGroup();
 
-    log.info(
+    log.finest(
         MessageFormat
             .format("Creating setting with key: {0}, owned by: {1} and in group: {2} ", key, owner,
                 group));
@@ -167,7 +168,7 @@ public class SettingsService {
    * @param group the group of the persisted setting
    */
   public void setVal(String owner, String key, String val, String group) {
-    log.info(MessageFormat
+    log.finest(MessageFormat
         .format("Setting the value of setting with key: {0}, owned by: {1} and in group: {2} ", key,
             owner, group));
     Setting setting = getOptionalSetting(owner, key, group).orElseThrow(
