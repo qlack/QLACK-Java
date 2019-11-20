@@ -128,8 +128,8 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
       }
     } catch (Exception e) {
       log.log(Level.WARNING,
-          "JWT token verification failed for address " + request.getRemoteAddr() +
-              " to [" + request.getPathInfo() + "]", e);
+          "JWT token verification failed for address {0} to [{1}] with message {2}",
+          new Object[]{request.getRemoteAddr(), request.getPathInfo(), e.getMessage()});
 
       // In case of failure make sure to clear the context to guarantee the user won't be authenticated.
       SecurityContextHolder.clearContext();
