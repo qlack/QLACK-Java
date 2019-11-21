@@ -1,6 +1,7 @@
 package com.eurodyn.qlack.fuse.security;
 
 import com.eurodyn.qlack.fuse.aaa.dto.OperationDTO;
+import com.eurodyn.qlack.fuse.aaa.dto.UserDTO;
 import com.eurodyn.qlack.fuse.aaa.dto.UserDetailsDTO;
 import com.eurodyn.qlack.fuse.aaa.dto.UserGroupDTO;
 import com.eurodyn.qlack.fuse.aaa.dto.UserGroupHasOperationDTO;
@@ -16,14 +17,28 @@ public class InitTestValues {
   public User createUser(){
     User user = new User();
     user.setId("57d30f8d-cf0c-4742-9893-09e2aa08c255");
-    user.setUsername("AAA Default User");
-    user.setPassword("thisisaverysecurepassword");
+    user.setUsername("test@test.com");
+    user.setPassword("Test1234");
     user.setSalt("thisisaveryrandomsalt");
     user.setStatus((byte)1);
     user.setSuperadmin(true);
     user.setExternal(false);
 
     return user;
+  }
+
+  public UserDTO userDTO(User user) {
+    UserDTO userDTO = new UserDTO();
+
+    userDTO.setId(user.getId());
+    userDTO.setUsername(user.getUsername());
+    userDTO.setPassword(user.getPassword());
+    userDTO.setStatus(user.getStatus());
+    userDTO.setSuperadmin(user.isSuperadmin());
+    userDTO.setExternal(user.isExternal());
+    userDTO.setSessionId("1234567");
+
+    return userDTO;
   }
 
   public UserDetailsDTO createUserDetailDTO(User user){
@@ -38,6 +53,8 @@ public class InitTestValues {
     userDetailsDTO.setExternal( user.isExternal() );
     userDetailsDTO.setUserHasOperations(createUserHasOperations());
     userDetailsDTO.setUserGroupHasOperations(createUserGroupHasOperationList(createUserGroupHasOperation()));
+    userDetailsDTO.setUserGroups(createUserGroupsDTO());
+    userDetailsDTO.setSessionId("1234567");
     userDetailsDTO.setUserGroups(createUserGroupsDTO());
 
     return userDetailsDTO;

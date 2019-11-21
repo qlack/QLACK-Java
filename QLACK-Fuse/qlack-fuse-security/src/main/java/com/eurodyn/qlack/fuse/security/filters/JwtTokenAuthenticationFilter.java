@@ -7,9 +7,6 @@ import com.eurodyn.qlack.fuse.security.service.NonceCachingService;
 import com.eurodyn.qlack.util.jwt.JWTUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import java.io.IOException;
-import java.util.Date;
-import java.util.logging.Level;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +24,10 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.logging.Level;
 
 /**
  * An implementation of a filter that runs at least once in every request. It checks if there is a
@@ -73,7 +74,6 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
   private boolean requireNonce = false;
 
   private static final String NONCE_HEADER = "Nonce";
-  private static final String NONCE_PARAM = "nonce";
 
   private static final int UUID_LENGTH = 36;
 

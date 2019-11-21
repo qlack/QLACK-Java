@@ -38,7 +38,7 @@ public class CachingUserDetailsService implements UserDetailsService {
    * @param username User name to be evicted from cache
    */
   public void removeUser(String username) {
-    userCaching.getUserCache().removeUserFromCache(username);
+    getUserCache().removeUserFromCache(username);
   }
 
   /**
