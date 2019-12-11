@@ -269,7 +269,7 @@ public class LanguageServiceTest {
 
   @Test
   public void testGetLanguages() {
-    when(languageRepository.findAll()).thenReturn(languages);
+    when(languageRepository.findAllByOrderByNameAsc()).thenReturn(languages);
     when(languageMapper.mapToDTO(languages)).thenReturn(languagesDTO);
     List<LanguageDTO> allLanguagesDTO = languageService.getLanguages(true);
     assertEquals(languagesDTO, allLanguagesDTO);

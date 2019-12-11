@@ -31,4 +31,6 @@ public interface LanguageRepository extends QlackBaseRepository<Language, String
    */
   List<Language> findByActiveTrueOrderByNameAsc();
 
+  List<Language> findAllByOrderByNameAsc();
+
 }

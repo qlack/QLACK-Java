@@ -246,11 +246,10 @@ public class LanguageService {
   public List<LanguageDTO> getLanguages(boolean includeInactive) {
     String languageMsg = includeInactive ? "languages" : "only active languages";
     log.info("Fetching all " + languageMsg);
-    List<Language> languages = includeInactive ? languageRepository.findAll()
+    List<Language> languages = includeInactive ? languageRepository.findAllByOrderByNameAsc()
         : languageRepository.findByActiveTrueOrderByNameAsc();
     return languageMapper.mapToDTO(languages);
   }
-
   /**
    * Searches for a language matching the given locale. If nothing is found with first attempt, the
    * locale is processed by removing special characters (_-) and searching is re-attempted. In case
