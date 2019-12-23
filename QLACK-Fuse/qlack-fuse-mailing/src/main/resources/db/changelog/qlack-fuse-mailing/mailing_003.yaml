@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: mailing_002
+      author: European Dynamics SA
+      changes:
+        - modifyDataType:
+            columnName: body
+            newDataType: mediumtext
+            tableName: mai_email

@@ -34,7 +34,7 @@ public class Email extends MailingModel {
   /**
    * The email body
    */
-  @Column(name = "body", length = 65535)
+  @Column(name = "body", length = 16777215)
   @Lob
   private String body;
 

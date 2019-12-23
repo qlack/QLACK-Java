@@ -6,5 +6,6 @@
 
   <include file="db/changelog/qlack-fuse-mailing/mailing_001.yaml"/>
   <include file="db/changelog/qlack-fuse-mailing/mailing_002.yaml"/>
+  <include file="db/changelog/qlack-fuse-mailing/mailing_003.yaml"/>
 
 </databaseChangeLog>
