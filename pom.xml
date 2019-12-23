@@ -455,7 +455,7 @@
                       <version>${project.version}</version>
                       <outputDirectory>${project.build.directory}/enunciate-documentation/
                       </outputDirectory>
-                      <includes>swagger-ui/swagger-ui-index.html</includes>
+                      <includes>swagger-ui/*</includes>
                     </artifactItem>
                   </artifactItems>
                 </configuration>
@@ -478,6 +478,7 @@
                       <fileset dir="${project.build.directory}/enunciate-documentation/apidocs/" />
                     </copy>
                     <copy file="${project.build.directory}/enunciate-documentation/swagger-ui/swagger-ui-index.html" tofile="${project.build.directory}/classes/static/documentation/ui/index.html" overwrite="true" />
+                    <copy file="${project.build.directory}/enunciate-documentation/swagger-ui/swagger-ui.js" tofile="${project.build.directory}/classes/static/documentation/ui/swagger-ui.js" overwrite="true" />
                   </target>
                 </configuration>
               </execution>
