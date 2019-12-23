@@ -3,6 +3,20 @@ package com.eurodyn.qlack.fuse.crypto.service;
 import com.eurodyn.qlack.fuse.crypto.dto.CPPPemHolderDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.CertificateSignDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.CreateCADTO;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.security.spec.InvalidKeySpecException;
+import java.time.Instant;
+import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.BasicConstraints;
@@ -19,21 +33,6 @@ import org.bouncycastle.util.io.pem.PemWriter;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
-import java.security.spec.InvalidKeySpecException;
-import java.time.Instant;
-import java.util.Date;
-
 /**
  * Certificate Authority management.
  */
@@ -46,28 +45,30 @@ public class CryptoCAService {
   private static final String CERTIFICATE = "CERTIFICATE";
 
   public CryptoCAService(
-      CryptoAsymmetricService cryptoAsymmetricService) {
+    CryptoAsymmetricService cryptoAsymmetricService) {
     this.cryptoAsymmetricService = cryptoAsymmetricService;
   }
 
   /**
-   * Create a new Certificate Authority. This method also supports creating a sub-CA by providing
-   * the issuer's information.
+   * Create a new Certificate Authority. This method also supports creating a
+   * sub-CA by providing the issuer's information.
    *
    * @param createCADTO the details of the CA to be created
    * @return the generated certificate
-   * @throws NoSuchAlgorithmException thrown when no algorithm is found for encryption
-   * @throws InvalidKeySpecException thrown when the provided key is invalid
-   * @throws OperatorCreationException thrown when something unexpected happens during the
+   * @throws NoSuchAlgorithmException thrown when no algorithm is found for
    * encryption
+   * @throws InvalidKeySpecException thrown when the provided key is invalid
+   * @throws OperatorCreationException thrown when something unexpected
+   * happens during the encryption
    * @throws IOException thrown when something unexpected happens
    */
   public CPPPemHolderDTO createCA(final CreateCADTO createCADTO)
-  throws NoSuchAlgorithmException, InvalidKeySpecException, OperatorCreationException, IOException,
-         NoSuchProviderException {
+    throws NoSuchAlgorithmException, InvalidKeySpecException, OperatorCreationException, IOException,
+    NoSuchProviderException {
     // Create a keypair for this CA.
     final KeyPair keyPair =
-        cryptoAsymmetricService.createKeyPair(createCADTO.getCreateKeyPairRequestDTO());
+      cryptoAsymmetricService
+        .createKeyPair(createCADTO.getCreateKeyPairRequestDTO());
 
     // Prepare signing.
     CertificateSignDTO certificateSignDTO = new CertificateSignDTO();
@@ -76,15 +77,17 @@ public class CryptoCAService {
     certificateSignDTO.setLocale(createCADTO.getLocale());
     certificateSignDTO.setPublicKey(keyPair.getPublic());
     certificateSignDTO.setPrivateKey(keyPair.getPrivate());
-    certificateSignDTO.setSignatureAlgorithm(createCADTO.getSignatureAlgorithm());
+    certificateSignDTO
+      .setSignatureAlgorithm(createCADTO.getSignatureAlgorithm());
     certificateSignDTO.setSubjectCN(createCADTO.getSubjectCN());
     certificateSignDTO.setCa(true);
 
     // Choose which private key to use. If no parent key is found then this is a self-signed certificate and the
     // private key created for the keypair will be used.
     if (StringUtils.isNotEmpty(createCADTO.getIssuerCN()) && StringUtils
-        .isNotEmpty(createCADTO.getIssuerPrivateKey())) {
-      certificateSignDTO.setIssuerPrivateKey(cryptoAsymmetricService.pemToPrivateKey(
+      .isNotEmpty(createCADTO.getIssuerPrivateKey())) {
+      certificateSignDTO
+        .setIssuerPrivateKey(cryptoAsymmetricService.pemToPrivateKey(
           createCADTO.getIssuerPrivateKey(),
           createCADTO.getIssuerPrivateKeyAlgorithm()));
       certificateSignDTO.setIssuerCN(createCADTO.getIssuerCN());
@@ -93,7 +96,8 @@ public class CryptoCAService {
       certificateSignDTO.setIssuerCN(createCADTO.getSubjectCN());
     }
 
-    final X509CertificateHolder certHolder = generateCertificate(certificateSignDTO);
+    final X509CertificateHolder certHolder = generateCertificate(
+      certificateSignDTO);
 
     // Prepare reply.
     final CPPPemHolderDTO cppPemKey = new CPPPemHolderDTO();
@@ -109,46 +113,51 @@ public class CryptoCAService {
    *
    * @param signDTO the details of the signing to take place
    * @return the generated signature
-   * @throws OperatorCreationException thrown when something unexpected happens during the
-   * encryption
-   * @throws CertIOException thrown when something unexpected happens while generating the
-   * certificate
+   * @throws OperatorCreationException thrown when something unexpected
+   * happens during the encryption
+   * @throws CertIOException thrown when something unexpected happens while
+   * generating the certificate
    */
   @SuppressWarnings({"squid:S2274", "squid:S2142"})
-  public X509CertificateHolder generateCertificate(final CertificateSignDTO signDTO)
-      throws OperatorCreationException, CertIOException {
+  public X509CertificateHolder generateCertificate(
+    final CertificateSignDTO signDTO)
+    throws OperatorCreationException, CertIOException {
 
     // Create a generator for the certificate including all certificate details.
     final X509v3CertificateBuilder certGenerator;
     // Synchronize this part, so that no two certificates can be created with the same timestamp.
     synchronized (this) {
       certGenerator = new X509v3CertificateBuilder(
-          new X500Name(
-              CN + "=" + StringUtils.defaultIfBlank(signDTO.getIssuerCN(), signDTO.getSubjectCN())),
-          signDTO.isCa() ? BigInteger.ONE : BigInteger.valueOf(Instant.now().toEpochMilli()),
-          new Date(signDTO.getValidForm().toEpochMilli()),
-          new Date(signDTO.getValidTo().toEpochMilli()),
-          signDTO.getLocale(),
-          new X500Name(CN + "=" + signDTO.getSubjectCN()),
-          SubjectPublicKeyInfo.getInstance(signDTO.getPublicKey().getEncoded())
+        new X500Name(
+          CN + "=" + StringUtils
+            .defaultIfBlank(signDTO.getIssuerCN(), signDTO.getSubjectCN())),
+        signDTO.isCa() ? BigInteger.ONE
+          : BigInteger.valueOf(Instant.now().toEpochMilli()),
+        new Date(signDTO.getValidForm().toEpochMilli()),
+        new Date(signDTO.getValidTo().toEpochMilli()),
+        signDTO.getLocale(),
+        new X500Name(CN + "=" + signDTO.getSubjectCN()),
+        SubjectPublicKeyInfo.getInstance(signDTO.getPublicKey().getEncoded())
       );
     }
 
     // Check if this is a CA certificate and in that case add the necessary key extensions.
     if (signDTO.isCa()) {
-      certGenerator.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
+      certGenerator.addExtension(Extension.basicConstraints, true,
+        new BasicConstraints(true));
       certGenerator
-          .addExtension(Extension.keyUsage, true,
-              new KeyUsage(KeyUsage.cRLSign | KeyUsage.keyCertSign));
+        .addExtension(Extension.keyUsage, true,
+          new KeyUsage(KeyUsage.cRLSign | KeyUsage.keyCertSign));
     } else {
-      certGenerator.addExtension(Extension.basicConstraints, true, new BasicConstraints(false));
+      certGenerator.addExtension(Extension.basicConstraints, true,
+        new BasicConstraints(false));
     }
 
     // Generate the certificate.
     final X509CertificateHolder certHolder;
     certHolder = certGenerator.build(
-        new JcaContentSignerBuilder(signDTO.getSignatureAlgorithm())
-            .build(signDTO.getIssuerPrivateKey()));
+      new JcaContentSignerBuilder(signDTO.getSignatureAlgorithm())
+        .build(signDTO.getIssuerPrivateKey()));
 
     return certHolder;
   }
@@ -160,10 +169,12 @@ public class CryptoCAService {
    * @return the generated PEM
    * @throws IOException thrown when something unexpected happens
    */
-  public String certificateToPEM(final X509CertificateHolder certificateHolder) throws IOException {
+  public String certificateToPEM(final X509CertificateHolder certificateHolder)
+    throws IOException {
     try (StringWriter pemStrWriter = new StringWriter()) {
       try (PemWriter writer = new PemWriter(pemStrWriter)) {
-        writer.writeObject(new PemObject(CERTIFICATE, certificateHolder.getEncoded()));
+        writer.writeObject(
+          new PemObject(CERTIFICATE, certificateHolder.getEncoded()));
         writer.flush();
         return pemStrWriter.toString();
       }
@@ -175,13 +186,15 @@ public class CryptoCAService {
    *
    * @param cert the certificate in PEM format
    * @return the generated certificate
-   * @throws CertificateException thrown when something unexpected happens while generating the
-   * certificate
+   * @throws CertificateException thrown when something unexpected happens
+   * while generating the certificate
    */
-  public X509Certificate pemToCertificate(final String cert) throws CertificateException {
+  public X509Certificate pemToCertificate(final String cert)
+    throws CertificateException {
     CertificateFactory fact = CertificateFactory.getInstance("X.509");
 
-    return (X509Certificate) fact.generateCertificate(new ByteArrayInputStream(cert.getBytes(
+    return (X509Certificate) fact
+      .generateCertificate(new ByteArrayInputStream(cert.getBytes(
         StandardCharsets.UTF_8)));
   }
 }

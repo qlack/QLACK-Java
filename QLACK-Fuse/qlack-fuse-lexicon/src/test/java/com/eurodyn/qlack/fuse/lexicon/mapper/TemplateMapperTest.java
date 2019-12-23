@@ -50,7 +50,7 @@ public class TemplateMapperTest {
     assertEquals(null, templateMapper.mapToDTO((Template) null));
 
     List<TemplateDTO> templateDTOS = templateMapper.mapToDTO(
-        (List<Template>) null);
+      (List<Template>) null);
     assertEquals(null, templateDTOS);
   }
 
@@ -78,7 +78,7 @@ public class TemplateMapperTest {
     assertEquals(null, templateMapper.mapToEntity((TemplateDTO) null));
 
     List<Template> templates = templateMapper.mapToEntity(
-        (List<TemplateDTO>) null);
+      (List<TemplateDTO>) null);
     assertEquals(null, templates);
   }
 

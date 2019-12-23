@@ -81,7 +81,8 @@ public class Operation extends AAAModel {
    * @param userGroupHasOperation a @{@link UserGroupHasOperation} object
    * @return a @{@link UserGroupHasOperation} object
    */
-  public UserGroupHasOperation addGroupHasOperation(UserGroupHasOperation userGroupHasOperation) {
+  public UserGroupHasOperation addGroupHasOperation(
+    UserGroupHasOperation userGroupHasOperation) {
     if (this.getUserGroupHasOperations() == null) {
       setUserGroupHasOperations(new ArrayList<UserGroupHasOperation>());
     }
@@ -98,7 +99,7 @@ public class Operation extends AAAModel {
    * @return the @{@link UserGroupHasOperation} object
    */
   public UserGroupHasOperation removeGroupHasOperation(
-      UserGroupHasOperation userGroupHasOperation) {
+    UserGroupHasOperation userGroupHasOperation) {
     this.getUserGroupHasOperations().remove(userGroupHasOperation);
     userGroupHasOperation.setOperation(null);
 
@@ -112,7 +113,7 @@ public class Operation extends AAAModel {
    * @return a {@link OpTemplateHasOperation} object
    */
   public OpTemplateHasOperation addOpTemplateHasOperation(
-      OpTemplateHasOperation opTemplateHasOperation) {
+    OpTemplateHasOperation opTemplateHasOperation) {
     if (getOpTemplateHasOperations() == null) {
       setOpTemplateHasOperations(new ArrayList<>());
     }
@@ -129,7 +130,7 @@ public class Operation extends AAAModel {
    * @return a {@link OpTemplateHasOperation} object
    */
   public OpTemplateHasOperation removeOpTemplateHasOperation(
-      OpTemplateHasOperation opTemplateHasOperation) {
+    OpTemplateHasOperation opTemplateHasOperation) {
     getOpTemplateHasOperations().remove(opTemplateHasOperation);
     opTemplateHasOperation.setOperation(null);
 
@@ -142,7 +143,8 @@ public class Operation extends AAAModel {
    * @param userHasOperation the @{@link UserHasOperation} object
    * @return the {@link UserHasOperation} object
    */
-  public UserHasOperation addUserHasOperation(UserHasOperation userHasOperation) {
+  public UserHasOperation addUserHasOperation(
+    UserHasOperation userHasOperation) {
     getUserHasOperations().add(userHasOperation);
     userHasOperation.setOperation(this);
 
@@ -155,7 +157,8 @@ public class Operation extends AAAModel {
    * @param userHasOperation the @{@link UserHasOperation} object
    * @return a {@link UserHasOperation} object
    */
-  public UserHasOperation removeUserHasOperation(UserHasOperation userHasOperation) {
+  public UserHasOperation removeUserHasOperation(
+    UserHasOperation userHasOperation) {
     getUserHasOperations().remove(userHasOperation);
     userHasOperation.setOperation(null);
 

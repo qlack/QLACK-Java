@@ -14,7 +14,8 @@ public class QStorageExceptionTest {
     String message = "exception message";
     Throwable throwable = new Throwable();
 
-    QStorageException qStorageException = new QStorageException(message, throwable);
+    QStorageException qStorageException = new QStorageException(message,
+      throwable);
     assertEquals(message, qStorageException.getMessage());
     assertEquals(throwable, qStorageException.getCause());
   }

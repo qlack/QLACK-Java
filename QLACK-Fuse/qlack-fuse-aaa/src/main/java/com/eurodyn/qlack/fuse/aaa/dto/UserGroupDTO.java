@@ -7,8 +7,8 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 
 /**
- * A simple DTO (Data Transfer Object) that does not contain any business logic. It is used only to
- * retrieve and save theirs UserGroup objects data.
+ * A simple DTO (Data Transfer Object) that does not contain any business logic.
+ * It is used only to retrieve and save theirs UserGroup objects data.
  *
  * @author European Dynamics SA
  */

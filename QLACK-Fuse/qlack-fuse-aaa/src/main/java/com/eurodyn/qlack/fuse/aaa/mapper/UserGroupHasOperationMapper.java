@@ -12,13 +12,13 @@ import org.mapstruct.ReportingPolicy;
  * @author European Dynamics SA
  */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,
-    uses = {
-        UserGroupMapper.class,
-        OperationMapper.class,
-        ResourceMapper.class
-    })
+  uses = {
+    UserGroupMapper.class,
+    OperationMapper.class,
+    ResourceMapper.class
+  })
 public interface UserGroupHasOperationMapper extends
-    AAAMapper<UserGroupHasOperation, UserGroupHasOperationDTO> {
+  AAAMapper<UserGroupHasOperation, UserGroupHasOperationDTO> {
 
   /**
    * Maps a specified Entity to according DTO
@@ -28,5 +28,6 @@ public interface UserGroupHasOperationMapper extends
    */
   @Mapping(source = "userGroup", target = "userGroupDTO")
   @Mapping(source = "operation", target = "operationDTO")
-  UserGroupHasOperationDTO mapToDTO(UserGroupHasOperation userGroupHasOperation);
+  UserGroupHasOperationDTO mapToDTO(
+    UserGroupHasOperation userGroupHasOperation);
 }

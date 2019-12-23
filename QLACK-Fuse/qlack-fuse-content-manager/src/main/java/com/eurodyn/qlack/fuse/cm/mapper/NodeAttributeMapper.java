@@ -9,7 +9,8 @@ import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface NodeAttributeMapper extends CMBaseMapper<NodeAttribute, NodeAttributeDTO> {
+public interface NodeAttributeMapper extends
+  CMBaseMapper<NodeAttribute, NodeAttributeDTO> {
 
   @Override
   @Mapping(target = "nodeId", source = "node", qualifiedByName = "mapNode")
@@ -27,9 +28,6 @@ public interface NodeAttributeMapper extends CMBaseMapper<NodeAttribute, NodeAtt
       return null;
     }
     String id = node.getId();
-    if (id == null) {
-      return null;
-    }
     return id;
   }
 

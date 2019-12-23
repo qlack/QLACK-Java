@@ -26,14 +26,15 @@ public class CachingUserDetailsService implements UserDetailsService {
   private final UserDetailsService delegate;
 
   @Autowired
-  public CachingUserDetailsService(AAAUserCaching userCaching, UserDetailsService delegate) {
+  public CachingUserDetailsService(AAAUserCaching userCaching,
+    UserDetailsService delegate) {
     this.userCaching = userCaching;
     this.delegate = delegate;
   }
 
   /**
-   * Removes user from cache by username. If the user doesn't exist it returns without throwing an
-   * exception.
+   * Removes user from cache by username. If the user doesn't exist it returns
+   * without throwing an exception.
    *
    * @param username User name to be evicted from cache
    */

@@ -1,4 +1,4 @@
-# QLACK rules module
+# QLACK Fuse - Rules
 
 This module uses the Drools library and provides rules configuration and execution methods.
 

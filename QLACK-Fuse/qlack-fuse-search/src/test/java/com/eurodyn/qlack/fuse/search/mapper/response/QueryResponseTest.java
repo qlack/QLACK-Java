@@ -142,7 +142,8 @@ public class QueryResponseTest {
     hits.setHitList(hitList);
 
     QueryResponse.Hits actualHits = queryResponse.getHits();
-    assertEquals(hit.getScore(), actualHits.getHitList().get(0).getScore(), Epsilon);
+    assertEquals(hit.getScore(), actualHits.getHitList().get(0).getScore(),
+      Epsilon);
   }
 
   @Test
@@ -172,7 +173,8 @@ public class QueryResponseTest {
     hits.setHitList(hitList);
 
     QueryResponse.Hits actualHits = queryResponse.getHits();
-    assertEquals(hit.getInnerHits(), actualHits.getHitList().get(0).getInnerHits());
+    assertEquals(hit.getInnerHits(),
+      actualHits.getHitList().get(0).getInnerHits());
   }
 
   @Test
@@ -190,9 +192,10 @@ public class QueryResponseTest {
     agg.setDocCountErrorUpperBound(20);
     aggregations.setAgg(agg);
 
-    QueryResponse.Aggregations actualAggregations = queryResponse.getAggregations();
+    QueryResponse.Aggregations actualAggregations = queryResponse
+      .getAggregations();
     assertEquals(agg.getDocCountErrorUpperBound(),
-        actualAggregations.getAgg().getDocCountErrorUpperBound());
+      actualAggregations.getAgg().getDocCountErrorUpperBound());
   }
 
   @Test
@@ -200,8 +203,10 @@ public class QueryResponseTest {
     agg.setSumOtherDocCount(20);
     aggregations.setAgg(agg);
 
-    QueryResponse.Aggregations actualAggregations = queryResponse.getAggregations();
-    assertEquals(agg.getSumOtherDocCount(), actualAggregations.getAgg().getSumOtherDocCount());
+    QueryResponse.Aggregations actualAggregations = queryResponse
+      .getAggregations();
+    assertEquals(agg.getSumOtherDocCount(),
+      actualAggregations.getAgg().getSumOtherDocCount());
   }
 
   @Test
@@ -209,7 +214,8 @@ public class QueryResponseTest {
     agg.setBuckets(bucketList);
     aggregations.setAgg(agg);
 
-    QueryResponse.Aggregations actualAggregations = queryResponse.getAggregations();
+    QueryResponse.Aggregations actualAggregations = queryResponse
+      .getAggregations();
     assertEquals(agg.getBuckets(), actualAggregations.getAgg().getBuckets());
   }
 
@@ -218,7 +224,8 @@ public class QueryResponseTest {
     agg.setBuckets(null);
     aggregations.setAgg(agg);
 
-    QueryResponse.Aggregations actualAggregations = queryResponse.getAggregations();
+    QueryResponse.Aggregations actualAggregations = queryResponse
+      .getAggregations();
     assertTrue(actualAggregations.getAgg().getBuckets().isEmpty());
   }
 
@@ -230,7 +237,8 @@ public class QueryResponseTest {
     aggregations.setAgg(agg);
 
     QueryResponse.Aggregations actualBucket = queryResponse.getAggregations();
-    assertEquals(bucket.getKey(), actualBucket.getAgg().getBuckets().get(0).getKey());
+    assertEquals(bucket.getKey(),
+      actualBucket.getAgg().getBuckets().get(0).getKey());
   }
 
   @Test
@@ -242,7 +250,7 @@ public class QueryResponseTest {
 
     QueryResponse.Aggregations actualBucket = queryResponse.getAggregations();
     assertEquals(bucket.getKeyAsString(),
-        actualBucket.getAgg().getBuckets().get(0).getKeyAsString());
+      actualBucket.getAgg().getBuckets().get(0).getKeyAsString());
   }
 
   @Test
@@ -253,6 +261,7 @@ public class QueryResponseTest {
     aggregations.setAgg(agg);
 
     QueryResponse.Aggregations actualBucket = queryResponse.getAggregations();
-    assertEquals(bucket.getDocCount(), actualBucket.getAgg().getBuckets().get(0).getDocCount());
+    assertEquals(bucket.getDocCount(),
+      actualBucket.getAgg().getBuckets().get(0).getDocCount());
   }
 }

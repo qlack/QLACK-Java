@@ -17,8 +17,8 @@ package com.eurodyn.qlack.fuse.aaa.exception;
 import com.eurodyn.qlack.common.exception.QException;
 
 /**
- * An Exception class definition for AAA. The creation of this Exception class aims to throw an
- * exception message if anything wrong happens to an aaa.
+ * An Exception class definition for AAA. The creation of this Exception class
+ * aims to throw an exception message if anything wrong happens to an aaa.
  *
  * @author European Dynamics SA
  */

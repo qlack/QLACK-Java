@@ -31,7 +31,8 @@ public class JSONConfig {
   }
 
   public GroupHasOperation[] getGroupHasOperations() {
-    return groupHasOperations != null ? groupHasOperations : new GroupHasOperation[0];
+    return groupHasOperations != null ? groupHasOperations
+      : new GroupHasOperation[0];
   }
 
   public void setGroupHasOperations(GroupHasOperation[] groupHasOperations) {
@@ -39,10 +40,12 @@ public class JSONConfig {
   }
 
   public TemplateHasOperation[] getTemplateHasOperations() {
-    return templateHasOperations != null ? templateHasOperations : new TemplateHasOperation[0];
+    return templateHasOperations != null ? templateHasOperations
+      : new TemplateHasOperation[0];
   }
 
-  public void setTemplateHasOperations(TemplateHasOperation[] templateHasOperations) {
+  public void setTemplateHasOperations(
+    TemplateHasOperation[] templateHasOperations) {
     this.templateHasOperations = templateHasOperations;
   }
 

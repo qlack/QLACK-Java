@@ -74,7 +74,8 @@ public class Resource extends AAAModel {
    * @param userHasOperation a {@link UserHasOperation} type Object
    * @return a userHasOperation object
    */
-  public UserHasOperation addUserHasOperation(UserHasOperation userHasOperation) {
+  public UserHasOperation addUserHasOperation(
+    UserHasOperation userHasOperation) {
     if (getUserHasOperations() == null) {
       setUserHasOperations(new ArrayList<UserHasOperation>());
     }
@@ -90,7 +91,8 @@ public class Resource extends AAAModel {
    * @param userHasOperation a userHasOperation object
    * @return a @{@link UserHasOperation} object
    */
-  public UserHasOperation removeUserHasOperation(UserHasOperation userHasOperation) {
+  public UserHasOperation removeUserHasOperation(
+    UserHasOperation userHasOperation) {
     getUserHasOperations().remove(userHasOperation);
     userHasOperation.setResource(null);
 
@@ -103,7 +105,8 @@ public class Resource extends AAAModel {
    * @param userGroupHasOperation the {@link UserGroupHasOperation} object
    * @return the {@link UserGroupHasOperation} object
    */
-  public UserGroupHasOperation addGroupHasOperation(UserGroupHasOperation userGroupHasOperation) {
+  public UserGroupHasOperation addGroupHasOperation(
+    UserGroupHasOperation userGroupHasOperation) {
     if (this.getUserGroupHasOperations() == null) {
       setUserGroupHasOperations(new ArrayList<UserGroupHasOperation>());
     }
@@ -120,7 +123,7 @@ public class Resource extends AAAModel {
    * @return a {@link UserGroupHasOperation} object
    */
   public UserGroupHasOperation removeGroupHasOperation(
-      UserGroupHasOperation userGroupHasOperation) {
+    UserGroupHasOperation userGroupHasOperation) {
     this.getUserGroupHasOperations().remove(userGroupHasOperation);
     userGroupHasOperation.setResource(null);
 
@@ -134,7 +137,7 @@ public class Resource extends AAAModel {
    * @return the {@link OpTemplateHasOperation} object
    */
   public OpTemplateHasOperation addOpTemplateHasOperation(
-      OpTemplateHasOperation opTemplateHasOperation) {
+    OpTemplateHasOperation opTemplateHasOperation) {
     if (getOpTemplateHasOperations() == null) {
       setOpTemplateHasOperations(new ArrayList<OpTemplateHasOperation>());
     }
@@ -151,7 +154,7 @@ public class Resource extends AAAModel {
    * @return a {@link OpTemplateHasOperation} object
    */
   public OpTemplateHasOperation removeOpTemplateHasOperation(
-      OpTemplateHasOperation opTemplateHasOperation) {
+    OpTemplateHasOperation opTemplateHasOperation) {
     getOpTemplateHasOperations().remove(opTemplateHasOperation);
     opTemplateHasOperation.setResource(null);
 

@@ -5,8 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * A simple DTO (Data Transfer Object) class that does not contain any business logic. It is used to
- * store and retrieve a Language data such as the name of it.
+ * A simple DTO (Data Transfer Object) class that does not contain any business
+ * logic. It is used to store and retrieve a Language data such as the name of
+ * it.
  *
  * @author European Dynamics SA
  */

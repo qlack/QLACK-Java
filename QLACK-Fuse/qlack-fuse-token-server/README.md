@@ -1,18 +1,14 @@
-# QLACK TokenServer module
+# QLACK Fuse - Token Server
 
 ## Integration
 
 ### Add qlack-fuse-token-server dependency to your pom.xml:
 
-```
-    <properties>
-        <version.qlack>${qlack.version}</version.qlack>
-    </properties>
-
+```xml
     <dependency>
         <artifactId>qlack-fuse-token-server</artifactId>
         <groupId>com.eurodyn.qlack.fuse</groupId>
-        <version>${version.qlack}</version>
+        <version>${qlack.version}</version>
     </dependency>
 ```
 

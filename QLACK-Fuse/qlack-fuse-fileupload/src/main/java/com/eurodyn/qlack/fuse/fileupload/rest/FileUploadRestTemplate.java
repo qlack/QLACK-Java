@@ -31,12 +31,12 @@ public abstract class FileUploadRestTemplate {
    *
    * @param id The file id
    * @param chunkNumber The chunk order number
-   * @return ResponseEntity.ok() if chunk exists, ResponseEntity.status(HttpStatus.NO_CONTENT) if
-   * not
+   * @return ResponseEntity.ok() if chunk exists, ResponseEntity.status(HttpStatus.NO_CONTENT)
+   * if not
    */
   public ResponseEntity checkChunk(String id, long chunkNumber) {
     return fileUpload.checkChunk(id, chunkNumber) ? ResponseEntity.ok().build()
-        : ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+      : ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 
   /**
@@ -65,9 +65,11 @@ public abstract class FileUploadRestTemplate {
    *
    * @param body a {@link MultipartHttpServletRequest} body
    * @return a {@link DBFileDTO}
-   * @throws IOException if error occurs during multipart data inputstream reading
+   * @throws IOException if error occurs during multipart data inputstream
+   * reading
    */
-  private DBFileDTO mapMultiPartToDBFileDTO(MultipartHttpServletRequest body) throws IOException {
+  private DBFileDTO mapMultiPartToDBFileDTO(MultipartHttpServletRequest body)
+    throws IOException {
     DBFileDTO dbFileDTO = new DBFileDTO();
 
     dbFileDTO.setId(getString("flowIdentifier", body));
@@ -75,9 +77,11 @@ public abstract class FileUploadRestTemplate {
     dbFileDTO.setFileData(getBin("file", body));
 
     if (body.getParameter("flowChunkNumber") != null) {
-      dbFileDTO.setChunkNumber(Long.valueOf(body.getParameter("flowChunkNumber")));
+      dbFileDTO
+        .setChunkNumber(Long.valueOf(body.getParameter("flowChunkNumber")));
     } else {
-      dbFileDTO.setChunkNumber(1); // Support for older browsers, where there is always one chunk.
+      dbFileDTO.setChunkNumber(
+        1); // Support for older browsers, where there is always one chunk.
     }
 
     if (body.getParameter("flowChunkSize") != null) {
@@ -85,9 +89,11 @@ public abstract class FileUploadRestTemplate {
     }
 
     if (body.getParameter("flowTotalChunks") != null) {
-      dbFileDTO.setTotalChunks(Long.valueOf(body.getParameter("flowTotalChunks")));
+      dbFileDTO
+        .setTotalChunks(Long.valueOf(body.getParameter("flowTotalChunks")));
     } else {
-      dbFileDTO.setTotalChunks(1); // Support for older browsers, where there is always one chunk.
+      dbFileDTO.setTotalChunks(
+        1); // Support for older browsers, where there is always one chunk.
     }
 
     if (body.getParameter("flowTotalSize") != null) {
@@ -103,12 +109,15 @@ public abstract class FileUploadRestTemplate {
    * @param fieldName the name of the data Multipart section
    * @param body a {@link MultipartHttpServletRequest}
    * @return data byte array
-   * @throws IOException if error occurs during multipart data inputstream reading
+   * @throws IOException if error occurs during multipart data inputstream
+   * reading
    */
   private byte[] getBin(String fieldName, MultipartHttpServletRequest body)
-      throws IOException {
+    throws IOException {
     return body.getFile(fieldName) != null ? IOUtils
-        .toByteArray(Objects.requireNonNull(body.getFile(fieldName)).getInputStream()) : null;
+      .toByteArray(
+        Objects.requireNonNull(body.getFile(fieldName)).getInputStream())
+      : null;
   }
 
   /**

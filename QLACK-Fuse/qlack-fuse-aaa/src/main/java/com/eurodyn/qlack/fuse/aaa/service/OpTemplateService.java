@@ -34,10 +34,11 @@ public class OpTemplateService {
   private final OpTemplateMapper opTemplateMapper;
 
   public OpTemplateService(
-      OpTemplateRepository opTemplateRepository,
-      OpTemplateHasOperationRepository opTemplateHasOperationRepository,
-      OperationRepository operationRepository, ResourceRepository resourceRepository,
-      OpTemplateMapper opTemplateMapper) {
+    OpTemplateRepository opTemplateRepository,
+    OpTemplateHasOperationRepository opTemplateHasOperationRepository,
+    OperationRepository operationRepository,
+    ResourceRepository resourceRepository,
+    OpTemplateMapper opTemplateMapper) {
     this.opTemplateRepository = opTemplateRepository;
     this.opTemplateHasOperationRepository = opTemplateHasOperationRepository;
     this.operationRepository = operationRepository;
@@ -83,7 +84,8 @@ public class OpTemplateService {
    * @return the {@link OpTemplateDTO} by its id
    */
   public OpTemplateDTO getTemplateByID(String templateID) {
-    return opTemplateMapper.mapToDTO(opTemplateRepository.fetchById(templateID));
+    return opTemplateMapper
+      .mapToDTO(opTemplateRepository.fetchById(templateID));
   }
 
   /**
@@ -93,7 +95,8 @@ public class OpTemplateService {
    * @return the {@link OpTemplateDTO} by its name
    */
   public OpTemplateDTO getTemplateByName(String templateName) {
-    return opTemplateMapper.mapToDTO(opTemplateRepository.findByName(templateName));
+    return opTemplateMapper
+      .mapToDTO(opTemplateRepository.findByName(templateName));
   }
 
   /**
@@ -104,13 +107,14 @@ public class OpTemplateService {
    * @param isDeny the isDeny checking value whether is denied or not
    */
   public void addOperation(String templateID, String operationName,
-      boolean isDeny) {
+    boolean isDeny) {
     OpTemplateHasOperation tho = opTemplateHasOperationRepository
-        .findByTemplateIdAndOperationName(templateID, operationName);
+      .findByTemplateIdAndOperationName(templateID, operationName);
     if (tho != null) {
       tho.setDeny(isDeny);
     } else {
-      opTemplateHasOperationRepository.save(commonAddOperation(templateID, operationName, isDeny));
+      opTemplateHasOperationRepository
+        .save(commonAddOperation(templateID, operationName, isDeny));
     }
   }
 
@@ -123,10 +127,10 @@ public class OpTemplateService {
    * @param isDeny whether is denied or not
    */
   public void addOperation(String templateID, String operationName,
-      String resourceID, boolean isDeny) {
+    String resourceID, boolean isDeny) {
     OpTemplateHasOperation tho = opTemplateHasOperationRepository
-        .findByTemplateIdAndResourceIdAndOperationName(
-            templateID, resourceID, operationName);
+      .findByTemplateIdAndResourceIdAndOperationName(
+        templateID, resourceID, operationName);
     if (tho != null) {
       tho.setDeny(isDeny);
     } else {
@@ -145,8 +149,9 @@ public class OpTemplateService {
    * @param isDeny whether is denied or not
    * @return a {@link OpTemplateHasOperation} object
    */
-  private OpTemplateHasOperation commonAddOperation(String templateID, String operationName,
-      boolean isDeny) {
+  private OpTemplateHasOperation commonAddOperation(String templateID,
+    String operationName,
+    boolean isDeny) {
     OpTemplate template = opTemplateRepository.fetchById(templateID);
     Operation operation = operationRepository.findByName(operationName);
     OpTemplateHasOperation tho = new OpTemplateHasOperation();
@@ -163,22 +168,25 @@ public class OpTemplateService {
    * @param operationName the operationName
    */
   public void removeOperation(String templateID, String operationName) {
-    OpTemplateHasOperation tho = opTemplateHasOperationRepository.findByTemplateIdAndOperationName(
+    OpTemplateHasOperation tho = opTemplateHasOperationRepository
+      .findByTemplateIdAndOperationName(
         templateID, operationName);
     opTemplateHasOperationRepository.delete(tho);
   }
 
   /**
-   * Removes Operation provided by its templateID, the operationName and the resourceID
+   * Removes Operation provided by its templateID, the operationName and the
+   * resourceID
    *
    * @param templateID the templateID
    * @param operationName the operationName
    * @param resourceID the resourceID
    */
   public void removeOperation(String templateID, String operationName,
-      String resourceID) {
+    String resourceID) {
     OpTemplateHasOperation tho = opTemplateHasOperationRepository
-        .findByTemplateIdAndResourceIdAndOperationName(templateID, operationName, resourceID);
+      .findByTemplateIdAndResourceIdAndOperationName(templateID, operationName,
+        resourceID);
     opTemplateHasOperationRepository.delete(tho);
   }
 
@@ -192,7 +200,8 @@ public class OpTemplateService {
   public Boolean getOperationAccess(String templateID, String operationName) {
     Boolean retVal = null;
 
-    OpTemplateHasOperation tho = opTemplateHasOperationRepository.findByTemplateIdAndOperationName(
+    OpTemplateHasOperation tho = opTemplateHasOperationRepository
+      .findByTemplateIdAndOperationName(
         templateID, operationName);
     if (tho != null) {
       retVal = tho.isDeny();
@@ -207,15 +216,16 @@ public class OpTemplateService {
    * @param templateID the templateID
    * @param operationName the operationName
    * @param resourceID the resourceID
-   * @return a {@link Boolean} value that checks the access of operation template
+   * @return a {@link Boolean} value that checks the access of operation
+   * template
    */
   public Boolean getOperationAccess(String templateID, String operationName,
-      String resourceID) {
+    String resourceID) {
     Boolean retVal = null;
 
     OpTemplateHasOperation tho = opTemplateHasOperationRepository
-        .findByTemplateIdAndResourceIdAndOperationName(
-            templateID, resourceID, operationName);
+      .findByTemplateIdAndResourceIdAndOperationName(
+        templateID, resourceID, operationName);
     if (tho != null) {
       retVal = tho.isDeny();
     }
@@ -227,7 +237,8 @@ public class OpTemplateService {
    * Checks if any update happens to Template
    *
    * @param templateDTO the {@link OpTemplateDTO} object
-   * @return a {@link Boolean} type that checks if any update happens to Template
+   * @return a {@link Boolean} type that checks if any update happens to
+   * Template
    */
   public boolean updateTemplate(OpTemplateDTO templateDTO) {
     boolean retVal = false;

@@ -73,35 +73,35 @@ public class JarClassLoaderBuilder {
   private MapBackedClassLoader getMapBackedClassLoader() {
 
     return AccessController
-        .doPrivileged((PrivilegedAction<MapBackedClassLoader>) () -> {
-          ClassLoader parent = getParentClassLoader();
-          return new MapBackedClassLoader(parent);
-        });
+      .doPrivileged((PrivilegedAction<MapBackedClassLoader>) () -> {
+        ClassLoader parent = getParentClassLoader();
+        return new MapBackedClassLoader(parent);
+      });
 
   }
 
   private ClassLoader getParentClassLoader() {
     return org.drools.core.common.ProjectClassLoader.class
-        .getClassLoader();
+      .getClassLoader();
   }
 
   @SuppressWarnings("squid:S5042")
   private MapBackedClassLoader loadJarToClassloader(JarInputStream jis,
-      MapBackedClassLoader mapBackedClassLoader) {
+    MapBackedClassLoader mapBackedClassLoader) {
     try {
       JarEntry entry;
       byte[] buf = new byte[1024];
       int len;
       while ((entry = jis.getNextJarEntry()) != null) {
         if (!entry.isDirectory()
-            && !entry.getName().endsWith(".java")) {
+          && !entry.getName().endsWith(".java")) {
           ByteArrayOutputStream out = new ByteArrayOutputStream();
           while ((len = jis.read(buf)) >= 0) {
             out.write(buf, 0, len);
           }
 
           mapBackedClassLoader.addResource(entry.getName(),
-              out.toByteArray());
+            out.toByteArray());
         }
       }
 

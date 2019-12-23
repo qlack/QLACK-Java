@@ -13,8 +13,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * A distribution list is assigned of contacts that emails are distributed to when sent to it. A
- * contact can be assigned to more than one distribution lists.
+ * A distribution list is assigned of contacts that emails are distributed to
+ * when sent to it. A contact can be assigned to more than one distribution
+ * lists.
  *
  * @author European Dynamics SA.
  */
@@ -45,7 +46,8 @@ public class DistributionList extends MailingModel {
   private String createdBy;
 
   /**
-   * The date the distribution list was created represented as a {@link java.lang.Long} number
+   * The date the distribution list was created represented as a {@link
+   * java.lang.Long} number
    */
   @Column(name = "created_on")
   private Long createdOn;
@@ -55,8 +57,8 @@ public class DistributionList extends MailingModel {
    */
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(name = "mai_distr_list_has_contact", joinColumns = {
-      @JoinColumn(name = "distribution_list_id", nullable = false, updatable = false)}, inverseJoinColumns = {
-      @JoinColumn(name = "contact_id", nullable = false, updatable = false)})
+    @JoinColumn(name = "distribution_list_id", nullable = false, updatable = false)}, inverseJoinColumns = {
+    @JoinColumn(name = "contact_id", nullable = false, updatable = false)})
   private Set<Contact> contacts = new HashSet<>(0);
 
 }

@@ -17,7 +17,7 @@ public class KeySearchCriteriaBuilderTest {
   @Before
   public void init() {
     keySearchCriteriaBuilder = KeySearchCriteria.KeySearchCriteriaBuilder
-        .createCriteria();
+      .createCriteria();
   }
 
   @Test

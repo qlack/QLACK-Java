@@ -3,13 +3,15 @@ package com.eurodyn.qlack.fuse.search.dto.queries;
 import lombok.Getter;
 
 /**
- * 23/01/2018 : atches documents that have fields matching a wildcard expression (not analyzed).
- * Supported wildcards are *, which matches any character sequence (including the empty one), and ?,
- * which matches any single character. Note this query can be slow, as it needs to iterate over many
- * terms. In order to prevent extremely slow wildcard queries, a wildcard term should not start with
- * one of the wildcards * or ?. In addition to the simple Query String we search directly in the
- * nested objects. This will additional return a inner_hits Object that contains the Id's for the
- * matched nested terms/objects.
+ * 23/01/2018 : atches documents that have fields matching a wildcard expression
+ * (not analyzed). Supported wildcards are *, which matches any character
+ * sequence (including the empty one), and ?, which matches any single
+ * character. Note this query can be slow, as it needs to iterate over many
+ * terms. In order to prevent extremely slow wildcard queries, a wildcard term
+ * should not start with one of the wildcards * or ?. In addition to the simple
+ * Query String we search directly in the nested objects. This will additional
+ * return a inner_hits Object that contains the Id's for the matched nested
+ * terms/objects.
  *
  * <pre>
  * new QueryWildcard()
@@ -40,7 +42,7 @@ public class QueryWildcardNested extends QuerySpec {
   private String docvalueFields;
 
   public QueryWildcardNested setTerm(String field, String wildcard, String path,
-      String docvalueFields) {
+    String docvalueFields) {
     this.field = field;
     this.wildcard = wildcard;
     this.path = path;

@@ -1,20 +1,15 @@
-# QLACK AAA module
+# QLACK Fuse - AAA
 
 This module provides custom Authentication, Authorization and Accounting operations. Authorization (access control) which is carried out by an AspectJ class that works as an interceptor. This class intercepts every call on an endpoint or a business method annotated by the @ResourceAccess annotation and authorizes the request by matching permissions described by @ResourceOperation annotation with user/group/resource permissions provided by the authenticated user principal. @ResourceAccess can be described by multiple @ResourceOperation annotations.
 
 ## Integration
 
 ### Add qlack-fuse-aaa dependency to your pom.xml:
-```
-    <properties>
-        <!-- ... -->
-        <version.qlack>3.0.0-SNAPSHOT</version.qlack>
-    </properties>
-
+```xml
     <dependency>
         <groupId>com.eurodyn.qlack.fuse</groupId>
         <artifactId>qlack-fuse-aaa</artifactId>
-        <version>${version.qlack}</version>
+        <version>${qlack.version}</version>
     </dependency>
 ```
 

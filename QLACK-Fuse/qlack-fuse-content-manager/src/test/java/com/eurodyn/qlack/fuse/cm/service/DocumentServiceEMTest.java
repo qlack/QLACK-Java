@@ -82,13 +82,17 @@ public class DocumentServiceEMTest {
 
   @Before
   public void init() throws Exception {
-    documentService = new DocumentService(concurrencyControlService, versionService, nodeRepository,
-        nodeMapper);
+    documentService = new DocumentService(concurrencyControlService,
+      versionService, nodeRepository,
+      nodeMapper);
     ReflectionTestUtils.setField(documentService, "em", em);
 
-    whenNew(JPAQueryFactory.class).withArguments(em).thenReturn(jpaQueryFactory);
-    when(jpaQueryFactory.selectFrom(any(EntityPath.class))).thenReturn(jpaQuery);
-    when(jpaQuery.innerJoin(any(CollectionExpression.class), any(Path.class))).thenReturn(jpaQuery);
+    whenNew(JPAQueryFactory.class).withArguments(em)
+      .thenReturn(jpaQueryFactory);
+    when(jpaQueryFactory.selectFrom(any(EntityPath.class)))
+      .thenReturn(jpaQuery);
+    when(jpaQuery.innerJoin(any(CollectionExpression.class), any(Path.class)))
+      .thenReturn(jpaQuery);
     when(jpaQuery.where((Predicate) any())).thenReturn(jpaQuery);
   }
 
@@ -132,7 +136,8 @@ public class DocumentServiceEMTest {
     when(jpaQuery.fetchResults()).thenReturn(QueryResults.emptyResults());
     List<String> namesList = new ArrayList<>();
     assertEquals(namesList,
-        documentService.duplicateFileNamesInDirectory(Arrays.asList("one", "two"), "parent"));
+      documentService
+        .duplicateFileNamesInDirectory(Arrays.asList("one", "two"), "parent"));
   }
 
   @Test
@@ -153,7 +158,8 @@ public class DocumentServiceEMTest {
     when(queryResults.getResults()).thenReturn(nodes);
 
     assertEquals(namesList,
-        documentService.duplicateFileNamesInDirectory(Arrays.asList("one", "two"), "parent"));
+      documentService
+        .duplicateFileNamesInDirectory(Arrays.asList("one", "two"), "parent"));
   }
 
   @Test(expected = QIOException.class)

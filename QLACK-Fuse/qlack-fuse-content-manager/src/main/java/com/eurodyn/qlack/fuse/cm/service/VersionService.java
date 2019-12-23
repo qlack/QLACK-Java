@@ -89,9 +89,10 @@ public class VersionService {
 
   @Autowired
   public VersionService(ConcurrencyControlService concurrencyControlService,
-      StorageEngineFactory storageEngineFactory, NodeRepository nodeRepository,
-      VersionRepository versionRepository, VersionDeletedRepository versionDeletedRepository,
-      VersionMapper versionMapper) {
+    StorageEngineFactory storageEngineFactory, NodeRepository nodeRepository,
+    VersionRepository versionRepository,
+    VersionDeletedRepository versionDeletedRepository,
+    VersionMapper versionMapper) {
     this.concurrencyControlService = concurrencyControlService;
     this.storageEngineFactory = storageEngineFactory;
     this.nodeRepository = nodeRepository;
@@ -111,11 +112,13 @@ public class VersionService {
     tika = new TikaConfig();
   }
 
-  private void checkNodeConflict(String fileID, String lockToken, String errorMsg) {
+  private void checkNodeConflict(String fileID, String lockToken,
+    String errorMsg) {
     NodeDTO selConflict = concurrencyControlService
-        .getSelectedNodeWithLockConflict(fileID, lockToken);
+      .getSelectedNodeWithLockConflict(fileID, lockToken);
     if (selConflict != null && selConflict.getName() != null) {
-      throw new QSelectedNodeLockException(errorMsg, selConflict.getId(), selConflict.getName());
+      throw new QSelectedNodeLockException(errorMsg, selConflict.getId(),
+        selConflict.getName());
     }
   }
 
@@ -128,9 +131,11 @@ public class VersionService {
   }
 
   private Version getVersionByName(String name, Node file) {
-    Predicate predicate = qVersion.name.eq(name).and(qVersion.node.id.eq(file.getId()));
+    Predicate predicate = qVersion.name.eq(name)
+      .and(qVersion.node.id.eq(file.getId()));
     return versionRepository.findOne(predicate).orElseThrow(() ->
-        new QVersionNotFoundException("No version found matching the given name and file id"));
+      new QVersionNotFoundException(
+        "No version found matching the given name and file id"));
   }
 
   /**
@@ -145,20 +150,21 @@ public class VersionService {
    * @return the string
    * @throws QNodeLockException the q node lock exception
    */
-  public String createVersion(String fileID, VersionDTO cmVersion, String filename, byte[] content,
-      String userID, String lockToken) {
+  public String createVersion(String fileID, VersionDTO cmVersion,
+    String filename, byte[] content,
+    String userID, String lockToken) {
     Node file = nodeRepository.fetchById(fileID);
 
     checkNodeConflict(fileID, lockToken,
-        "The selected file is locked and an invalid lock token was passed; A new version cannot be created for this file.");
+      "The selected file is locked and an invalid lock token was passed; A new version cannot be created for this file.");
 
     if (file.getParent() != null) {
       NodeDTO ancConflict = concurrencyControlService
-          .getAncestorFolderWithLockConflict(file.getParent().getId(), lockToken);
+        .getAncestorFolderWithLockConflict(file.getParent().getId(), lockToken);
       if (ancConflict != null && ancConflict.getId() != null) {
         throw new QAncestorFolderLockException(
-            "An ancestor folder is locked and an invalid lock token was passed; the folder cannot be created.",
-            ancConflict.getId(), ancConflict.getName());
+          "An ancestor folder is locked and an invalid lock token was passed; the folder cannot be created.",
+          ancConflict.getId(), ancConflict.getName());
       }
     }
 
@@ -183,19 +189,24 @@ public class VersionService {
     version.setAttributes(new ArrayList<>());
     long dateInMillis = Calendar.getInstance().getTimeInMillis();
     version.setCreatedOn(dateInMillis);
-    version.getAttributes().add(new VersionAttribute(CMConstants.ATTR_CREATED_BY, userID, version));
-    version.getAttributes().add(
-        new VersionAttribute(CMConstants.ATTR_LAST_MODIFIED_ON, String.valueOf(dateInMillis),
-            version));
     version.getAttributes()
-        .add(new VersionAttribute(CMConstants.ATTR_LAST_MODIFIED_BY, userID, version));
+      .add(new VersionAttribute(CMConstants.ATTR_CREATED_BY, userID, version));
+    version.getAttributes().add(
+      new VersionAttribute(CMConstants.ATTR_LAST_MODIFIED_ON,
+        String.valueOf(dateInMillis),
+        version));
+    version.getAttributes()
+      .add(new VersionAttribute(CMConstants.ATTR_LAST_MODIFIED_BY, userID,
+        version));
 
     // Set custom created version attributes
     if (cmVersion.getAttributes() != null) {
-      for (VersionAttributeDTO versionAttributeDTO : cmVersion.getAttributes()) {
+      for (VersionAttributeDTO versionAttributeDTO : cmVersion
+        .getAttributes()) {
         version.getAttributes().add(
-            new VersionAttribute(versionAttributeDTO.getName(), versionAttributeDTO.getValue(),
-                version));
+          new VersionAttribute(versionAttributeDTO.getName(),
+            versionAttributeDTO.getValue(),
+            version));
       }
     }
 
@@ -209,23 +220,25 @@ public class VersionService {
   }
 
   /**
-   * Updates the values, content as also the attributes of a specific version.
+   * Updates the values, content as also the attributes of a specific
+   * version.
    *
    * @param fileID the file ID
    * @param versionDTO the version DTO
    * @param content the content
    * @param userID the user ID
-   * @param updateAllAttributes A true value defines that all attributes should be updated/deleted.
-   * Only the custom created attributes are allowed to be deleted. A false value updates only the
-   * mandatory attribute values
+   * @param updateAllAttributes A true value defines that all attributes
+   * should be updated/deleted. Only the custom created attributes are allowed
+   * to be deleted. A false value updates only the mandatory attribute values
    * @param lockToken the lock token
    */
-  public void updateVersion(String fileID, VersionDTO versionDTO, byte[] content, String userID,
-      boolean updateAllAttributes, String lockToken) {
+  public void updateVersion(String fileID, VersionDTO versionDTO,
+    byte[] content, String userID,
+    boolean updateAllAttributes, String lockToken) {
     Node file = nodeRepository.fetchById(fileID);
 
     checkNodeConflict(fileID, lockToken,
-        LOCKED_FILE_MSG);
+      LOCKED_FILE_MSG);
 
     Version version = getVersion(versionDTO.getName(), file);
 
@@ -249,12 +262,13 @@ public class VersionService {
     if (updateAllAttributes) {
       for (VersionAttribute attrEntity : version.getAttributes()) {
         if (!attrEntity.getName().equals(CMConstants.ATTR_LAST_MODIFIED_ON)
-            && !attrEntity.getName().equals(CMConstants.ATTR_LAST_MODIFIED_BY)
-            && !attrEntity.getName().equals(CMConstants.ATTR_CREATED_BY)
-            && versionDTO.getAttributes() != null && versionDTO.getAttributes().stream().filter(
-            versionAttributeDTO -> versionAttributeDTO.getName()
-                .equals(attrEntity.getName()))
-            .findFirst().orElse(null) == null) {
+          && !attrEntity.getName().equals(CMConstants.ATTR_LAST_MODIFIED_BY)
+          && !attrEntity.getName().equals(CMConstants.ATTR_CREATED_BY)
+          && versionDTO.getAttributes() != null
+          && versionDTO.getAttributes().stream().filter(
+          versionAttributeDTO -> versionAttributeDTO.getName()
+            .equals(attrEntity.getName()))
+          .findFirst().orElse(null) == null) {
           attributeToRemove.add(version.getAttribute(attrEntity.getName()));
         }
       }
@@ -275,23 +289,27 @@ public class VersionService {
    * @param the requested DTO
    * @return the updated version
    */
-  private Version updateVersionExtended(String userID, Version version, VersionDTO versionDTO) {
+  private Version updateVersionExtended(String userID, Version version,
+    VersionDTO versionDTO) {
 
     if (userID != null) {
       long timeInMillis = Calendar.getInstance().getTimeInMillis();
-      version.setAttribute(CMConstants.ATTR_LAST_MODIFIED_ON, String.valueOf(timeInMillis));
+      version.setAttribute(CMConstants.ATTR_LAST_MODIFIED_ON,
+        String.valueOf(timeInMillis));
       version.setAttribute(CMConstants.ATTR_LAST_MODIFIED_BY, userID);
     }
 
     // Set values to the existing custom created attributes or create new attributes
     if (versionDTO.getAttributes() != null) {
       Set<String> excludedAttributeNames = Stream
-          .of(CMConstants.ATTR_LAST_MODIFIED_ON, CMConstants.ATTR_LAST_MODIFIED_BY,
-              CMConstants.ATTR_CREATED_BY)
-          .collect(Collectors.toSet());
+        .of(CMConstants.ATTR_LAST_MODIFIED_ON,
+          CMConstants.ATTR_LAST_MODIFIED_BY,
+          CMConstants.ATTR_CREATED_BY)
+        .collect(Collectors.toSet());
       versionDTO.getAttributes().forEach(versionAttributeDTO -> {
         if (!excludedAttributeNames.contains(versionAttributeDTO.getName())) {
-          version.setAttribute(versionAttributeDTO.getName(), versionAttributeDTO.getValue());
+          version.setAttribute(versionAttributeDTO.getName(),
+            versionAttributeDTO.getValue());
         }
       });
     }
@@ -310,7 +328,7 @@ public class VersionService {
     Node file = version.getNode();
 
     checkNodeConflict(file.getId(), lockToken,
-        "File is locked and an invalid lock token was passed; the file version attributes cannot be deleted.");
+      "File is locked and an invalid lock token was passed; the file version attributes cannot be deleted.");
 
     VersionDeleted versionDeleted = new VersionDeleted();
     versionDeleted.setId(versionId);
@@ -350,8 +368,9 @@ public class VersionService {
    */
   public VersionDTO getFileLatestVersion(String fileID) {
     List<VersionDTO> fileVersions = getFileVersions(fileID);
-    return fileVersions.stream().max(Comparator.comparing(VersionDTO::getLastModifiedOn))
-        .orElse(null);
+    return fileVersions.stream()
+      .max(Comparator.comparing(VersionDTO::getLastModifiedOn))
+      .orElse(null);
   }
 
   /**
@@ -387,7 +406,8 @@ public class VersionService {
       return storageEngine.getVersionContent(version.getId());
     } catch (IOException e) {
       throw new QIOException(MessageFormat
-          .format("Could not obtain content for file " + "{0}, version {1}", fileID, versionName));
+        .format("Could not obtain content for file " + "{0}, version {1}",
+          fileID, versionName));
     }
   }
 
@@ -410,7 +430,8 @@ public class VersionService {
    * @param includeProperties the include properties
    * @return the file as zip
    */
-  public byte[] getFileAsZip(String fileID, String versionName, boolean includeProperties) {
+  public byte[] getFileAsZip(String fileID, String versionName,
+    boolean includeProperties) {
 
     Node file = nodeRepository.fetchById(fileID);
     Version version;
@@ -424,7 +445,8 @@ public class VersionService {
 
     ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 
-    try (ZipOutputStream zipFile = StreamsUtil.createZipOutputStream(outStream)) {
+    try (ZipOutputStream zipFile = StreamsUtil
+      .createZipOutputStream(outStream)) {
       // Write binary content
       ZipEntry entry = new ZipEntry(version.getFilename());
       zipFile.putNextEntry(entry);
@@ -432,10 +454,12 @@ public class VersionService {
 
       if (includeProperties) {
         // Write file properties
-        entry = new ZipEntry(file.getAttribute(CMConstants.ATTR_NAME) + ".properties");
+        entry = new ZipEntry(
+          file.getAttribute(CMConstants.ATTR_NAME) + ".properties");
         zipFile.putNextEntry(entry);
 
-        StringBuilder buf = new NodeAttributeStringBuilder().nodeAttributeBuilder(file);
+        StringBuilder buf = new NodeAttributeStringBuilder()
+          .nodeAttributeBuilder(file);
         zipFile.write(buf.toString().getBytes());
 
         // Write version properties - written in a separate file since
@@ -445,7 +469,8 @@ public class VersionService {
         zipFile.putNextEntry(entry);
         buf = new StringBuilder();
         // Include a created on property
-        buf.append(CMConstants.CREATED_ON).append(" = ").append(file.getCreatedOn()).append("\n");
+        buf.append(CMConstants.CREATED_ON).append(" = ")
+          .append(file.getCreatedOn()).append("\n");
         for (VersionAttribute attribute : version.getAttributes()) {
           buf.append(attribute.getName());
           buf.append(" = ");
@@ -459,7 +484,8 @@ public class VersionService {
     } catch (IOException ex) {
       log.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       throw new QIOException(
-          "Error writing ZIP for version " + versionName + " of file  with ID " + fileID);
+        "Error writing ZIP for version " + versionName + " of file  with ID "
+          + fileID);
     }
 
     return outStream.toByteArray();
@@ -474,7 +500,8 @@ public class VersionService {
    * @return the string
    */
   public String setBinChunk(String versionID, byte[] content, int chunkIndex) {
-    String binChunkID = storageEngine.setBinChunk(versionID, content, chunkIndex);
+    String binChunkID = storageEngine
+      .setBinChunk(versionID, content, chunkIndex);
 
     if (chunkIndex == 1) {
       String mimeType = getMimeType(content);
@@ -509,9 +536,11 @@ public class VersionService {
    * @param lockToken the lock token
    * @throws QNodeLockException the q node lock exception
    */
-  public void updateAttribute(String fileID, String attributeName, String attributeValue,
-      String userID, String lockToken) {
-    updateAttribute(fileID, attributeName, attributeValue, userID, lockToken, null);
+  public void updateAttribute(String fileID, String attributeName,
+    String attributeValue,
+    String userID, String lockToken) {
+    updateAttribute(fileID, attributeName, attributeValue, userID, lockToken,
+      null);
   }
 
   /**
@@ -525,20 +554,22 @@ public class VersionService {
    * @param lockToken the lock token
    * @throws QNodeLockException the q node lock exception
    */
-  public void updateAttribute(String fileID, String attributeName, String attributeValue,
-      String userID, String lockToken,
-      String versionName) {
+  public void updateAttribute(String fileID, String attributeName,
+    String attributeValue,
+    String userID, String lockToken,
+    String versionName) {
     Node file = nodeRepository.fetchById(fileID);
 
     checkNodeConflict(file.getId(), lockToken,
-        LOCKED_FILE_MSG);
+      LOCKED_FILE_MSG);
 
     Version version = getVersion(versionName, file);
     version.setAttribute(attributeName, attributeValue);
 
     if (userID != null) {
       Long timeInMillis = Calendar.getInstance().getTimeInMillis();
-      version.setAttribute(CMConstants.ATTR_LAST_MODIFIED_ON, String.valueOf(timeInMillis));
+      version.setAttribute(CMConstants.ATTR_LAST_MODIFIED_ON,
+        String.valueOf(timeInMillis));
       version.setAttribute(CMConstants.ATTR_LAST_MODIFIED_BY, userID);
     }
 
@@ -554,8 +585,9 @@ public class VersionService {
    * @param lockToken the lock token
    * @throws QNodeLockException the q node lock exception
    */
-  public void updateAttributes(String fileID, Map<String, String> attributes, String userID,
-      String lockToken) {
+  public void updateAttributes(String fileID, Map<String, String> attributes,
+    String userID,
+    String lockToken) {
     updateAttributes(fileID, attributes, userID, lockToken, null);
   }
 
@@ -569,12 +601,13 @@ public class VersionService {
    * @param lockToken the lock token
    * @throws QNodeLockException the q node lock exception
    */
-  void updateAttributes(String fileID, Map<String, String> attributes, String userID,
-      String lockToken, String versionName) {
+  void updateAttributes(String fileID, Map<String, String> attributes,
+    String userID,
+    String lockToken, String versionName) {
     Node file = nodeRepository.fetchById(fileID);
 
     checkNodeConflict(file.getId(), lockToken,
-        LOCKED_FILE_MSG);
+      LOCKED_FILE_MSG);
 
     Version version = getVersion(versionName, file);
 
@@ -594,8 +627,9 @@ public class VersionService {
    * @param lockToken the lock token
    * @throws QNodeLockException the q node lock exception
    */
-  public void deleteAttribute(String fileID, String attributeName, String userID,
-      String lockToken) {
+  public void deleteAttribute(String fileID, String attributeName,
+    String userID,
+    String lockToken) {
     deleteAttribute(fileID, attributeName, userID, lockToken, null);
   }
 
@@ -609,12 +643,13 @@ public class VersionService {
    * @param lockToken the lock token
    * @throws QNodeLockException the q node lock exception
    */
-  public void deleteAttribute(String fileID, String attributeName, String userID, String lockToken,
-      String versionName) {
+  public void deleteAttribute(String fileID, String attributeName,
+    String userID, String lockToken,
+    String versionName) {
     Node file = nodeRepository.fetchById(fileID);
 
     checkNodeConflict(file.getId(), lockToken,
-        "File is locked and an invalid lock token was passed; the file version attributes cannot be deleted.");
+      "File is locked and an invalid lock token was passed; the file version attributes cannot be deleted.");
 
     Version version = getVersion(versionName, file);
     version.removeAttribute(attributeName);
@@ -627,7 +662,8 @@ public class VersionService {
     // Update last modified information
     if (userID != null) {
       long timeInMillis = Calendar.getInstance().getTimeInMillis();
-      version.setAttribute(CMConstants.ATTR_LAST_MODIFIED_ON, String.valueOf(timeInMillis));
+      version.setAttribute(CMConstants.ATTR_LAST_MODIFIED_ON,
+        String.valueOf(timeInMillis));
       version.setAttribute(CMConstants.ATTR_LAST_MODIFIED_BY, userID);
     }
 
@@ -641,8 +677,10 @@ public class VersionService {
    * @param filenameList the filename list
    * @return the versions by filename for file
    */
-  public List<VersionDTO> getVersionsByFilenameForFile(String fileId, List<String> filenameList) {
-    Predicate predicate = qVersion.filename.in(filenameList).and(qVersion.node.id.eq(fileId));
+  public List<VersionDTO> getVersionsByFilenameForFile(String fileId,
+    List<String> filenameList) {
+    Predicate predicate = qVersion.filename.in(filenameList)
+      .and(qVersion.node.id.eq(fileId));
     return versionMapper.mapToDTO(versionRepository.findAll(predicate));
   }
 
@@ -657,7 +695,8 @@ public class VersionService {
     String retVal = DEFAULT_MIME_TYPE;
     InputStream stream = StreamsUtil.createInputStream(fileContent);
     try {
-      retVal = tika.getDetector().detect(TikaInputStream.get(stream), new Metadata()).toString();
+      retVal = tika.getDetector()
+        .detect(TikaInputStream.get(stream), new Metadata()).toString();
     } catch (IOException e) {
       log.log(Level.SEVERE, "Could not detect content-type.", e);
     } finally {
@@ -685,17 +724,22 @@ public class VersionService {
   }
 
   /**
-   * Transfers the binary content from the flu_file temporary table to the cm_version_bin.
+   * Transfers the binary content from the flu_file temporary table to the
+   * cm_version_bin.
    *
-   * @param attachmentID the ID of the chunks in the flu_file table. All the chunks of the same file
-   * have the same ID.
-   * @param versionID The ID of the version to which is related with the binary content to be
-   * transfered.
+   * @param attachmentID the ID of the chunks in the flu_file table. All the
+   * chunks of the same file have the same ID.
+   * @param versionID The ID of the version to which is related with the
+   * binary content to be transfered.
    */
-  public void transferFromFluToVersionBin(String attachmentID, String versionID) {
-    StoredProcedureQuery query = em.createStoredProcedureQuery("flu_to_version_bin");
-    query.registerStoredProcedureParameter("flu_file_ID", String.class, ParameterMode.IN);
-    query.registerStoredProcedureParameter("version_ID", String.class, ParameterMode.IN);
+  public void transferFromFluToVersionBin(String attachmentID,
+    String versionID) {
+    StoredProcedureQuery query = em
+      .createStoredProcedureQuery("flu_to_version_bin");
+    query.registerStoredProcedureParameter("flu_file_ID", String.class,
+      ParameterMode.IN);
+    query.registerStoredProcedureParameter("version_ID", String.class,
+      ParameterMode.IN);
 
     query.setParameter("flu_file_ID", attachmentID);
     query.setParameter("version_ID", versionID);
@@ -710,7 +754,8 @@ public class VersionService {
   public void cleanupFS() {
     Pageable limit = PageRequest.of(0, cycleLength);
 
-    List<VersionDeleted> all = versionDeletedRepository.findAll(limit).getContent();
+    List<VersionDeleted> all = versionDeletedRepository.findAll(limit)
+      .getContent();
     all.forEach(versionDeleted -> {
       storageEngine.deleteVersionBinaries(versionDeleted.getId());
       versionDeletedRepository.delete(versionDeleted);

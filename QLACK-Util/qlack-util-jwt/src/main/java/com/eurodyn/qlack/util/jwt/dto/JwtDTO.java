@@ -4,6 +4,7 @@ package com.eurodyn.qlack.util.jwt.dto;
  * A placeholder for a JWT.
  */
 public class JwtDTO {
+
   // The JWT to include.
   private String jwt;
 

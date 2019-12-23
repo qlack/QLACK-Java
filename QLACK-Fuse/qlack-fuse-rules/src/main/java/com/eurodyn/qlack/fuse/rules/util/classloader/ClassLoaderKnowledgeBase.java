@@ -8,7 +8,8 @@ public class ClassLoaderKnowledgeBase {
 
   public final KieBase knowledgeBase;
 
-  public ClassLoaderKnowledgeBase(MapBackedClassLoader classLoader, KieBase knowledgeBase) {
+  public ClassLoaderKnowledgeBase(MapBackedClassLoader classLoader,
+    KieBase knowledgeBase) {
     this.classLoader = classLoader;
     this.knowledgeBase = knowledgeBase;
   }

@@ -10,7 +10,7 @@ import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface VersionAttributeMapper extends
-    CMBaseMapper<VersionAttribute, VersionAttributeDTO> {
+  CMBaseMapper<VersionAttribute, VersionAttributeDTO> {
 
   @Override
   @Mapping(target = "versionId", source = "version", qualifiedByName = "mapVersion")
@@ -28,9 +28,6 @@ public interface VersionAttributeMapper extends
       return null;
     }
     String id = version.getId();
-    if (id == null) {
-      return null;
-    }
     return id;
   }
 }

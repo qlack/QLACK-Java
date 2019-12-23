@@ -45,17 +45,17 @@ public class LexiconConfigServiceMockTest {
   @Before
   public void init() {
     lexiconConfigService = new LexiconConfigService(groupService,
-        languageService, keyService,
-        applicationRepository, applicationContext);
+      languageService, keyService,
+      applicationRepository, applicationContext);
     ReflectionTestUtils
-        .setField(lexiconConfigService, "classLoader", classLoader);
+      .setField(lexiconConfigService, "classLoader", classLoader);
   }
 
   @Test
   @SuppressWarnings("squid:S2699")
   public void initNullEntriesTest() throws IOException {
     when(classLoader.getResources("qlack-lexicon-config.yaml"))
-        .thenReturn(null);
+      .thenReturn(null);
     lexiconConfigService.init();
   }
 
@@ -63,7 +63,7 @@ public class LexiconConfigServiceMockTest {
   @SuppressWarnings("squid:S2699")
   public void initIoExceptionTest() throws IOException {
     when(classLoader.getResources("qlack-lexicon-config.yaml"))
-        .thenThrow(new IOException());
+      .thenThrow(new IOException());
     lexiconConfigService.init();
   }
 

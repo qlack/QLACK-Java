@@ -6,7 +6,8 @@ import com.github.bohnman.squiggly.Squiggly;
 import com.github.bohnman.squiggly.util.SquigglyUtils;
 
 /**
- * A helper class providing methods to filter JSON objects. (see https://github.com/bohnman/squiggly-java)
+ * A helper class providing methods to filter JSON objects. (see
+ * https://github.com/bohnman/squiggly-java)
  */
 public class JSONFilter {
 
@@ -17,7 +18,8 @@ public class JSONFilter {
     new ObjectMapper().setSerializationInclusion(Include.NON_NULL);
 
   /**
-   * Filter using an {@link ObjectMapper} with default initialisation parameters.
+   * Filter using an {@link ObjectMapper} with default initialisation
+   * parameters.
    *
    * @param object The object to filter.
    * @param filter The filter to apply.
@@ -25,8 +27,9 @@ public class JSONFilter {
    */
   @SuppressWarnings("unchecked")
   public static <T> T filterDefault(T object, String filter) {
-    return (T) SquigglyUtils.objectify(Squiggly.init(defaultObjectMapper, filter), object,
-      object.getClass());
+    return (T) SquigglyUtils
+      .objectify(Squiggly.init(defaultObjectMapper, filter), object,
+        object.getClass());
   }
 
   /**
@@ -39,8 +42,9 @@ public class JSONFilter {
    */
   @SuppressWarnings("unchecked")
   public static <T> T filterNonEmpty(T object, String filter) {
-    return (T) SquigglyUtils.objectify(Squiggly.init(nonEmptyObjectMapper, filter), object,
-      object.getClass());
+    return (T) SquigglyUtils
+      .objectify(Squiggly.init(nonEmptyObjectMapper, filter), object,
+        object.getClass());
   }
 
   /**
@@ -53,8 +57,9 @@ public class JSONFilter {
    */
   @SuppressWarnings("unchecked")
   public static <T> T filterNonNull(T object, String filter) {
-    return (T) SquigglyUtils.objectify(Squiggly.init(nonNullObjectMapper, filter), object,
-      object.getClass());
+    return (T) SquigglyUtils
+      .objectify(Squiggly.init(nonNullObjectMapper, filter), object,
+        object.getClass());
   }
 
 }

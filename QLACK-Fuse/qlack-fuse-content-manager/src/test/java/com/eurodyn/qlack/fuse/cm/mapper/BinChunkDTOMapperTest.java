@@ -62,13 +62,15 @@ public class BinChunkDTOMapperTest {
 
   @Test
   public void mapToDTOListTest() {
-    List<BinChunkDTO> binChunkDTOList = binChunkDTOMapper.mapToDTO(versionBinList);
+    List<BinChunkDTO> binChunkDTOList = binChunkDTOMapper
+      .mapToDTO(versionBinList);
     assertEquals(versionBinList.size(), binChunkDTOList.size());
   }
 
   @Test
   public void mapToDTOListNullTest() {
-    List<BinChunkDTO> binChunkDTOList = binChunkDTOMapper.mapToDTO((List<VersionBin>) null);
+    List<BinChunkDTO> binChunkDTOList = binChunkDTOMapper
+      .mapToDTO((List<VersionBin>) null);
     assertNull(binChunkDTOList);
   }
 
@@ -102,7 +104,8 @@ public class BinChunkDTOMapperTest {
   @Test
   public void mapToEntityListNullTest() {
     binChunkDTOList = null;
-    List<VersionBin> result = binChunkDTOMapper.mapToEntity((List<BinChunkDTO>) null);
+    List<VersionBin> result = binChunkDTOMapper
+      .mapToEntity((List<BinChunkDTO>) null);
     assertNull(result);
   }
 }

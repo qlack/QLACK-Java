@@ -61,7 +61,8 @@ public class User extends AAAModel {
   private boolean superadmin;
 
   /**
-   * An indicator that this user's password is not held in the database of AAA.
+   * An indicator that this user's password is not held in the database of
+   * AAA.
    */
   private boolean external = false;
 
@@ -108,7 +109,8 @@ public class User extends AAAModel {
    * @param userHasOperations a {@link UserHasOperation} object
    * @return a userHasOperation object
    */
-  public UserHasOperation addUserHasOperation(UserHasOperation userHasOperations) {
+  public UserHasOperation addUserHasOperation(
+    UserHasOperation userHasOperations) {
     if (getUserHasOperations() == null) {
       setUserHasOperations(new ArrayList<UserHasOperation>());
     }
@@ -124,7 +126,8 @@ public class User extends AAAModel {
    * @param userHasOperations a {@link UserHasOperation} object
    * @return a {@link UserHasOperation} object
    */
-  public UserHasOperation removeUserHasOperation(UserHasOperation userHasOperations) {
+  public UserHasOperation removeUserHasOperation(
+    UserHasOperation userHasOperations) {
     getUserHasOperations().remove(userHasOperations);
     userHasOperations.setUser(null);
 

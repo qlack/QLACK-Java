@@ -56,17 +56,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
 
-    http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and().csrf().disable()
-        .addFilterBefore(jwtTokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-        .authorizeRequests()
-        .expressionHandler(webExpressionHandler())
-        .antMatchers(authenicatedPaths.split(",")).authenticated()
-        .anyRequest().permitAll();
+    http.sessionManagement()
+      .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+      .and().csrf().disable()
+      .addFilterBefore(jwtTokenAuthenticationFilter(),
+        UsernamePasswordAuthenticationFilter.class)
+      .authorizeRequests()
+      .expressionHandler(webExpressionHandler())
+      .antMatchers(authenicatedPaths.split(",")).authenticated()
+      .anyRequest().permitAll();
 
     http.logout().permitAll();
     http.logout()
-        .logoutSuccessHandler((new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK)));
+      .logoutSuccessHandler(
+        (new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK)));
   }
 
   /**
@@ -87,13 +90,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Bean
   public DefaultWebSecurityExpressionHandler webExpressionHandler() {
     DefaultWebSecurityExpressionHandler webSecurityExpressionHandler = new DefaultWebSecurityExpressionHandler();
-    webSecurityExpressionHandler.setPermissionEvaluator(new AAAPermissionEvaluator());
+    webSecurityExpressionHandler
+      .setPermissionEvaluator(new AAAPermissionEvaluator());
     return webSecurityExpressionHandler;
   }
 
   /**
-   * Configures AAA authentication provider with a user service and a password encoder. The AAA user
-   * service should be used.
+   * Configures AAA authentication provider with a user service and a password
+   * encoder. The AAA user service should be used.
    *
    * @return AAAUsernamePasswordProvider
    */
@@ -120,10 +124,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     final CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOrigins(Collections.singletonList(corsDomains));
     configuration
-        .setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"));
+      .setAllowedMethods(
+        Arrays.asList("GET", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"));
     configuration.setAllowCredentials(true);
     configuration
-        .setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+      .setAllowedHeaders(
+        Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
     final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
     return source;

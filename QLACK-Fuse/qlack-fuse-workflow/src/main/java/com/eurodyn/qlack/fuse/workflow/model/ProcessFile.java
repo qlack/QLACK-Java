@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * This model represents the resource files that have been persisted as activity workflow. It is
- * used to identify if changes have been to the files, so that a new process version can be
- * created.
+ * This model represents the resource files that have been persisted as activity
+ * workflow. It is used to identify if changes have been to the files, so that a
+ * new process version can be created.
  *
  * @author European Dynamics SA
  */

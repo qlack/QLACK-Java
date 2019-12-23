@@ -33,7 +33,8 @@ public class AuditLevelServiceTest {
   @Spy
   private AuditLevelMapper auditLevelMapper;
 
-  private AuditLevelRepository auditLevelRepository = mock(AuditLevelRepository.class);
+  private AuditLevelRepository auditLevelRepository = mock(
+    AuditLevelRepository.class);
 
   private InitTestValues initTestValues;
   private AuditLevelDTO auditLevelDTO;
@@ -43,7 +44,8 @@ public class AuditLevelServiceTest {
 
   @Before
   public void init() {
-    auditLevelService = new AuditLevelService(auditLevelRepository, auditLevelMapper);
+    auditLevelService = new AuditLevelService(auditLevelRepository,
+      auditLevelMapper);
     initTestValues = new InitTestValues();
     auditLevelDTO = initTestValues.createAuditLevelDTO();
     auditLevel = initTestValues.createAuditLevel();
@@ -69,14 +71,16 @@ public class AuditLevelServiceTest {
 
   @Test(expected = QAlreadyExistsException.class)
   public void testAddExistingLevel() {
-    when(auditLevelRepository.findByName(auditLevelDTO.getName())).thenReturn(auditLevel);
+    when(auditLevelRepository.findByName(auditLevelDTO.getName()))
+      .thenReturn(auditLevel);
     auditLevelService.addLevelIfNotExists(auditLevelDTO);
   }
 
   @Test
   public void testDeleteLevelById() {
     AuditLevel auditLevel2 = initTestValues.createAuditLevel();
-    when(auditLevelRepository.fetchById(auditLevel.getId())).thenReturn(auditLevel2);
+    when(auditLevelRepository.fetchById(auditLevel.getId()))
+      .thenReturn(auditLevel2);
     auditLevelService.deleteLevelById(auditLevel.getId());
 
     verify(auditLevelRepository, times(1)).delete(auditLevel2);
@@ -85,7 +89,8 @@ public class AuditLevelServiceTest {
   @Test
   public void testDeleteLevelByName() {
     AuditLevel auditLevel2 = initTestValues.createAuditLevel();
-    when(auditLevelRepository.findByName(auditLevel.getName())).thenReturn(auditLevel2);
+    when(auditLevelRepository.findByName(auditLevel.getName()))
+      .thenReturn(auditLevel2);
     auditLevelService.deleteLevelByName(auditLevel.getName());
 
     verify(auditLevelRepository, times(1)).delete(auditLevel2);
@@ -101,9 +106,11 @@ public class AuditLevelServiceTest {
 
   @Test
   public void testGetAuditLevelByName() {
-    when(auditLevelRepository.findByName(auditLevel.getName())).thenReturn(auditLevel);
+    when(auditLevelRepository.findByName(auditLevel.getName()))
+      .thenReturn(auditLevel);
     when(auditLevelMapper.mapToDTO(auditLevel)).thenReturn(auditLevelDTO);
-    AuditLevelDTO foundAudit = auditLevelService.getAuditLevelByName(auditLevel.getName());
+    AuditLevelDTO foundAudit = auditLevelService
+      .getAuditLevelByName(auditLevel.getName());
 
     assertEquals(auditLevelDTO, foundAudit);
   }

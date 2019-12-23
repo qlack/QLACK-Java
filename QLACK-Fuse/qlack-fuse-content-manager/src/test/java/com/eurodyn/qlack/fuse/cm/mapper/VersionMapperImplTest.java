@@ -103,12 +103,14 @@ public class VersionMapperImplTest {
 
   @Test
   public void versionAttributeListToVersionAttributeDTOSetTest() {
-    assertNull(versionMapper.versionAttributeListToVersionAttributeDTOSet(null));
+    assertNull(
+      versionMapper.versionAttributeListToVersionAttributeDTOSet(null));
   }
 
   @Test
   public void versionAttributeDTOSetToVersionAttributeListTest() {
-    assertNull(versionMapper.versionAttributeDTOSetToVersionAttributeList(null));
+    assertNull(
+      versionMapper.versionAttributeDTOSetToVersionAttributeList(null));
   }
 
   @Test
@@ -126,7 +128,7 @@ public class VersionMapperImplTest {
   public void versionAttributeToVersionAttributeDTOTest() {
     versionAttribute.setName("name");
     VersionAttributeDTO versionAttributeDTO = versionMapper
-        .versionAttributeToVersionAttributeDTO(versionAttribute);
+      .versionAttributeToVersionAttributeDTO(versionAttribute);
     versionAttributeDTO.setName(versionAttribute.getName());
     assertNotNull(versionAttributeDTO.getName());
 
@@ -136,7 +138,7 @@ public class VersionMapperImplTest {
   public void versionAttributeDTOToVersionAttributeTest() {
     versionAttributeDTO.setName("name");
     VersionAttribute versionAttribute = versionMapper
-        .versionAttributeDTOToVersionAttribute(versionAttributeDTO);
+      .versionAttributeDTOToVersionAttribute(versionAttributeDTO);
     versionAttribute.setName(versionAttributeDTO.getName());
     assertNotNull(versionAttribute.getName());
 
@@ -151,7 +153,7 @@ public class VersionMapperImplTest {
   @Test
   public void attributeSetToListTest() {
     List<VersionAttribute> list = versionMapper
-        .versionAttributeDTOSetToVersionAttributeList(versionAttributeDTOs);
+      .versionAttributeDTOSetToVersionAttributeList(versionAttributeDTOs);
     list.add(versionAttribute);
     assertNotNull(list);
   }
@@ -161,7 +163,7 @@ public class VersionMapperImplTest {
     versionAttributeList.add(versionAttribute);
     assertNotNull(versionAttributeList);
     Set<VersionAttributeDTO> set = versionMapper
-        .versionAttributeListToVersionAttributeDTOSet(versionAttributeList);
+      .versionAttributeListToVersionAttributeDTOSet(versionAttributeList);
     set.add(versionAttributeDTO);
     assertNotNull(set);
   }

@@ -1,4 +1,4 @@
-# QLACK Documentation module
+# QLACK Util - Documentation
 
 This module generate application documentation based on the Javadocs using [Enunciate](http://enunciate.webcohesion.com/) and [Swagger-UI](https://swagger.io/tools/swagger-ui/) libraries.
 
@@ -9,7 +9,7 @@ This module generate application documentation based on the Javadocs using [Enun
     <dependency>
         <groupId>com.eurodyn.qlack.util</groupId>
         <artifactId>qlack-util-documentation</artifactId>
-        <version>${version.qlack}</version>
+        <version>${qlack.version}</version>
     </dependency>
 ```
 

@@ -31,8 +31,9 @@ public class AuthenticateServiceTest {
 
   @Before
   public void init() {
-    authenticateService = new AuthenticateService(userRepository, userDetailsMapper,
-        userGroupHasOperationMapper);
+    authenticateService = new AuthenticateService(userRepository,
+      userDetailsMapper,
+      userGroupHasOperationMapper);
     initTestValues = new InitTestValues();
     user = initTestValues.createUser();
   }

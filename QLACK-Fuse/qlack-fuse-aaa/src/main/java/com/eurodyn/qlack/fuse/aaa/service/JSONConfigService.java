@@ -31,7 +31,8 @@ import org.springframework.validation.annotation.Validated;
 public class JSONConfigService {
 
   // Logger
-  private static final Logger LOGGER = Logger.getLogger(JSONConfigService.class.getName());
+  private static final Logger LOGGER = Logger
+    .getLogger(JSONConfigService.class.getName());
 
   // JSON parser.
   ObjectMapper mapper = new ObjectMapper();
@@ -42,8 +43,8 @@ public class JSONConfigService {
 
   @Autowired
   public JSONConfigService(UserGroupService groupService,
-      OpTemplateService templateService,
-      OperationService operationService) {
+    OpTemplateService templateService,
+    OperationService operationService) {
     this.groupService = groupService;
     this.templateService = templateService;
     this.operationService = operationService;
@@ -51,7 +52,8 @@ public class JSONConfigService {
 
   @SuppressWarnings("squid:S4790")
   private void parseConfig(URL configFileURL) {
-    LOGGER.log(Level.FINE, "Handling FUSE AAA configuration: {0}.", configFileURL.toExternalForm());
+    LOGGER.log(Level.FINE, "Handling FUSE AAA configuration: {0}.",
+      configFileURL.toExternalForm());
 
     // Parse the JSON file.
     JSONConfig config;
@@ -59,7 +61,8 @@ public class JSONConfigService {
       config = mapper.readValue(configFileURL, JSONConfig.class);
     } catch (IOException e) {
       LOGGER.log(Level.SEVERE, MessageFormat.format(
-          "Could not parse configuration file {0}.", configFileURL.toExternalForm()), e);
+        "Could not parse configuration file {0}.",
+        configFileURL.toExternalForm()), e);
       return;
     }
 
@@ -69,7 +72,8 @@ public class JSONConfigService {
       DigestUtils.md5Hex(mapper.writeValueAsString(config));
     } catch (JsonProcessingException e) {
       LOGGER.log(Level.SEVERE, MessageFormat.format(
-          "Could not calculate MD5 for file {0}.", configFileURL.toExternalForm()), e);
+        "Could not calculate MD5 for file {0}.",
+        configFileURL.toExternalForm()), e);
       return;
     }
 
@@ -86,7 +90,8 @@ public class JSONConfigService {
     for (JSONConfig.Group g : config.getGroups()) {
       // If the userGroup exists, update it, otherwise create it.
       LOGGER.log(Level.FINEST, "Processing userGroup {0}", g.getName());
-      UserGroupDTO userGroupDTO = groupService.getGroupByName(g.getName(), true);
+      UserGroupDTO userGroupDTO = groupService
+        .getGroupByName(g.getName(), true);
       boolean isNew = userGroupDTO == null;
       if (isNew) {
         userGroupDTO = new UserGroupDTO();
@@ -94,7 +99,8 @@ public class JSONConfigService {
       userGroupDTO.setDescription(g.getDescription());
       userGroupDTO.setName(g.getName());
       if (StringUtils.isNotBlank(g.getParentGroupName())) {
-        UserGroupDTO parentGroup = groupService.getGroupByName(g.getParentGroupName(), true);
+        UserGroupDTO parentGroup = groupService
+          .getGroupByName(g.getParentGroupName(), true);
         userGroupDTO.setParentId(parentGroup.getId());
       }
       if (isNew) {
@@ -110,7 +116,8 @@ public class JSONConfigService {
     for (JSONConfig.Template t : config.getTemplates()) {
       // If the template exists, update it, otherwise create it.
       LOGGER.log(Level.FINEST, "Processing template {0}", t.getName());
-      OpTemplateDTO templateDTO = templateService.getTemplateByName(t.getName());
+      OpTemplateDTO templateDTO = templateService
+        .getTemplateByName(t.getName());
       boolean isNew = templateDTO == null;
       if (isNew) {
         templateDTO = new OpTemplateDTO();
@@ -150,25 +157,32 @@ public class JSONConfigService {
     for (JSONConfig.GroupHasOperation gho : config.getGroupHasOperations()) {
       // If the operation exists, update it, otherwise create it.
       LOGGER.log(Level.FINEST, "Processing userGroup has operation {0}-{1}",
-          new String[]{gho.getGroupName(), gho.getOperationName()});
-      UserGroupDTO userGroupDTO = groupService.getGroupByName(gho.getGroupName(), true);
+        new String[]{gho.getGroupName(), gho.getOperationName()});
+      UserGroupDTO userGroupDTO = groupService
+        .getGroupByName(gho.getGroupName(), true);
       if (!operationService.getAllowedGroupsForOperation(
-          gho.getOperationName(), false).contains(userGroupDTO.getId())) {
+        gho.getOperationName(), false).contains(userGroupDTO.getId())) {
         operationService.addOperationToGroup(
-            userGroupDTO.getId(), gho.getOperationName(), gho.isDeny());
+          userGroupDTO.getId(), gho.getOperationName(), gho.isDeny());
       }
     }
   }
 
   private void parseConfigTemplateHasOperations(JSONConfig config) {
     // Create Template has Operations.
-    for (JSONConfig.TemplateHasOperation tho : config.getTemplateHasOperations()) {
+    for (JSONConfig.TemplateHasOperation tho : config
+      .getTemplateHasOperations()) {
       // If the operation exists, update it, otherwise create it.
       LOGGER.log(Level.FINEST, "Processing template has operation {0}-{1}",
-          new String[]{tho.getTemplateName(), tho.getOperationName()});
-      OpTemplateDTO templateDTO = templateService.getTemplateByName(tho.getTemplateName());
-      if (templateService.getOperationAccess(templateDTO.getId(), tho.getOperationName()) == null) {
-        templateService.addOperation(templateDTO.getId(), tho.getOperationName(), tho.isDeny());
+        new String[]{tho.getTemplateName(), tho.getOperationName()});
+      OpTemplateDTO templateDTO = templateService
+        .getTemplateByName(tho.getTemplateName());
+      if (templateService
+        .getOperationAccess(templateDTO.getId(), tho.getOperationName())
+        == null) {
+        templateService
+          .addOperation(templateDTO.getId(), tho.getOperationName(),
+            tho.isDeny());
       }
     }
   }
@@ -182,14 +196,15 @@ public class JSONConfigService {
     // Find AAA configurations.
     try {
       Enumeration<URL> entries = this.getClass().getClassLoader()
-          .getResources(configFile);
+        .getResources(configFile);
       if (entries != null) {
         while (entries.hasMoreElements()) {
           parseConfig(entries.nextElement());
         }
       }
     } catch (IOException e) {
-      LOGGER.log(Level.SEVERE, "Could not search QLACK Fuse AAA configuration files.", e);
+      LOGGER.log(Level.SEVERE,
+        "Could not search QLACK Fuse AAA configuration files.", e);
     }
   }
 }

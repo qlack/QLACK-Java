@@ -11,6 +11,7 @@ public class EmailValidator {
 
     // At least one recipient must be defined
     return !CollectionUtils.isEmpty(emailDTO.getToEmails()) || !CollectionUtils
-        .isEmpty(emailDTO.getCcEmails()) || !CollectionUtils.isEmpty(emailDTO.getBccEmails());
+      .isEmpty(emailDTO.getCcEmails()) || !CollectionUtils
+      .isEmpty(emailDTO.getBccEmails());
   }
 }

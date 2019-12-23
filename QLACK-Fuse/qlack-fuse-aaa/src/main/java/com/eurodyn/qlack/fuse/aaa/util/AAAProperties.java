@@ -46,13 +46,15 @@ public class AAAProperties {
   /**
    * Checks whether the permission priorities is positive or not
    *
-   * @return a {@link Boolean} value whether the permissionPrioritisePositive is true or not
+   * @return a {@link Boolean} value whether the permissionPrioritisePositive
+   * is true or not
    */
   public boolean isPermissionPrioritisePositive() {
     return permissionPrioritisePositive;
   }
 
-  public void setPermissionPrioritisePositive(boolean permissionPrioritisePositive) {
+  public void setPermissionPrioritisePositive(
+    boolean permissionPrioritisePositive) {
     this.permissionPrioritisePositive = permissionPrioritisePositive;
   }
 

@@ -8,7 +8,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 
 /**
- * A Repository interface for UserGroup.It is used to define a number of abstract crud methods
+ * A Repository interface for UserGroup.It is used to define a number of
+ * abstract crud methods
  *
  * @author European Dynamics SA
  */
@@ -48,8 +49,8 @@ public interface UserGroupRepository extends AAARepository<UserGroup, String> {
   default Set<String> getAllIds() {
 
     return findAll().stream()
-        .map(UserGroup::getId)
-        .collect(Collectors.toSet());
+      .map(UserGroup::getId)
+      .collect(Collectors.toSet());
   }
 
 }

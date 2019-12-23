@@ -34,24 +34,28 @@ public interface FileUpload {
    *
    * @param fileID the ID of the file from which a chunk will be retrieved
    * @param chunkNbr The number of the chunk
-   * @return ChunkGetResponse The response which will contain the retrieved chunk
+   * @return ChunkGetResponse The response which will contain the retrieved
+   * chunk
    * @throws FileNotFoundException FileNotFoundException
    */
-  DBFileDTO getByIDAndChunk(String fileID, long chunkNbr) throws FileNotFoundException;
+  DBFileDTO getByIDAndChunk(String fileID, long chunkNbr)
+    throws FileNotFoundException;
 
   List<DBFileDTO> listFiles(boolean includeBinaryContent);
 
   /**
-   * Cleans up file-chunks which have been uploaded but never reclaimed/deleted.
+   * Cleans up file-chunks which have been uploaded but never
+   * reclaimed/deleted.
    *
    * @param deleteBefore The EPOCH before which all files get deleted.
    */
   void cleanupExpired(long deleteBefore);
 
   /**
-   * Cleans up file-chunks which have been uploaded but never reclaimed/deleted. An implementation
-   * of this method should calculate the EPOCH before which all files get deleted internally. Since
-   * no arguments are passed, this method can be called with via Spring {@link Scheduled}
+   * Cleans up file-chunks which have been uploaded but never
+   * reclaimed/deleted. An implementation of this method should calculate the
+   * EPOCH before which all files get deleted internally. Since no arguments
+   * are passed, this method can be called with via Spring {@link Scheduled}
    * annotation.
    */
   void cleanupExpired();

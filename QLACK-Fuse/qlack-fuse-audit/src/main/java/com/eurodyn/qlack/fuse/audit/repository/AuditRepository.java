@@ -24,7 +24,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface AuditRepository extends QlackBaseRepository<Audit, String>,
-    GenericQuerydslBinder<QAudit> {
+  GenericQuerydslBinder<QAudit> {
 
   /**
    * Deletes Audits created before the date provided
@@ -40,17 +40,20 @@ public interface AuditRepository extends QlackBaseRepository<Audit, String>,
    * @param audit the {@link QAudit} object
    */
   @Override
-  default void customize(@NonNull QuerydslBindings bindings, @NonNull QAudit audit) {
+  default void customize(@NonNull QuerydslBindings bindings,
+    @NonNull QAudit audit) {
     // Add generic bindings.
     GenericQuerydslBinder.super.addGenericBindings(bindings);
 
     // Add specific bindings.
     bindings.bind(audit.createdOn)
-        .all((final NumberPath<Long> path, final Collection<? extends Long> values) -> {
+      .all(
+        (final NumberPath<Long> path, final Collection<? extends Long> values) -> {
           final List<? extends Long> dates = new ArrayList<>(values);
           Collections.sort(dates);
-          return dates.size() == 2 ? Optional.of(path.between(dates.get(0), dates.get(1)))
-              : Optional.of(path.eq(dates.get(0)));
+          return dates.size() == 2 ? Optional
+            .of(path.between(dates.get(0), dates.get(1)))
+            : Optional.of(path.eq(dates.get(0)));
         });
 
     // Exclude fields from filter.
@@ -69,7 +72,7 @@ public interface AuditRepository extends QlackBaseRepository<Audit, String>,
     Predicate predicate = qAudit.referenceId.eq(referenceId);
 
     return findAll(predicate, Sort.by("EVENT").ascending()).stream()
-        .map(Audit::getEvent)
-        .collect(Collectors.toList());
+      .map(Audit::getEvent)
+      .collect(Collectors.toList());
   }
 }

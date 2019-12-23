@@ -33,7 +33,8 @@ public class EsConfig {
   private String hostPort;
 
   /**
-   * Bean that creates a configuration for elastic search using the properties acquired from the
+   * Bean that creates a configuration for elastic search using the properties
+   * acquired from the
    * <b>application.properties</b> file
    *
    * @return an Elastic search client
@@ -43,24 +44,26 @@ public class EsConfig {
   @SuppressWarnings("squid:S2095")
   public TransportClient client() throws UnknownHostException {
     Settings settings = Settings.builder()
-        .put("cluster.name", clusterName)
-        .put("client.transport.sniff", false)
-        .put("transport.host", hostName).build();
+      .put("cluster.name", clusterName)
+      .put("client.transport.sniff", false)
+      .put("transport.host", hostName).build();
 
     return new PreBuiltTransportClient(settings).addTransportAddress(new
-        TransportAddress(InetAddress.getByName(hostName),
-        Integer.parseInt(hostPort)));
+      TransportAddress(InetAddress.getByName(hostName),
+      Integer.parseInt(hostPort)));
   }
 
   /**
-   * Creates an Elastic search template by creating and using an Elastic search client
+   * Creates an Elastic search template by creating and using an Elastic
+   * search client
    *
    * @return an {@link ElasticsearchOperations} object
    * @throws UnknownHostException if the host cannot be found
    * @see EsConfig#client()
    */
   @Bean
-  public ElasticsearchOperations elasticsearchTemplate() throws UnknownHostException {
+  public ElasticsearchOperations elasticsearchTemplate()
+    throws UnknownHostException {
     return new ElasticsearchTemplate(client());
   }
 

@@ -12,6 +12,6 @@ import org.mapstruct.ReportingPolicy;
  */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface DistributionListMapper extends
-    MailingMapper<DistributionList, DistributionListDTO> {
+  MailingMapper<DistributionList, DistributionListDTO> {
 
 }

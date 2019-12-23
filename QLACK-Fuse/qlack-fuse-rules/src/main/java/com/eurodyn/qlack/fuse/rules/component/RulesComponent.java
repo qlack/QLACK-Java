@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
- * This component can be used in order to serialize the globals and the facts for a KieSession
- * execution and to deserialize the results.
+ * This component can be used in order to serialize the globals and the facts
+ * for a KieSession execution and to deserialize the results.
  *
  * @author European Dynamics SA
  */
@@ -27,8 +27,9 @@ public class RulesComponent {
   private String acceptedPackagesNames;
 
   /**
-   * On the construction of the component, define the packages that can be de-serialized based on
-   * the configuration. If no config is given, accept all packages.
+   * On the construction of the component, define the packages that can be
+   * de-serialized based on the configuration. If no config is given, accept
+   * all packages.
    */
   @PostConstruct
   public void init() {
@@ -43,7 +44,7 @@ public class RulesComponent {
    */
   public byte[] serializeObject(Object object) {
     try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ObjectOutputStream oos = new ObjectOutputStream(
-        baos)) {
+      baos)) {
       oos.writeObject(object);
       return baos.toByteArray();
     } catch (IOException e) {
@@ -52,7 +53,8 @@ public class RulesComponent {
   }
 
   /**
-   * De-serializes a byte array to a class that exists in the Drools Classloader.
+   * De-serializes a byte array to a class that exists in the Drools
+   * Classloader.
    *
    * @param classLoader the Drools Classloader
    * @param bytes the byte array to de-serialize
@@ -62,7 +64,8 @@ public class RulesComponent {
   public Object deserializeObject(final ClassLoader classLoader, byte[] bytes) {
     try {
       ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-      ObjectInputStream ois = new LookAheadObjectInputStream(classLoader, bais, acceptedPackages);
+      ObjectInputStream ois = new LookAheadObjectInputStream(classLoader, bais,
+        acceptedPackages);
       return ois.readObject();
     } catch (IOException | ClassNotFoundException e) {
       throw new QRulesException(e);

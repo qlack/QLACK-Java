@@ -37,7 +37,7 @@ public class UserGroupService {
   private final UserGroupMapper userGroupMapper;
 
   public UserGroupService(UserGroupRepository userGroupRepository,
-      UserRepository userRepository, UserGroupMapper userGroupMapper) {
+    UserRepository userRepository, UserGroupMapper userGroupMapper) {
     this.userGroupRepository = userGroupRepository;
     this.userRepository = userRepository;
     this.userGroupMapper = userGroupMapper;
@@ -46,7 +46,8 @@ public class UserGroupService {
   public String createGroup(UserGroupDTO userGroupDTO) {
     UserGroup userGroup = userGroupMapper.mapToEntity(userGroupDTO);
     if (userGroupDTO.getParentId() != null) {
-      userGroup.setParent(userGroupRepository.fetchById(userGroupDTO.getParentId()));
+      userGroup
+        .setParent(userGroupRepository.fetchById(userGroupDTO.getParentId()));
     }
     userGroupRepository.save(userGroup);
 
@@ -71,7 +72,8 @@ public class UserGroupService {
     UserGroup checkedUserGroup = newParent;
     while (checkedUserGroup != null) {
       if (checkedUserGroup.getId().equals(userGroup.getId())) {
-        throw new InvalidGroupHierarchyException("Cannot move userGroup with ID " + groupID
+        throw new InvalidGroupHierarchyException(
+          "Cannot move userGroup with ID " + groupID
             + " under userGroup with ID " + newParentId
             + " since this will create a cyclic dependency between userGroups.");
       }
@@ -82,43 +84,49 @@ public class UserGroupService {
   }
 
   public UserGroupDTO getGroupByID(String groupID, boolean lazyRelatives) {
-    return userGroupMapper.mapToDTO(userGroupRepository.fetchById(groupID), lazyRelatives);
+    return userGroupMapper
+      .mapToDTO(userGroupRepository.fetchById(groupID), lazyRelatives);
   }
 
-  public List<UserGroupDTO> getGroupsByID(Collection<String> groupIds, boolean lazyRelatives) {
+  public List<UserGroupDTO> getGroupsByID(Collection<String> groupIds,
+    boolean lazyRelatives) {
     Predicate predicate = qUserGroup.id.in(groupIds);
 
     return userGroupMapper.mapToDTO(
-        userGroupRepository.findAll(predicate, Sort.by("name").ascending()), lazyRelatives);
+      userGroupRepository.findAll(predicate, Sort.by("name").ascending()),
+      lazyRelatives);
 
   }
 
   public UserGroupDTO getGroupByName(String groupName, boolean lazyRelatives) {
     return userGroupMapper.mapToDTO(
-        userGroupRepository.findByName(groupName), lazyRelatives);
+      userGroupRepository.findByName(groupName), lazyRelatives);
   }
 
-  public List<UserGroupDTO> getGroupByNames(List<String> groupNames, boolean lazyRelatives) {
+  public List<UserGroupDTO> getGroupByNames(List<String> groupNames,
+    boolean lazyRelatives) {
     Predicate predicate = qUserGroup.name.in(groupNames);
 
-    return userGroupMapper.mapToDTO(userGroupRepository.findAll(predicate), lazyRelatives);
+    return userGroupMapper
+      .mapToDTO(userGroupRepository.findAll(predicate), lazyRelatives);
   }
 
-  public UserGroupDTO getGroupByObjectId(String objectId, boolean lazyRelatives) {
+  public UserGroupDTO getGroupByObjectId(String objectId,
+    boolean lazyRelatives) {
     return userGroupMapper.mapToDTO(
-        userGroupRepository.findByObjectId(objectId), lazyRelatives);
+      userGroupRepository.findByObjectId(objectId), lazyRelatives);
   }
 
   public List<UserGroupDTO> listGroups() {
     return userGroupMapper.mapToDTO(
-        userGroupRepository.findAll(Sort.by("name").ascending()), false);
+      userGroupRepository.findAll(Sort.by("name").ascending()), false);
   }
 
   public List<UserGroupDTO> listGroupsAsTree() {
     Predicate predicate = qUserGroup.parent.isNull();
 
     return userGroupMapper.mapToDTO(userGroupRepository.findAll(
-        predicate, Sort.by("name").ascending()), false);
+      predicate, Sort.by("name").ascending()), false);
   }
 
   public UserGroupDTO getGroupParent(String groupID) {
@@ -134,22 +142,27 @@ public class UserGroupService {
       predicate = qUserGroup.parent.id.eq(groupID);
     }
     return userGroupMapper.mapToDTO(userGroupRepository.findAll(
-        predicate, Sort.by("name").ascending()), false);
+      predicate, Sort.by("name").ascending()), false);
 
   }
 
   /**
-   * Returns the users belonging to a given userGroup and (optionally) its hierarchy
+   * Returns the users belonging to a given userGroup and (optionally) its
+   * hierarchy
    *
    * @param userGroup The userGroup the users of which to retrieve
-   * @param includeAncestors true if users belonging to ancestors of this userGroup (the userGroup's
-   * parent and its parent's parent, etc.) should be retrieved
-   * @param includeDescendants true if users belonging to descendants of this userGroup (the
-   * userGroup's children and its children's children, etc.) should be retrieved
-   * @return The IDs of the users belonging to the specified userGroup hierarchy.
+   * @param includeAncestors true if users belonging to ancestors of this
+   * userGroup (the userGroup's parent and its parent's parent, etc.) should
+   * be retrieved
+   * @param includeDescendants true if users belonging to descendants of this
+   * userGroup (the userGroup's children and its children's children, etc.)
+   * should be retrieved
+   * @return The IDs of the users belonging to the specified userGroup
+   * hierarchy.
    */
-  private Set<String> getGroupHierarchyUsersIds(UserGroup userGroup, boolean includeAncestors,
-      boolean includeDescendants) {
+  private Set<String> getGroupHierarchyUsersIds(UserGroup userGroup,
+    boolean includeAncestors,
+    boolean includeDescendants) {
     Set<String> retVal = new HashSet<>(userGroup.getUsers().size());
     for (User user : userGroup.getUsers()) {
       retVal.add(user.getId());
@@ -164,7 +177,8 @@ public class UserGroupService {
       }
     }
     if ((includeAncestors) && (userGroup.getParent() != null)) {
-      retVal.addAll(getGroupHierarchyUsersIds(userGroup.getParent(), true, false));
+      retVal
+        .addAll(getGroupHierarchyUsersIds(userGroup.getParent(), true, false));
     }
 
     return retVal;
@@ -200,7 +214,8 @@ public class UserGroupService {
     addUsersByGroupName(userIds, groupName);
   }
 
-  public void addUsersByGroupName(Collection<String> userIDs, String groupName) {
+  public void addUsersByGroupName(Collection<String> userIDs,
+    String groupName) {
     addUsers(userIDs, userGroupRepository.findByName(groupName));
   }
 
@@ -243,7 +258,7 @@ public class UserGroupService {
   public Set<String> getGroupUsersNames(Collection<String> groupIDs) {
     List<UserGroup> groups = userGroupRepository.findByIdIn(groupIDs);
     Set<User> users = groups.stream().flatMap(g -> g.getUsers().stream())
-        .collect(Collectors.toSet());
+      .collect(Collectors.toSet());
     return users.stream().map(User::getUsername).collect(Collectors.toSet());
   }
 }

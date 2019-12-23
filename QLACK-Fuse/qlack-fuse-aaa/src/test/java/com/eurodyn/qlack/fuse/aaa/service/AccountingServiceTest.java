@@ -91,7 +91,8 @@ public class AccountingServiceTest {
 
   @Test
   public void testTerminateSession() {
-    when(sessionRepository.findById(any())).thenReturn(java.util.Optional.ofNullable(session));
+    when(sessionRepository.findById(any()))
+      .thenReturn(java.util.Optional.ofNullable(session));
     accountingService.terminateSession("id");
     verify(sessionRepository, times(1)).findById(any());
   }
@@ -106,10 +107,12 @@ public class AccountingServiceTest {
   @Test
   public void getTerminateSessionByApplicationSessionId() {
     qSession = new QSession("session");
-    when(sessionRepository.findOne(qSession.applicationSessionId.eq("id"))).thenReturn(
+    when(sessionRepository.findOne(qSession.applicationSessionId.eq("id")))
+      .thenReturn(
         java.util.Optional.ofNullable(session));
     accountingService.terminateSessionByApplicationSessionId("id");
-    verify(sessionRepository, times(1)).findOne(qSession.applicationSessionId.eq("id"));
+    verify(sessionRepository, times(1))
+      .findOne(qSession.applicationSessionId.eq("id"));
   }
 
   @Test
@@ -139,50 +142,53 @@ public class AccountingServiceTest {
   @Test
   public void testGetUserLastLogInEmptyList() {
     assertNull(accountingService.getUserLastLogIn("id"));
-    verify(sessionRepository, times(1)).findAll((Predicate) any(), (Sort) any());
+    verify(sessionRepository, times(1))
+      .findAll((Predicate) any(), (Sort) any());
   }
 
   @Test
   public void testGetUserLastLogIn() {
     queryMock();
     when(sessionRepository.findAll(qSession.user.id.eq("id"),
-        Sort.by("createdOn").descending())).thenReturn(listSession);
+      Sort.by("createdOn").descending())).thenReturn(listSession);
     assertEquals(2L, accountingService.getUserLastLogIn("id").longValue());
     verify(sessionRepository, times(1)).findAll(qSession.user.id.eq("id"),
-        Sort.by("createdOn").descending());
+      Sort.by("createdOn").descending());
   }
 
   @Test
   public void testGetUserLastLogOutEmptyList() {
     assertNull(accountingService.getUserLastLogOut("id"));
-    verify(sessionRepository, times(1)).findAll((Predicate) any(), (Sort) any());
+    verify(sessionRepository, times(1))
+      .findAll((Predicate) any(), (Sort) any());
   }
 
   @Test
   public void testGetUserLastLogOut() {
     queryMock();
     when(sessionRepository.findAll(qSession.user.id.eq("id"),
-        Sort.by("terminatedOn").descending())).thenReturn(listSession);
+      Sort.by("terminatedOn").descending())).thenReturn(listSession);
     assertEquals(2L, accountingService.getUserLastLogOut("id").longValue());
     verify(sessionRepository, times(1)).findAll(qSession.user.id.eq("id"),
-        Sort.by("terminatedOn").descending());
+      Sort.by("terminatedOn").descending());
   }
 
   @Test
   public void testGetUserLastLogInDurationEmptyList() {
     accountingService.getUserLastLogInDuration("id");
-    verify(sessionRepository, times(1)).findAll((Predicate) any(), (Sort) any());
+    verify(sessionRepository, times(1))
+      .findAll((Predicate) any(), (Sort) any());
   }
 
   @Test
   public void testGetUserLastLogInDuration() {
     queryMock();
     when(sessionRepository.findAll(qSession.user.id.eq("id"),
-        Sort.by("terminatedOn").descending())).thenReturn(listSession);
+      Sort.by("terminatedOn").descending())).thenReturn(listSession);
     assertEquals(session.getTerminatedOn() - session.getCreatedOn(),
-        accountingService.getUserLastLogInDuration("id").longValue());
+      accountingService.getUserLastLogInDuration("id").longValue());
     verify(sessionRepository, times(1)).findAll(qSession.user.id.eq("id"),
-        Sort.by("terminatedOn").descending());
+      Sort.by("terminatedOn").descending());
   }
 
   @Test
@@ -206,21 +212,22 @@ public class AccountingServiceTest {
     accountingService.updateAttribute(sessionAttributeDTO, true);
     sessionAttributeRepository.findBySessionIdAndName("id", "name");
     verify(sessionAttributeRepository, times(2)).
-        save(sessionAttributeRepository.findBySessionIdAndName("id", "name"));
+      save(sessionAttributeRepository.findBySessionIdAndName("id", "name"));
   }
 
   @Test
   public void testDeleteAttribute() {
     accountingService.deleteAttribute("id", "name");
     verify(sessionAttributeRepository, times(1))
-        .delete(sessionAttributeRepository.findBySessionIdAndName("id", "name"));
+      .delete(sessionAttributeRepository.findBySessionIdAndName("id", "name"));
   }
 
   @Test
   public void testGetAttribute() {
     //when(sessionAttributeMapper.mapToDTO(sessionAttribute)).thenReturn(sessionAttributeDTO);
     accountingService.getAttribute("id", "name");
-    verify(sessionAttributeRepository, times(1)).findBySessionIdAndName("id", "name");
+    verify(sessionAttributeRepository, times(1))
+      .findBySessionIdAndName("id", "name");
   }
 
   @Test
@@ -255,7 +262,7 @@ public class AccountingServiceTest {
   public void testTerminateSessionsBeforeDate() {
     accountingService.terminateSessionsBeforeDate(date);
     verify(sessionRepository, times(1))
-        .findByCreatedOnBeforeAndTerminatedOnNull(date.getTime());
+      .findByCreatedOnBeforeAndTerminatedOnNull(date.getTime());
   }
 
   @Test

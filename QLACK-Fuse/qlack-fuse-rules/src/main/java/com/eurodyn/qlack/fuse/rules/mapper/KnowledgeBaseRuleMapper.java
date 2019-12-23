@@ -12,6 +12,6 @@ import org.mapstruct.ReportingPolicy;
  */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface KnowledgeBaseRuleMapper extends
-    RulesMapper<KnowledgeBaseRule, KnowledgeBaseRuleDTO> {
+  RulesMapper<KnowledgeBaseRule, KnowledgeBaseRuleDTO> {
 
 }

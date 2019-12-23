@@ -31,7 +31,8 @@ public class ImagingServiceTest {
   private ImagingService imagingService;
 
   private byte[] createByteImage() throws IOException {
-    BufferedImage bImage = ImageIO.read(this.getClass().getResource("/image/file-binary.jpg"));
+    BufferedImage bImage = ImageIO
+      .read(this.getClass().getResource("/image/file-binary.jpg"));
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     ImageIO.write(bImage, "jpg", bos);
     return bos.toByteArray();
@@ -46,15 +47,17 @@ public class ImagingServiceTest {
   @Test
   public void getSupportedReadFormatsTest() {
     List<ImageFormatHandler> result =
-        imagingService.getSupportedReadFormats();
-    assertEquals(Arrays.asList(ImageIO.getReaderFormatNames()).size(), result.size());
+      imagingService.getSupportedReadFormats();
+    assertEquals(Arrays.asList(ImageIO.getReaderFormatNames()).size(),
+      result.size());
   }
 
   @Test
   public void getSupportedWriteFormatsTest() {
     List<ImageFormatHandler> result =
-        imagingService.getSupportedWriteFormats();
-    assertEquals(Arrays.asList(ImageIO.getWriterFormatNames()).size(), result.size());
+      imagingService.getSupportedWriteFormats();
+    assertEquals(Arrays.asList(ImageIO.getWriterFormatNames()).size(),
+      result.size());
   }
 
   @Test
@@ -79,7 +82,8 @@ public class ImagingServiceTest {
 
   @Test
   public void getInfoTest() throws IOException {
-    BufferedImage bImage = ImageIO.read(this.getClass().getResource("/image/file-binary.jpg"));
+    BufferedImage bImage = ImageIO
+      .read(this.getClass().getResource("/image/file-binary.jpg"));
     ImageInfo result = imagingService.getInfo(createByteImage());
     assertEquals(bImage.getHeight(), result.getHeight());
   }
@@ -106,61 +110,73 @@ public class ImagingServiceTest {
 
   @Test
   public void convertToTIFFTest() throws IOException {
-    byte[] result = imagingService.convertToTIFF(createByteImage(), TIFFCompression.JPEG);
+    byte[] result = imagingService
+      .convertToTIFF(createByteImage(), TIFFCompression.JPEG);
     assertNotEquals(createByteImage().length, result.length);
   }
 
   @Test(expected = ImagingException.class)
   public void convertToTIFFDstColorspaceTest() throws IOException {
-    imagingService.convertToTIFF(createByteImage(), ICCProfile.CoatedFOGRA27, TIFFCompression.JPEG);
+    imagingService.convertToTIFF(createByteImage(), ICCProfile.CoatedFOGRA27,
+      TIFFCompression.JPEG);
   }
 
   @Test
   public void resampleByPercentTest() throws IOException {
     byte[] result = imagingService
-        .resampleByPercent(createByteImage(), 100, ResamplingAlgorithm.FILTER_BLACKMAN);
+      .resampleByPercent(createByteImage(), 100,
+        ResamplingAlgorithm.FILTER_BLACKMAN);
     assertTrue(createByteImage().length > result.length);
 
     result = imagingService
-        .resampleByPercent(createByteImage(), 50, ResamplingAlgorithm.FILTER_BLACKMAN);
+      .resampleByPercent(createByteImage(), 50,
+        ResamplingAlgorithm.FILTER_BLACKMAN);
     assertNotEquals(createByteImage().length, result.length);
   }
 
   @Test
   public void resampleByFactorTest() throws IOException {
     byte[] result = imagingService
-        .resampleByFactor(createByteImage(), 5, ResamplingAlgorithm.FILTER_BLACKMAN);
+      .resampleByFactor(createByteImage(), 5,
+        ResamplingAlgorithm.FILTER_BLACKMAN);
     assertTrue(createByteImage().length < result.length);
   }
 
   @Test
   public void resampleByWidthTest() throws IOException {
     byte[] result = imagingService
-        .resampleByWidth(createByteImage(), 5, ResamplingAlgorithm.FILTER_BLACKMAN);
+      .resampleByWidth(createByteImage(), 5,
+        ResamplingAlgorithm.FILTER_BLACKMAN);
     assertTrue(createByteImage().length > result.length);
   }
 
   @Test
   public void resampleByHeightTest() throws IOException {
-    InputStream originalImageInputStream = new ByteArrayInputStream(createByteImage());
+    InputStream originalImageInputStream = new ByteArrayInputStream(
+      createByteImage());
     BufferedImage bImage = ImageIO.read(originalImageInputStream);
     byte[] result = imagingService
-        .resampleByHeight(createByteImage(), 5, ResamplingAlgorithm.FILTER_BLACKMAN);
+      .resampleByHeight(createByteImage(), 5,
+        ResamplingAlgorithm.FILTER_BLACKMAN);
 
     InputStream resampleImageInputStream = new ByteArrayInputStream(result);
-    BufferedImage originalBufferedImage = ImageIO.read(resampleImageInputStream);
+    BufferedImage originalBufferedImage = ImageIO
+      .read(resampleImageInputStream);
     assertTrue(bImage.getHeight() > originalBufferedImage.getHeight());
   }
 
   @Test
   public void resampleTest() throws IOException {
-    InputStream originalImageInputStream = new ByteArrayInputStream(createByteImage());
+    InputStream originalImageInputStream = new ByteArrayInputStream(
+      createByteImage());
     BufferedImage bImage = ImageIO.read(originalImageInputStream);
     byte[] result =
-        imagingService.resample(createByteImage(), 5, 5, ResamplingAlgorithm.FILTER_BLACKMAN);
+      imagingService
+        .resample(createByteImage(), 5, 5, ResamplingAlgorithm.FILTER_BLACKMAN);
 
     InputStream resampleImageInputStream = new ByteArrayInputStream(result);
-    BufferedImage originalBufferedImage = ImageIO.read(resampleImageInputStream);
+    BufferedImage originalBufferedImage = ImageIO
+      .read(resampleImageInputStream);
     assertTrue(bImage.getHeight() > originalBufferedImage.getHeight());
   }
 }

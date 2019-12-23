@@ -46,9 +46,6 @@ public interface KeyMapper extends LexiconMapper<Key, KeyDTO> {
       return null;
     }
     String id = group.getId();
-    if (id == null) {
-      return null;
-    }
     return id;
   }
 
@@ -60,9 +57,11 @@ public interface KeyMapper extends LexiconMapper<Key, KeyDTO> {
    * @return a new HashMap of data
    */
   @Named("mapData")
-  default Map<String, String> mapData(List<Data> data, @Context boolean addTranslations) {
+  default Map<String, String> mapData(List<Data> data,
+    @Context boolean addTranslations) {
     if (addTranslations && Objects.nonNull(data)) {
-      return data.stream().collect(Collectors.toMap(a -> a.getLanguage().getLocale(),
+      return data.stream()
+        .collect(Collectors.toMap(a -> a.getLanguage().getLocale(),
           Data::getValue));
     }
     return new HashMap<>();

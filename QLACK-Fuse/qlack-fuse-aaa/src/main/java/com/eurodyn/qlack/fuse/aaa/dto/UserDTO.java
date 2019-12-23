@@ -6,7 +6,8 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
- * A simple DTO ( Data Transfer Object) for User.It is used to get the User's data
+ * A simple DTO ( Data Transfer Object) for User.It is used to get the User's
+ * data
  *
  * @author European Dynamcis SA
  */
@@ -43,8 +44,8 @@ public class UserDTO extends BaseDTO {
   private Set<UserAttributeDTO> userAttributes;
 
   /**
-   * The session Id created for this user. Expect this to be populated, only, when attempting to
-   * login the user.
+   * The session Id created for this user. Expect this to be populated, only,
+   * when attempting to login the user.
    **/
   private String sessionId;
 }

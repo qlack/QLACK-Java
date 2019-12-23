@@ -1,10 +1,11 @@
 package com.eurodyn.qlack.fuse.imaging.util;
 
 /**
- * A list of resampling algorithms to use while resampling an image. Be aware that not just any
- * resampling algorithm is appropriate for just any type of resampling. You need to understand what
- * type of resampling you are about to perform (and some times even the type of image you are
- * working with) to be able to choose the most appropriate algorithm.
+ * A list of resampling algorithms to use while resampling an image. Be aware
+ * that not just any resampling algorithm is appropriate for just any type of
+ * resampling. You need to understand what type of resampling you are about to
+ * perform (and some times even the type of image you are working with) to be
+ * able to choose the most appropriate algorithm.
  *
  * @author European Dynamics SA.
  */

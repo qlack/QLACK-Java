@@ -66,7 +66,8 @@ public class CompareServiceTest {
     when(javers.compare(object2, object1)).thenReturn(diff);
     when(diff.getChangesByType(ValueChange.class)).thenReturn(valueChangeList);
 
-    assertEquals(Collections.emptyList(), compareService.compareVersions(object1, 1L, 2L));
+    assertEquals(Collections.emptyList(),
+      compareService.compareVersions(object1, 1L, 2L));
   }
 
   @Test
@@ -102,7 +103,8 @@ public class CompareServiceTest {
     when(javers.compare(object1, object1)).thenReturn(diff);
     when(diff.getChangesByType(ValueChange.class)).thenReturn(valueChangeList);
 
-    assertEquals(Collections.emptyList(), compareService.compareObjectWithVersion(object1, 1L));
+    assertEquals(Collections.emptyList(),
+      compareService.compareObjectWithVersion(object1, 1L));
   }
 
   @Test
@@ -112,12 +114,13 @@ public class CompareServiceTest {
     when(diff.getChangesByType(ValueChange.class)).thenReturn(valueChangeList);
 
     assertEquals(Collections.emptyList(),
-        compareService.compareObjectWithLatestVersion(object1));
+      compareService.compareObjectWithLatestVersion(object1));
   }
 
   @Test
   public void convertToChangeDTOTest() {
-    ValueChange valueChange = new ValueChange(globalId, "property", object1, object2);
+    ValueChange valueChange = new ValueChange(globalId, "property", object1,
+      object2);
     assertNotNull(compareService.convertToChangeDTO(valueChange));
   }
 

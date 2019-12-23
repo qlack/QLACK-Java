@@ -1,4 +1,4 @@
-# QLACK scheduler module
+# QLACK Fuse - Scheduler
 
 This module is responsible for creating and scheduling custom application jobs by using Spring Quartz.
 
@@ -7,15 +7,10 @@ This module is responsible for creating and scheduling custom application jobs b
 ### Add qlack-fuse-scheduler dependency to your pom.xml:
 
 ```xml
-    <properties>
-        <!-- ... -->
-        <version.qlack>3.0.0-SNAPSHOT</version.qlack>
-    </properties>
-
     <dependency>
         <groupId>com.eurodyn.qlack.fuse</groupId>
         <artifactId>qlack-fuse-scheduler</artifactId>
-        <version>${version.qlack}</version>
+        <version>${qlack.version}</version>
     </dependency>
 ```
 

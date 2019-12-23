@@ -29,20 +29,23 @@ public class KnowledgeBaseLibraryMapperTest {
 
   @Test
   public void mapToDTOTest() {
-    KnowledgeBaseLibrary knowledgeBaseLibrary = initTestValues.createKnowledgeBaseLibrary();
+    KnowledgeBaseLibrary knowledgeBaseLibrary = initTestValues
+      .createKnowledgeBaseLibrary();
     KnowledgeBaseLibraryDTO knowledgeBaseLibraryDTO = knowledgeBaseLibraryMapper
-        .mapToDTO(knowledgeBaseLibrary);
+      .mapToDTO(knowledgeBaseLibrary);
 
-    assertArrayEquals(knowledgeBaseLibrary.getLibrary(), knowledgeBaseLibraryDTO.getLibrary());
+    assertArrayEquals(knowledgeBaseLibrary.getLibrary(),
+      knowledgeBaseLibraryDTO.getLibrary());
   }
 
   @Test
   public void mapToDTONullLibraryTest() {
-    KnowledgeBaseLibrary knowledgeBaseLibrary = initTestValues.createKnowledgeBaseLibrary();
+    KnowledgeBaseLibrary knowledgeBaseLibrary = initTestValues
+      .createKnowledgeBaseLibrary();
     knowledgeBaseLibrary.setLibrary(null);
 
     assertArrayEquals(null, knowledgeBaseLibraryMapper
-        .mapToDTO(knowledgeBaseLibrary).getLibrary());
+      .mapToDTO(knowledgeBaseLibrary).getLibrary());
   }
 
   @Test
@@ -50,16 +53,19 @@ public class KnowledgeBaseLibraryMapperTest {
     List<KnowledgeBaseLibrary> knowledgeBaseLibraries = new ArrayList<>();
     knowledgeBaseLibraries.add(initTestValues.createFullKnowledgeBaseLibrary());
     List<KnowledgeBaseLibraryDTO> knowledgeBaseLibraryDTOS = knowledgeBaseLibraryMapper
-        .mapToDTO(knowledgeBaseLibraries);
+      .mapToDTO(knowledgeBaseLibraries);
 
-    assertEquals(knowledgeBaseLibraries.size(), knowledgeBaseLibraryDTOS.size());
+    assertEquals(knowledgeBaseLibraries.size(),
+      knowledgeBaseLibraryDTOS.size());
   }
 
   @Test
   public void mapToDTONullTest() {
-    assertEquals(null, knowledgeBaseLibraryMapper.mapToDTO((KnowledgeBaseLibrary) null));
+    assertEquals(null,
+      knowledgeBaseLibraryMapper.mapToDTO((KnowledgeBaseLibrary) null));
 
-    List<KnowledgeBaseLibraryDTO> knowledgeBaseLibraryDTOS = knowledgeBaseLibraryMapper.mapToDTO(
+    List<KnowledgeBaseLibraryDTO> knowledgeBaseLibraryDTOS = knowledgeBaseLibraryMapper
+      .mapToDTO(
         (List<KnowledgeBaseLibrary>) null);
     assertEquals(null, knowledgeBaseLibraryDTOS);
   }
@@ -67,38 +73,43 @@ public class KnowledgeBaseLibraryMapperTest {
   @Test
   public void mapToEntityTest() {
     KnowledgeBaseLibraryDTO knowledgeBaseLibraryDTO = initTestValues
-        .createKnowledgeBaseLibraryDTO();
+      .createKnowledgeBaseLibraryDTO();
     KnowledgeBaseLibrary knowledgeBaseLibrary = knowledgeBaseLibraryMapper
-        .mapToEntity(knowledgeBaseLibraryDTO);
+      .mapToEntity(knowledgeBaseLibraryDTO);
 
-    assertArrayEquals(knowledgeBaseLibraryDTO.getLibrary(), knowledgeBaseLibrary.getLibrary());
+    assertArrayEquals(knowledgeBaseLibraryDTO.getLibrary(),
+      knowledgeBaseLibrary.getLibrary());
   }
 
   @Test
   public void mapToEntityNullLibraryTest() {
     KnowledgeBaseLibraryDTO knowledgeBaseLibraryDTO = initTestValues
-        .createKnowledgeBaseLibraryDTO();
+      .createKnowledgeBaseLibraryDTO();
     knowledgeBaseLibraryDTO.setLibrary(null);
 
     assertArrayEquals(null, knowledgeBaseLibraryMapper
-        .mapToEntity(knowledgeBaseLibraryDTO).getLibrary());
+      .mapToEntity(knowledgeBaseLibraryDTO).getLibrary());
   }
 
   @Test
   public void mapToEntityListTest() {
     List<KnowledgeBaseLibraryDTO> knowledgeBaseLibraryDTOS = new ArrayList<>();
-    knowledgeBaseLibraryDTOS.add(initTestValues.createKnowledgeBaseLibraryDTO());
+    knowledgeBaseLibraryDTOS
+      .add(initTestValues.createKnowledgeBaseLibraryDTO());
     List<KnowledgeBaseLibrary> knowledgeBaseLibraries = knowledgeBaseLibraryMapper
-        .mapToEntity(knowledgeBaseLibraryDTOS);
+      .mapToEntity(knowledgeBaseLibraryDTOS);
 
-    assertEquals(knowledgeBaseLibraryDTOS.size(), knowledgeBaseLibraries.size());
+    assertEquals(knowledgeBaseLibraryDTOS.size(),
+      knowledgeBaseLibraries.size());
   }
 
   @Test
   public void mapToEntityNullTest() {
-    assertEquals(null, knowledgeBaseLibraryMapper.mapToEntity((KnowledgeBaseLibraryDTO) null));
+    assertEquals(null,
+      knowledgeBaseLibraryMapper.mapToEntity((KnowledgeBaseLibraryDTO) null));
 
-    List<KnowledgeBaseLibrary> knowledgeBaseLibraries = knowledgeBaseLibraryMapper.mapToEntity(
+    List<KnowledgeBaseLibrary> knowledgeBaseLibraries = knowledgeBaseLibraryMapper
+      .mapToEntity(
         (List<KnowledgeBaseLibraryDTO>) null);
     assertEquals(null, knowledgeBaseLibraries);
   }

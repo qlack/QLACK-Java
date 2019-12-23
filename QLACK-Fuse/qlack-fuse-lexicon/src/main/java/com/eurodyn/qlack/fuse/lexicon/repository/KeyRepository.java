@@ -13,8 +13,8 @@ import org.springframework.stereotype.Repository;
 public interface KeyRepository extends QlackBaseRepository<Key, String> {
 
   /**
-   * A method declaration that the usage is to retrieve the key filtered by the key name and the
-   * group id that belongs to
+   * A method declaration that the usage is to retrieve the key filtered by
+   * the key name and the group id that belongs to
    *
    * @param keyName the key name
    * @param groupId the group id

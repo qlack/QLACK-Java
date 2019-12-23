@@ -40,39 +40,46 @@ public class RulesComponentTest {
   @Test
   public void deserializeObjectTest() {
     assertNotNull(rulesComponent
-        .deserializeObject(classLoader, rulesComponent.serializeObject(new SerializableClass())));
+      .deserializeObject(classLoader,
+        rulesComponent.serializeObject(new SerializableClass())));
   }
 
   @Test
   public void deserializeObjectNullClassTest() throws ClassNotFoundException {
 
     ClassLoader classLoaderInstance = mock(ClassLoader.class);
-    when(classLoaderInstance.loadClass("com.eurodyn.qlack.fuse.rules.SerializableClass"))
-        .thenReturn(null);
+    when(classLoaderInstance
+      .loadClass("com.eurodyn.qlack.fuse.rules.SerializableClass"))
+      .thenReturn(null);
     assertNotNull(rulesComponent.deserializeObject(classLoaderInstance,
-        rulesComponent.serializeObject(new SerializableClass())));
+      rulesComponent.serializeObject(new SerializableClass())));
   }
 
   @Test(expected = QRulesException.class)
   public void deserializeObjectExceptionTest() {
-    assertNotNull(rulesComponent.deserializeObject(classLoader, "object".getBytes()));
+    assertNotNull(
+      rulesComponent.deserializeObject(classLoader, "object".getBytes()));
   }
 
   @Test(expected = QRulesException.class)
   public void deserializeUnknownTest() {
-    ReflectionTestUtils.setField(rulesComponent, "acceptedPackagesNames", "package.does.not.exist");
+    ReflectionTestUtils.setField(rulesComponent, "acceptedPackagesNames",
+      "package.does.not.exist");
     rulesComponent.init();
     assertNotNull(rulesComponent
-        .deserializeObject(classLoader, rulesComponent.serializeObject(new SerializableClass())));
+      .deserializeObject(classLoader,
+        rulesComponent.serializeObject(new SerializableClass())));
   }
 
   @Test
   public void deserializeKnownObject2Test() {
     ReflectionTestUtils
-        .setField(rulesComponent, "acceptedPackagesNames", "com.eurodyn.qlack.fuse.rules.");
+      .setField(rulesComponent, "acceptedPackagesNames",
+        "com.eurodyn.qlack.fuse.rules.");
     rulesComponent.init();
     assertNotNull(rulesComponent
-        .deserializeObject(classLoader, rulesComponent.serializeObject(new SerializableClass())));
+      .deserializeObject(classLoader,
+        rulesComponent.serializeObject(new SerializableClass())));
   }
 
 }

@@ -5,7 +5,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Generic mapping interface for entities and DTOs of the <tt>qlack-fuse-mailing</tt> module.
+ * Generic mapping interface for entities and DTOs of the
+ * <tt>qlack-fuse-mailing</tt> module.
  *
  * @param <E> an entity class
  * @param <D> a DTO class
@@ -46,7 +47,8 @@ public interface MailingMapper<E extends MailingModel, D> {
   List<E> mapToEntity(List<D> dto);
 
   /**
-   * Returns the number of milliseconds since January 1, 1970, 00:00:00 GMT represented by this
+   * Returns the number of milliseconds since January 1, 1970, 00:00:00 GMT
+   * represented by this
    * <tt>Date</tt> object or null if value is null.
    *
    * @param value a {@link java.util.Date} value
@@ -57,10 +59,11 @@ public interface MailingMapper<E extends MailingModel, D> {
   }
 
   /**
-   * Returns a {@link java.util.Date} object representing the {@link java.lang.Long} value of time
-   * in milliseconds or null if value is null.
+   * Returns a {@link java.util.Date} object representing the {@link
+   * java.lang.Long} value of time in milliseconds or null if value is null.
    *
-   * @param value the number of milliseconds since January 1, 1970, 00:00:00 GMT
+   * @param value the number of milliseconds since January 1, 1970, 00:00:00
+   * GMT
    * @return a {@link java.util.Date}
    */
   default java.util.Date mapToDTO(java.lang.Long value) {

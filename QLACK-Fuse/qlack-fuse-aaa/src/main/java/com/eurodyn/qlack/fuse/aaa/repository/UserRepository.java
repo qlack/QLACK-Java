@@ -7,7 +7,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 
 /**
- * A Repository interface for User.It is used to define a number of abstract crud methods.
+ * A Repository interface for User.It is used to define a number of abstract
+ * crud methods.
  *
  * @author European Dynamics SA
  */
@@ -46,12 +47,12 @@ public interface UserRepository extends AAARepository<User, String> {
 
     if (Boolean.TRUE.equals(superadmin)) {
       return findBySuperadminTrue().stream()
-          .map(AAAModel::getId)
-          .collect(Collectors.toSet());
+        .map(AAAModel::getId)
+        .collect(Collectors.toSet());
     } else {
       return findBySuperadminFalse().stream()
-          .map(AAAModel::getId)
-          .collect(Collectors.toSet());
+        .map(AAAModel::getId)
+        .collect(Collectors.toSet());
     }
   }
 }

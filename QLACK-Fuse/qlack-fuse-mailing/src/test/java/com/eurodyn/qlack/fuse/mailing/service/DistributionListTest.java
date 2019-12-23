@@ -35,7 +35,7 @@ public class DistributionListTest {
   private DistributionListService distributionListService;
 
   private DistributionListRepository distributionListRepository = mock(
-      DistributionListRepository.class);
+    DistributionListRepository.class);
   private ContactRepository contactRepository = mock(ContactRepository.class);
 
   @Spy
@@ -58,9 +58,10 @@ public class DistributionListTest {
 
   @Before
   public void init() {
-    distributionListService = new DistributionListService(distributionListRepository,
-        contactRepository,
-        distributionListMapper, contactMapper
+    distributionListService = new DistributionListService(
+      distributionListRepository,
+      contactRepository,
+      distributionListMapper, contactMapper
     );
 
     initTestValues = new InitTestValues();
@@ -74,40 +75,49 @@ public class DistributionListTest {
 
   @Test
   public void testCreateDistributionList() {
-    when(distributionListMapper.mapToEntity(distributionListDTO)).thenReturn(distributionList);
+    when(distributionListMapper.mapToEntity(distributionListDTO))
+      .thenReturn(distributionList);
     distributionListService.createDistributionList(distributionListDTO);
     verify(distributionListRepository, times(1)).save(distributionList);
   }
 
   @Test
   public void testEditDistributionList() {
-    when(distributionListMapper.mapToEntity(distributionListDTO)).thenReturn(distributionList);
+    when(distributionListMapper.mapToEntity(distributionListDTO))
+      .thenReturn(distributionList);
     distributionListService.editDistributionList(distributionListDTO);
     verify(distributionListRepository, times(1)).save(distributionList);
   }
 
   @Test
   public void testDeleteDistributionList() {
-    when(distributionListRepository.fetchById(distributionListId)).thenReturn(distributionList);
+    when(distributionListRepository.fetchById(distributionListId))
+      .thenReturn(distributionList);
     distributionListService.deleteDistributionList(distributionListId);
     verify(distributionListRepository, times(1)).delete(distributionList);
   }
 
   @Test
   public void testFind() {
-    when(distributionListRepository.fetchById(distributionListId)).thenReturn(distributionList);
-    when(distributionListMapper.mapToDTO(distributionList)).thenReturn(distributionListDTO);
-    DistributionListDTO findDListDTO = distributionListService.find(distributionListId);
+    when(distributionListRepository.fetchById(distributionListId))
+      .thenReturn(distributionList);
+    when(distributionListMapper.mapToDTO(distributionList))
+      .thenReturn(distributionListDTO);
+    DistributionListDTO findDListDTO = distributionListService
+      .find(distributionListId);
     assertEquals(distributionListDTO, findDListDTO);
   }
 
   @Test
   public void testSearchWithName() {
-    when(distributionListRepository.findByName(distributionListName)).thenReturn(distributionLists);
+    when(distributionListRepository.findByName(distributionListName))
+      .thenReturn(distributionLists);
     for (DistributionList distribution : distributionLists) {
-      when(distributionListMapper.mapToDTO(distribution)).thenReturn(distributionListDTO);
+      when(distributionListMapper.mapToDTO(distribution))
+        .thenReturn(distributionListDTO);
     }
-    List<DistributionListDTO> dlistDTO = distributionListService.search(distributionListName);
+    List<DistributionListDTO> dlistDTO = distributionListService
+      .search(distributionListName);
     assertEquals(distributionListsDTO.size(), dlistDTO.size());
   }
 
@@ -115,7 +125,8 @@ public class DistributionListTest {
   public void testSearchWithNullName() {
     when(distributionListRepository.findAll()).thenReturn(distributionLists);
     for (DistributionList distribution : distributionLists) {
-      when(distributionListMapper.mapToDTO(distribution)).thenReturn(distributionListDTO);
+      when(distributionListMapper.mapToDTO(distribution))
+        .thenReturn(distributionListDTO);
     }
     List<DistributionListDTO> dlistDTO = distributionListService.search(null);
     assertEquals(distributionListsDTO.size(), dlistDTO.size());
@@ -131,17 +142,21 @@ public class DistributionListTest {
 
   @Test
   public void testAddContactToDistributionList() {
-    when(distributionListRepository.fetchById(distributionListId)).thenReturn(distributionList);
+    when(distributionListRepository.fetchById(distributionListId))
+      .thenReturn(distributionList);
     when(contactRepository.fetchById(contactId)).thenReturn(contact);
-    distributionListService.addContactToDistributionList(distributionListId, contactId);
+    distributionListService
+      .addContactToDistributionList(distributionListId, contactId);
     assertTrue(distributionList.getContacts().contains(contact));
   }
 
   @Test
   public void testRemoveContactFromDistributionList() {
-    when(distributionListRepository.fetchById(distributionListId)).thenReturn(distributionList);
+    when(distributionListRepository.fetchById(distributionListId))
+      .thenReturn(distributionList);
     when(contactRepository.fetchById(contactId)).thenReturn(contact);
-    distributionListService.removeContactFromDistributionList(distributionListId, contactId);
+    distributionListService
+      .removeContactFromDistributionList(distributionListId, contactId);
     assertFalse(distributionList.getContacts().contains(contact));
   }
 }

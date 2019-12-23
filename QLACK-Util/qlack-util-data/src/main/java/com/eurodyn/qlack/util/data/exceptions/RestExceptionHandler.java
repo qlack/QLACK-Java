@@ -1,6 +1,8 @@
 package com.eurodyn.qlack.util.data.exceptions;
 
 import com.eurodyn.qlack.common.exception.QExceptionWrapper;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -11,22 +13,21 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
- * A generic {@link ControllerAdvice} to prevent low-level error messages leaking to the callers of
- * your REST API.
+ * A generic {@link ControllerAdvice} to prevent low-level error messages
+ * leaking to the callers of your REST API.
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
   // JUL reference.
-  private static final Logger LOGGER = Logger.getLogger(RestExceptionHandler.class.getName());
+  private static final Logger LOGGER = Logger
+    .getLogger(RestExceptionHandler.class.getName());
 
   @ExceptionHandler
-  protected ResponseEntity<Object> handle(RuntimeException ex, WebRequest request) {
+  protected ResponseEntity<Object> handle(RuntimeException ex,
+    WebRequest request) {
     String errorMessage;
 
     // If this is a known wrapped exception use the message it already carries, otherwise use a
@@ -42,7 +43,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     // Return the wrapped exception and custom HTTP status code.
-    return handleExceptionInternal(ex, errorMessage, new HttpHeaders(), HttpStatus.BAD_REQUEST,
+    return handleExceptionInternal(ex, errorMessage, new HttpHeaders(),
+      HttpStatus.BAD_REQUEST,
       request);
   }
 

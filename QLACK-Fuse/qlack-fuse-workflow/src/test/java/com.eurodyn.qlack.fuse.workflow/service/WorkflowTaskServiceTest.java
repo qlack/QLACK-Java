@@ -53,7 +53,9 @@ public class WorkflowTaskServiceTest {
     when(task.getId()).thenReturn("id");
     when(taskQuery.list()).thenReturn(tasks);
 
-    assertFalse(workflowTaskService.getTasksByProcessInstanceId(processInstanceId).isEmpty());
+    assertFalse(
+      workflowTaskService.getTasksByProcessInstanceId(processInstanceId)
+        .isEmpty());
   }
 
   @Test
@@ -64,7 +66,9 @@ public class WorkflowTaskServiceTest {
     when(taskQuery.includeProcessVariables()).thenReturn(taskQuery);
     when(taskQuery.list()).thenReturn(new ArrayList<>());
 
-    assertTrue(workflowTaskService.getTasksByProcessInstanceId(processInstanceId).isEmpty());
+    assertTrue(
+      workflowTaskService.getTasksByProcessInstanceId(processInstanceId)
+        .isEmpty());
   }
 
   @Test
@@ -77,7 +81,8 @@ public class WorkflowTaskServiceTest {
   @Test(expected = QDoesNotExistException.class)
   public void getTasksByProcessInstanceIdActivitiObjectNotFoundExceptionTest() {
     String taskId = "taskId";
-    doThrow(new ActivitiObjectNotFoundException("ex")).when(taskService).complete(taskId);
+    doThrow(new ActivitiObjectNotFoundException("ex")).when(taskService)
+      .complete(taskId);
     workflowTaskService.completeTask(taskId);
     verify(taskService, times(1)).complete(taskId);
   }

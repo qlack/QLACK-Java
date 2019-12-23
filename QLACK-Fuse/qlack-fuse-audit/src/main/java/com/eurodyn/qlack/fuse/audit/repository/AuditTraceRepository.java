@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
  * @author European Dynamics SA.
  */
 @Repository
-public interface AuditTraceRepository extends QlackBaseRepository<AuditTrace, String> {
+public interface AuditTraceRepository extends
+  QlackBaseRepository<AuditTrace, String> {
 
 }

@@ -11,6 +11,8 @@ import com.eurodyn.qlack.util.clamav.service.impl.ClamAvServiceImpl;
 import com.eurodyn.qlack.util.clamav.util.ClamAvProperties;
 import com.eurodyn.qlack.util.clamav.util.ClamAvUtil;
 import io.sensesecure.clamav4j.ClamAV;
+import java.io.ByteArrayInputStream;
+import java.net.Socket;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,9 +22,6 @@ import org.mockito.Mock;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import java.io.ByteArrayInputStream;
-import java.net.Socket;
 
 
 @RunWith(PowerMockRunner.class)
@@ -67,28 +66,31 @@ public class ClamAvServiceTest {
   @Test
   public void testVirusScanIOException() throws Exception {
     ClamAvServiceImpl spyObj = spy(clamAvService);
-    when(spyObj.hostIsAvailable(properties.getClamAvHost(), properties.getClamAvPort()))
-        .thenReturn(true);
+    when(spyObj
+      .hostIsAvailable(properties.getClamAvHost(), properties.getClamAvPort()))
+      .thenReturn(true);
     whenNew(ClamAV.class).withAnyArguments().thenReturn(clamAVMock);
-    when(clamAVMock.scan(ArgumentMatchers.any(ByteArrayInputStream.class))).thenReturn("OK");
+    when(clamAVMock.scan(ArgumentMatchers.any(ByteArrayInputStream.class)))
+      .thenReturn("OK");
     spyObj.virusScan(data);
   }
 
   @Test(expected = VirusScanException.class)
   public void testVirusScanHostIsAvailable() {
     ClamAvServiceImpl spyObj = spy(clamAvService);
-    when(spyObj.hostIsAvailable(properties.getClamAvHost(), properties.getClamAvPort()))
-        .thenReturn(true);
+    when(spyObj
+      .hostIsAvailable(properties.getClamAvHost(), properties.getClamAvPort()))
+      .thenReturn(true);
     spyObj.virusScan(data);
   }
 
   @Test
   public void hostIsAvailableTest() throws Exception {
     whenNew(Socket.class).withArguments(properties.getClamAvHost(),
-        properties.getClamAvPort()).thenReturn(socketMock);
+      properties.getClamAvPort()).thenReturn(socketMock);
 
     assertTrue(clamAvService.hostIsAvailable(properties.getClamAvHost(),
-        properties.getClamAvPort()));
+      properties.getClamAvPort()));
   }
 
 }

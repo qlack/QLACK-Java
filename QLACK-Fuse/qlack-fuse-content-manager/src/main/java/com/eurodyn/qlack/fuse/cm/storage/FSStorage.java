@@ -20,7 +20,8 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class FSStorage implements StorageEngine {
 
-  private static final Logger LOGGER = Logger.getLogger(FSStorage.class.getName());
+  private static final Logger LOGGER = Logger
+    .getLogger(FSStorage.class.getName());
   // The number of available buckets in powers of 10. Make sure you do not
   // change this value on a running system as buckets will be misaligned.
   @Value("${qlack.fuse.cm.buckets:10}")
@@ -38,7 +39,8 @@ public class FSStorage implements StorageEngine {
    */
   private String bucketise(String uuid) {
     return StringUtils.join(new String[]{rootFS, String.valueOf(uuid.hashCode())
-        .substring(0, (int) Math.log10(numberOfBuckets)), uuid + ".bin"}, File.separator);
+        .substring(0, (int) Math.log10(numberOfBuckets)), uuid + ".bin"},
+      File.separator);
   }
 
   @Override
@@ -49,7 +51,8 @@ public class FSStorage implements StorageEngine {
       Files.write(f.toPath(), content);
       LOGGER.log(Level.FINEST, "Created file: {0}.", f.getAbsolutePath());
     } catch (IOException ex) {
-      throw new QStorageException("Could not persist file into " + f.getAbsolutePath(), ex);
+      throw new QStorageException(
+        "Could not persist file into " + f.getAbsolutePath(), ex);
     }
   }
 
@@ -61,7 +64,8 @@ public class FSStorage implements StorageEngine {
       LOGGER.log(Level.FINEST, "Reading from file: {0}.", fileLocation);
       return Files.readAllBytes(new File(fileLocation).toPath());
     } catch (IOException ex) {
-      throw new QStorageException("Could not read file from " + fileLocation, ex);
+      throw new QStorageException("Could not read file from " + fileLocation,
+        ex);
     }
   }
 
@@ -79,7 +83,8 @@ public class FSStorage implements StorageEngine {
       }
       Files.write(f.toPath(), content, StandardOpenOption.APPEND);
     } catch (IOException ex) {
-      throw new QStorageException("Could not persist file into " + f.getAbsolutePath(), ex);
+      throw new QStorageException(
+        "Could not persist file into " + f.getAbsolutePath(), ex);
     }
 
     return f.getAbsolutePath();
@@ -108,7 +113,8 @@ public class FSStorage implements StorageEngine {
         retVal.setBinContent(bb);
       }
     } catch (IOException ex) {
-      throw new QStorageException("Could not read file from " + fileLocation, ex);
+      throw new QStorageException("Could not read file from " + fileLocation,
+        ex);
     }
 
     retVal.setChunkIndex(chunkIndex);
@@ -124,7 +130,7 @@ public class FSStorage implements StorageEngine {
       Files.deleteIfExists(new File(fileLocation).toPath());
     } catch (IOException e) {
       LOGGER.log(Level.WARNING, MessageFormat.format(
-          "Could not delete file {0}.", fileLocation), e);
+        "Could not delete file {0}.", fileLocation), e);
     }
   }
 

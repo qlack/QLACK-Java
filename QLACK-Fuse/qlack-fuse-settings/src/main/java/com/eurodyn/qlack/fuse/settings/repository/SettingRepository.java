@@ -13,11 +13,12 @@ import org.springframework.stereotype.Repository;
  * @author European Dynamics SA.
  */
 @Repository
-public interface SettingRepository extends QlackBaseRepository<Setting, String> {
+public interface SettingRepository extends
+  QlackBaseRepository<Setting, String> {
 
   /**
-   * Finds and returns a list of all the eligible {@link Setting} objects according to the
-   * predicate
+   * Finds and returns a list of all the eligible {@link Setting} objects
+   * according to the predicate
    *
    * @param predicate the predicate that holds the querying criteria
    * @return a list of {@link Setting} objects

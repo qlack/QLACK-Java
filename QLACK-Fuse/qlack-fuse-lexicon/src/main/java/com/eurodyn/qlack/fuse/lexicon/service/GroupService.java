@@ -48,8 +48,8 @@ public class GroupService {
 
   @Autowired
   public GroupService(GroupRepository groupRepository, GroupMapper groupMapper,
-      LanguageRepository languageRepository,
-      DataRepository dataRepository) {
+    LanguageRepository languageRepository,
+    DataRepository dataRepository) {
     this.groupRepository = groupRepository;
     this.groupMapper = groupMapper;
     this.languageRepository = languageRepository;
@@ -73,7 +73,8 @@ public class GroupService {
   /**
    * Updates a group.
    *
-   * @param group a DTO containing all the information to update a persisted group
+   * @param group a DTO containing all the information to update a persisted
+   * group
    */
   public void updateGroup(GroupDTO group) {
     log.info(MessageFormat.format("Updating group {0}: ", group));
@@ -111,7 +112,8 @@ public class GroupService {
    * @return a DTO containing the group that matches the specific title
    */
   public GroupDTO getGroupByTitle(String groupTitle) {
-    log.info(MessageFormat.format("Fetching group with title: {0}", groupTitle));
+    log
+      .info(MessageFormat.format("Fetching group with title: {0}", groupTitle));
     return groupMapper.mapToDTO(findByTitle(groupTitle));
   }
 
@@ -146,7 +148,7 @@ public class GroupService {
     log.info("Fetching all included groups");
     Predicate predicate = qGroup.title.notIn(excludedGroupNames);
     return groupMapper.mapToDTO(groupRepository.findAll(predicate)).stream()
-        .collect(Collectors.toSet());
+      .collect(Collectors.toSet());
   }
 
   /**
@@ -168,8 +170,9 @@ public class GroupService {
    */
   public void deleteLanguageTranslations(String groupID, String languageID) {
     log.info(MessageFormat
-        .format("Deleting all translation from group with id {0} for language with id {1}",
-            groupID, languageID));
+      .format(
+        "Deleting all translation from group with id {0} for language with id {1}",
+        groupID, languageID));
     Language language = languageRepository.fetchById(languageID);
     deleteLanguageTranslationsByLocale(groupID, language.getLocale());
   }
@@ -180,31 +183,38 @@ public class GroupService {
    * @param groupID the id of the group
    * @param locale the locale name
    */
-  public void deleteLanguageTranslationsByLocale(String groupID, String locale) {
-    log.info(MessageFormat.format("Deleting all translation from group with id {0} for locale {1}",
+  public void deleteLanguageTranslationsByLocale(String groupID,
+    String locale) {
+    log.info(MessageFormat
+      .format("Deleting all translation from group with id {0} for locale {1}",
         groupID, locale));
-    List<Data> dataList = dataRepository.findByKeyGroupIdAndLanguageLocale(groupID, locale);
+    List<Data> dataList = dataRepository
+      .findByKeyGroupIdAndLanguageLocale(groupID, locale);
     for (Data data : dataList) {
       dataRepository.delete(data);
     }
   }
 
   /**
-   * Finds when was the last update of any key in given group for given locale.
+   * Finds when was the last update of any key in given group for given
+   * locale.
    *
    * @param groupID the group id
    * @param locale the locale name
-   * @return a number representing the date of last update. The default return date is 'now'
+   * @return a number representing the date of last update. The default return
+   * date is 'now'
    */
   public long getLastUpdateDateForLocale(String groupID, String locale) {
     log.info(MessageFormat
-        .format("Getting the last update date of all keys from group with id {0} for locale {1}",
-            groupID, locale));
+      .format(
+        "Getting the last update date of all keys from group with id {0} for locale {1}",
+        groupID, locale));
     Predicate predicate = qData.key.group.id.eq(groupID)
-        .and(qData.language.id.eq(JPAExpressions.select(qLanguage.id)
-            .from(qLanguage)
-            .where(qLanguage.locale.eq(locale))));
-    List<Data> datas = dataRepository.findAll(predicate, Sort.by("lastUpdatedOn").descending());
+      .and(qData.language.id.eq(JPAExpressions.select(qLanguage.id)
+        .from(qLanguage)
+        .where(qLanguage.locale.eq(locale))));
+    List<Data> datas = dataRepository
+      .findAll(predicate, Sort.by("lastUpdatedOn").descending());
 
     if (datas.iterator().hasNext()) {
       return datas.iterator().next().getLastUpdatedOn();

@@ -19,7 +19,8 @@ public class QSchedulerExceptionTest {
   @Test
   public void constructorWithCauseTest() {
     Throwable throwable = new Throwable();
-    QSchedulerException qSchedulerException = new QSchedulerException(throwable);
+    QSchedulerException qSchedulerException = new QSchedulerException(
+      throwable);
     assertEquals(throwable, qSchedulerException.getCause());
   }
 
@@ -27,7 +28,8 @@ public class QSchedulerExceptionTest {
   public void constructorWithMessageAndCauseTest() {
     String message = "exception message";
     Throwable throwable = new Throwable();
-    QSchedulerException qSchedulerException = new QSchedulerException(message, throwable);
+    QSchedulerException qSchedulerException = new QSchedulerException(message,
+      throwable);
     assertEquals(throwable, qSchedulerException.getCause());
     assertEquals(message, qSchedulerException.getMessage());
   }

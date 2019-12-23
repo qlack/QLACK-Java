@@ -105,11 +105,13 @@ public class SearchService {
   /**
    * Searches for documents matching the given Query.
    *
-   * @param dto contains the query information needed to proceed with the search
+   * @param dto contains the query information needed to proceed with the
+   * search
    * @return a dto containing the search results
    */
   public SearchResultDTO search(QuerySpec dto) {
-    log.info(MessageFormat.format("Searching for documents with query {0}", dto));
+    log.info(
+      MessageFormat.format("Searching for documents with query {0}", dto));
     StringBuilder endpointBuilder = new StringBuilder();
 
     endpointBuilder.append(processIndices(dto));
@@ -120,18 +122,23 @@ public class SearchService {
     InternalSearchRequest internalRequest = createRequest(dto, params);
 
     try {
-      ContentType contentType = ContentType.APPLICATION_JSON.withCharset(StandardCharsets.UTF_8);
+      ContentType contentType = ContentType.APPLICATION_JSON
+        .withCharset(StandardCharsets.UTF_8);
       Request request = new Request("GET", endpointBuilder.toString());
       params.forEach(request::addParameter);
-      request.setEntity(new NStringEntity(mapper.writeValueAsString(internalRequest), contentType));
-      Response response = esClient.getClient().getLowLevelClient().performRequest(request);
+      request.setEntity(
+        new NStringEntity(mapper.writeValueAsString(internalRequest),
+          contentType));
+      Response response = esClient.getClient().getLowLevelClient()
+        .performRequest(request);
       QueryResponse queryResponse = getQueryResponse(response);
 
       SearchResultDTO result = buildResultFrom(queryResponse, dto.isCountOnly(),
-          dto.isIncludeAllSource(), dto.isIncludeResults());
+        dto.isIncludeAllSource(), dto.isIncludeResults());
 
       if (!dto.isCountOnly()) {
-        result.setHasMore(queryResponse.getHits().getTotal() > dto.getPageSize());
+        result
+          .setHasMore(queryResponse.getHits().getTotal() > dto.getPageSize());
       }
 
       return result;
@@ -151,14 +158,16 @@ public class SearchService {
    */
   public SearchHitDTO findById(String indexName, String typeName, String id) {
     log.info(MessageFormat
-        .format("Searching index {0} of {1} type for document with id {2}", indexName, typeName,
-            id));
+      .format("Searching index {0} of {1} type for document with id {2}",
+        indexName, typeName,
+        id));
     String endpoint = indexName + "/" + typeName + "/" + id;
     try {
       Response response = esClient.getClient().getLowLevelClient()
-          .performRequest(new Request("GET", endpoint));
+        .performRequest(new Request("GET", endpoint));
       if (response.getStatusLine().getStatusCode() == 200) {
-        Hit hit = mapper.readValue(response.getEntity().getContent(), Hit.class);
+        Hit hit = mapper
+          .readValue(response.getEntity().getContent(), Hit.class);
         return map(hit);
       } else {
         return null;
@@ -169,33 +178,39 @@ public class SearchService {
   }
 
   /**
-   * Creates a ScrollRequest that can be used for searches with large results ("page" type
-   * results).
+   * Creates a ScrollRequest that can be used for searches with large results
+   * ("page" type results).
    *
    * @param indexName the name of the index that the serach will be performed
    * @param query the query of the search
-   * @param maxResults the maximum number of hitList to be returned with each batch of results
+   * @param maxResults the maximum number of hitList to be returned with each
+   * batch of results
    * @return a ScrollRequest to use in a search
    */
-  public ScrollRequest prepareScroll(String indexName, QueryMatch query, int maxResults) {
+  public ScrollRequest prepareScroll(String indexName, QueryMatch query,
+    int maxResults) {
     log.info(MessageFormat
-        .format("Creating a ScrollRequest for index {0} with max {1} results", indexName,
-            maxResults));
+      .format("Creating a ScrollRequest for index {0} with max {1} results",
+        indexName,
+        maxResults));
     ScrollRequest scrollRequest = new ScrollRequest();
     try {
 
       SearchRequest searchRequest = new SearchRequest(indexName);
       SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 
-      searchSourceBuilder.query(QueryBuilders.matchQuery(query.getField(), query.getValue()));
+      searchSourceBuilder
+        .query(QueryBuilders.matchQuery(query.getField(), query.getValue()));
       searchSourceBuilder.size(maxResults);
       searchRequest.source(searchSourceBuilder);
       searchRequest.scroll(TimeValue.timeValueMinutes(1L));
       SearchResponse searchResponse;
 
-      searchResponse = esClient.getClient().search(searchRequest, RequestOptions.DEFAULT);
+      searchResponse = esClient.getClient()
+        .search(searchRequest, RequestOptions.DEFAULT);
       String scrollId = searchResponse.getScrollId();
-      scrollRequest.setScroll(1); //how long it should keep the 'search context' alive
+      scrollRequest
+        .setScroll(1); //how long it should keep the 'search context' alive
       scrollRequest.setScrollId(scrollId);
 
     } catch (IOException e) {
@@ -208,7 +223,8 @@ public class SearchService {
   /**
    * Performs a search that may have more than one results
    *
-   * @param scrollRequest contains the search query and the multi-result configuration
+   * @param scrollRequest contains the search query and the multi-result
+   * configuration
    * @return a dto containing the results of the search
    */
   public SearchResultDTO scroll(ScrollRequest scrollRequest) {
@@ -219,10 +235,14 @@ public class SearchService {
 
     Response response;
     try {
-      ContentType contentType = ContentType.APPLICATION_JSON.withCharset(StandardCharsets.UTF_8);
+      ContentType contentType = ContentType.APPLICATION_JSON
+        .withCharset(StandardCharsets.UTF_8);
       Request request = new Request("POST", "_search/scroll");
-      request.setEntity(new NStringEntity(mapper.writeValueAsString(internalRequest), contentType));
-      response = esClient.getClient().getLowLevelClient().performRequest(request);
+      request.setEntity(
+        new NStringEntity(mapper.writeValueAsString(internalRequest),
+          contentType));
+      response = esClient.getClient().getLowLevelClient()
+        .performRequest(request);
 
     } catch (IOException e) {
       log.log(Level.SEVERE, SCROLL_EXCEPTION, e);
@@ -237,7 +257,8 @@ public class SearchService {
   }
 
   /**
-   * Returns all the indices from the {@link QuerySpec} object to an indices endpoint
+   * Returns all the indices from the {@link QuerySpec} object to an indices
+   * endpoint
    *
    * @param dto a {@link QuerySpec} object
    * @return the indices as a comma separated value string
@@ -264,7 +285,8 @@ public class SearchService {
   }
 
   /**
-   * Returns all the types from the {@link QuerySpec} object to a types endpoint
+   * Returns all the types from the {@link QuerySpec} object to a types
+   * endpoint
    *
    * @param dto a {@link QuerySpec} object
    * @return the types as a comma separated value string
@@ -291,14 +313,15 @@ public class SearchService {
   }
 
   /**
-   * Creates an {@link InternalSearchRequest} object using given the {@link QuerySpec} properties
-   * and params
+   * Creates an {@link InternalSearchRequest} object using given the {@link
+   * QuerySpec} properties and params
    *
    * @param dto a {@link QuerySpec} object
    * @param params a parameter map
    * @return an {@link InternalSearchRequest} object
    */
-  private InternalSearchRequest createRequest(QuerySpec dto, Map<String, String> params) {
+  private InternalSearchRequest createRequest(QuerySpec dto,
+    Map<String, String> params) {
     QuerySort dtoSort = dto.getQuerySort();
     InternalSearchRequest internalRequest = new InternalSearchRequest();
     if (!dto.isCountOnly()) {
@@ -314,7 +337,8 @@ public class SearchService {
       if (dto.getAggregate() != null) {
         internalRequest.setSource(new ArrayList<>());
         internalRequest.getSource().add(dto.getAggregate());
-        internalRequest.setAggs(buildAggregate(dto.getAggregate(), dto.getAggregateSize()));
+        internalRequest
+          .setAggs(buildAggregate(dto.getAggregate(), dto.getAggregateSize()));
       }
     }
     internalRequest.setQuery(buildQuery(dto));
@@ -335,85 +359,107 @@ public class SearchService {
       builder = buildQueryBoolean(builder, dto);
     } else if (dto instanceof QueryMatch) {
       QueryMatch query = (QueryMatch) dto;
-      builder.append("\"match\" : { \"").append(query.getField()).append(QUERY_SLASHES_APPEND)
-          .append(query.getValue()).append("\" }");
+      builder.append("\"match\" : { \"").append(query.getField())
+        .append(QUERY_SLASHES_APPEND)
+        .append(query.getValue()).append("\" }");
     } else if (dto instanceof QueryMultiMatch) {
       buildQueryMultimatch(builder, dto);
     } else if (dto instanceof QueryString) {
       QueryString query = (QueryString) dto;
-      builder.append("\"query_string\" : { \"query\" : \"").append(query.getQueryStringValue())
-          .append("\"}");
+      builder.append("\"query_string\" : { \"query\" : \"")
+        .append(query.getQueryStringValue())
+        .append("\"}");
     } else if (dto instanceof QueryTerm) {
       QueryTerm query = (QueryTerm) dto;
 
-      builder.append("\"term\" : { \"").append(query.getField()).append(QUERY_SLASHES_APPEND)
-          .append(query.getValue())
-          .append("\" }");
+      builder.append("\"term\" : { \"").append(query.getField())
+        .append(QUERY_SLASHES_APPEND)
+        .append(query.getValue())
+        .append("\" }");
     } else if (dto instanceof QueryTermNested) {
       QueryTermNested query = (QueryTermNested) dto;
-      builder.append(QUERY_NESTED_CONCAT).append(QUERY_PATH_CONCAT).append(query.getPath())
-          .append(QUERY_CONCAT)
-          .append("\"term\" : { \"").append(query.getField()).append(QUERY_SLASHES_APPEND)
-          .append(query.getValue())
-          .append("\" }").append(QUERY_INNER_HITS_CONCAT).append(QUERY_SOURCE_CONCAT)
-          .append(QUERY_DOCVALUE_CONCAT).append(query.getDocvalueFields()).append("\"]")
-          .append("}}");
+      builder.append(QUERY_NESTED_CONCAT).append(QUERY_PATH_CONCAT)
+        .append(query.getPath())
+        .append(QUERY_CONCAT)
+        .append("\"term\" : { \"").append(query.getField())
+        .append(QUERY_SLASHES_APPEND)
+        .append(query.getValue())
+        .append("\" }").append(QUERY_INNER_HITS_CONCAT)
+        .append(QUERY_SOURCE_CONCAT)
+        .append(QUERY_DOCVALUE_CONCAT).append(query.getDocvalueFields())
+        .append("\"]")
+        .append("}}");
     } else if (dto instanceof QueryWildcard) {
       QueryWildcard query = (QueryWildcard) dto;
 
-      builder.append("\"wildcard\" : { \"").append(query.getField()).append(QUERY_SLASHES_APPEND)
-          .append(query.getWildcard())
-          .append("\" }");
+      builder.append("\"wildcard\" : { \"").append(query.getField())
+        .append(QUERY_SLASHES_APPEND)
+        .append(query.getWildcard())
+        .append("\" }");
     } else if (dto instanceof QueryWildcardNested) {
       QueryWildcardNested query = (QueryWildcardNested) dto;
 
-      builder.append(QUERY_NESTED_CONCAT).append(QUERY_PATH_CONCAT).append(query.getPath())
-          .append(QUERY_CONCAT)
-          .append("\"wildcard\" : { \"").append(query.getField()).append(QUERY_SLASHES_APPEND)
-          .append(query.getWildcard()).append("\" }").append(QUERY_INNER_HITS_CONCAT)
-          .append(QUERY_SOURCE_CONCAT).append(QUERY_DOCVALUE_CONCAT)
-          .append(query.getDocvalueFields()).append("\"]").append("}}");
+      builder.append(QUERY_NESTED_CONCAT).append(QUERY_PATH_CONCAT)
+        .append(query.getPath())
+        .append(QUERY_CONCAT)
+        .append("\"wildcard\" : { \"").append(query.getField())
+        .append(QUERY_SLASHES_APPEND)
+        .append(query.getWildcard()).append("\" }")
+        .append(QUERY_INNER_HITS_CONCAT)
+        .append(QUERY_SOURCE_CONCAT).append(QUERY_DOCVALUE_CONCAT)
+        .append(query.getDocvalueFields()).append("\"]").append("}}");
     } else if (dto instanceof QueryTerms) {
       QueryTerms query = (QueryTerms) dto;
-      builder.append("\"terms\" : { \"").append(query.getField()).append("\" : [ ")
-          .append(query.getValues())
-          .append(" ] }");
+      builder.append("\"terms\" : { \"").append(query.getField())
+        .append("\" : [ ")
+        .append(query.getValues())
+        .append(" ] }");
     } else if (dto instanceof QueryTermsNested) {
       QueryTermsNested query = (QueryTermsNested) dto;
-      builder.append(QUERY_NESTED_CONCAT).append(QUERY_PATH_CONCAT).append(query.getPath())
-          .append(QUERY_CONCAT)
-          .append("\"terms\" : { \"").append(query.getField()).append("\" : [ ")
-          .append(query.getValues())
-          .append(" ] }").append(QUERY_INNER_HITS_CONCAT).append(QUERY_SOURCE_CONCAT)
-          .append(QUERY_DOCVALUE_CONCAT).append(query.getDocvalueFields()).append("\"]")
-          .append("}}");
+      builder.append(QUERY_NESTED_CONCAT).append(QUERY_PATH_CONCAT)
+        .append(query.getPath())
+        .append(QUERY_CONCAT)
+        .append("\"terms\" : { \"").append(query.getField()).append("\" : [ ")
+        .append(query.getValues())
+        .append(" ] }").append(QUERY_INNER_HITS_CONCAT)
+        .append(QUERY_SOURCE_CONCAT)
+        .append(QUERY_DOCVALUE_CONCAT).append(query.getDocvalueFields())
+        .append("\"]")
+        .append("}}");
     } else if (dto instanceof QueryRange) {
       QueryRange query = (QueryRange) dto;
-      builder.append("\"range\" : { \"").append(query.getField()).append("\" : { \"gte\" : \"")
-          .append(query.getFromValue()).append("\" , \"lte\" : \"").append(query.getToValue())
-          .append("\" } }");
+      builder.append("\"range\" : { \"").append(query.getField())
+        .append("\" : { \"gte\" : \"")
+        .append(query.getFromValue()).append("\" , \"lte\" : \"")
+        .append(query.getToValue())
+        .append("\" } }");
     } else if (dto instanceof QueryStringSpecField) {
       QueryStringSpecField query = (QueryStringSpecField) dto;
-      builder.append("\"query_string\" : { \"fields\" : [\"").append(query.getField())
-          .append(QUERY_NEW_CONCAT).append(query.getValue())
-          .append(QUERY_OPERATOR_CONCAT)
-          .append(query.getOperator()).append("\" }");
+      builder.append("\"query_string\" : { \"fields\" : [\"")
+        .append(query.getField())
+        .append(QUERY_NEW_CONCAT).append(query.getValue())
+        .append(QUERY_OPERATOR_CONCAT)
+        .append(query.getOperator()).append("\" }");
     } else if (dto instanceof QueryStringSpecFieldNested) {
       QueryStringSpecFieldNested query = (QueryStringSpecFieldNested) dto;
-      builder.append(QUERY_NESTED_CONCAT).append(QUERY_PATH_CONCAT).append(query.getPath())
-          .append(QUERY_CONCAT)
-          .append("\"query_string\" : { \"fields\" : [\"").append(query.getField())
-          .append(QUERY_NEW_CONCAT).append(query.getValue())
-          .append(QUERY_OPERATOR_CONCAT)
-          .append(query.getOperator()).append("\" }").append(QUERY_INNER_HITS_CONCAT)
-          .append(QUERY_SOURCE_CONCAT).append(QUERY_DOCVALUE_CONCAT)
-          .append(query.getDocvalueFields()).append("\"]").append("}}");
+      builder.append(QUERY_NESTED_CONCAT).append(QUERY_PATH_CONCAT)
+        .append(query.getPath())
+        .append(QUERY_CONCAT)
+        .append("\"query_string\" : { \"fields\" : [\"")
+        .append(query.getField())
+        .append(QUERY_NEW_CONCAT).append(query.getValue())
+        .append(QUERY_OPERATOR_CONCAT)
+        .append(query.getOperator()).append("\" }")
+        .append(QUERY_INNER_HITS_CONCAT)
+        .append(QUERY_SOURCE_CONCAT).append(QUERY_DOCVALUE_CONCAT)
+        .append(query.getDocvalueFields()).append("\"]").append("}}");
     } else if (dto instanceof SimpleQueryString) {
       SimpleQueryString query = (SimpleQueryString) dto;
-      builder.append("\"simple_query_string\" : { \"fields\" : [\"").append(query.getField())
-          .append(QUERY_NEW_CONCAT).append(query.getValue())
-          .append(QUERY_OPERATOR_CONCAT)
-          .append(query.getOperator()).append("\" }");
+      builder.append("\"simple_query_string\" : { \"fields\" : [\"")
+        .append(query.getField())
+        .append(QUERY_NEW_CONCAT).append(query.getValue())
+        .append(QUERY_OPERATOR_CONCAT)
+        .append(query.getOperator()).append("\" }");
     }
     return builder.append("}").toString().replace("\"null\"", "null");
   }
@@ -426,10 +472,11 @@ public class SearchService {
    * @return the aggregate
    */
   private String buildAggregate(String aggregate, int aggregateSize) {
-    return new StringBuilder("{").append("\"agg\" : {\"terms\" : {\"field\" : \"").append(aggregate)
-        .append("\", \"size\" : ").append(aggregateSize)
-        .append(",\"order\" : {\"_term\" : \"desc\"}")
-        .append("}}}").toString();
+    return new StringBuilder("{")
+      .append("\"agg\" : {\"terms\" : {\"field\" : \"").append(aggregate)
+      .append("\", \"size\" : ").append(aggregateSize)
+      .append(",\"order\" : {\"_term\" : \"desc\"}")
+      .append("}}}").toString();
   }
 
   /**
@@ -444,27 +491,34 @@ public class SearchService {
       if (builder.length() > 1) {
         builder.append(',');
       }
-      builder.append("{").append("\"").append(entry.getKey()).append("\"").append(" : {")
-          .append("\"order\"")
-          .append(" : ").append("\"").append(entry.getValue()).append("\"").append("}").append("}");
+      builder.append("{").append("\"").append(entry.getKey()).append("\"")
+        .append(" : {")
+        .append("\"order\"")
+        .append(" : ").append("\"").append(entry.getValue()).append("\"")
+        .append("}").append("}");
     }
     builder.append("]");
     return builder.toString();
   }
 
   /**
-   * Creates and returns a search result DTO based on the Elastic search response wrapper object
-   * {@link QueryResponse)
+   * Creates and returns a search result DTO based on the Elastic search
+   * response wrapper object {@link QueryResponse)
    *
    * @param queryResponse an Elastic search response wrapper object
-   * @param countOnly flag to indicate whether only the result count should be returned
-   * @param includeAllSource flag to indicate whether the whole query response should be included
-   * @param includeResults flag to indicate whether the results should be included
-   * @return a {@link SearchResultDTO} containing the results of the Elastic search executed query
+   * @param countOnly flag to indicate whether only the result count should be
+   * returned
+   * @param includeAllSource flag to indicate whether the whole query response
+   * should be included
+   * @param includeResults flag to indicate whether the results should be
+   * included
+   * @return a {@link SearchResultDTO} containing the results of the Elastic
+   * search executed query
    */
-  private SearchResultDTO buildResultFrom(QueryResponse queryResponse, boolean countOnly,
-      boolean includeAllSource,
-      boolean includeResults) {
+  private SearchResultDTO buildResultFrom(QueryResponse queryResponse,
+    boolean countOnly,
+    boolean includeAllSource,
+    boolean includeResults) {
 
     SearchResultDTO result = new SearchResultDTO();
     if (!countOnly) {
@@ -496,9 +550,11 @@ public class SearchService {
     }
 
     if (queryResponse.getAggregations() != null
-        && queryResponse.getAggregations().getAgg() != null) {
-      for (Bucket bucket : queryResponse.getAggregations().getAgg().getBuckets()) {
-        result.getAggregations().put(bucket.getKeyAsString(), bucket.getDocCount());
+      && queryResponse.getAggregations().getAgg() != null) {
+      for (Bucket bucket : queryResponse.getAggregations().getAgg()
+        .getBuckets()) {
+        result.getAggregations()
+          .put(bucket.getKeyAsString(), bucket.getDocCount());
       }
     }
 
@@ -522,14 +578,16 @@ public class SearchService {
   }
 
   /**
-   * Maps an Elastic search {@link Response} object to a {@link QueryResponse}
+   * Maps an Elastic search {@link Response} object to a {@link
+   * QueryResponse}
    *
    * @param response an Elastic search {@link Response} object
    * @return a {@link QueryResponse} object
    */
   private QueryResponse getQueryResponse(Response response) {
     try {
-      return mapper.readValue(response.getEntity().getContent(), QueryResponse.class);
+      return mapper
+        .readValue(response.getEntity().getContent(), QueryResponse.class);
     } catch (UnsupportedOperationException | IOException e) {
       log.log(Level.SEVERE, "Could not deserialize response.", e);
       throw new SearchException("Could not deserialize response.", e);
@@ -537,17 +595,20 @@ public class SearchService {
   }
 
   /**
-   * This method extends the functionality of the buildQuery method fot QueryBoolean classes.
+   * This method extends the functionality of the buildQuery method fot
+   * QueryBoolean classes.
    *
    * @param builder the string builder of the buildQuery method
    * @param dto the dto object to be examined
    * @return the updated string builder
    */
   @SuppressWarnings("squid:S2692")
-  private StringBuilder buildQueryBoolean(StringBuilder builder, QuerySpec dto) {
+  private StringBuilder buildQueryBoolean(StringBuilder builder,
+    QuerySpec dto) {
     QueryBoolean query = (QueryBoolean) dto;
     builder.append("\"bool\" : {");
-    Map<BooleanType, List<QuerySpec>> queriesMap = new EnumMap<>(BooleanType.class);
+    Map<BooleanType, List<QuerySpec>> queriesMap = new EnumMap<>(
+      BooleanType.class);
     for (Entry<QuerySpec, BooleanType> entry : query.getTerms().entrySet()) {
       if (entry.getValue() != null) {
         queriesMap.putIfAbsent(entry.getValue(), new ArrayList<>());
@@ -581,16 +642,19 @@ public class SearchService {
   }
 
   /**
-   * This method extends the functionality of the buildQuery method fot QueryMultiMatch classes.
+   * This method extends the functionality of the buildQuery method fot
+   * QueryMultiMatch classes.
    *
    * @param builder the string builder of the buildQuery method
    * @param dto the dto object to be examined
    * @return the updated string builder
    */
-  private StringBuilder buildQueryMultimatch(StringBuilder builder, QuerySpec dto) {
+  private StringBuilder buildQueryMultimatch(StringBuilder builder,
+    QuerySpec dto) {
     QueryMultiMatch query = (QueryMultiMatch) dto;
-    builder.append("\"multi_match\" : { \"query\" : \"").append(query.getValue())
-        .append("\", \"fields\" : [");
+    builder.append("\"multi_match\" : { \"query\" : \"")
+      .append(query.getValue())
+      .append("\", \"fields\" : [");
     for (int i = 0; i < query.getFields().length; i++) {
       if (i > 0) {
         builder.append(", ");

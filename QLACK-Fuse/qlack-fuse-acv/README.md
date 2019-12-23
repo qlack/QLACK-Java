@@ -1,4 +1,4 @@
-# QLACK ACV module
+# QLACK Fuse - ACV
 
 This module provides Object Auditing, Comparison and Versioning operations.
 
@@ -8,16 +8,11 @@ object versions in the database used by your application.
 `javers.sqlSchema.sqlSchemaManagementEnabled=true`
 
 ### Add qlack-fuse-acv dependency to your pom.xml:
-```
-    <properties>
-        <!-- ... -->
-        <version.qlack>3.0.0-SNAPSHOT</version.qlack>
-    </properties>
-
+```xml
     <dependency>
         <groupId>com.eurodyn.qlack.fuse</groupId>
         <artifactId>qlack-fuse-acv</artifactId>
-        <version>${version.qlack}</version>
+        <version>${qlack.version}</version>
     </dependency>
 ```
 

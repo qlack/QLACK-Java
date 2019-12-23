@@ -1,13 +1,12 @@
 package com.eurodyn.qlack.common.model;
 
+import java.io.Serializable;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-
-import java.io.Serializable;
 
 /**
  * Superclass that contains common fields for the Qlack entities.

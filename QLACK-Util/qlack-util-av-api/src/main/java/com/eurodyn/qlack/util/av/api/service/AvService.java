@@ -12,6 +12,7 @@ public interface AvService {
 
   /**
    * Scans a file's byte data for viruses
+   *
    * @param data the file's byte data array
    * @return a {@link VirusScanDTO} object
    * @throws VirusScanException if any error occurs during file scanning
@@ -20,6 +21,7 @@ public interface AvService {
 
   /**
    * Checks if the Antivirus server host is up and running.
+   *
    * @param avHost the hostname of the server
    * @param avPort the port
    * @return true if the host is up and running, false otherwise

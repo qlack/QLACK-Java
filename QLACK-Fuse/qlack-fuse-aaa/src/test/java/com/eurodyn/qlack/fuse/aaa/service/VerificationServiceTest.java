@@ -32,7 +32,7 @@ public class VerificationServiceTest {
   private VerificationService verificationService;
 
   private VerificationTokenRepository verificationTokenRepository = mock(
-      VerificationTokenRepository.class);
+    VerificationTokenRepository.class);
   private UserRepository userRepository = mock(UserRepository.class);
   private VerificationToken verificationToken;
   private InitTestValues initTestValues;
@@ -41,7 +41,8 @@ public class VerificationServiceTest {
 
   @Before
   public void init() {
-    verificationService = new VerificationService(verificationTokenRepository, userRepository);
+    verificationService = new VerificationService(verificationTokenRepository,
+      userRepository);
     initTestValues = new InitTestValues();
     user = initTestValues.createUser();
     verificationToken = initTestValues.createVerificationToken();
@@ -51,7 +52,8 @@ public class VerificationServiceTest {
   @Test
   public void testCreateVerificationToken() {
     when(userRepository.findById(userID)).thenReturn(Optional.of(user));
-    verificationService.createVerificationToken(userID, verificationToken.getExpiresOn());
+    verificationService
+      .createVerificationToken(userID, verificationToken.getExpiresOn());
     verify(verificationTokenRepository, times(1)).save(any());
   }
 
@@ -59,7 +61,8 @@ public class VerificationServiceTest {
   @Test
   public void testCreateVerificationTokenWithData() {
     when(userRepository.findById(userID)).thenReturn(Optional.of(user));
-    verificationService.createVerificationToken(userID, verificationToken.getExpiresOn(),
+    verificationService
+      .createVerificationToken(userID, verificationToken.getExpiresOn(),
         verificationToken.getData());
     verify(verificationTokenRepository, times(1)).save(any());
   }
@@ -67,52 +70,59 @@ public class VerificationServiceTest {
   @Test
   public void testVerifyToken() {
     when(verificationTokenRepository.findById(verificationToken.getId()))
-        .thenReturn(Optional.of(verificationToken));
-    String verifiedUserId = verificationService.verifyToken(verificationToken.getId());
+      .thenReturn(Optional.of(verificationToken));
+    String verifiedUserId = verificationService
+      .verifyToken(verificationToken.getId());
     assertEquals(userID, verifiedUserId);
   }
 
   @Test
   public void testDeleteToken() {
     verificationService.deleteToken(verificationToken.getId());
-    verify(verificationTokenRepository, times(1)).deleteById(verificationToken.getId());
+    verify(verificationTokenRepository, times(1))
+      .deleteById(verificationToken.getId());
   }
 
   @Test
   public void testDeleteExpired() {
     verificationService.deleteExpired();
-    verify(verificationTokenRepository, times(1)).deleteByExpiresOnBefore(anyLong());
+    verify(verificationTokenRepository, times(1))
+      .deleteByExpiresOnBefore(anyLong());
   }
 
   @Test
   public void testGetTokenPayload() {
     when(verificationTokenRepository.findById(verificationToken.getId()))
-        .thenReturn(Optional.of(verificationToken));
-    String foundPayload = verificationService.getTokenPayload(verificationToken.getId());
+      .thenReturn(Optional.of(verificationToken));
+    String foundPayload = verificationService
+      .getTokenPayload(verificationToken.getId());
     assertEquals(verificationToken.getData(), foundPayload);
   }
 
   @Test
   public void testGetTokenPayloadNull() {
     when(verificationTokenRepository.findById(verificationToken.getId()))
-        .thenReturn(Optional.empty());
-    String foundPayload = verificationService.getTokenPayload(verificationToken.getId());
+      .thenReturn(Optional.empty());
+    String foundPayload = verificationService
+      .getTokenPayload(verificationToken.getId());
     assertNull(foundPayload);
   }
 
   @Test
   public void testGetTokenUser() {
     when(verificationTokenRepository.findById(verificationToken.getId()))
-        .thenReturn(Optional.of(verificationToken));
-    String foundUser = verificationService.getTokenUser(verificationToken.getId());
+      .thenReturn(Optional.of(verificationToken));
+    String foundUser = verificationService
+      .getTokenUser(verificationToken.getId());
     assertEquals(verificationToken.getUser().getId(), foundUser);
   }
 
   @Test
   public void testGetTokenUserNull() {
     when(verificationTokenRepository.findById(verificationToken.getId()))
-        .thenReturn(Optional.empty());
-    String foundUser = verificationService.getTokenUser(verificationToken.getId());
+      .thenReturn(Optional.empty());
+    String foundUser = verificationService
+      .getTokenUser(verificationToken.getId());
     assertNull(foundUser);
   }
 }

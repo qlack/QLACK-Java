@@ -42,7 +42,8 @@ public class UserGroupServiceTest {
   @InjectMocks
   public UserGroupService userGroupService;
 
-  private UserGroupRepository userGroupRepository = mock(UserGroupRepository.class);
+  private UserGroupRepository userGroupRepository = mock(
+    UserGroupRepository.class);
   private UserRepository userRepository = mock(UserRepository.class);
 
   @Spy
@@ -59,7 +60,8 @@ public class UserGroupServiceTest {
 
   @Before
   public void init() {
-    userGroupService = new UserGroupService(userGroupRepository, userRepository, userGroupMapper);
+    userGroupService = new UserGroupService(userGroupRepository, userRepository,
+      userGroupMapper);
     qUserGroup = new QUserGroup("userGroup");
     initTestValues = new InitTestValues();
     userGroup = initTestValues.createUserGroup();
@@ -86,7 +88,8 @@ public class UserGroupServiceTest {
     parent.setId("909626ef-df62-4ce0-a1ec-102f98a63a2a");
     userGroupDTO.setParentId("909626ef-df62-4ce0-a1ec-102f98a63a2a");
     when(userGroupMapper.mapToEntity(userGroupDTO)).thenReturn(userGroup);
-    when(userGroupRepository.fetchById(userGroupDTO.getParentId())).thenReturn(parent);
+    when(userGroupRepository.fetchById(userGroupDTO.getParentId()))
+      .thenReturn(parent);
 
     String createGroupId = userGroupService.createGroup(userGroupDTO);
 
@@ -98,15 +101,18 @@ public class UserGroupServiceTest {
   @Test
   public void testUpdateGroup() {
     userGroupDTO.setName("Updated Name");
-    when(userGroupRepository.fetchById(userGroupDTO.getId())).thenReturn(userGroup);
+    when(userGroupRepository.fetchById(userGroupDTO.getId()))
+      .thenReturn(userGroup);
     userGroupService.updateGroup(userGroupDTO);
-    verify(userGroupMapper, times(1)).mapToExistingEntity(userGroupDTO, userGroup);
+    verify(userGroupMapper, times(1))
+      .mapToExistingEntity(userGroupDTO, userGroup);
   }
 
   @Test
   public void testDeleteGroup() {
     UserGroup userGroup2 = initTestValues.createUserGroup();
-    when(userGroupRepository.fetchById(userGroupDTO.getId())).thenReturn(userGroup2);
+    when(userGroupRepository.fetchById(userGroupDTO.getId()))
+      .thenReturn(userGroup2);
     userGroupService.deleteGroup(userGroupDTO.getId());
     verify(userGroupRepository, times(1)).delete(userGroup2);
   }
@@ -114,34 +120,43 @@ public class UserGroupServiceTest {
   @Test
   public void testMoveGroup() {
     UserGroup newParent = userGroups.get(1);
-    when(userGroupRepository.fetchById(userGroup.getId())).thenReturn(userGroup);
-    when(userGroupRepository.fetchById(newParent.getId())).thenReturn(newParent);
+    when(userGroupRepository.fetchById(userGroup.getId()))
+      .thenReturn(userGroup);
+    when(userGroupRepository.fetchById(newParent.getId()))
+      .thenReturn(newParent);
     userGroupService.moveGroup(userGroup.getId(), newParent.getId());
     assertEquals(userGroup.getParent(), newParent);
   }
 
   @Test(expected = InvalidGroupHierarchyException.class)
   public void testMoveGroupException() {
-    when(userGroupRepository.fetchById(userGroup.getId())).thenReturn(userGroup);
-    when(userGroupRepository.fetchById(userGroup.getId())).thenReturn(userGroup);
+    when(userGroupRepository.fetchById(userGroup.getId()))
+      .thenReturn(userGroup);
+    when(userGroupRepository.fetchById(userGroup.getId()))
+      .thenReturn(userGroup);
     userGroupService.moveGroup(userGroup.getId(), userGroup.getId());
   }
 
   @Test
   public void testGetGroupByID() {
-    when(userGroupRepository.fetchById(userGroup.getId())).thenReturn(userGroup);
+    when(userGroupRepository.fetchById(userGroup.getId()))
+      .thenReturn(userGroup);
     when(userGroupMapper.mapToDTO(userGroup, false)).thenReturn(userGroupDTO);
-    UserGroupDTO foundGroup = userGroupService.getGroupByID(userGroup.getId(), false);
+    UserGroupDTO foundGroup = userGroupService
+      .getGroupByID(userGroup.getId(), false);
     assertEquals(userGroupDTO.getId(), foundGroup.getId());
-    assertEquals(userGroupDTO.getChildren().size(), foundGroup.getChildren().size());
+    assertEquals(userGroupDTO.getChildren().size(),
+      foundGroup.getChildren().size());
   }
 
   @Test
   public void testGetGroupByIDLazy() {
     userGroupDTO.setChildren(new HashSet<>());
-    when(userGroupRepository.fetchById(userGroup.getId())).thenReturn(userGroup);
+    when(userGroupRepository.fetchById(userGroup.getId()))
+      .thenReturn(userGroup);
     when(userGroupMapper.mapToDTO(userGroup, true)).thenReturn(userGroupDTO);
-    UserGroupDTO foundGroup = userGroupService.getGroupByID(userGroup.getId(), true);
+    UserGroupDTO foundGroup = userGroupService
+      .getGroupByID(userGroup.getId(), true);
     assertEquals(userGroupDTO.getId(), foundGroup.getId());
     assertEquals(0, foundGroup.getChildren().size());
   }
@@ -151,10 +166,12 @@ public class UserGroupServiceTest {
     Collection<String> groupsId = new ArrayList<>();
     userGroups.stream().forEach(ug -> groupsId.add(ug.getId()));
 
-    when(userGroupRepository.findAll(qUserGroup.id.in(groupsId), Sort.by("name").ascending()))
-        .thenReturn(userGroups);
+    when(userGroupRepository
+      .findAll(qUserGroup.id.in(groupsId), Sort.by("name").ascending()))
+      .thenReturn(userGroups);
     when(userGroupMapper.mapToDTO(userGroups, false)).thenReturn(userGroupsDTO);
-    List<UserGroupDTO> foundGroups = userGroupService.getGroupsByID(groupsId, false);
+    List<UserGroupDTO> foundGroups = userGroupService
+      .getGroupsByID(groupsId, false);
     assertEquals(userGroupsDTO, foundGroups);
   }
 
@@ -177,92 +194,101 @@ public class UserGroupServiceTest {
   public void testGetGroupByObjectId() {
     userGroupService.getGroupByObjectId(userGroup.getObjectId(), true);
     verify(userGroupRepository, times(1)).
-        findByObjectId(userGroup.getObjectId());
+      findByObjectId(userGroup.getObjectId());
   }
 
   @Test
   public void testListGroups() {
     userGroupService.listGroups();
     verify(userGroupRepository, times(1)).
-        findAll(Sort.by("name").ascending());
+      findAll(Sort.by("name").ascending());
   }
 
   @Test
   public void testListGroupAsTree() {
     userGroupService.listGroupsAsTree();
     verify(userGroupRepository, times(1)).
-        findAll(qUserGroup.parent.isNull(), Sort.by("name").ascending());
+      findAll(qUserGroup.parent.isNull(), Sort.by("name").ascending());
   }
 
   @Test
   public void testGetGroupParent() {
-    when(userGroupRepository.fetchById(userGroup.getId())).thenReturn(userGroup);
+    when(userGroupRepository.fetchById(userGroup.getId()))
+      .thenReturn(userGroup);
     userGroupService.getGroupParent(userGroup.getId());
     verify(userGroupRepository, times(1)).
-        fetchById(userGroup.getId());
+      fetchById(userGroup.getId());
   }
 
   @Test
   public void testGetGroupChildrenNullId() {
     userGroupService.getGroupChildren(null);
     verify(userGroupRepository, times(1)).
-        findAll(qUserGroup.parent.isNull(), Sort.by("name").ascending());
+      findAll(qUserGroup.parent.isNull(), Sort.by("name").ascending());
   }
 
   @Test
   public void testGetGroupChildren() {
     userGroupService.getGroupChildren(userGroup.getId());
     verify(userGroupRepository, times(1)).
-        findAll(qUserGroup.parent.id.eq(userGroup.getId()), Sort.by("name").ascending());
+      findAll(qUserGroup.parent.id.eq(userGroup.getId()),
+        Sort.by("name").ascending());
   }
 
   @Test
   public void testAddUser() {
-    when(userGroupRepository.fetchById(userGroup.getId())).thenReturn(userGroup);
+    when(userGroupRepository.fetchById(userGroup.getId()))
+      .thenReturn(userGroup);
     when(userRepository.fetchById(userGroup.getId())).thenReturn(user);
     userGroupService.addUser(userGroup.getId(), userGroup.getId());
     verify(userGroupRepository, times(1)).
-        fetchById(userGroup.getId());
+      fetchById(userGroup.getId());
   }
 
   @Test
   public void testAddUserByGroupName() {
-    when(userGroupRepository.findByName(userGroup.getName())).thenReturn(userGroup);
+    when(userGroupRepository.findByName(userGroup.getName()))
+      .thenReturn(userGroup);
     when(userRepository.fetchById(userGroup.getId())).thenReturn(user);
     userGroupService.addUserByGroupName(userGroup.getId(), userGroup.getName());
     verify(userGroupRepository, times(1)).
-        findByName(userGroup.getName());
+      findByName(userGroup.getName());
   }
 
   @Test
   public void testRemoveUser() {
-    when(userGroupRepository.fetchById(userGroup.getId())).thenReturn(userGroup);
+    when(userGroupRepository.fetchById(userGroup.getId()))
+      .thenReturn(userGroup);
     when(userRepository.fetchById(userGroup.getId())).thenReturn(user);
     userGroup.setUsers(users);
     userGroupService.removeUser(userGroup.getId(), userGroup.getId());
     verify(userGroupRepository, times(1)).
-        fetchById(userGroup.getId());
+      fetchById(userGroup.getId());
   }
 
   @Test
   public void testGetGroupUsersIdsNoDescendants() {
-    when(userGroupRepository.fetchById(userGroup.getId())).thenReturn(userGroup);
+    when(userGroupRepository.fetchById(userGroup.getId()))
+      .thenReturn(userGroup);
     userGroup.setUsers(users);
     userGroupService.getGroupUsersIds(userGroup.getId(), false);
     verify(userGroupRepository, times(1)).
-        fetchById(userGroup.getId());
+      fetchById(userGroup.getId());
   }
 
   @Test
   public void testGetGroupUsersIds() {
-    when(userGroupRepository.fetchById(userGroup.getId())).thenReturn(userGroup);
+    when(userGroupRepository.fetchById(userGroup.getId()))
+      .thenReturn(userGroup);
     userGroup.setUsers(users);
     userGroupNoChildren.setUsers(users);
-    when(userGroupRepository.fetchById(userGroup.getId())).thenReturn(userGroupNoChildren);
-    when(userGroupRepository.fetchById(userGroup.getId())).thenReturn(userGroupNoChildren);
+    when(userGroupRepository.fetchById(userGroup.getId()))
+      .thenReturn(userGroupNoChildren);
+    when(userGroupRepository.fetchById(userGroup.getId()))
+      .thenReturn(userGroupNoChildren);
     userGroupService.getGroupUsersIds(userGroup.getId(), true);
     verify(userGroupRepository, times(1)).
-        fetchById(userGroup.getId());
+      fetchById(userGroup.getId());
   }
 
   @Test
@@ -270,7 +296,7 @@ public class UserGroupServiceTest {
     when(userRepository.fetchById(userGroup.getId())).thenReturn(user);
     userGroupService.getUserGroupsIds(userGroup.getId());
     verify(userRepository, times(1)).
-        fetchById(userGroup.getId());
+      fetchById(userGroup.getId());
   }
 
   @Test
@@ -279,13 +305,14 @@ public class UserGroupServiceTest {
     user.setUserGroups(userGroups);
     userGroupService.getUserGroupsIds(userGroup.getId());
     verify(userRepository, times(1)).
-        fetchById(userGroup.getId());
+      fetchById(userGroup.getId());
   }
 
   @Test
   public void testGetGroupUsersNames() {
 
-    Set<String> groupIds = userGroups.stream().map(g -> g.getId()).collect(Collectors.toSet());
+    Set<String> groupIds = userGroups.stream().map(g -> g.getId())
+      .collect(Collectors.toSet());
     when(userGroupRepository.findByIdIn(groupIds)).thenReturn(userGroups);
     userGroups.stream().forEach(g -> g.setUsers(users));
     Set<String> usernames = userGroupService.getGroupUsersNames(groupIds);

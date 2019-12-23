@@ -91,10 +91,12 @@ public class VersionServiceExceptionTest {
 
   @Before
   public void init() throws TikaException, IOException {
-    versionService = new VersionService(concurrencyControlService, storageEngineFactory,
-        nodeRepository, versionRepository, versionDeletedRepository, versionMapper);
+    versionService = new VersionService(concurrencyControlService,
+      storageEngineFactory,
+      nodeRepository, versionRepository, versionDeletedRepository,
+      versionMapper);
     when(storageEngineFactory.getEngine())
-        .thenReturn(new DBStorage(versionRepository, versionBinRepository));
+      .thenReturn(new DBStorage(versionRepository, versionBinRepository));
     versionService.init();
 
     initTestValues = new InitTestValues();
@@ -134,7 +136,8 @@ public class VersionServiceExceptionTest {
     when(nodeRepository.fetchById(file.getId())).thenReturn(file);
     when(versionRepository.findAll(any(Predicate.class))).thenReturn(versions);
     when(versionMapper.mapToDTO(versions)).thenReturn(versionsDTO);
-    when(versionRepository.findOne(any(Predicate.class))).thenReturn(Optional.of(version));
+    when(versionRepository.findOne(any(Predicate.class)))
+      .thenReturn(Optional.of(version));
 
     versionService.getFileAsZip(file.getId(), version.getName(), true);
   }

@@ -48,7 +48,8 @@ public class CachingUserDetailsServiceTest {
     user = initTestValues.createUser();
     userDetailsDTO = initTestValues.createUserDetailDTO(user);
     initTestValues = new InitTestValues();
-    cachingUserDetailsService = new CachingUserDetailsService(userCaching, delegate);
+    cachingUserDetailsService = new CachingUserDetailsService(userCaching,
+      delegate);
     USERNAME = user.getUsername();
 
     when(userCaching.getUserCache()).thenReturn(userCache);
@@ -71,7 +72,8 @@ public class CachingUserDetailsServiceTest {
     when(userCache.getUserFromCache(USERNAME)).thenReturn(null);
     when(delegate.loadUserByUsername(USERNAME)).thenReturn(null);
 
-    UserDetails actualUserDetails = cachingUserDetailsService.loadUserByUsername(USERNAME);
+    UserDetails actualUserDetails = cachingUserDetailsService
+      .loadUserByUsername(USERNAME);
 
     verify(delegate, times(1)).loadUserByUsername(USERNAME);
     verify(userCache, times(0)).putUserInCache(any(UserDetails.class));
@@ -82,7 +84,8 @@ public class CachingUserDetailsServiceTest {
   public void loadUserByUsernameTest() {
     when(userCache.getUserFromCache(USERNAME)).thenReturn(userDetailsDTO);
 
-    UserDetails actuaUserDetails = cachingUserDetailsService.loadUserByUsername(USERNAME);
+    UserDetails actuaUserDetails = cachingUserDetailsService
+      .loadUserByUsername(USERNAME);
 
     verify(delegate, times(0)).loadUserByUsername(USERNAME);
     verify(userCache, times(1)).putUserInCache(userDetailsDTO);

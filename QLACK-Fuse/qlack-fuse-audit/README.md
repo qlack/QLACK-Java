@@ -1,20 +1,15 @@
-# QLACK Audit module
+# QLACK Fuse - Audit
 
 This module provides standard operations for system audit actions.
 
 ## Integration
 
 ### Add qlack-fuse-audit dependency to your pom.xml:
-```
-    <properties>
-        <!-- ... -->
-        <version.qlack>3.0.0-SNAPSHOT</version.qlack>
-    </properties>
-
+```xml
     <dependency>
         <groupId>com.eurodyn.qlack.fuse</groupId>
         <artifactId>qlack-fuse-audit</artifactId>
-        <version>${version.qlack}</version>
+        <version>${qlack.version}</version>
     </dependency>
 ```
 

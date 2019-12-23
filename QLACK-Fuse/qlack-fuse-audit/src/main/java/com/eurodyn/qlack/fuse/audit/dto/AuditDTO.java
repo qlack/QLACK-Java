@@ -78,7 +78,7 @@ public class AuditDTO extends AuditBaseDTO {
   private AuditTraceDTO trace;
 
   public AuditDTO(String level, String event, String groupName,
-      String description, String sessionID) {
+    String description, String sessionID) {
     this.level = level;
     this.event = event;
     this.groupName = groupName;

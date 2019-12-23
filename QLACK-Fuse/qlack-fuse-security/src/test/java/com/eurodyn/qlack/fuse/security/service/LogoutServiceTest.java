@@ -52,9 +52,9 @@ public class LogoutServiceTest {
     userDTO = initTestValues.userDTO(user);
     request = new MockHttpServletRequest();
     request.addHeader(HttpHeaders.AUTHORIZATION,
-        "Bearer eyJhbGciOiJIUzI1NiJ9"
-            +
-            ".eyJpYXQiOjE1NzQwOTIzMjEsInN1YiI6InRlc3RAdGVzdC5jb20iLCJleHAiOjE1NzQxNzg3MjEsInJvbGUxIjoiVXNlciJ9.2ZRJEW-beEs647zdjwCbIWJLECokxubDZwbhEVeCe7Y");
+      "Bearer eyJhbGciOiJIUzI1NiJ9"
+        +
+        ".eyJpYXQiOjE1NzQwOTIzMjEsInN1YiI6InRlc3RAdGVzdC5jb20iLCJleHAiOjE1NzQxNzg3MjEsInJvbGUxIjoiVXNlciJ9.2ZRJEW-beEs647zdjwCbIWJLECokxubDZwbhEVeCe7Y");
     ReflectionTestUtils.setField(logoutService, "jwtSecret", "qlackjwtsecret");
     ReflectionTestUtils.setField(logoutService, "jwtExpiration", 3600000);
   }
@@ -71,7 +71,8 @@ public class LogoutServiceTest {
     when(userCaching.getUserCache()).thenReturn(userCache);
     logoutService.performLogout(request);
 
-    verify(userService, times(1)).logout(userDTO.getId(), userDTO.getSessionId());
+    verify(userService, times(1))
+      .logout(userDTO.getId(), userDTO.getSessionId());
   }
 
   @Test

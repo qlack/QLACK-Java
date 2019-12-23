@@ -19,8 +19,8 @@ import org.mapstruct.ReportingPolicy;
  * @author European Dynamics SA
  */
 @Mapper(componentModel = "spring",
-    unmappedTargetPolicy = ReportingPolicy.IGNORE,
-    uses = {UserGroupHasOperationMapper.class})
+  unmappedTargetPolicy = ReportingPolicy.IGNORE,
+  uses = {UserGroupHasOperationMapper.class})
 public interface UserDetailsMapper {
 
   /**
@@ -32,7 +32,7 @@ public interface UserDetailsMapper {
    */
   @Mapping(target = "userGroupHasOperations", source = "userGroups", qualifiedByName = "mapUserGroupHasOperations")
   UserDetailsDTO mapToDTO(User user,
-      @Context UserGroupHasOperationMapper userGroupHasOperationMapper);
+    @Context UserGroupHasOperationMapper userGroupHasOperationMapper);
 
   /**
    * A mapping for UserGroupHasOperations
@@ -42,11 +42,13 @@ public interface UserDetailsMapper {
    * @return a list of  {@link UserGroupHasOperationDTO} object
    */
   @Named("mapUserGroupHasOperations")
-  default List<UserGroupHasOperationDTO> mapUserGroupHasOperations(List<UserGroup> userGroups,
-      @Context UserGroupHasOperationMapper userGroupHasOperationMapper) {
+  default List<UserGroupHasOperationDTO> mapUserGroupHasOperations(
+    List<UserGroup> userGroups,
+    @Context UserGroupHasOperationMapper userGroupHasOperationMapper) {
     return userGroups.stream()
-        .map(g -> userGroupHasOperationMapper.mapToDTO(g.getUserGroupHasOperations()))
-        .flatMap(List::stream)
-        .collect(Collectors.toList());
+      .map(g -> userGroupHasOperationMapper
+        .mapToDTO(g.getUserGroupHasOperations()))
+      .flatMap(List::stream)
+      .collect(Collectors.toList());
   }
 }

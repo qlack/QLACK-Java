@@ -57,8 +57,9 @@ public class LexiconConfigServiceTest {
 
   @Before
   public void init() {
-    lexiconConfigService = new LexiconConfigService(groupService, languageService, keyService,
-        applicationRepository, applicationContext);
+    lexiconConfigService = new LexiconConfigService(groupService,
+      languageService, keyService,
+      applicationRepository, applicationContext);
   }
 
   private URL createUrl() throws IOException {
@@ -66,7 +67,8 @@ public class LexiconConfigServiceTest {
   }
 
   private URL createUrl(String url) throws IOException {
-    Enumeration<URL> entries = this.getClass().getClassLoader().getResources(url);
+    Enumeration<URL> entries = this.getClass().getClassLoader()
+      .getResources(url);
     return entries.nextElement();
   }
 
@@ -82,7 +84,8 @@ public class LexiconConfigServiceTest {
   public void initShouldDeleteTest() throws IOException {
     when(languageService.getLanguageByLocale("en")).thenReturn(languageDTO);
     when(groupService.getGroupByTitle(any())).thenReturn(groupDTO);
-    lexiconConfigService.updateTranslations(createUrl("qlack-lexicon-config-keys.yaml"));
+    lexiconConfigService
+      .updateTranslations(createUrl("qlack-lexicon-config-keys.yaml"));
     verify(applicationRepository, times(1)).findBySymbolicName(any());
   }
 
@@ -90,7 +93,8 @@ public class LexiconConfigServiceTest {
   public void initForceUpdateTest() throws IOException {
     when(languageService.getLanguageByLocale("en")).thenReturn(languageDTO);
     when(groupService.getGroupByTitle(any())).thenReturn(groupDTO);
-    lexiconConfigService.updateTranslations(createUrl("qlack-lexicon-config-keys.yaml"));
+    lexiconConfigService
+      .updateTranslations(createUrl("qlack-lexicon-config-keys.yaml"));
     verify(applicationRepository, times(1)).findBySymbolicName(any());
   }
 
@@ -101,7 +105,8 @@ public class LexiconConfigServiceTest {
     when(groupService.getGroupByTitle(any())).thenReturn(groupDTO);
     when(keyService.getKeyByName(any(), any(), eq(true))).thenReturn(keyDTO);
     when(groupService.getRemainingGroups(any())).thenReturn(groupDTOSet);
-    lexiconConfigService.updateTranslations(createUrl("qlack-lexicon-config-keys.yaml"));
+    lexiconConfigService
+      .updateTranslations(createUrl("qlack-lexicon-config-keys.yaml"));
     verify(applicationRepository, times(1)).findBySymbolicName(any());
   }
 
@@ -111,10 +116,12 @@ public class LexiconConfigServiceTest {
     when(languageService.getLanguageByLocale("en")).thenReturn(languageDTO);
     when(groupService.getGroupByTitle(any())).thenReturn(groupDTO);
     when(keyService.getKeyByName(any(), any(), eq(true))).thenReturn(keyDTO);
-    lexiconConfigService.updateTranslations(createUrl("qlack-lexicon-config.yaml"));
+    lexiconConfigService
+      .updateTranslations(createUrl("qlack-lexicon-config.yaml"));
 
     when(keyService.getKeyByName(any(), any(), eq(true))).thenReturn(null);
-    lexiconConfigService.updateTranslations(createUrl("qlack-lexicon-config2.yaml"));
+    lexiconConfigService
+      .updateTranslations(createUrl("qlack-lexicon-config2.yaml"));
     verify(applicationRepository, times(2)).findBySymbolicName(any());
   }
 
@@ -131,10 +138,12 @@ public class LexiconConfigServiceTest {
     when(groupService.getGroupByTitle(any())).thenReturn(groupDTO);
     when(keyService.getKeyByName(any(), any(), eq(true))).thenReturn(keyDTO1);
 
-    lexiconConfigService.updateTranslations(createUrl("qlack-lexicon-config.yaml"));
+    lexiconConfigService
+      .updateTranslations(createUrl("qlack-lexicon-config.yaml"));
 
     when(keyService.getKeyByName(any(), any(), eq(true))).thenReturn(keyDTO);
-    lexiconConfigService.updateTranslations(createUrl("qlack-lexicon-config.yaml"));
+    lexiconConfigService
+      .updateTranslations(createUrl("qlack-lexicon-config.yaml"));
 
     verify(applicationRepository, times(2)).findBySymbolicName(any());
   }
@@ -158,7 +167,8 @@ public class LexiconConfigServiceTest {
     applicationList.add(application);
 
     when(applicationContext.getId()).thenReturn("appId");
-    when(applicationRepository.findBySymbolicName("appId")).thenReturn(applicationList);
+    when(applicationRepository.findBySymbolicName("appId"))
+      .thenReturn(applicationList);
     lexiconConfigService.init();
     verify(applicationRepository, times(1)).findBySymbolicName(any());
   }
@@ -171,15 +181,18 @@ public class LexiconConfigServiceTest {
 
     when(languageService.getLanguageByLocale(any())).thenReturn(languageDTO);
     when(applicationContext.getId()).thenReturn("appId");
-    when(applicationRepository.findBySymbolicName("appId")).thenReturn(applicationList);
+    when(applicationRepository.findBySymbolicName("appId"))
+      .thenReturn(applicationList);
     when(groupService.getRemainingGroups(any())).thenReturn(groupDTOSet);
-    lexiconConfigService.updateTranslations(createUrl("qlack-lexicon-config-more-data.yaml"));
+    lexiconConfigService
+      .updateTranslations(createUrl("qlack-lexicon-config-more-data.yaml"));
     verify(applicationRepository, times(1)).findBySymbolicName(any());
   }
 
   @Test
   public void initNoGroupTest() throws IOException {
-    lexiconConfigService.updateTranslations(createUrl("qlack-lexicon-config-no-data.yaml"));
+    lexiconConfigService
+      .updateTranslations(createUrl("qlack-lexicon-config-no-data.yaml"));
     verify(applicationRepository, times(1)).findBySymbolicName(any());
   }
 }

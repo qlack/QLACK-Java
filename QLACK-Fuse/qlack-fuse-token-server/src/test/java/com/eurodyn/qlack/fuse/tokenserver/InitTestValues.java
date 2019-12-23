@@ -22,12 +22,12 @@ public class InitTestValues {
 
   public TokenDTO createTokenDTO() {
     return TokenDTO.builder()
-        .id("id")
-        .createdAt(now)
-        .lastModifiedAt(now)
-        .payload(PAYLOAD)
-        .validUntil(now.plus(1, ChronoUnit.HOURS))
-        .build();
+      .id("id")
+      .createdAt(now)
+      .lastModifiedAt(now)
+      .payload(PAYLOAD)
+      .validUntil(now.plus(1, ChronoUnit.HOURS))
+      .build();
   }
 
 }

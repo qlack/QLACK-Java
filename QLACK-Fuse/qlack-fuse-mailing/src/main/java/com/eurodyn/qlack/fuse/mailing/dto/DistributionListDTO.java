@@ -31,7 +31,8 @@ public class DistributionListDTO extends MailBaseDTO {
   private String createdBy;
 
   /**
-   * The date the distribution list was created represented as a {@link java.lang.Long} number
+   * The date the distribution list was created represented as a {@link
+   * java.lang.Long} number
    */
   private Long createdOn;
 

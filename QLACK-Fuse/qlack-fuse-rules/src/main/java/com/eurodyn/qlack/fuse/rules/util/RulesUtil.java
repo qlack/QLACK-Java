@@ -26,7 +26,8 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
 /**
- * This util method contains useful method that are used by the rules Qlack component.
+ * This util method contains useful method that are used by the rules Qlack
+ * component.
  *
  * @author European Dynamics SA
  */
@@ -39,7 +40,8 @@ public class RulesUtil {
    * @param base the persisted Knowledge Base
    * @return the created KieBase
    */
-  public ClassLoaderKnowledgeBase createKieBaseFromBaseState(KnowledgeBase base) {
+  public ClassLoaderKnowledgeBase createKieBaseFromBaseState(
+    KnowledgeBase base) {
 
     List<byte[]> libraries = new ArrayList<>();
     List<KnowledgeBaseLibrary> runtimeLibraries = base.getLibraries();
@@ -55,7 +57,8 @@ public class RulesUtil {
       classLoaderBuilder.add(libraryBytes);
     }
 
-    MapBackedClassLoader classLoader = classLoaderBuilder.buildClassLoader(base.getId());
+    MapBackedClassLoader classLoader = classLoaderBuilder
+      .buildClassLoader(base.getId());
 
     // restore compiled knowledge base
     byte[] state = base.getState();
@@ -82,13 +85,15 @@ public class RulesUtil {
     ClassLoader classLoader = classLoaderBuilder.buildClassLoader(null);
 
     KnowledgeBuilderConfiguration kBuilderConfiguration = KnowledgeBuilderFactory
-        .newKnowledgeBuilderConfiguration(null, classLoader);
-    KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kBuilderConfiguration);
+      .newKnowledgeBuilderConfiguration(null, classLoader);
+    KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
+      .newKnowledgeBuilder(kBuilderConfiguration);
     compileRules(rules, kbuilder);
 
     KieBaseConfiguration kBaseConfiguration = KnowledgeBaseFactory
-        .newKnowledgeBaseConfiguration(null, classLoader);
-    KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase("test", kBaseConfiguration);
+      .newKnowledgeBaseConfiguration(null, classLoader);
+    KieBase kbase = KnowledgeBaseFactory
+      .newKnowledgeBase("test", kBaseConfiguration);
 
     // add packages to knowledge base
     ((KnowledgeBaseImpl) kbase).addPackages(kbuilder.getKnowledgePackages());
@@ -116,7 +121,8 @@ public class RulesUtil {
    * @param classLoader the ClassLoader of the KieBase
    * @return the KieBase
    */
-  public KieBase deserializeKnowledgeBase(byte[] state, ClassLoader classLoader) {
+  public KieBase deserializeKnowledgeBase(byte[] state,
+    ClassLoader classLoader) {
     try {
       return (KieBase) DroolsStreamUtils.streamIn(state, classLoader);
     } catch (IOException | ClassNotFoundException e) {
@@ -128,9 +134,11 @@ public class RulesUtil {
    * Compiles the given rules and adds them in the KnowledgeBuilder
    *
    * @param rules the rules to compiled and added
-   * @param knowledgeBuilder the KnowledgeBuilder that will include the compiled rules
+   * @param knowledgeBuilder the KnowledgeBuilder that will include the
+   * compiled rules
    */
-  private void compileRules(List<String> rules, KnowledgeBuilder knowledgeBuilder) {
+  private void compileRules(List<String> rules,
+    KnowledgeBuilder knowledgeBuilder) {
     for (String rulesText : rules) {
       byte[] rulesBytes = rulesText.getBytes(StandardCharsets.UTF_8);
       Resource rulesResource = ResourceFactory.newByteArrayResource(rulesBytes);

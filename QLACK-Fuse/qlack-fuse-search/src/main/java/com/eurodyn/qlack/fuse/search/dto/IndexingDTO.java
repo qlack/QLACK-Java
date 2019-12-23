@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Holds a document to be indexed. The source object to be indexed is specified on the
- * <i>sourceObject</i> property and can be internally converted to a JSON string by the underling
+ * Holds a document to be indexed. The source object to be indexed is specified
+ * on the
+ * <i>sourceObject</i> property and can be internally converted to a JSON string
+ * by the underling
  * methods of {@link IndexingService} when convertToJSON is true.
  *
  * @author European Dynamics SA.
@@ -16,7 +18,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class IndexingDTO extends ESDocumentIdentifierDTO implements Serializable {
+public class IndexingDTO extends ESDocumentIdentifierDTO implements
+  Serializable {
 
   /**
    * the source object to be indexed.
@@ -28,11 +31,13 @@ public class IndexingDTO extends ESDocumentIdentifierDTO implements Serializable
    */
   private boolean convertToJSON = true;
 
-  public IndexingDTO(String index, String type, String id, Object sourceObject) {
+  public IndexingDTO(String index, String type, String id,
+    Object sourceObject) {
     this(index, type, id, sourceObject, false);
   }
 
-  public IndexingDTO(String index, String type, String id, Object sourceObject, boolean refresh) {
+  public IndexingDTO(String index, String type, String id, Object sourceObject,
+    boolean refresh) {
     super(index, type, id, refresh);
     this.sourceObject = sourceObject;
   }

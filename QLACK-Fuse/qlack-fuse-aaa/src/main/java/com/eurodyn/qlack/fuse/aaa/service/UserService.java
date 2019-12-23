@@ -21,6 +21,15 @@ import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import lombok.extern.java.Log;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -34,18 +43,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
-
 /**
- * A Service class that is used to define a number of crud methods and configure the User model
+ * A Service class that is used to define a number of crud methods and configure
+ * the User model
  *
  * @author European Dynamics SA
  */
@@ -56,7 +56,8 @@ import java.util.stream.Collectors;
 @Transactional
 public class UserService {
 
-  private static final Logger LOGGER = Logger.getLogger(UserService.class.getName());
+  private static final Logger LOGGER = Logger
+    .getLogger(UserService.class.getName());
 
   // Service REFs
   private AccountingService accountingService;
@@ -78,12 +79,15 @@ public class UserService {
   private final PasswordEncoder passwordEncoder;
 
   @SuppressWarnings("squid:S00107")
-  public UserService(AccountingService accountingService, LdapUserUtil ldapUserUtil,
-      UserRepository userRepository, UserAttributeRepository userAttributeRepository,
-      SessionRepository sessionRepository, UserGroupRepository userGroupRepository,
-      UserMapper userMapper,
-      SessionMapper sessionMapper, UserAttributeMapper userAttributeMapper,
-      PasswordEncoder passwordEncoder) {
+  public UserService(AccountingService accountingService,
+    LdapUserUtil ldapUserUtil,
+    UserRepository userRepository,
+    UserAttributeRepository userAttributeRepository,
+    SessionRepository sessionRepository,
+    UserGroupRepository userGroupRepository,
+    UserMapper userMapper,
+    SessionMapper sessionMapper, UserAttributeMapper userAttributeMapper,
+    PasswordEncoder passwordEncoder) {
     this.accountingService = accountingService;
     this.ldapUserUtil = ldapUserUtil;
     this.userRepository = userRepository;
@@ -97,9 +101,9 @@ public class UserService {
   }
 
   /**
-   * Creates a new user in AAA. If the password encoder you have chosen needs a salt, make sure you
-   * populate one into {@link UserDTO}. You can find a secure seed/salt generator in
-   * qlack-fuse-crypto's generateSecureRandom.
+   * Creates a new user in AAA. If the password encoder you have chosen needs
+   * a salt, make sure you populate one into {@link UserDTO}. You can find a
+   * secure seed/salt generator in qlack-fuse-crypto's generateSecureRandom.
    *
    * @param salt the salt
    * @param dto The DTO with the user details to create.
@@ -122,15 +126,18 @@ public class UserService {
    * Updates a user in AAA.
    *
    * @param dto the {@link UserDTO}
-   * @param updatePassword updatePassword value checks if password needs to be updated
+   * @param updatePassword updatePassword value checks if password needs to be
+   * updated
    * @param createIfMissing the createIfMissing
    */
-  public void updateUser(UserDTO dto, boolean updatePassword, boolean createIfMissing) {
+  public void updateUser(UserDTO dto, boolean updatePassword,
+    boolean createIfMissing) {
     User user = userRepository.fetchById(dto.getId());
     userMapper.mapToExistingEntity(dto, user);
 
     if (updatePassword) {
-      Optional<String> salt = user.getSalt() != null ? Optional.of(user.getSalt()) :
+      Optional<String> salt =
+        user.getSalt() != null ? Optional.of(user.getSalt()) :
           Optional.empty();
       setUserPassword(dto, user, salt);
     }
@@ -173,16 +180,16 @@ public class UserService {
     Predicate predicate = qUser.id.in(userIDs);
 
     return userRepository.findAll(predicate).stream()
-        .map(userMapper::mapToDTO)
-        .collect(Collectors.toSet());
+      .map(userMapper::mapToDTO)
+      .collect(Collectors.toSet());
   }
 
   public Map<String, UserDTO> getUsersByIdAsHash(Collection<String> userIDs) {
     Predicate predicate = qUser.id.in(userIDs);
 
     return userRepository.findAll(predicate).stream()
-        .map(userMapper::mapToDTO)
-        .collect(Collectors.toMap(UserDTO::getId, dto -> dto));
+      .map(userMapper::mapToDTO)
+      .collect(Collectors.toMap(UserDTO::getId, dto -> dto));
   }
 
   /**
@@ -279,7 +286,7 @@ public class UserService {
    * @return the {@link UserDTO}
    */
   public UserDTO login(String userID, String applicationSessionID,
-      boolean terminateOtherSessions) {
+    boolean terminateOtherSessions) {
     User user = userRepository.fetchById(userID);
 
     // Check if other sessions of this user need to be terminated first.
@@ -318,9 +325,9 @@ public class UserService {
     if (user.getSessions() != null) {
       for (Session session : user.getSessions()) {
         if (((applicationSessionID != null) && (session
-            .getApplicationSessionId().equals(applicationSessionID)))
-            || ((applicationSessionID == null) && (session
-            .getApplicationSessionId() == null))) {
+          .getApplicationSessionId().equals(applicationSessionID)))
+          || ((applicationSessionID == null) && (session
+          .getApplicationSessionId() == null))) {
           accountingService.terminateSession(session.getId());
         }
       }
@@ -335,7 +342,7 @@ public class UserService {
     List<Session> queryResult = sessionRepository.findAll(predicate);
     for (Session session : queryResult) {
       logout(session.getUser().getId(),
-          session.getApplicationSessionId());
+        session.getApplicationSessionId());
     }
 
   }
@@ -344,13 +351,14 @@ public class UserService {
    * Retrieves the logged in users or null value if no one has logged in
    *
    * @param userID the user id
-   * @return a list of users that have already logged in the system or null value if no one has
-   * logged in
+   * @return a list of users that have already logged in the system or null
+   * value if no one has logged in
    */
   public List<SessionDTO> isUserAlreadyLoggedIn(String userID) {
-    Predicate predicate = qSession.user.id.eq(userID).and(qSession.terminatedOn.isNull());
+    Predicate predicate = qSession.user.id.eq(userID)
+      .and(qSession.terminatedOn.isNull());
     List<SessionDTO> retVal = sessionMapper.mapToDTO(sessionRepository
-        .findAll(predicate, Sort.by("createdOn").ascending()));
+      .findAll(predicate, Sort.by("createdOn").ascending()));
 
     return retVal.isEmpty() ? null : retVal;
   }
@@ -364,7 +372,7 @@ public class UserService {
    * @return a {@link Boolean} value whether belongs to or not
    */
   public boolean belongsToGroupByName(String userID, String groupName,
-      boolean includeChildren) {
+    boolean includeChildren) {
     User user = userRepository.fetchById(userID);
     UserGroup userGroup = userGroupRepository.findByName(groupName);
     boolean retVal = userGroup.getUsers().contains(user);
@@ -372,7 +380,7 @@ public class UserService {
     if (!retVal && includeChildren) {
       for (UserGroup child : userGroup.getChildren()) {
         if (belongsToGroupByName(userID, child.getName(),
-            includeChildren)) {
+          includeChildren)) {
           return true;
         }
       }
@@ -388,7 +396,7 @@ public class UserService {
    * @param createIfMissing the createIfMissing check value
    */
   public void updateAttributes(Collection<UserAttributeDTO> attributes,
-      boolean createIfMissing) {
+    boolean createIfMissing) {
     for (UserAttributeDTO attributeDTO : attributes) {
       updateAttribute(attributeDTO, createIfMissing);
     }
@@ -401,11 +409,12 @@ public class UserService {
    * @param createIfMissing the createIfMissing
    */
   public void updateAttribute(UserAttributeDTO attributeDTO,
-      boolean createIfMissing) {
+    boolean createIfMissing) {
     String userId = attributeDTO.getUserId();
     String name = attributeDTO.getName();
 
-    UserAttribute attribute = userAttributeRepository.findByUserIdAndName(userId, name);
+    UserAttribute attribute = userAttributeRepository
+      .findByUserIdAndName(userId, name);
     if (attribute != null) {
       mapAttribute(attribute, attributeDTO);
       userAttributeRepository.save(attribute);
@@ -423,7 +432,7 @@ public class UserService {
    * @param attributeDTO the UserAttributeDTO
    */
   private void mapAttribute(UserAttribute attribute,
-      UserAttributeDTO attributeDTO) {
+    UserAttributeDTO attributeDTO) {
     String userId = attributeDTO.getUserId();
     User user = userRepository.fetchById(userId);
     attribute.setUser(user);
@@ -437,7 +446,8 @@ public class UserService {
    * @param attributeName the attributeName
    */
   public void deleteAttribute(String userID, String attributeName) {
-    UserAttribute attribute = userAttributeRepository.findByUserIdAndName(userID, attributeName);
+    UserAttribute attribute = userAttributeRepository
+      .findByUserIdAndName(userID, attributeName);
     if (attribute != null) {
       userAttributeRepository.delete(attribute);
     }
@@ -451,7 +461,8 @@ public class UserService {
    * @return the {@link UserAttributeDTO} dto
    */
   public UserAttributeDTO getAttribute(String userID, String attributeName) {
-    UserAttribute attribute = userAttributeRepository.findByUserIdAndName(userID, attributeName);
+    UserAttribute attribute = userAttributeRepository
+      .findByUserIdAndName(userID, attributeName);
     return userAttributeMapper.mapToDTO(attribute);
   }
 
@@ -464,16 +475,17 @@ public class UserService {
    * @return the user ids
    */
   public Set<String> getUserIDsForAttribute(Collection<String> userIDs,
-      String attributeName, String attributeValue) {
-    BooleanExpression predicate = qUser.userAttributes.any().name.eq(attributeName)
-        .and(qUser.userAttributes.any().data.eq(attributeValue));
+    String attributeName, String attributeValue) {
+    BooleanExpression predicate = qUser.userAttributes.any().name
+      .eq(attributeName)
+      .and(qUser.userAttributes.any().data.eq(attributeValue));
     if ((userIDs != null) && (!userIDs.isEmpty())) {
       predicate = predicate.and(qUser.id.in(userIDs));
     }
 
     return userRepository.findAll(predicate).stream()
-        .map(User::getId)
-        .collect(Collectors.toSet());
+      .map(User::getId)
+      .collect(Collectors.toSet());
   }
 
   /**
@@ -502,46 +514,53 @@ public class UserService {
   private List<UserDTO> listUsers(Predicate predicate) {
 
     return userRepository.findAll(predicate).stream()
-        .map(userMapper::mapToDTO)
-        .collect(Collectors.toList());
+      .map(userMapper::mapToDTO)
+      .collect(Collectors.toList());
   }
 
   private Predicate buildPredicate(UserSearchCriteria criteria) {
     Predicate predicate = new BooleanBuilder();
     if (criteria.getIncludeGroupIds() != null) {
       predicate = ((BooleanBuilder) predicate)
-          .and(qUser.userGroups.any().id.in(criteria.getIncludeGroupIds()));
+        .and(qUser.userGroups.any().id.in(criteria.getIncludeGroupIds()));
     }
     if (criteria.getExcludeGroupIds() != null) {
       predicate = ((BooleanBuilder) predicate)
-          .and(qUser.userGroups.any().id.notIn(criteria.getExcludeGroupIds()));
+        .and(qUser.userGroups.any().id.notIn(criteria.getExcludeGroupIds()));
     }
     if (criteria.getIncludeIds() != null) {
-      predicate = ((BooleanBuilder) predicate).and(qUser.id.in(criteria.getIncludeIds()));
+      predicate = ((BooleanBuilder) predicate)
+        .and(qUser.id.in(criteria.getIncludeIds()));
     }
     if (criteria.getExcludeIds() != null) {
-      predicate = ((BooleanBuilder) predicate).and(qUser.id.notIn(criteria.getExcludeIds()));
+      predicate = ((BooleanBuilder) predicate)
+        .and(qUser.id.notIn(criteria.getExcludeIds()));
     }
     if (criteria.getIncludeStatuses() != null) {
-      predicate = ((BooleanBuilder) predicate).and(qUser.status.in(criteria.getIncludeStatuses()));
+      predicate = ((BooleanBuilder) predicate)
+        .and(qUser.status.in(criteria.getIncludeStatuses()));
     }
     if (criteria.getExcludeStatuses() != null) {
       predicate = ((BooleanBuilder) predicate)
-          .and(qUser.status.notIn(criteria.getExcludeStatuses()));
+        .and(qUser.status.notIn(criteria.getExcludeStatuses()));
     }
     if (criteria.getUsername() != null) {
-      predicate = ((BooleanBuilder) predicate).and(qUser.username.eq(criteria.getUsername()));
+      predicate = ((BooleanBuilder) predicate)
+        .and(qUser.username.eq(criteria.getUsername()));
     }
     if (criteria.getSuperadmin() != null) {
-      predicate = ((BooleanBuilder) predicate).and(qUser.superadmin.eq(criteria.getSuperadmin()));
+      predicate = ((BooleanBuilder) predicate)
+        .and(qUser.superadmin.eq(criteria.getSuperadmin()));
     }
 
     return predicate;
   }
 
-  private Page<UserDTO> listUsersPaginated(Predicate predicate, Pageable pageable) {
+  private Page<UserDTO> listUsersPaginated(Predicate predicate,
+    Pageable pageable) {
 
-    return userRepository.findAll(predicate, pageable).map(userMapper::mapToDTO);
+    return userRepository.findAll(predicate, pageable)
+      .map(userMapper::mapToDTO);
   }
 
   public long findUserCount(UserSearchCriteria criteria) {
@@ -555,7 +574,8 @@ public class UserService {
    *
    * @param attributeName the attributeName
    * @param userID the userId
-   * @return {@link Boolean} value whether the attribute value is unique or not
+   * @return {@link Boolean} value whether the attribute value is unique or
+   * not
    */
   public boolean isAttributeValueUnique(String attributeName, String userID) {
 
@@ -563,13 +583,14 @@ public class UserService {
     QUserAttribute quserAttribute = QUserAttribute.userAttribute;
 
     Predicate predicate = quserAttribute.name.eq(attributeName)
-        .and(quserAttribute.data.eq(attributeName));
+      .and(quserAttribute.data.eq(attributeName));
     // convert Set to List
     List<UserAttributeDTO> qResult = userAttributeMapper
-        .mapToDTO(userAttributeRepository.findAll(predicate));
+      .mapToDTO(userAttributeRepository.findAll(predicate));
     ArrayList<UserAttributeDTO> list = new ArrayList<>(qResult);
     //in case of no user exists with this user attribute value	or there is only the given user
-    if ((list.size() == 1 && list.get(0).getUserId().equals(userID)) || (list.isEmpty())) {
+    if ((list.size() == 1 && list.get(0).getUserId().equals(userID)) || (list
+      .isEmpty())) {
       isAttributeValueUnique = true;
     }
     return isAttributeValueUnique;
@@ -596,7 +617,8 @@ public class UserService {
     } else {
       if (salt.isPresent()) {
         user.setSalt(salt.get());
-        user.setPassword(passwordEncoder.encode(salt.get() + dto.getPassword()));
+        user
+          .setPassword(passwordEncoder.encode(salt.get() + dto.getPassword()));
       } else {
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
       }

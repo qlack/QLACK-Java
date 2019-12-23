@@ -51,9 +51,10 @@ public class FileUploadImplExceptionTest {
   @Test(expected = QFileUploadException.class)
   public void getByIDIncludeBinaryExceptionTest() throws IOException {
     PowerMockito.mockStatic(ByteArrayOutputStreamUtil.class);
-    ByteArrayOutputStream byteArrayOutputStream = PowerMockito.mock(ByteArrayOutputStream.class);
+    ByteArrayOutputStream byteArrayOutputStream = PowerMockito
+      .mock(ByteArrayOutputStream.class);
     when(ByteArrayOutputStreamUtil.createByteArrayOutputStream(anyLong()))
-        .thenReturn(byteArrayOutputStream);
+      .thenReturn(byteArrayOutputStream);
     doThrow(new IOException()).when(byteArrayOutputStream).write(any());
 
     when(dbFileRepository.findAll()).thenReturn(dbFiles);

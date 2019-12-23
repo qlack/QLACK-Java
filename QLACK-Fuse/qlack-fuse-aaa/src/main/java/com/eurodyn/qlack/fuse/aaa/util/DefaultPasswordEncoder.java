@@ -7,9 +7,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 /**
- * A default implementation of a {@link PasswordEncoder} based on AAA's legacy MD5 encoder. It is
- * suggested to switch to a better implementation in your project, such as {@link
- * org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder}.
+ * A default implementation of a {@link PasswordEncoder} based on AAA's legacy
+ * MD5 encoder. It is suggested to switch to a better implementation in your
+ * project, such as {@link org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder}.
  *
  * @author European Dynamics SA
  */
@@ -17,11 +17,13 @@ import org.springframework.stereotype.Component;
 public class DefaultPasswordEncoder {
 
   // JUL reference.
-  private static final Logger LOGGER = Logger.getLogger(DefaultPasswordEncoder.class.getName());
+  private static final Logger LOGGER = Logger
+    .getLogger(DefaultPasswordEncoder.class.getName());
 
   @Bean
   public PasswordEncoder md5PasswordEncoder() {
-    LOGGER.log(Level.CONFIG, "Initialising {0} as password encoder.", this.getClass());
+    LOGGER.log(Level.CONFIG, "Initialising {0} as password encoder.",
+      this.getClass());
     return new Md5PasswordEncoder();
   }
 }

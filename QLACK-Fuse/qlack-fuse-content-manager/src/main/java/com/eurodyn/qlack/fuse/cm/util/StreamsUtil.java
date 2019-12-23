@@ -24,7 +24,8 @@ public class StreamsUtil {
    * @param outStream the output stream
    * @return the ZipOutputStream instance
    */
-  public static ZipOutputStream createZipOutputStream(ByteArrayOutputStream outStream) {
+  public static ZipOutputStream createZipOutputStream(
+    ByteArrayOutputStream outStream) {
     return new ZipOutputStream(outStream);
   }
 

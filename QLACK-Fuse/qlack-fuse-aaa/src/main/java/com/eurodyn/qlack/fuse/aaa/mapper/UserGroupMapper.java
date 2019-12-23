@@ -38,7 +38,8 @@ public interface UserGroupMapper {
    * @param lazyRelatives the lazyRelatives check
    * @return the relative DTO
    */
-  List<UserGroupDTO> mapToDTO(List<UserGroup> userGroups, @Context boolean lazyRelatives);
+  List<UserGroupDTO> mapToDTO(List<UserGroup> userGroups,
+    @Context boolean lazyRelatives);
 
   /**
    * Maps a UserGroupDTO to Entity
@@ -63,7 +64,8 @@ public interface UserGroupMapper {
    * @param userGroupDTO the userGroupDTO object
    * @param userGroup the mapping target of {@link UserGroup} object
    */
-  void mapToExistingEntity(UserGroupDTO userGroupDTO, @MappingTarget UserGroup userGroup);
+  void mapToExistingEntity(UserGroupDTO userGroupDTO,
+    @MappingTarget UserGroup userGroup);
 
   /**
    * Maps a list of childrens to DTO
@@ -73,7 +75,8 @@ public interface UserGroupMapper {
    * @return a set of {@link UserGroupDTO} objects
    */
   @Named("mapChildren")
-  default Set<UserGroupDTO> mapChildren(List<UserGroup> children, @Context boolean lazyRelatives) {
+  default Set<UserGroupDTO> mapChildren(List<UserGroup> children,
+    @Context boolean lazyRelatives) {
     if (!lazyRelatives) {
       return new HashSet<>(mapToDTO(children, true));
     }

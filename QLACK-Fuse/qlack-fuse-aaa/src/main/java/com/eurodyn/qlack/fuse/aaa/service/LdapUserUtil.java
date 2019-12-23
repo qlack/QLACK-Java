@@ -8,6 +8,15 @@ import com.eurodyn.qlack.fuse.aaa.repository.UserAttributeRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserGroupRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
 import com.eurodyn.qlack.fuse.aaa.util.LdapProperties;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -22,16 +31,6 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * A Util class that is used to configure the LdapUser
@@ -52,9 +51,10 @@ public class LdapUserUtil {
   private static final String CTX_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
   private static final String EMPTY_STRING = "";
 
-  public LdapUserUtil(LdapProperties ldapProperties, UserRepository userRepository,
-      UserGroupRepository userGroupRepository,
-      UserAttributeRepository userAttributeRepository) {
+  public LdapUserUtil(LdapProperties ldapProperties,
+    UserRepository userRepository,
+    UserGroupRepository userGroupRepository,
+    UserAttributeRepository userAttributeRepository) {
     this.properties = ldapProperties;
     this.userRepository = userRepository;
     this.userGroupRepository = userGroupRepository;
@@ -75,8 +75,8 @@ public class LdapUserUtil {
   }
 
   /**
-   * Check if the user can be authenticated with LDAP using 'simple' authentication (bind
-   * operation).
+   * Check if the user can be authenticated with LDAP using 'simple'
+   * authentication (bind operation).
    *
    * @param username The LDAP username of the user.
    * @param password The LDAP password of the user.
@@ -111,8 +111,8 @@ public class LdapUserUtil {
   }
 
   /**
-   * Searches username in AAA users database. If the user does not exists it is created by verifying
-   * and getting information from the LDAP server
+   * Searches username in AAA users database. If the user does not exists it
+   * is created by verifying and getting information from the LDAP server
    *
    * @param username the username
    * @return a {@link User}
@@ -122,21 +122,25 @@ public class LdapUserUtil {
 
     if (properties.isEnabled()) {
       // Create initial context
-      DirContext ctx = ldapBindAdminAuth(properties.getAdminUid(), properties.getAdminPassword());
-      log.info(String.format("Successful bind to LDAP %s", properties.getUrl()));
+      DirContext ctx = ldapBindAdminAuth(properties.getAdminUid(),
+        properties.getAdminPassword());
+      log
+        .info(String.format("Successful bind to LDAP %s", properties.getUrl()));
 
       if (ctx == null || ldapSearch(ctx, username) == null) {
         if (ctx != null) {
           ldapUnbind(ctx);
         }
-        log.error("Cannot connect/bind to the LDAP service. Please check your configuration.");
+        log.error(
+          "Cannot connect/bind to the LDAP service. Please check your configuration.");
         return null;
       }
 
       User user = userRepository.findByUsername(username);
 
       if (user != null) {
-        log.trace(String.format("%s is already synced with AAA.", user.getUsername()));
+        log.trace(
+          String.format("%s is already synced with AAA.", user.getUsername()));
         ldapUnbind(ctx);
         return user;
       }
@@ -144,7 +148,8 @@ public class LdapUserUtil {
       u = createUserFromLdapWithoutAttributes(ldapSearch(ctx, username));
       ldapUnbind(ctx);
     } else {
-      log.warn("LDAP configuration is not enabled. Please check your configuration properties.");
+      log.warn(
+        "LDAP configuration is not enabled. Please check your configuration properties.");
     }
     return u;
   }
@@ -156,7 +161,8 @@ public class LdapUserUtil {
     env.put(Context.PROVIDER_URL, properties.getUrl());
     env.put(Context.SECURITY_AUTHENTICATION, "simple");
     env.put(Context.SECURITY_PRINCIPAL,
-        properties.getMappingUid() + "=" + username + "," + properties.getBasedn());
+      properties.getMappingUid() + "=" + username + "," + properties
+        .getBasedn());
     env.put(Context.SECURITY_CREDENTIALS, password);
 
     try {
@@ -167,13 +173,15 @@ public class LdapUserUtil {
     }
   }
 
-  private DirContext ldapBindAdminAuth(String adminUsername, String ldapAdminPassword) {
+  private DirContext ldapBindAdminAuth(String adminUsername,
+    String ldapAdminPassword) {
     Hashtable<String, String> env = new Hashtable<>();
     env.put(Context.INITIAL_CONTEXT_FACTORY, CTX_FACTORY);
     env.put(Context.PROVIDER_URL, properties.getUrl());
     env.put(Context.SECURITY_AUTHENTICATION, "simple");
     env.put(Context.SECURITY_PRINCIPAL,
-        properties.getMappingUid() + "=" + adminUsername + "," + properties.getBasedn());
+      properties.getMappingUid() + "=" + adminUsername + "," + properties
+        .getBasedn());
     env.put(Context.SECURITY_CREDENTIALS, ldapAdminPassword);
 
     try {
@@ -184,17 +192,19 @@ public class LdapUserUtil {
     }
   }
 
-  private Map<String, List<String>> ldapSearch(DirContext ctx, String username) {
+  private Map<String, List<String>> ldapSearch(DirContext ctx,
+    String username) {
     try {
       NamingEnumeration<SearchResult> results =
-          ctx.search(properties.getBasedn(),
-              "(" + properties.getMappingUid() + "=" + username + ")", null);
+        ctx.search(properties.getBasedn(),
+          "(" + properties.getMappingUid() + "=" + username + ")", null);
       if (results.hasMore()) {
         SearchResult result = results.next();
         Attributes attributes = result.getAttributes();
 
         Map<String, List<String>> untypedResult = new HashMap<>();
-        NamingEnumeration<? extends Attribute> attributesEnumeration = attributes.getAll();
+        NamingEnumeration<? extends Attribute> attributesEnumeration = attributes
+          .getAll();
         while (attributesEnumeration.hasMore()) {
           Attribute attribute = attributesEnumeration.next();
           String id = attribute.getID();
@@ -241,7 +251,8 @@ public class LdapUserUtil {
    * @param ldap the ldap
    * @return the userId
    */
-  private String createUserFromLdap(String username, Map<String, List<String>> ldap) {
+  private String createUserFromLdap(String username,
+    Map<String, List<String>> ldap) {
     User user = new User();
     String userId = user.getId();
 
@@ -266,7 +277,8 @@ public class LdapUserUtil {
    * @param ldapSearchResult an LDAP Search response Map
    * @return the userId
    */
-  private User createUserFromLdapWithoutAttributes(Map<String, List<String>> ldapSearchResult) {
+  private User createUserFromLdapWithoutAttributes(
+    Map<String, List<String>> ldapSearchResult) {
 
     String username = getFirst(ldapSearchResult, properties.getMappingUid());
 
@@ -314,7 +326,8 @@ public class LdapUserUtil {
    * @param user the user the user
    * @param ldap the ldap the ldap
    */
-  private void createUserAttributesFromLdap(User user, Map<String, List<String>> ldap) {
+  private void createUserAttributesFromLdap(User user,
+    Map<String, List<String>> ldap) {
 
     for (Entry<String, String> entry : attributesMap.entrySet()) {
       String aaaAttr = entry.getKey();
@@ -355,7 +368,8 @@ public class LdapUserUtil {
    * @param ldap the ldap
    * @return the updated groupId
    */
-  private String updateGroupFromLdap(User user, Map<String, List<String>> ldap) {
+  private String updateGroupFromLdap(User user,
+    Map<String, List<String>> ldap) {
     UserGroup oldUserGroup = user.getUserGroups().get(0);
     String oldGroupId = oldUserGroup.getId();
 
@@ -385,7 +399,8 @@ public class LdapUserUtil {
    * @param user the user
    * @param ldap the ldap
    */
-  private void updateUserAttributesFromLdap(User user, Map<String, List<String>> ldap) {
+  private void updateUserAttributesFromLdap(User user,
+    Map<String, List<String>> ldap) {
     List<UserAttribute> attributes = user.getUserAttributes();
 
     for (Entry<String, String> entry : attributesMap.entrySet()) {
@@ -409,7 +424,8 @@ public class LdapUserUtil {
    * @param name the name
    * @return the {@link UserAttribute} object
    */
-  private UserAttribute findByName(List<UserAttribute> attributes, String name) {
+  private UserAttribute findByName(List<UserAttribute> attributes,
+    String name) {
     for (UserAttribute attribute : attributes) {
       if (attribute.getName().equals(name)) {
         return attribute;
@@ -435,8 +451,8 @@ public class LdapUserUtil {
   }
 
   /**
-   * This method retrieves all the active users in the LDAP directory based on a search filter and
-   * returns their uid.
+   * This method retrieves all the active users in the LDAP directory based on
+   * a search filter and returns their uid.
    *
    * @param searchFilter the filter to search with (ex '(objectClass=*)')
    * @return a set containing the uid of the found users
@@ -457,13 +473,16 @@ public class LdapUserUtil {
       // Specify the search scope
       searchCtls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 
-      NamingEnumeration<?> namingEnum = ctx.search(searchBase, searchFilter, searchCtls);
+      NamingEnumeration<?> namingEnum = ctx
+        .search(searchBase, searchFilter, searchCtls);
       while (namingEnum.hasMore()) {
         SearchResult result = (SearchResult) namingEnum.next();
 
         Attributes attrs = result.getAttributes();
 
-        users.add(attrs.get("uid") != null ? attrs.get("uid").toString().substring(4).trim() : "");
+        users.add(
+          attrs.get("uid") != null ? attrs.get("uid").toString().substring(4)
+            .trim() : "");
       }
       namingEnum.close();
       // Close the context when we're done

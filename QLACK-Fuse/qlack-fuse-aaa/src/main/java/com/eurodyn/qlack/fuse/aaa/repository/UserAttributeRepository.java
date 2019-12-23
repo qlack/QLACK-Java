@@ -4,12 +4,14 @@ import com.eurodyn.qlack.fuse.aaa.model.UserAttribute;
 import org.springframework.stereotype.Repository;
 
 /**
- * A repository interface for UserAttribute.It is used to define a number of crud methods.
+ * A repository interface for UserAttribute.It is used to define a number of
+ * crud methods.
  *
  * @author European Dynamics SA
  */
 @Repository
-public interface UserAttributeRepository extends AAARepository<UserAttribute, String> {
+public interface UserAttributeRepository extends
+  AAARepository<UserAttribute, String> {
 
   /**
    * A method that retrieves the relative {@link UserAttribute} object

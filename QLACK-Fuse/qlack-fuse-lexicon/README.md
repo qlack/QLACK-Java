@@ -1,20 +1,15 @@
-# QLACK Lexicon module
+# QLACK Fuse - Lexicon
 
 This module provides language translations for the system.
 
 ## Integration
 
 ### Add qlack-fuse-lexicon dependency to your pom.xml:
-```
-    <properties>
-        <!-- ... -->
-        <version.qlack>3.0.0-SNAPSHOT</version.qlack>
-    </properties>
-
+```xml
     <dependency>
         <groupId>com.eurodyn.qlack.fuse</groupId>
         <artifactId>qlack-fuse-lexicon</artifactId>
-        <version>${version.qlack}</version>
+        <version>${qlack.version}</version>
     </dependency>
 ```
 

@@ -4,6 +4,8 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 import static org.springframework.data.mongodb.gridfs.GridFsCriteria.whereMetaData;
 
 import com.mongodb.client.gridfs.model.GridFSFile;
+import java.io.IOException;
+import java.nio.file.Files;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
@@ -11,9 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.nio.file.Files;
 
 /**
  * Large file support using GridFS for MongoDB.
@@ -30,7 +29,8 @@ public class LargeFileService {
   /**
    * Default constructor.
    *
-   * @param gridFsOperations An injected instance of Spring's {@link GridFsOperations}.
+   * @param gridFsOperations An injected instance of Spring's {@link
+   * GridFsOperations}.
    */
   public LargeFileService(GridFsOperations gridFsOperations) {
     this.gridFsOperations = gridFsOperations;
@@ -54,7 +54,8 @@ public class LargeFileService {
    */
   public <T> ObjectId save(MultipartFile file, T metadata) throws IOException {
     return gridFsOperations
-        .store(file.getInputStream(), file.getOriginalFilename(), file.getContentType(), metadata);
+      .store(file.getInputStream(), file.getOriginalFilename(),
+        file.getContentType(), metadata);
   }
 
   /**
@@ -65,7 +66,8 @@ public class LargeFileService {
    */
   public ObjectId save(MultipartFile file) throws IOException {
     return gridFsOperations
-        .store(file.getInputStream(), file.getOriginalFilename(), file.getContentType());
+      .store(file.getInputStream(), file.getOriginalFilename(),
+        file.getContentType());
   }
 
   /**
@@ -74,7 +76,8 @@ public class LargeFileService {
    * @param filename The filename to lookup by.
    */
   public byte[] getFileByFilename(String filename) throws IOException {
-    return getFile(gridFsOperations.findOne(query(whereMetaData(PROPERTY_FILENAME).is(filename))));
+    return getFile(gridFsOperations
+      .findOne(query(whereMetaData(PROPERTY_FILENAME).is(filename))));
   }
 
   /**
@@ -83,7 +86,8 @@ public class LargeFileService {
    * @param id The id to lookup by.
    */
   public byte[] getFileById(String id) throws IOException {
-    return getFile(gridFsOperations.findOne(query(whereMetaData(PROPERTY_ID).is(id))));
+    return getFile(
+      gridFsOperations.findOne(query(whereMetaData(PROPERTY_ID).is(id))));
   }
 
   /**
@@ -91,10 +95,11 @@ public class LargeFileService {
    *
    * @param metadataKey The metadata key to look for.
    * @param metadataValue The metadata value for the given key to look for.
-   *
    */
-  public <T> byte[] getFileByMetadata(String metadataKey, T metadataValue) throws IOException {
-    return getFile(gridFsOperations.findOne(query(whereMetaData(metadataKey).is(metadataValue))));
+  public <T> byte[] getFileByMetadata(String metadataKey, T metadataValue)
+    throws IOException {
+    return getFile(gridFsOperations
+      .findOne(query(whereMetaData(metadataKey).is(metadataValue))));
   }
 
 }

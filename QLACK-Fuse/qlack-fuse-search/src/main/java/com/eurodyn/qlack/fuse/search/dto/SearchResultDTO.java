@@ -57,7 +57,8 @@ public class SearchResultDTO {
   private float bestScore;
 
   /**
-   * An indicator of whether there are more results available (useful in paging).
+   * An indicator of whether there are more results available (useful in
+   * paging).
    */
   private boolean hasMore;
 
@@ -81,14 +82,17 @@ public class SearchResultDTO {
    */
   @Override
   public String toString() {
-    return "SearchResultDTO [source=" + source + ", executionTime=" + executionTime
-        + ", timedOut="
-        + timedOut
-        + ", shardsTotal=" + shardsTotal + ", shardsSuccessful=" + shardsSuccessful
-        + ", shardsFailed="
-        + shardsFailed + ", totalHits=" + totalHits + ", bestScore=" + bestScore + ", hasMore="
-        + hasMore
-        + ", hitList=" + hits + "]";
+    return "SearchResultDTO [source=" + source + ", executionTime="
+      + executionTime
+      + ", timedOut="
+      + timedOut
+      + ", shardsTotal=" + shardsTotal + ", shardsSuccessful="
+      + shardsSuccessful
+      + ", shardsFailed="
+      + shardsFailed + ", totalHits=" + totalHits + ", bestScore=" + bestScore
+      + ", hasMore="
+      + hasMore
+      + ", hitList=" + hits + "]";
   }
 
 }

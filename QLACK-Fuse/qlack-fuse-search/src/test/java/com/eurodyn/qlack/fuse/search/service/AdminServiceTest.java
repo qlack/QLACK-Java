@@ -77,8 +77,8 @@ public class AdminServiceTest {
   @Test
   public void createIndexTest() {
     when(elasticsearchOperations
-        .putMapping(createIndexRequest.getName(), createIndexRequest.getType(),
-            createIndexRequest.getIndexMapping())).thenReturn(true);
+      .putMapping(createIndexRequest.getName(), createIndexRequest.getType(),
+        createIndexRequest.getIndexMapping())).thenReturn(true);
     assertTrue(adminService.createIndex(createIndexRequest));
   }
 
@@ -90,14 +90,17 @@ public class AdminServiceTest {
 
   @Test
   public void createIndexExistedIndexTest() {
-    when(elasticsearchOperations.indexExists(createIndexRequest.getName())).thenReturn(true);
+    when(elasticsearchOperations.indexExists(createIndexRequest.getName()))
+      .thenReturn(true);
     assertFalse(adminService.createIndex(createIndexRequest));
   }
 
   @Test
   public void createIndexFromClassTest() {
-    when(elasticsearchOperations.createIndex(ESSerializableClass.class)).thenReturn(true);
-    when(elasticsearchOperations.putMapping(ESSerializableClass.class)).thenReturn(true);
+    when(elasticsearchOperations.createIndex(ESSerializableClass.class))
+      .thenReturn(true);
+    when(elasticsearchOperations.putMapping(ESSerializableClass.class))
+      .thenReturn(true);
     assertTrue(adminService.createIndex(ESSerializableClass.class));
   }
 
@@ -108,7 +111,8 @@ public class AdminServiceTest {
 
   @Test
   public void createIndexFromClassExistedInjectTest() {
-    when(elasticsearchOperations.indexExists(ESSerializableClass.class)).thenReturn(true);
+    when(elasticsearchOperations.indexExists(ESSerializableClass.class))
+      .thenReturn(true);
     assertFalse(adminService.createIndex(ESSerializableClass.class));
   }
 
@@ -119,15 +123,18 @@ public class AdminServiceTest {
 
   @Test
   public void createIndexFromClassExistedClassCreatedIndexUnputMappingTest() {
-    when(elasticsearchOperations.createIndex(ESSerializableClass.class)).thenReturn(true);
-    when(elasticsearchOperations.putMapping(ESSerializableClass.class)).thenReturn(false);
+    when(elasticsearchOperations.createIndex(ESSerializableClass.class))
+      .thenReturn(true);
+    when(elasticsearchOperations.putMapping(ESSerializableClass.class))
+      .thenReturn(false);
     assertFalse(adminService.createIndex(ESSerializableClass.class));
   }
 
   @Test
   public void createIndexFromClassExistedClassCreatedIndexInvalidClassTest() {
     AdminService adminService2 = spy(adminService);
-    when(adminService2.isClassValid(SerializableClass.class)).thenReturn(true).thenReturn(false);
+    when(adminService2.isClassValid(SerializableClass.class)).thenReturn(true)
+      .thenReturn(false);
     assertTrue(adminService2.createIndex(SerializableClass.class));
   }
 
@@ -152,8 +159,10 @@ public class AdminServiceTest {
 
   @Test
   public void deleteIndexClassTest() {
-    when(elasticsearchOperations.indexExists(ESSerializableClass.class)).thenReturn(true);
-    when(elasticsearchOperations.deleteIndex(ESSerializableClass.class)).thenReturn(true);
+    when(elasticsearchOperations.indexExists(ESSerializableClass.class))
+      .thenReturn(true);
+    when(elasticsearchOperations.deleteIndex(ESSerializableClass.class))
+      .thenReturn(true);
     assertTrue(adminService.deleteIndex(ESSerializableClass.class));
   }
 
@@ -164,7 +173,8 @@ public class AdminServiceTest {
 
   @Test
   public void deleteIndexClassUndeletedTest() {
-    when(elasticsearchOperations.indexExists(ESSerializableClass.class)).thenReturn(true);
+    when(elasticsearchOperations.indexExists(ESSerializableClass.class))
+      .thenReturn(true);
     assertFalse(adminService.deleteIndex(ESSerializableClass.class));
   }
 
@@ -175,25 +185,29 @@ public class AdminServiceTest {
 
   @Test
   public void documentExistsTest() throws IOException {
-    when(restHighLevelClient.exists(any(GetRequest.class), any(RequestOptions.class)))
-        .thenReturn(true);
+    when(restHighLevelClient
+      .exists(any(GetRequest.class), any(RequestOptions.class)))
+      .thenReturn(true);
     assertTrue(adminService.documentExists("indexName", "typeName", "id"));
   }
 
   @Test(expected = SearchException.class)
   public void documentExistsIoExceptionTest() throws IOException {
-    when(restHighLevelClient.exists(any(GetRequest.class), any(RequestOptions.class)))
-        .thenThrow(new IOException());
+    when(restHighLevelClient
+      .exists(any(GetRequest.class), any(RequestOptions.class)))
+      .thenThrow(new IOException());
     adminService.documentExists("indexName", "typeName", "id");
   }
 
   @Test
   public void updateTypeMappingTest() {
-    when(elasticsearchOperations.indexExists(updateMappingRequest.getIndexName()))
-        .thenReturn(true);
+    when(
+      elasticsearchOperations.indexExists(updateMappingRequest.getIndexName()))
+      .thenReturn(true);
     when(elasticsearchOperations
-        .putMapping(updateMappingRequest.getIndexName(), updateMappingRequest.getTypeName(),
-            updateMappingRequest.getIndexMapping())).thenReturn(true);
+      .putMapping(updateMappingRequest.getIndexName(),
+        updateMappingRequest.getTypeName(),
+        updateMappingRequest.getIndexMapping())).thenReturn(true);
     assertTrue(adminService.updateTypeMapping(updateMappingRequest));
   }
 
@@ -204,18 +218,20 @@ public class AdminServiceTest {
 
   @Test
   public void updateTypeMappingUnupdatedTest() {
-    when(elasticsearchOperations.indexExists(updateMappingRequest.getIndexName()))
-        .thenReturn(true);
+    when(
+      elasticsearchOperations.indexExists(updateMappingRequest.getIndexName()))
+      .thenReturn(true);
     when(elasticsearchOperations
-        .putMapping(updateMappingRequest.getIndexName(), updateMappingRequest.getTypeName(),
-            updateMappingRequest.getIndexMapping())).thenReturn(false);
+      .putMapping(updateMappingRequest.getIndexName(),
+        updateMappingRequest.getTypeName(),
+        updateMappingRequest.getIndexMapping())).thenReturn(false);
     assertFalse(adminService.updateTypeMapping(updateMappingRequest));
   }
 
   @Test
   public void updateIndexSettingsTest() throws IOException {
     when(elasticsearchOperations.indexExists("indexName"))
-        .thenReturn(true);
+      .thenReturn(true);
     when(restClient.performRequest(any(Request.class))).thenReturn(response);
     when(response.getStatusLine()).thenReturn(statusLine);
     when(statusLine.getStatusCode()).thenReturn(200);
@@ -225,7 +241,7 @@ public class AdminServiceTest {
   @Test
   public void updateIndexSettingsPreserveExistingTest() throws IOException {
     when(elasticsearchOperations.indexExists("indexName"))
-        .thenReturn(true);
+      .thenReturn(true);
     when(restClient.performRequest(any(Request.class))).thenReturn(response);
     when(response.getStatusLine()).thenReturn(statusLine);
     when(statusLine.getStatusCode()).thenReturn(200);
@@ -235,14 +251,14 @@ public class AdminServiceTest {
   @Test
   public void updateIndexSettingsUnexistedTest() {
     when(elasticsearchOperations.indexExists("indexName"))
-        .thenReturn(false);
+      .thenReturn(false);
     assertFalse(adminService.updateIndexSettings("indexName", settings, true));
   }
 
   @Test
   public void closeIndexWrongResponseTest() throws IOException {
     when(elasticsearchOperations.indexExists("indexName"))
-        .thenReturn(true);
+      .thenReturn(true);
     when(restClient.performRequest(any(Request.class))).thenReturn(response);
     when(response.getStatusLine()).thenReturn(statusLine);
     when(statusLine.getStatusCode()).thenReturn(403);
@@ -252,14 +268,14 @@ public class AdminServiceTest {
   @Test
   public void closeIndexUnexistedTest() {
     when(elasticsearchOperations.indexExists("indexName"))
-        .thenReturn(false);
+      .thenReturn(false);
     assertTrue(adminService.closeIndex("indexName"));
   }
 
   @Test
   public void openIndexWrongResponseTest() throws IOException {
     when(elasticsearchOperations.indexExists("indexName"))
-        .thenReturn(true);
+      .thenReturn(true);
     when(restClient.performRequest(any(Request.class))).thenReturn(response);
     when(response.getStatusLine()).thenReturn(statusLine);
     when(statusLine.getStatusCode()).thenReturn(403);
@@ -269,7 +285,7 @@ public class AdminServiceTest {
   @Test
   public void openIndexUnexistedTest() {
     when(elasticsearchOperations.indexExists("indexName"))
-        .thenReturn(false);
+      .thenReturn(false);
     assertTrue(adminService.openIndex("indexName"));
   }
 
@@ -291,15 +307,17 @@ public class AdminServiceTest {
 
   @Test
   public void checkIsUpIoExceptionTest() throws IOException {
-    when(restClient.performRequest(any(Request.class))).thenThrow(new IOException());
+    when(restClient.performRequest(any(Request.class)))
+      .thenThrow(new IOException());
     assertFalse(adminService.checkIsUp());
   }
 
   @Test(expected = SearchException.class)
   public void canPerformOperationIoExceptionTest() throws IOException {
     when(elasticsearchOperations.indexExists("indexName"))
-        .thenReturn(true);
-    when(restClient.performRequest(any(Request.class))).thenThrow(new IOException());
+      .thenReturn(true);
+    when(restClient.performRequest(any(Request.class)))
+      .thenThrow(new IOException());
     adminService.updateIndexSettings("indexName", settings, true);
   }
 }

@@ -13,7 +13,7 @@ import org.mapstruct.ReportingPolicy;
  * @author European Dynamics SA
  */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,
-    uses = UserAttributeMapper.class)
+  uses = UserAttributeMapper.class)
 public interface UserMapper extends AAAMapper<User, UserDTO> {
 
   /**

@@ -15,8 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 /**
- * Provide distribution list related services. For details regarding the functionality offered see
- * the respective interfaces.
+ * Provide distribution list related services. For details regarding the
+ * functionality offered see the respective interfaces.
  *
  * @author European Dynamics SA.
  */
@@ -31,9 +31,11 @@ public class DistributionListService {
   private DistributionListMapper distributionListMapper;
   private ContactMapper contactMapper;
 
-  public DistributionListService(DistributionListRepository distributionListRepository,
-      ContactRepository contactRepository, DistributionListMapper distributionListMapper,
-      ContactMapper contactMapper) {
+  public DistributionListService(
+    DistributionListRepository distributionListRepository,
+    ContactRepository contactRepository,
+    DistributionListMapper distributionListMapper,
+    ContactMapper contactMapper) {
     this.distributionListRepository = distributionListRepository;
     this.contactRepository = contactRepository;
     this.distributionListMapper = distributionListMapper;
@@ -81,8 +83,8 @@ public class DistributionListService {
   }
 
   /**
-   * Search for a specific distribution list, with the criteria provided. (Only the name can be
-   * provided as criteria at the moment.)
+   * Search for a specific distribution list, with the criteria provided.
+   * (Only the name can be provided as criteria at the moment.)
    *
    * @param name the name as criteria
    * @return list of distribution list DTOs
@@ -97,7 +99,8 @@ public class DistributionListService {
 
     List<DistributionListDTO> distributionDtoList = new ArrayList<>();
     for (DistributionList distribution : distributionList) {
-      DistributionListDTO distributionListDto = distributionListMapper.mapToDTO(distribution);
+      DistributionListDTO distributionListDto = distributionListMapper
+        .mapToDTO(distribution);
       distributionDtoList.add(distributionListDto);
     }
     return distributionDtoList;
@@ -121,8 +124,10 @@ public class DistributionListService {
    * @param distributionId the distribution list Id
    * @param contactId the contact Id
    */
-  public void addContactToDistributionList(String distributionId, String contactId) {
-    DistributionList dlist = distributionListRepository.fetchById(distributionId);
+  public void addContactToDistributionList(String distributionId,
+    String contactId) {
+    DistributionList dlist = distributionListRepository
+      .fetchById(distributionId);
     Contact contact = findContactById(contactId);
     dlist.getContacts().add(contact);
   }
@@ -143,8 +148,10 @@ public class DistributionListService {
    * @param distributionId the Id of the distribution list
    * @param contactId the Id of the contact
    */
-  public void removeContactFromDistributionList(String distributionId, String contactId) {
-    DistributionList dlist = distributionListRepository.fetchById(distributionId);
+  public void removeContactFromDistributionList(String distributionId,
+    String contactId) {
+    DistributionList dlist = distributionListRepository
+      .fetchById(distributionId);
     Contact contact = findContactById(contactId);
     dlist.getContacts().remove(contact);
   }

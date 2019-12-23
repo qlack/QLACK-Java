@@ -66,7 +66,8 @@ public class TokenServerServiceTest {
   @Test
   public void cleanupExpiredSuccessfully() {
     service.cleanupExpired();
-    verify(repository, times(1)).deleteAllByValidUntilIsBefore(any(Instant.class));
+    verify(repository, times(1))
+      .deleteAllByValidUntilIsBefore(any(Instant.class));
   }
 
   @Test
@@ -140,8 +141,9 @@ public class TokenServerServiceTest {
   @Test
   public void deleteTokensSuccessfully() {
     int tokenIdsSize = 10;
-    List<String> tokenIds = Stream.generate(() -> UUID.randomUUID().toString()).limit(tokenIdsSize)
-        .collect(Collectors.toList());
+    List<String> tokenIds = Stream.generate(() -> UUID.randomUUID().toString())
+      .limit(tokenIdsSize)
+      .collect(Collectors.toList());
 
     service.deleteTokens(tokenIds);
     verify(repository, times(10)).deleteById(anyString());
@@ -150,7 +152,8 @@ public class TokenServerServiceTest {
   @Test
   public void getValidUntilSuccessfully() {
     String tokenId = UUID.randomUUID().toString();
-    Instant expectedValidUntil = token.getValidUntil().plus(1, ChronoUnit.HOURS);
+    Instant expectedValidUntil = token.getValidUntil()
+      .plus(1, ChronoUnit.HOURS);
     token.setValidUntil(expectedValidUntil);
     token.setId(tokenId);
 
@@ -175,8 +178,9 @@ public class TokenServerServiceTest {
   @Test
   public void revokeTokensSuccessfully() {
     int tokenIdsSize = 10;
-    List<String> tokenIds = Stream.generate(() -> UUID.randomUUID().toString()).limit(tokenIdsSize)
-        .collect(Collectors.toList());
+    List<String> tokenIds = Stream.generate(() -> UUID.randomUUID().toString())
+      .limit(tokenIdsSize)
+      .collect(Collectors.toList());
 
     doNothing().when(mockService).revoke(anyString());
     mockService.revoke(tokenIds);
@@ -199,7 +203,8 @@ public class TokenServerServiceTest {
   @Test
   public void extendTokenValiditySuccessfully() {
     String tokenId = UUID.randomUUID().toString();
-    Instant expectedValidUntil = token.getValidUntil().plus(1, ChronoUnit.HOURS);
+    Instant expectedValidUntil = token.getValidUntil()
+      .plus(1, ChronoUnit.HOURS);
 
     token.setId(tokenId);
 
@@ -211,7 +216,8 @@ public class TokenServerServiceTest {
   @Test(expected = QTokenRevokedException.class)
   public void extendTokenValidityThrowsExpectedException() {
     String tokenId = UUID.randomUUID().toString();
-    Instant expectedValidUntil = token.getValidUntil().plus(1, ChronoUnit.HOURS);
+    Instant expectedValidUntil = token.getValidUntil()
+      .plus(1, ChronoUnit.HOURS);
     token.setId(tokenId);
     token.setRevoked(true);
 
@@ -311,7 +317,8 @@ public class TokenServerServiceTest {
     ReflectionTestUtils.setField(service, "cleanupExpired", true);
     ReflectionTestUtils.setField(service, "cleanupRevoked", true);
     service.checkAndSendQueued();
-    verify(repository, times(1)).deleteAllByValidUntilIsBefore(any(Instant.class));
+    verify(repository, times(1))
+      .deleteAllByValidUntilIsBefore(any(Instant.class));
     verify(repository, times(1)).deleteAllByRevokedIsTrue();
   }
 

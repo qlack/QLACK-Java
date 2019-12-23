@@ -36,8 +36,10 @@ public class JSONConfigServiceTest {
 
   @Before
   public void init() {
-    jsonConfigService = new JSONConfigService(userGroupService, templateService, operationService);
-    userGroupService = new UserGroupService(userGroupRepository, userRepository, userGroupMapper);
+    jsonConfigService = new JSONConfigService(userGroupService, templateService,
+      operationService);
+    userGroupService = new UserGroupService(userGroupRepository, userRepository,
+      userGroupMapper);
   }
 
   @Test

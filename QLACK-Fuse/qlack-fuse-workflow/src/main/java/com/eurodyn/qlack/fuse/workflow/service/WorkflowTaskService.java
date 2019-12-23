@@ -28,7 +28,8 @@ public class WorkflowTaskService {
   }
 
   /**
-   * Given the id of a started process instance, a list of all the tasks are returned.
+   * Given the id of a started process instance, a list of all the tasks are
+   * returned.
    *
    * @param processInstanceId the id of the started process instance
    * @return a list containing the information of the tasks
@@ -36,17 +37,19 @@ public class WorkflowTaskService {
   public List<TaskDTO> getTasksByProcessInstanceId(String processInstanceId) {
     List<TaskDTO> tasks = new ArrayList<>();
 
-    List<Task> foundTasks = taskService.createTaskQuery().processInstanceId(processInstanceId)
-        .includeProcessVariables().list();
+    List<Task> foundTasks = taskService.createTaskQuery()
+      .processInstanceId(processInstanceId)
+      .includeProcessVariables().list();
     foundTasks.stream().forEach(t -> tasks.add(
-        new TaskDTO(t.getId(), t.getName(), t.getProcessInstanceId(), t.getProcessVariables())));
+      new TaskDTO(t.getId(), t.getName(), t.getProcessInstanceId(),
+        t.getProcessVariables())));
 
     return tasks;
   }
 
   /**
-   * Given the id of a task, it completes the related task. If no task is found, an exception is
-   * thrown.
+   * Given the id of a task, it completes the related task. If no task is
+   * found, an exception is thrown.
    *
    * @param taskId the id of the task
    */
@@ -54,7 +57,8 @@ public class WorkflowTaskService {
     try {
       taskService.complete(taskId);
     } catch (ActivitiObjectNotFoundException e) {
-      throw new QDoesNotExistException("There is no active task with id " + taskId);
+      throw new QDoesNotExistException(
+        "There is no active task with id " + taskId);
     }
   }
 

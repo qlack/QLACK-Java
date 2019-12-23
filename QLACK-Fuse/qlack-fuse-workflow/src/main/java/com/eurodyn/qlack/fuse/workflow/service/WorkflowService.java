@@ -18,7 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * This service provides methods related to the processes and workflow of Activiti.
+ * This service provides methods related to the processes and workflow of
+ * Activiti.
  *
  * @author European Dynamics
  */
@@ -37,8 +38,9 @@ public class WorkflowService {
   private static final String NOT_FOUND_EXCEPTION = "There is no instance process with id ";
 
   @Autowired
-  public WorkflowService(RuntimeService runtimeService, HistoryService historyService,
-      EntityManager entityManager, ProcessInitService processInitService) {
+  public WorkflowService(RuntimeService runtimeService,
+    HistoryService historyService,
+    EntityManager entityManager, ProcessInitService processInitService) {
     this.runtimeService = runtimeService;
     this.historyService = historyService;
     this.entityManager = entityManager;
@@ -46,26 +48,30 @@ public class WorkflowService {
   }
 
   /**
-   * Given the id of a process (as defined in the xml), a new workflow instance starts. If no
-   * process with the found id exists, an exception is thrown.
+   * Given the id of a process (as defined in the xml), a new workflow
+   * instance starts. If no process with the found id exists, an exception is
+   * thrown.
    *
    * @param processId the id of the process
    * @param variables the variables of the process
    * @return the id of the started workflow instance
    */
-  public String startWorkflowInstance(String processId, Map<String, Object> variables) {
+  public String startWorkflowInstance(String processId,
+    Map<String, Object> variables) {
     try {
       ProcessInstance processInstance = runtimeService
-          .startProcessInstanceByKey(processId, variables);
+        .startProcessInstanceByKey(processId, variables);
       return processInstance.getId();
     } catch (ActivitiObjectNotFoundException e) {
-      throw new QDoesNotExistException("Process with id " + processId + " does not exist.");
+      throw new QDoesNotExistException(
+        "Process with id " + processId + " does not exist.");
     }
   }
 
   /**
-   * Given the id of a suspended process instance, it resumes the process instance. If no instance
-   * is found or if the instance is already running, it throws an exception.
+   * Given the id of a suspended process instance, it resumes the process
+   * instance. If no instance is found or if the instance is already running,
+   * it throws an exception.
    *
    * @param processInstanceId the id of the suspended process instance
    */
@@ -78,8 +84,9 @@ public class WorkflowService {
   }
 
   /**
-   * Given the id of a started process instance, it suspends the found process instance. If no
-   * instance is found or if the instance is already suspended, it throws an exception.
+   * Given the id of a started process instance, it suspends the found process
+   * instance. If no instance is found or if the instance is already
+   * suspended, it throws an exception.
    *
    * @param processInstanceId the id of the started process instance
    */
@@ -92,13 +99,14 @@ public class WorkflowService {
   }
 
   /**
-   * Given the id of a started process instance, it deletes the found process instance. If no
-   * instance is found, it throws an exception.
+   * Given the id of a started process instance, it deletes the found process
+   * instance. If no instance is found, it throws an exception.
    *
    * @param processInstanceId the id of the started process instance
    * @param reasonOfDeletion the reason for deletion
    */
-  public void deleteWorkflowInstance(String processInstanceId, String reasonOfDeletion) {
+  public void deleteWorkflowInstance(String processInstanceId,
+    String reasonOfDeletion) {
     try {
       runtimeService.deleteProcessInstance(processInstanceId, reasonOfDeletion);
     } catch (ActivitiObjectNotFoundException e) {
@@ -112,22 +120,26 @@ public class WorkflowService {
    * @param processId the id of the process
    * @return a list containing the active process instances
    */
-  public List<ProcessInstanceDTO> getProcessInstancesByProcessId(String processId) {
+  public List<ProcessInstanceDTO> getProcessInstancesByProcessId(
+    String processId) {
     List<ProcessInstanceDTO> processInstances = new ArrayList<>();
 
-    List<ProcessInstance> foundProcessInstances = runtimeService.createProcessInstanceQuery()
-        .processDefinitionKey(processId)
-        .includeProcessVariables().list();
+    List<ProcessInstance> foundProcessInstances = runtimeService
+      .createProcessInstanceQuery()
+      .processDefinitionKey(processId)
+      .includeProcessVariables().list();
     foundProcessInstances.stream()
-        .forEach(i -> processInstances
-            .add(new ProcessInstanceDTO(i.getId(), i.isSuspended(), i.getProcessVariables())));
+      .forEach(i -> processInstances
+        .add(new ProcessInstanceDTO(i.getId(), i.isSuspended(),
+          i.getProcessVariables())));
 
     return processInstances;
   }
 
   /**
-   * Given the id of an existing process, it returns the history of this process and its data for
-   * each version. If no process is found, it returns an empty list.
+   * Given the id of an existing process, it returns the history of this
+   * process and its data for each version. If no process is found, it returns
+   * an empty list.
    *
    * @param processId the id of the process
    * @return a list containing all the history versions
@@ -136,21 +148,24 @@ public class WorkflowService {
     List<ProcessHistoryDTO> processHistory = new ArrayList<>();
 
     List<HistoricProcessInstance> foundProcessHistory = historyService
-        .createHistoricProcessInstanceQuery().processDefinitionKey(processId)
-        .list();
+      .createHistoricProcessInstanceQuery().processDefinitionKey(processId)
+      .list();
 
     foundProcessHistory.stream().forEach(
-        h -> processHistory.add(new ProcessHistoryDTO(h.getDeploymentId(), h.getDeploymentId(),
-            h.getProcessDefinitionVersion(), h.getDeleteReason(), h.getName(), h.getDescription(),
-            getProcessData(h.getDeploymentId()))));
+      h -> processHistory
+        .add(new ProcessHistoryDTO(h.getDeploymentId(), h.getDeploymentId(),
+          h.getProcessDefinitionVersion(), h.getDeleteReason(), h.getName(),
+          h.getDescription(),
+          getProcessData(h.getDeploymentId()))));
 
     return processHistory;
   }
 
   /**
-   * This method reads the .xml files located under the resources/processes folder and reads their
-   * content. If their content has already been persisted in the Activiti tables and no changes are
-   * found, nothing happens. In any other case, a new version of the process is created.
+   * This method reads the .xml files located under the resources/processes
+   * folder and reads their content. If their content has already been
+   * persisted in the Activiti tables and no changes are found, nothing
+   * happens. In any other case, a new version of the process is created.
    */
   public void updateProcessesFromResources() {
     processInitService.updateProcessesFromResources();
@@ -164,7 +179,8 @@ public class WorkflowService {
    */
   private byte[] getProcessData(String deploymentId) {
     Query query = entityManager
-        .createNativeQuery("SELECT BYTES_ FROM act_ge_bytearray WHERE DEPLOYMENT_ID_ = ?");
+      .createNativeQuery(
+        "SELECT BYTES_ FROM act_ge_bytearray WHERE DEPLOYMENT_ID_ = ?");
     query.setParameter(1, deploymentId);
     return (byte[]) query.getSingleResult();
   }

@@ -31,7 +31,8 @@ public class ConverterUtil {
   }
 
   /**
-   * Converts the entity DistributionList to data transfer object DistributionListDTO
+   * Converts the entity DistributionList to data transfer object
+   * DistributionListDTO
    *
    * @param entity DistributionList entity.
    * @return DistributionListDTO Data transfer object, null if entity is null.
@@ -52,7 +53,8 @@ public class ConverterUtil {
   }
 
   /**
-   * Converts the entity data transfer object DistributionListDTO to DistributionList.
+   * Converts the entity data transfer object DistributionListDTO to
+   * DistributionList.
    *
    * @param dto Data transfer object
    * @return DistributionList entity, null if DTO is null.
@@ -133,7 +135,8 @@ public class ConverterUtil {
    * @param dto internal message data transfer object.
    * @return InternalAttachment entity.
    */
-  public static InternalAttachment internalAttachmentConvert(InternalAttachmentDTO dto) {
+  public static InternalAttachment internalAttachmentConvert(
+    InternalAttachmentDTO dto) {
     if (dto == null) {
       return null;
     }
@@ -154,7 +157,8 @@ public class ConverterUtil {
    * @param entity InternalMessage
    * @return InternalMessageDTO
    */
-  public static InternalMessageDTO internalMessageConvert(InternalMessage entity) {
+  public static InternalMessageDTO internalMessageConvert(
+    InternalMessage entity) {
     if (entity == null) {
       return null;
     }
@@ -189,7 +193,8 @@ public class ConverterUtil {
    * @param entity Internal attachment.
    * @return InternalAttachment entity.
    */
-  public static InternalAttachmentDTO internalAttachmentConvert(InternalAttachment entity) {
+  public static InternalAttachmentDTO internalAttachmentConvert(
+    InternalAttachment entity) {
     if (entity == null) {
       return null;
     }
@@ -213,7 +218,7 @@ public class ConverterUtil {
    * @return list of data transfer object.
    */
   public static List<InternalMessageDTO> internalMessageConvertList(
-      List<InternalMessage> internalMessageList) {
+    List<InternalMessage> internalMessageList) {
     List<InternalMessageDTO> messagesDtoList = new ArrayList<>();
 
     for (InternalMessage internalMessage : internalMessageList) {

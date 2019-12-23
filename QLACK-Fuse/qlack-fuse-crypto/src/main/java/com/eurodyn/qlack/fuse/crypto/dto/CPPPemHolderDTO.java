@@ -6,8 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * An encapsulation of a key comprising of a public key, a private key and a certificate in PEM
- * format.
+ * An encapsulation of a key comprising of a public key, a private key and a
+ * certificate in PEM format.
  */
 @Data
 @AllArgsConstructor

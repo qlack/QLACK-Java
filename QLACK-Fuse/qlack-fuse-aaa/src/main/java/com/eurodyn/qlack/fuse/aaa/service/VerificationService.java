@@ -24,8 +24,8 @@ public class VerificationService {
 
   @Autowired
   public VerificationService(
-      VerificationTokenRepository verificationTokenRepository,
-      UserRepository userRepository) {
+    VerificationTokenRepository verificationTokenRepository,
+    UserRepository userRepository) {
     this.verificationTokenRepository = verificationTokenRepository;
     this.userRepository = userRepository;
   }
@@ -34,7 +34,8 @@ public class VerificationService {
     return createVerificationToken(userId, expiresOn, null);
   }
 
-  public String createVerificationToken(String userId, long expiresOn, String data) {
+  public String createVerificationToken(String userId, long expiresOn,
+    String data) {
     VerificationToken vt = new VerificationToken();
     Optional<User> user = userRepository.findById(userId);
     user.ifPresent(vt::setUser);
@@ -51,8 +52,10 @@ public class VerificationService {
 
   public String verifyToken(String tokenID) {
     String userId = null;
-    Optional<VerificationToken> ovt = verificationTokenRepository.findById(tokenID);
-    if (ovt.isPresent() && (ovt.get().getExpiresOn() >= Instant.now().toEpochMilli())) {
+    Optional<VerificationToken> ovt = verificationTokenRepository
+      .findById(tokenID);
+    if (ovt.isPresent() && (ovt.get().getExpiresOn() >= Instant.now()
+      .toEpochMilli())) {
       userId = ovt.get().getUser().getId();
     }
 
@@ -68,7 +71,8 @@ public class VerificationService {
   }
 
   public String getTokenPayload(String tokenID) {
-    Optional<VerificationToken> ovt = verificationTokenRepository.findById(tokenID);
+    Optional<VerificationToken> ovt = verificationTokenRepository
+      .findById(tokenID);
     if (ovt.isPresent()) {
       return ovt.get().getData();
     } else {
@@ -79,7 +83,8 @@ public class VerificationService {
   public String getTokenUser(String tokenID) {
     String userId = null;
 
-    Optional<VerificationToken> ovt = verificationTokenRepository.findById(tokenID);
+    Optional<VerificationToken> ovt = verificationTokenRepository
+      .findById(tokenID);
     if (ovt.isPresent()) {
       userId = ovt.get().getUser().getId();
     }

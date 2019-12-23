@@ -3,9 +3,10 @@ package com.eurodyn.qlack.fuse.search.dto.queries;
 import lombok.Getter;
 
 /**
- * 22/01/2018 : The term query finds documents that contain the exact terms specified in the
- * inverted index. In addition to the simple Query Terms we search directly in the nested objects.
- * This will additional return a inner_hits Object that contains the Id's for the matched nested
+ * 22/01/2018 : The term query finds documents that contain the exact terms
+ * specified in the inverted index. In addition to the simple Query Terms we
+ * search directly in the nested objects. This will additional return a
+ * inner_hits Object that contains the Id's for the matched nested
  * terms.Example:
  *
  * <pre>
@@ -44,7 +45,7 @@ public class QueryTermsNested extends QuerySpec {
   private String docvalueFields;
 
   public QueryTermsNested setTerm(String field, Object values, String path,
-      String docvalueFields) {
+    String docvalueFields) {
     this.field = field;
     this.values = values;
     this.path = path;

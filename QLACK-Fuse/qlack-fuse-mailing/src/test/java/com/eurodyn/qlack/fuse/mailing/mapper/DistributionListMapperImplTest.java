@@ -30,17 +30,20 @@ public class DistributionListMapperImplTest {
   @Test
   public void mapToDTOTest() {
     DistributionList distributionList = initTestValues.createDistributionList();
-    DistributionListDTO distributionListDTO = distributionListMapper.mapToDTO(distributionList);
-    assertEquals(distributionList.getCreatedBy(), distributionListDTO.getCreatedBy());
+    DistributionListDTO distributionListDTO = distributionListMapper
+      .mapToDTO(distributionList);
+    assertEquals(distributionList.getCreatedBy(),
+      distributionListDTO.getCreatedBy());
 
   }
 
   @Test
   public void mapToDTONullTest() {
-    assertEquals(null, distributionListMapper.mapToDTO((DistributionList) null));
+    assertEquals(null,
+      distributionListMapper.mapToDTO((DistributionList) null));
 
     List<DistributionListDTO> distributionListDTOS = distributionListMapper
-        .mapToDTO((List<DistributionList>) null);
+      .mapToDTO((List<DistributionList>) null);
     assertEquals(null, distributionListDTOS);
   }
 
@@ -49,25 +52,29 @@ public class DistributionListMapperImplTest {
     List<DistributionList> distributionLists = new ArrayList<>();
     distributionLists.add(initTestValues.createDistributionList());
     List<DistributionListDTO> distributionListDTOS = distributionListMapper
-        .mapToDTO(distributionLists);
+      .mapToDTO(distributionLists);
 
     assertEquals(distributionLists.size(), distributionListDTOS.size());
   }
 
   @Test
   public void mapToEntityTest() {
-    DistributionListDTO distributionListDTO = initTestValues.createDistributionListDTO();
-    DistributionList distributionList = distributionListMapper.mapToEntity(distributionListDTO);
-    assertEquals(distributionList.getCreatedBy(), distributionListDTO.getCreatedBy());
+    DistributionListDTO distributionListDTO = initTestValues
+      .createDistributionListDTO();
+    DistributionList distributionList = distributionListMapper
+      .mapToEntity(distributionListDTO);
+    assertEquals(distributionList.getCreatedBy(),
+      distributionListDTO.getCreatedBy());
 
   }
 
   @Test
   public void mapToEntityNullTest() {
-    assertEquals(null, distributionListMapper.mapToEntity((DistributionListDTO) null));
+    assertEquals(null,
+      distributionListMapper.mapToEntity((DistributionListDTO) null));
 
     DistributionList distributionList = distributionListMapper
-        .mapToEntity((DistributionListDTO) null);
+      .mapToEntity((DistributionListDTO) null);
     assertEquals(null, distributionList);
   }
 
@@ -76,16 +83,17 @@ public class DistributionListMapperImplTest {
     List<DistributionListDTO> distributionListDTOS = new ArrayList<>();
     distributionListDTOS.add(initTestValues.createDistributionListDTO());
     List<DistributionList> distributionLists = distributionListMapper
-        .mapToEntity(distributionListDTOS);
+      .mapToEntity(distributionListDTOS);
 
     assertEquals(distributionListDTOS.size(), distributionLists.size());
   }
 
   @Test
   public void mapToEntityListNullTest() {
-    assertEquals(null, distributionListMapper.mapToEntity((List<DistributionListDTO>) null));
+    assertEquals(null,
+      distributionListMapper.mapToEntity((List<DistributionListDTO>) null));
     List<DistributionList> distributionLists = distributionListMapper
-        .mapToEntity((List<DistributionListDTO>) null);
+      .mapToEntity((List<DistributionListDTO>) null);
     assertEquals(null, distributionLists);
 
   }

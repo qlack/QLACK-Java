@@ -39,7 +39,8 @@ public class AttachmentMapperImplTest {
   public void mapToDTONullTest() {
     assertEquals(null, attachmentMapper.mapToDTO((Attachment) null));
 
-    List<AttachmentDTO> attachmentDTOS = attachmentMapper.mapToDTO((List<Attachment>) null);
+    List<AttachmentDTO> attachmentDTOS = attachmentMapper
+      .mapToDTO((List<Attachment>) null);
     assertEquals(null, attachmentDTOS);
   }
 
@@ -80,8 +81,10 @@ public class AttachmentMapperImplTest {
 
   @Test
   public void mapToEntityListNullTest() {
-    assertEquals(null, attachmentMapper.mapToEntity((List<AttachmentDTO>) null));
-    List<Attachment> attachments = attachmentMapper.mapToEntity((List<AttachmentDTO>) null);
+    assertEquals(null,
+      attachmentMapper.mapToEntity((List<AttachmentDTO>) null));
+    List<Attachment> attachments = attachmentMapper
+      .mapToEntity((List<AttachmentDTO>) null);
     assertEquals(null, attachments);
 
   }

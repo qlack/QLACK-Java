@@ -18,7 +18,8 @@ public class CryptoDigestServiceTest {
   private String message;
 
   private ByteArrayInputStream getByteArrayOutputStream() throws IOException {
-    BufferedImage bImage = ImageIO.read(this.getClass().getResource("/file-binary.jpg"));
+    BufferedImage bImage = ImageIO
+      .read(this.getClass().getResource("/file-binary.jpg"));
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     ImageIO.write(bImage, "jpg", bos);
     bos.toByteArray();
@@ -26,7 +27,8 @@ public class CryptoDigestServiceTest {
   }
 
   @Test
-  public void hmacSha256Test() throws InvalidKeyException, NoSuchAlgorithmException {
+  public void hmacSha256Test()
+    throws InvalidKeyException, NoSuchAlgorithmException {
     secret = "secret";
     message = "message";
     assertNotNull(cryptoDigestService.hmacSha256(secret, message));

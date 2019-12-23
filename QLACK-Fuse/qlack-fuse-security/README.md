@@ -1,21 +1,17 @@
-# QLACK Security module
+# QLACK Fuse - Security
 
 The QLACK-based Spring Security implementation, which provides user authentication functionality based on the https://spring.io/projects/spring-security[Spring Security framework] and JWT (JSON Web Tokens) standard, https://tools.ietf.org/html/rfc7519[RFC-7519].
+The JWT manipulation is being executed from the [qlack-util-jwt module](https://github.com/qlack/QLACK-Java/tree/master/QLACK-Util/qlack-util-jwt)
 
 ## Integration
 
 ### Add qlack-fuse-security dependency to your pom.xml:
 
-```
-    <properties>
-        <!-- ... -->
-        <version.qlack>3.0.0-SNAPSHOT</version.qlack>
-    </properties>
-
+```xml
     <dependency>
         <groupId>com.eurodyn.qlack.fuse</groupId>
         <artifactId>qlack-fuse-security</artifactId>
-        <version>${version.qlack}</version>
+        <version>${qlack.version}</version>
     </dependency>
 ```
 

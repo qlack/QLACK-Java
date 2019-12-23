@@ -137,7 +137,8 @@ public class MailQueueSenderTest {
     emailDTO.setEmailType(EMAIL_TYPE.TEXT);
     emailDTO.setAttachments(Collections.emptyList());
     doNothing().when(javaMailSender).setDefaultEncoding(emailDTO.getCharset());
-    doThrow(mailException).when(javaMailSender).send(any(SimpleMailMessage.class));
+    doThrow(mailException).when(javaMailSender)
+      .send(any(SimpleMailMessage.class));
     mailQueueSender.send(emailDTO);
   }
 }

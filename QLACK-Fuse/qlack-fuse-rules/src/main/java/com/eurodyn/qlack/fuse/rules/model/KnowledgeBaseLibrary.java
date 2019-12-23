@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * The Knowledge Base Library entity, that contains the libraries of a Knowledge Base.
+ * The Knowledge Base Library entity, that contains the libraries of a Knowledge
+ * Base.
  *
  * @author European Dynamics SA
  */

@@ -24,7 +24,8 @@ public interface EmailMapper extends MailingMapper<Email, EmailDTO> {
    * @param includeRecipients defines if the recipients will be also mapped
    * @return the mapped onject
    */
-  default Email mapToEntityWithRecipients(EmailDTO dto, boolean includeRecipients) {
+  default Email mapToEntityWithRecipients(EmailDTO dto,
+    boolean includeRecipients) {
     Email email = mapToEntity(dto);
     if (includeRecipients) {
       email.setToEmails(mapListToCsv(dto.getToEmails()));
@@ -36,7 +37,8 @@ public interface EmailMapper extends MailingMapper<Email, EmailDTO> {
   }
 
   /**
-   * Converts a List of String values to a Comma Separated Value (CSV) String.
+   * Converts a List of String values to a Comma Separated Value (CSV)
+   * String.
    *
    * @param emails a list of emails
    * @return emails as a csv string
@@ -82,7 +84,8 @@ public interface EmailMapper extends MailingMapper<Email, EmailDTO> {
    * @param includeRecipients defines if the recipients will be also mapped
    * @return the mapped dto
    */
-  default EmailDTO mapToDTOWithRecipients(Email email, boolean includeRecipients) {
+  default EmailDTO mapToDTOWithRecipients(Email email,
+    boolean includeRecipients) {
 
     EmailDTO maildto = mapToDTO(email);
     if (includeRecipients) {

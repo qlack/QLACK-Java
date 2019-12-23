@@ -16,13 +16,15 @@ import org.springframework.web.servlet.mvc.method.annotation.AbstractMappingJack
  * A {@link ControllerAdvice} to process {@link ReplyFilter} annotations.
  */
 @ControllerAdvice
-public class ReplyFilterControllerAdvice extends AbstractMappingJacksonResponseBodyAdvice {
+public class ReplyFilterControllerAdvice extends
+  AbstractMappingJacksonResponseBodyAdvice {
 
   private static final String SPRING_PAGE_DEFAULT_FIELDS =
     "first,last,number,numberOfElements,pageable,size,sort,totalElements,totalPages";
 
   @Override
-  protected void beforeBodyWriteInternal(MappingJacksonValue bodyContainer, MediaType contentType,
+  protected void beforeBodyWriteInternal(MappingJacksonValue bodyContainer,
+    MediaType contentType,
     MethodParameter returnType, ServerHttpRequest req, ServerHttpResponse res) {
     // The value of the filter to apply.
     String filterValue = null;
@@ -30,7 +32,8 @@ public class ReplyFilterControllerAdvice extends AbstractMappingJacksonResponseB
     // Check what type of filter annotation is set and obtain the value of the filter.
     if (returnType.getMethodAnnotation(ReplyFilter.class) != null) {
       filterValue = returnType.getMethodAnnotation(ReplyFilter.class).value();
-    } else if (returnType.getMethodAnnotation(ReplyPageableFilter.class) != null) {
+    } else if (returnType.getMethodAnnotation(ReplyPageableFilter.class)
+      != null) {
       filterValue =
         SPRING_PAGE_DEFAULT_FIELDS + ",content["
           + returnType.getMethodAnnotation(ReplyPageableFilter.class).value()

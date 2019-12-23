@@ -50,7 +50,7 @@ public class LanguageMapperTest {
     assertEquals(null, languageMapper.mapToDTO((Language) null));
 
     List<LanguageDTO> languageDTOS = languageMapper.mapToDTO(
-        (List<Language>) null);
+      (List<Language>) null);
     assertEquals(null, languageDTOS);
   }
 
@@ -78,7 +78,7 @@ public class LanguageMapperTest {
     assertEquals(null, languageMapper.mapToEntity((LanguageDTO) null));
 
     List<Language> languages = languageMapper.mapToEntity(
-        (List<LanguageDTO>) null);
+      (List<LanguageDTO>) null);
     assertEquals(null, languages);
   }
 

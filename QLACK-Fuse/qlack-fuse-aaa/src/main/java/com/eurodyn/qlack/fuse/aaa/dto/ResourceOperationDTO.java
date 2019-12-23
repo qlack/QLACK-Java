@@ -6,8 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * A simple DTO (Data Transfer Object) that is used to represent an operation/resource pair for
- * authorization
+ * A simple DTO (Data Transfer Object) that is used to represent an
+ * operation/resource pair for authorization
  *
  * @author European Dynamics SA
  */

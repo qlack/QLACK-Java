@@ -2,30 +2,33 @@ package com.eurodyn.qlack.util.querydsl;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
+import java.util.concurrent.ConcurrentHashMap;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 
 /**
- * An aspect to check {@link Predicate} in method arguments for nullability and in such cases replace it with a
- * non-query Predicate. Theoretically, this should not be necessary according to
- * https://jira.spring.io/browse/DATACMNS-1168, however it does not seem to work.
+ * An aspect to check {@link Predicate} in method arguments for nullability and
+ * in such cases replace it with a non-query Predicate. Theoretically, this
+ * should not be necessary according to https://jira.spring.io/browse/DATACMNS-1168,
+ * however it does not seem to work.
  */
 @Aspect
 @Component
 public class EmptyPredicateCheckAspect {
+
   // A local cache to not recheck methods for Predicate args.
   private ConcurrentHashMap<String, Byte> argsMap = new ConcurrentHashMap<>();
 
   @Around("@annotation(emptyPredicateCheck)")
-  public Object fixEmptyPredicate(final ProceedingJoinPoint pjp, EmptyPredicateCheck emptyPredicateCheck)
-      throws Throwable {
-    final MethodSignature methodSignature = (MethodSignature) pjp.getSignature();
+  public Object fixEmptyPredicate(final ProceedingJoinPoint pjp,
+    EmptyPredicateCheck emptyPredicateCheck)
+    throws Throwable {
+    final MethodSignature methodSignature = (MethodSignature) pjp
+      .getSignature();
     Object[] args = pjp.getArgs();
 
     // Find the order for the Predicate argument in method's arguments.

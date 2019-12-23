@@ -12,7 +12,7 @@ import org.springframework.data.domain.Page;
  * @author European Dynamics SA
  */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,
-    uses = SessionAttributeMapper.class)
+  uses = SessionAttributeMapper.class)
 public interface SessionMapper extends AAAMapper<Session, SessionDTO> {
 
   default Page<SessionDTO> fromSessions(Page<Session> sessions) {

@@ -49,8 +49,8 @@ public class UserDetailsDTO extends BaseDTO implements UserDetails {
   private boolean external;
 
   /**
-   * The session Id created for this user. Expect this to be populated only when attempting to login
-   * the user.
+   * The session Id created for this user. Expect this to be populated only
+   * when attempting to login the user.
    */
   private String sessionId;
 
@@ -71,7 +71,8 @@ public class UserDetailsDTO extends BaseDTO implements UserDetails {
   }
 
   /**
-   * An account non expired option does not exist in AAA domain, so it is always set to true.
+   * An account non expired option does not exist in AAA domain, so it is
+   * always set to true.
    *
    * @return true
    */
@@ -81,7 +82,8 @@ public class UserDetailsDTO extends BaseDTO implements UserDetails {
   }
 
   /**
-   * An account non locked option does not exist in AAA domain, so it is always set to true.
+   * An account non locked option does not exist in AAA domain, so it is
+   * always set to true.
    *
    * @return true
    */
@@ -91,7 +93,8 @@ public class UserDetailsDTO extends BaseDTO implements UserDetails {
   }
 
   /**
-   * A credentials non expired option does not exist in AAA domain, so it is always set to true.
+   * A credentials non expired option does not exist in AAA domain, so it is
+   * always set to true.
    *
    * @return true
    */

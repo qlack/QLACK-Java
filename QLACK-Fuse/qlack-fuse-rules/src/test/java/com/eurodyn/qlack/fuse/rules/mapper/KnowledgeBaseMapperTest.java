@@ -37,12 +37,15 @@ public class KnowledgeBaseMapperTest {
   @Test
   public void mapToDTOTest() {
     KnowledgeBase knowledgeBase = initTestValues.createFullKnowledgeBase();
-    KnowledgeBaseDTO knowledgeBaseDTO = knowledgeBaseMapper.mapToDTO(knowledgeBase);
+    KnowledgeBaseDTO knowledgeBaseDTO = knowledgeBaseMapper
+      .mapToDTO(knowledgeBase);
 
     assertEquals(knowledgeBase.getId(), knowledgeBaseDTO.getId());
     assertArrayEquals(knowledgeBase.getState(), knowledgeBaseDTO.getState());
-    assertEquals(knowledgeBase.getRules().size(), knowledgeBaseDTO.getRules().size());
-    assertEquals(knowledgeBase.getLibraries().size(), knowledgeBaseDTO.getLibraries().size());
+    assertEquals(knowledgeBase.getRules().size(),
+      knowledgeBaseDTO.getRules().size());
+    assertEquals(knowledgeBase.getLibraries().size(),
+      knowledgeBaseDTO.getLibraries().size());
   }
 
   @Test
@@ -57,7 +60,8 @@ public class KnowledgeBaseMapperTest {
   public void mapToDTOListTest() {
     List<KnowledgeBase> knowledgeBases = new ArrayList<>();
     knowledgeBases.add(initTestValues.createFullKnowledgeBase());
-    List<KnowledgeBaseDTO> knowledgeBaseDTOS = knowledgeBaseMapper.mapToDTO(knowledgeBases);
+    List<KnowledgeBaseDTO> knowledgeBaseDTOS = knowledgeBaseMapper
+      .mapToDTO(knowledgeBases);
 
     assertEquals(knowledgeBases.size(), knowledgeBaseDTOS.size());
   }
@@ -67,19 +71,22 @@ public class KnowledgeBaseMapperTest {
     assertEquals(null, knowledgeBaseMapper.mapToDTO((KnowledgeBase) null));
 
     List<KnowledgeBaseDTO> knowledgeBaseDTOS = knowledgeBaseMapper.mapToDTO(
-        (List<KnowledgeBase>) null);
+      (List<KnowledgeBase>) null);
     assertEquals(null, knowledgeBaseDTOS);
   }
 
   @Test
   public void mapToEntityTest() {
     KnowledgeBaseDTO knowledgeBaseDTO = initTestValues.createKnowledgeBaseDTO();
-    KnowledgeBase knowledgeBase = knowledgeBaseMapper.mapToEntity(knowledgeBaseDTO);
+    KnowledgeBase knowledgeBase = knowledgeBaseMapper
+      .mapToEntity(knowledgeBaseDTO);
 
     assertEquals(knowledgeBaseDTO.getId(), knowledgeBase.getId());
     assertArrayEquals(knowledgeBaseDTO.getState(), knowledgeBase.getState());
-    assertEquals(knowledgeBaseDTO.getRules().size(), knowledgeBase.getRules().size());
-    assertEquals(knowledgeBaseDTO.getLibraries().size(), knowledgeBase.getLibraries().size());
+    assertEquals(knowledgeBaseDTO.getRules().size(),
+      knowledgeBase.getRules().size());
+    assertEquals(knowledgeBaseDTO.getLibraries().size(),
+      knowledgeBase.getLibraries().size());
   }
 
   @Test
@@ -87,24 +94,27 @@ public class KnowledgeBaseMapperTest {
     KnowledgeBaseDTO knowledgeBaseDTO = initTestValues.createKnowledgeBaseDTO();
     knowledgeBaseDTO.setState(null);
 
-    assertEquals(null, knowledgeBaseMapper.mapToEntity(knowledgeBaseDTO).getState());
+    assertEquals(null,
+      knowledgeBaseMapper.mapToEntity(knowledgeBaseDTO).getState());
   }
 
   @Test
   public void mapToEntityListTest() {
     List<KnowledgeBaseDTO> knowledgeBaseDTOS = new ArrayList<>();
     knowledgeBaseDTOS.add(initTestValues.createKnowledgeBaseDTO());
-    List<KnowledgeBase> knowledgeBases = knowledgeBaseMapper.mapToEntity(knowledgeBaseDTOS);
+    List<KnowledgeBase> knowledgeBases = knowledgeBaseMapper
+      .mapToEntity(knowledgeBaseDTOS);
 
     assertEquals(knowledgeBaseDTOS.size(), knowledgeBases.size());
   }
 
   @Test
   public void mapToEntityNullTest() {
-    assertEquals(null, knowledgeBaseMapper.mapToEntity((KnowledgeBaseDTO) null));
+    assertEquals(null,
+      knowledgeBaseMapper.mapToEntity((KnowledgeBaseDTO) null));
 
     List<KnowledgeBase> knowledgeBases = knowledgeBaseMapper.mapToEntity(
-        (List<KnowledgeBaseDTO>) null);
+      (List<KnowledgeBaseDTO>) null);
     assertEquals(null, knowledgeBases);
   }
 

@@ -32,8 +32,9 @@ public class AuthenticateService implements UserDetailsService {
   private final UserGroupHasOperationMapper userGroupHasOperationMapper;
 
   @Autowired
-  public AuthenticateService(UserRepository userRepository, UserDetailsMapper userDetailsMapper,
-      UserGroupHasOperationMapper userGroupHasOperationMapper) {
+  public AuthenticateService(UserRepository userRepository,
+    UserDetailsMapper userDetailsMapper,
+    UserGroupHasOperationMapper userGroupHasOperationMapper) {
     this.userRepository = userRepository;
     this.userDetailsMapper = userDetailsMapper;
     this.userGroupHasOperationMapper = userGroupHasOperationMapper;

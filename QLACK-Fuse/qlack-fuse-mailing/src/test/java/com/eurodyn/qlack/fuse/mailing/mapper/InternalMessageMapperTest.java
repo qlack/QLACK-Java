@@ -32,7 +32,8 @@ public class InternalMessageMapperTest {
   @Test
   public void mapToDTOTest() {
     InternalMessage internalMessage = initTestValues.createInternalMessage();
-    InternalMessageDTO internalMessageDTO = internalMessageMapper.mapToDTO(internalMessage);
+    InternalMessageDTO internalMessageDTO = internalMessageMapper
+      .mapToDTO(internalMessage);
     assertEquals(internalMessage.getMessage(), internalMessageDTO.getMessage());
 
   }
@@ -41,7 +42,8 @@ public class InternalMessageMapperTest {
   public void mapToDTONullTest() {
     assertEquals(null, internalMessageMapper.mapToDTO((InternalMessage) null));
 
-    List<InternalMessageDTO> internalMessageDTOS = internalMessageMapper.mapToDTO(
+    List<InternalMessageDTO> internalMessageDTOS = internalMessageMapper
+      .mapToDTO(
         (List<InternalMessage>) null);
     assertEquals(null, internalMessageDTOS);
   }
@@ -50,24 +52,29 @@ public class InternalMessageMapperTest {
   public void mapToDTOListTest() {
     List<InternalMessage> internalMessages = new ArrayList<>();
     internalMessages.add(initTestValues.createInternalMessage());
-    List<InternalMessageDTO> internalMessageDTOS = internalMessageMapper.mapToDTO(internalMessages);
+    List<InternalMessageDTO> internalMessageDTOS = internalMessageMapper
+      .mapToDTO(internalMessages);
 
     assertEquals(internalMessages.size(), internalMessageDTOS.size());
   }
 
   @Test
   public void mapToEntityTest() {
-    InternalMessageDTO internalMessageDTO = initTestValues.createInternalMessageDTO();
-    InternalMessage internalMessage = internalMessageMapper.mapToEntity(internalMessageDTO);
+    InternalMessageDTO internalMessageDTO = initTestValues
+      .createInternalMessageDTO();
+    InternalMessage internalMessage = internalMessageMapper
+      .mapToEntity(internalMessageDTO);
     assertEquals(internalMessage.getMessage(), internalMessageDTO.getMessage());
 
   }
 
   @Test
   public void mapToEntityNullTest() {
-    assertEquals(null, internalMessageMapper.mapToEntity((InternalMessageDTO) null));
+    assertEquals(null,
+      internalMessageMapper.mapToEntity((InternalMessageDTO) null));
 
-    InternalMessage internalMessage = internalMessageMapper.mapToEntity((InternalMessageDTO) null);
+    InternalMessage internalMessage = internalMessageMapper
+      .mapToEntity((InternalMessageDTO) null);
     assertEquals(null, internalMessage);
   }
 
@@ -77,56 +84,65 @@ public class InternalMessageMapperTest {
     List<InternalMessageDTO> internalMessageDTOS = new ArrayList<>();
     internalMessageDTOS.add(initTestValues.createInternalMessageDTO());
     List<InternalMessage> internalMessages = internalMessageMapper
-        .mapToEntity(internalMessageDTOS);
+      .mapToEntity(internalMessageDTOS);
 
     assertEquals(internalMessageDTOS.size(), internalMessages.size());
   }
 
   @Test
   public void mapToEntityListNullTest() {
-    assertEquals(null, internalMessageMapper.mapToEntity((List<InternalMessageDTO>) null));
+    assertEquals(null,
+      internalMessageMapper.mapToEntity((List<InternalMessageDTO>) null));
     List<InternalMessage> internalMessages = internalMessageMapper
-        .mapToEntity((List<InternalMessageDTO>) null);
+      .mapToEntity((List<InternalMessageDTO>) null);
     assertEquals(null, internalMessages);
 
   }
 
   @Test
   public void testInternalAttachmentDTOToInternalAttachmentNull() {
-    assertNull(internalMessageMapper.internalAttachmentDTOToInternalAttachment(null));
+    assertNull(
+      internalMessageMapper.internalAttachmentDTOToInternalAttachment(null));
   }
 
   @Test
   public void testInternalAttachmentDTOToInternalAttachmentDataNotNull() {
-    InternalAttachment internalAttachment = initTestValues.createInternalAttachment();
+    InternalAttachment internalAttachment = initTestValues
+      .createInternalAttachment();
     internalAttachment.setData(null);
-    assertNull(internalMessageMapper.internalAttachmentToInternalAttachmentDTO(internalAttachment)
-        .getData());
+    assertNull(internalMessageMapper
+      .internalAttachmentToInternalAttachmentDTO(internalAttachment)
+      .getData());
   }
 
   @Test
   public void testInternalAttachmentToInternalAttachmentDTODataNotNull() {
-    InternalAttachmentDTO internalAttachmentDTO = initTestValues.createFwdInternalAttachmentDTO();
+    InternalAttachmentDTO internalAttachmentDTO = initTestValues
+      .createFwdInternalAttachmentDTO();
     internalAttachmentDTO.setData(null);
     assertNull(
-        internalMessageMapper.internalAttachmentDTOToInternalAttachment(internalAttachmentDTO)
-            .getData());
+      internalMessageMapper
+        .internalAttachmentDTOToInternalAttachment(internalAttachmentDTO)
+        .getData());
   }
 
 
   @Test
   public void testInternalAttachmentΤoInternalAttachmentDTONull() {
-    assertNull(internalMessageMapper.internalAttachmentToInternalAttachmentDTO(null));
+    assertNull(
+      internalMessageMapper.internalAttachmentToInternalAttachmentDTO(null));
   }
 
   @Test
   public void testInternalAttachmentSetToInternalAttachmentDTOList() {
-    assertNull(internalMessageMapper.internalAttachmentSetToInternalAttachmentDTOList(null));
+    assertNull(internalMessageMapper
+      .internalAttachmentSetToInternalAttachmentDTOList(null));
   }
 
   @Test
   public void testInternalAttachmentDTOListToInternalAttachmentSet() {
-    assertNull(internalMessageMapper.internalAttachmentDTOListToInternalAttachmentSet(null));
+    assertNull(internalMessageMapper
+      .internalAttachmentDTOListToInternalAttachmentSet(null));
   }
 
 

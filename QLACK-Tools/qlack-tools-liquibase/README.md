@@ -1,4 +1,4 @@
-# QLACK tools - Liquibase
+# QLACK Tools - Liquibase
 This is a little tool, based on a Docker container, allowing to automatically 
 detect changes in your database and export detected changes to 
 Liquibase _changesets_. 

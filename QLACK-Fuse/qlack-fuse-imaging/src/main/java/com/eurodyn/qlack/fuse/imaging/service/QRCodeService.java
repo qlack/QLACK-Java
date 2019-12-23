@@ -52,20 +52,21 @@ public class QRCodeService {
   public static final Color DEFAULT_FOREGROUND = Color.BLACK;
 
   /**
-   * Generates a QR code for the given text using default values for width, height, image format,
-   * background and foreground colors
+   * Generates a QR code for the given text using default values for width,
+   * height, image format, background and foreground colors
    *
    * @param text the input text
    * @return a byte array representing the QR code
    */
   public byte[] generateQRCode(String text) {
-    return generateQRCode(text, DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_FORMAT, DEFAULT_BACKGROUND,
-        DEFAULT_FOREGROUND);
+    return generateQRCode(text, DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_FORMAT,
+      DEFAULT_BACKGROUND,
+      DEFAULT_FOREGROUND);
   }
 
   /**
-   * Generates a QR code for the given text using provided values for width, height, image format,
-   * background and foreground colors
+   * Generates a QR code for the given text using provided values for width,
+   * height, image format, background and foreground colors
    *
    * @param text the input text
    * @param width qr code width
@@ -75,8 +76,9 @@ public class QRCodeService {
    * @param foreground qr code image foreground color
    * @return a byte array representing the QR code
    */
-  public byte[] generateQRCode(String text, int width, int height, String imageFormat,
-      Color background, Color foreground) {
+  public byte[] generateQRCode(String text, int width, int height,
+    String imageFormat,
+    Color background, Color foreground) {
     byte[] qrCode = null;
 
     try {
@@ -85,11 +87,12 @@ public class QRCodeService {
       hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
       QRCodeWriter qrCodeWriter = new QRCodeWriter();
       BitMatrix byteMatrix = qrCodeWriter
-          .encode(text, BarcodeFormat.QR_CODE, width, height, hintMap);
+        .encode(text, BarcodeFormat.QR_CODE, width, height, hintMap);
 
       // Create the BufferedImage to hold the QRCode.
       int matrixWidth = byteMatrix.getWidth();
-      BufferedImage image = new BufferedImage(matrixWidth, matrixWidth, BufferedImage.TYPE_INT_RGB);
+      BufferedImage image = new BufferedImage(matrixWidth, matrixWidth,
+        BufferedImage.TYPE_INT_RGB);
 
       // Paint and save the image using the ByteMatrix.
       image.createGraphics();

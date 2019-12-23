@@ -30,7 +30,8 @@ public class ActivitiConfiguration {
     SpringProcessEngineConfiguration configuration = new SpringProcessEngineConfiguration();
 
     configuration.setDataSource(dataSource);
-    configuration.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
+    configuration.setDatabaseSchemaUpdate(
+      ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
     configuration.setAsyncExecutorActivate(false);
     configuration.setTransactionManager(transactionManager);
 
@@ -46,6 +47,7 @@ public class ActivitiConfiguration {
 
   @Bean
   public RepositoryService repositoryService() {
-    return processEngine().getProcessEngineConfiguration().getRepositoryService();
+    return processEngine().getProcessEngineConfiguration()
+      .getRepositoryService();
   }
 }

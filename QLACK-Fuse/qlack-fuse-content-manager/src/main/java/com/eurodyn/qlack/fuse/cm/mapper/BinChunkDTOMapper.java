@@ -9,7 +9,8 @@ import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface BinChunkDTOMapper extends CMBaseMapper<VersionBin, BinChunkDTO> {
+public interface BinChunkDTOMapper extends
+  CMBaseMapper<VersionBin, BinChunkDTO> {
 
   @Override
   @Mapping(target = "versionID", source = "version", qualifiedByName = "mapVersion")
@@ -27,9 +28,6 @@ public interface BinChunkDTOMapper extends CMBaseMapper<VersionBin, BinChunkDTO>
       return null;
     }
     String id = version.getId();
-    if (id == null) {
-      return null;
-    }
     return id;
   }
 

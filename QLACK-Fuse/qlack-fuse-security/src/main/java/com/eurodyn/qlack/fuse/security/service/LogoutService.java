@@ -43,7 +43,8 @@ public class LogoutService {
 
   public void performLogout(HttpServletRequest req) {
     String username = String.valueOf(JWTUtil
-        .getSubject(new JWTClaimsRequestDTO(JWTUtil.getRawToken(req), jwtSecret, jwtExpiration)));
+      .getSubject(new JWTClaimsRequestDTO(JWTUtil.getRawToken(req), jwtSecret,
+        jwtExpiration)));
 
     UserDTO user = userService.getUserByName(username);
 

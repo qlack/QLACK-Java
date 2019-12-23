@@ -8,7 +8,8 @@ import java.util.List;
  *
  * @author European Dynamics SA.
  */
-public interface DistributionListRepository extends MailingRepository<DistributionList, String> {
+public interface DistributionListRepository extends
+  MailingRepository<DistributionList, String> {
 
   List<DistributionList> findByName(String name);
 }

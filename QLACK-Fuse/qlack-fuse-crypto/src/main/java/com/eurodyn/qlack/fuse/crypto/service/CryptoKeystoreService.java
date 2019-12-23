@@ -1,14 +1,6 @@
 package com.eurodyn.qlack.fuse.crypto.service;
 
 import com.eurodyn.qlack.fuse.crypto.dto.CPPHolderDTO;
-import javax.crypto.spec.SecretKeySpec;
-import javax.validation.constraints.NotNull;
-import lombok.extern.java.Log;
-import org.apache.commons.lang3.StringUtils;
-import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
-import org.springframework.stereotype.Service;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -27,6 +19,13 @@ import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Set;
 import java.util.logging.Level;
+import javax.crypto.spec.SecretKeySpec;
+import javax.validation.constraints.NotNull;
+import lombok.extern.java.Log;
+import org.apache.commons.lang3.StringUtils;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.springframework.stereotype.Service;
 
 /**
  * Utility methods to interact with keystores.
@@ -38,7 +37,7 @@ public class CryptoKeystoreService {
   private final CryptoAsymmetricService cryptoAsymmetricService;
 
   public CryptoKeystoreService(
-      CryptoAsymmetricService cryptoAsymmetricService) {
+    CryptoAsymmetricService cryptoAsymmetricService) {
     this.cryptoAsymmetricService = cryptoAsymmetricService;
   }
 
@@ -54,18 +53,22 @@ public class CryptoKeystoreService {
    * @return the key information
    * @throws KeyStoreException thrown when they key is not valid
    * @throws IOException thrown when something unexpected happens
-   * @throws CertificateException thrown when the certificate cannot be generated
-   * @throws NoSuchAlgorithmException thrown when no algorithm is found for encryption
+   * @throws CertificateException thrown when the certificate cannot be
+   * generated
+   * @throws NoSuchAlgorithmException thrown when no algorithm is found for
+   * encryption
    * @throws UnrecoverableKeyException thrown when the key os not valid
    * @throws NoSuchProviderException thrown when the provider is not valid
    */
-  public CPPHolderDTO readKeyFromKeystore(final InputStream keystore, final String keystorePassword,
-      final String keyName, final String keyPassword, final String keystoreType,
-      final String keystoreProvider)
-  throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException,
-         UnrecoverableKeyException, NoSuchProviderException {
+  public CPPHolderDTO readKeyFromKeystore(final InputStream keystore,
+    final String keystorePassword,
+    final String keyName, final String keyPassword, final String keystoreType,
+    final String keystoreProvider)
+    throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException,
+    UnrecoverableKeyException, NoSuchProviderException {
     final KeyStore ks;
-    if (StringUtils.isBlank(keystoreType) || StringUtils.isBlank(keystoreProvider)) {
+    if (StringUtils.isBlank(keystoreType) || StringUtils
+      .isBlank(keystoreProvider)) {
       ks = KeyStore.getInstance(KeyStore.getDefaultType());
     } else {
       ks = KeyStore.getInstance(keystoreType, keystoreProvider);
@@ -74,13 +77,14 @@ public class CryptoKeystoreService {
       ks.load(fis, keystorePassword.toCharArray());
       final Key key = ks.getKey(keyName, keyPassword.toCharArray());
       final Certificate certificate = ks.getCertificate(keyName);
-      return new CPPHolderDTO(certificate, certificate.getPublicKey(), (PrivateKey) key);
+      return new CPPHolderDTO(certificate, certificate.getPublicKey(),
+        (PrivateKey) key);
     }
   }
 
   /**
-   * Reads a key from the given keystore utilising the system's default keystore type and security
-   * provider.
+   * Reads a key from the given keystore utilising the system's default
+   * keystore type and security provider.
    *
    * @param keystore the keystore to read from
    * @param keystorePassword the keystore password
@@ -89,16 +93,20 @@ public class CryptoKeystoreService {
    * @return the key information
    * @throws KeyStoreException thrown when they key is not valid
    * @throws IOException thrown when something unexpected happens
-   * @throws CertificateException thrown when the certificate cannot be generated
-   * @throws NoSuchAlgorithmException thrown when no algorithm is found for encryption
+   * @throws CertificateException thrown when the certificate cannot be
+   * generated
+   * @throws NoSuchAlgorithmException thrown when no algorithm is found for
+   * encryption
    * @throws UnrecoverableKeyException thrown when the key os not valid
    * @throws NoSuchProviderException thrown when the provider is not valid
    */
-  public CPPHolderDTO readKeyFromKeystore(final InputStream keystore, final String keystorePassword,
-      final String keyName, final String keyPassword)
-  throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException,
-         UnrecoverableKeyException, NoSuchProviderException {
-    return readKeyFromKeystore(keystore, keystorePassword, keyName, keyPassword, null, null);
+  public CPPHolderDTO readKeyFromKeystore(final InputStream keystore,
+    final String keystorePassword,
+    final String keyName, final String keyPassword)
+    throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException,
+    UnrecoverableKeyException, NoSuchProviderException {
+    return readKeyFromKeystore(keystore, keystorePassword, keyName, keyPassword,
+      null, null);
   }
 
   /**
@@ -108,10 +116,10 @@ public class CryptoKeystoreService {
    * @param keystorePassword The password of the keystore.
    */
   public byte[] keystoreToByteArray(@NotNull final KeyStore keystore,
-      @NotNull final String keystorePassword)
-  throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
+    @NotNull final String keystorePassword)
+    throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
     try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        BufferedOutputStream bos = new BufferedOutputStream(baos)) {
+      BufferedOutputStream bos = new BufferedOutputStream(baos)) {
       keystore.store(bos, keystorePassword.toCharArray());
       return baos.toByteArray();
     }
@@ -126,18 +134,20 @@ public class CryptoKeystoreService {
    * @param keystoreProvider A provider for the specific keystore type.
    */
   public KeyStore keystoreFromByteArray(@NotNull final byte[] keystore,
-      final String keystoreType, @NotNull final String keystorePassword,
-      final String keystoreProvider)
-  throws KeyStoreException, NoSuchProviderException, IOException, CertificateException,
-         NoSuchAlgorithmException {
+    final String keystoreType, @NotNull final String keystorePassword,
+    final String keystoreProvider)
+    throws KeyStoreException, NoSuchProviderException, IOException, CertificateException,
+    NoSuchAlgorithmException {
     final KeyStore ks;
 
-    if (StringUtils.isBlank(keystoreType) || StringUtils.isBlank(keystoreProvider)) {
+    if (StringUtils.isBlank(keystoreType) || StringUtils
+      .isBlank(keystoreProvider)) {
       ks = KeyStore.getInstance(KeyStore.getDefaultType());
     } else {
       ks = KeyStore.getInstance(keystoreType, keystoreProvider);
     }
-    try (BufferedInputStream bis = new BufferedInputStream(new ByteArrayInputStream(keystore))) {
+    try (BufferedInputStream bis = new BufferedInputStream(
+      new ByteArrayInputStream(keystore))) {
       if (StringUtils.isNotBlank(keystorePassword)) {
         ks.load(bis, keystorePassword.toCharArray());
       } else {
@@ -149,20 +159,22 @@ public class CryptoKeystoreService {
   }
 
   /**
-   * Creates an empty keystore. This keystore can later on be used to add keys and certificates into
-   * it.
+   * Creates an empty keystore. This keystore can later on be used to add keys
+   * and certificates into it.
    *
    * @param keystoreType The type of the keystore to create.
    * @param keystoreProvider The provider for the specific keystore type.
    * @param keystorePassword The password of the keystore.
    */
-  public byte[] createKeystore(final String keystoreType, final String keystoreProvider,
-      @NotNull final String keystorePassword)
-  throws KeyStoreException, NoSuchProviderException, CertificateException, NoSuchAlgorithmException,
-         IOException {
+  public byte[] createKeystore(final String keystoreType,
+    final String keystoreProvider,
+    @NotNull final String keystorePassword)
+    throws KeyStoreException, NoSuchProviderException, CertificateException, NoSuchAlgorithmException,
+    IOException {
     // Create a new keystore.
     KeyStore ks;
-    if (StringUtils.isBlank(keystoreType) || StringUtils.isBlank(keystoreProvider)) {
+    if (StringUtils.isBlank(keystoreType) || StringUtils
+      .isBlank(keystoreProvider)) {
       ks = KeyStore.getInstance(KeyStore.getDefaultType());
     } else {
       ks = KeyStore.getInstance(keystoreType, keystoreProvider);
@@ -179,8 +191,8 @@ public class CryptoKeystoreService {
   }
 
   /**
-   * Saves a symmetric key to the keystore. If the key identified by the alias of the key already
-   * exists it gets overwritten.
+   * Saves a symmetric key to the keystore. If the key identified by the alias
+   * of the key already exists it gets overwritten.
    *
    * @param keystore The keystore to save the symmetric key into.
    * @param keystoreType The type of the keystore.
@@ -191,26 +203,30 @@ public class CryptoKeystoreService {
    * @param keyPassword The password of the key.
    * @param keyAlgorithm The algorithm with which the key was generated.
    */
-  public byte[] saveSymmetricKey(@NotNull final byte[] keystore, final String keystoreType,
-      final String keystoreProvider, @NotNull final String keystorePassword,
-      @NotNull final String keyAlias, @NotNull final byte[] key, @NotNull final String keyPassword,
-      @NotNull final String keyAlgorithm)
-  throws KeyStoreException, NoSuchProviderException, CertificateException, NoSuchAlgorithmException,
-         IOException {
+  public byte[] saveSymmetricKey(@NotNull final byte[] keystore,
+    final String keystoreType,
+    final String keystoreProvider, @NotNull final String keystorePassword,
+    @NotNull final String keyAlias, @NotNull final byte[] key,
+    @NotNull final String keyPassword,
+    @NotNull final String keyAlgorithm)
+    throws KeyStoreException, NoSuchProviderException, CertificateException, NoSuchAlgorithmException,
+    IOException {
     // Load the keystore.
-    KeyStore ks = keystoreFromByteArray(keystore, keystoreType, keystorePassword, keystoreProvider);
+    KeyStore ks = keystoreFromByteArray(keystore, keystoreType,
+      keystorePassword, keystoreProvider);
 
     // Add the key.
     ks.setEntry(keyAlias,
-        new KeyStore.SecretKeyEntry(new SecretKeySpec(key, 0, key.length, keyAlgorithm)),
-        new KeyStore.PasswordProtection(keyPassword.toCharArray()));
+      new KeyStore.SecretKeyEntry(
+        new SecretKeySpec(key, 0, key.length, keyAlgorithm)),
+      new KeyStore.PasswordProtection(keyPassword.toCharArray()));
 
     return keystoreToByteArray(ks, keystorePassword);
   }
 
   /**
-   * Saves a private (asymmetric) key to the keystore. If the key identified by the alias of the key
-   * already exists it gets overwritten.
+   * Saves a private (asymmetric) key to the keystore. If the key identified
+   * by the alias of the key already exists it gets overwritten.
    *
    * @param keystore The keystore to save the symmetric key into.
    * @param keystoreType The type of the keystore.
@@ -223,18 +239,22 @@ public class CryptoKeystoreService {
    * @param keyPassword The password of the key.
    * @param certificates The certificate chain for the key.
    */
-  public byte[] savePrivateKey(@NotNull final byte[] keystore, final String keystoreType,
-      final String keystoreProvider, final String keystorePassword, final String keyAlias,
-      final byte[] key, final String keyAlgorithm, final String keyProvider,
-      final String keyPassword, final Set<byte[]> certificates)
-  throws NoSuchAlgorithmException, CertificateException, NoSuchProviderException, KeyStoreException,
-         IOException, InvalidKeySpecException {
+  public byte[] savePrivateKey(@NotNull final byte[] keystore,
+    final String keystoreType,
+    final String keystoreProvider, final String keystorePassword,
+    final String keyAlias,
+    final byte[] key, final String keyAlgorithm, final String keyProvider,
+    final String keyPassword, final Set<byte[]> certificates)
+    throws NoSuchAlgorithmException, CertificateException, NoSuchProviderException, KeyStoreException,
+    IOException, InvalidKeySpecException {
     // Load the keystore.
-    KeyStore ks = keystoreFromByteArray(keystore, keystoreType, keystorePassword, keystoreProvider);
+    KeyStore ks = keystoreFromByteArray(keystore, keystoreType,
+      keystorePassword, keystoreProvider);
 
     Certificate[] certs = certificates.stream().map(cert -> {
       try {
-        return new JcaX509CertificateConverter().getCertificate(new X509CertificateHolder(cert));
+        return new JcaX509CertificateConverter()
+          .getCertificate(new X509CertificateHolder(cert));
       } catch (CertificateException | IOException e) {
         log.log(Level.SEVERE, "Could not read certificate.", e);
         return null;
@@ -243,16 +263,17 @@ public class CryptoKeystoreService {
 
     // Add the key.
     final Key privateKey = cryptoAsymmetricService
-        .privateKeyFromByteArray(key, keyAlgorithm, keyProvider);
+      .privateKeyFromByteArray(key, keyAlgorithm, keyProvider);
     ks.setKeyEntry(keyAlias, privateKey,
-        keyPassword != null ? keyPassword.toCharArray() : "".toCharArray(), certs);
+      keyPassword != null ? keyPassword.toCharArray() : "".toCharArray(),
+      certs);
 
     return keystoreToByteArray(ks, keystorePassword);
   }
 
   /**
-   * Saves a certificate to the keystore. If the certificate identified by the alias already exists
-   * it gets overwritten.
+   * Saves a certificate to the keystore. If the certificate identified by the
+   * alias already exists it gets overwritten.
    *
    * @param keystore The keystore to save the symmetric key into.
    * @param keystoreType The type of the keystore.
@@ -261,17 +282,21 @@ public class CryptoKeystoreService {
    * @param certificate The certificate to save.
    * @param certificateAlias The alias under which the certificate is saved.
    */
-  public byte[] saveCertificate(@NotNull final byte[] keystore, final String keystoreType,
-      final String keystoreProvider, final String keystorePassword, final String certificateAlias,
-      final byte[] certificate)
-  throws NoSuchAlgorithmException, CertificateException, NoSuchProviderException, KeyStoreException,
-         IOException {
+  public byte[] saveCertificate(@NotNull final byte[] keystore,
+    final String keystoreType,
+    final String keystoreProvider, final String keystorePassword,
+    final String certificateAlias,
+    final byte[] certificate)
+    throws NoSuchAlgorithmException, CertificateException, NoSuchProviderException, KeyStoreException,
+    IOException {
     // Load the keystore.
-    KeyStore ks = keystoreFromByteArray(keystore, keystoreType, keystorePassword, keystoreProvider);
+    KeyStore ks = keystoreFromByteArray(keystore, keystoreType,
+      keystorePassword, keystoreProvider);
 
     // Add the certificate.
     ks.setCertificateEntry(certificateAlias,
-        new JcaX509CertificateConverter().getCertificate(new X509CertificateHolder(certificate)));
+      new JcaX509CertificateConverter()
+        .getCertificate(new X509CertificateHolder(certificate)));
 
     return keystoreToByteArray(ks, keystorePassword);
   }

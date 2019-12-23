@@ -26,7 +26,8 @@ public class SearchException extends QException {
   }
 
   /**
-   * A constructor with a specific message and an underlying exception cause (root exception).
+   * A constructor with a specific message and an underlying exception cause
+   * (root exception).
    *
    * @param msg The message to include for this exception.
    * @param e The root exception for this exception.

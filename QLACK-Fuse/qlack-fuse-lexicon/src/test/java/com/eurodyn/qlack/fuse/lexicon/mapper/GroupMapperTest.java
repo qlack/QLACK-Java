@@ -50,7 +50,7 @@ public class GroupMapperTest {
     assertEquals(null, groupMapper.mapToDTO((Group) null));
 
     List<GroupDTO> groupDTOS = groupMapper.mapToDTO(
-        (List<Group>) null);
+      (List<Group>) null);
     assertEquals(null, groupDTOS);
   }
 
@@ -78,7 +78,7 @@ public class GroupMapperTest {
     assertEquals(null, groupMapper.mapToEntity((GroupDTO) null));
 
     List<Group> groups = groupMapper.mapToEntity(
-        (List<GroupDTO>) null);
+      (List<GroupDTO>) null);
     assertEquals(null, groups);
   }
 

@@ -112,7 +112,8 @@ public class AuditMapperTest {
   @Test
   public void testMapToDTOTrace() {
     auditDTO = auditMapperImpl.mapToDTO(audit);
-    assertEquals(audit.getTrace().getTraceData(), auditDTO.getTrace().getTraceData());
+    assertEquals(audit.getTrace().getTraceData(),
+      auditDTO.getTrace().getTraceData());
   }
 
   @Test
@@ -191,7 +192,8 @@ public class AuditMapperTest {
   @Test
   public void testMapToEntityTrace() {
     audit = auditMapperImpl.mapToEntity(auditDTO);
-    assertEquals(auditDTO.getTrace().getTraceData(), audit.getTrace().getTraceData());
+    assertEquals(auditDTO.getTrace().getTraceData(),
+      audit.getTrace().getTraceData());
   }
 
   @Test

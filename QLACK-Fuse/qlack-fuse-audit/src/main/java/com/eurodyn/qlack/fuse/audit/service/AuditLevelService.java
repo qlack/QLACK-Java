@@ -28,7 +28,8 @@ public class AuditLevelService {
 
   private final AuditLevelMapper mapper;
 
-  public AuditLevelService(AuditLevelRepository auditLevelRepository, AuditLevelMapper mapper) {
+  public AuditLevelService(AuditLevelRepository auditLevelRepository,
+    AuditLevelMapper mapper) {
     this.auditLevelRepository = auditLevelRepository;
     this.mapper = mapper;
   }
@@ -52,7 +53,7 @@ public class AuditLevelService {
       return addLevel(level);
     } else {
       throw new QAlreadyExistsException(
-          "Level: " + level.getName() + " already exists and will not be added.");
+        "Level: " + level.getName() + " already exists and will not be added.");
     }
   }
 
@@ -62,7 +63,8 @@ public class AuditLevelService {
    * @param levelId the id of the level to delete
    */
   public void deleteLevelById(String levelId) {
-    log.info(MessageFormat.format("Deleting Audit level with id ''{0}''.", levelId));
+    log.info(
+      MessageFormat.format("Deleting Audit level with id ''{0}''.", levelId));
     auditLevelRepository.delete(auditLevelRepository.fetchById(levelId));
   }
 
@@ -72,7 +74,8 @@ public class AuditLevelService {
    * @param levelName the name of the level to delete
    */
   public void deleteLevelByName(String levelName) {
-    log.info(MessageFormat.format("Deleting Audit level with name ''{0}''.", levelName));
+    log.info(MessageFormat
+      .format("Deleting Audit level with name ''{0}''.", levelName));
     auditLevelRepository.delete(auditLevelRepository.findByName(levelName));
   }
 
@@ -95,7 +98,8 @@ public class AuditLevelService {
    * @return the persisted Audit Level
    */
   public AuditLevelDTO getAuditLevelByName(String levelName) {
-    log.info(MessageFormat.format("Searching Audit level by name ''{0}''.", levelName));
+    log.info(MessageFormat
+      .format("Searching Audit level by name ''{0}''.", levelName));
     return mapper.mapToDTO(auditLevelRepository.findByName(levelName));
   }
 

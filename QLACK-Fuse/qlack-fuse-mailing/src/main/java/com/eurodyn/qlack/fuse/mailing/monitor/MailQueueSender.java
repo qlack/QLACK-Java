@@ -34,7 +34,8 @@ import org.springframework.validation.annotation.Validated;
 public class MailQueueSender {
 
   // Logger reference
-  private static final Logger LOGGER = Logger.getLogger(MailQueueSender.class.getName());
+  private static final Logger LOGGER = Logger
+    .getLogger(MailQueueSender.class.getName());
 
   private static final String EMAIL_NOTIFICATION = "Sending email {0} to {1} with TLS={2}.";
 
@@ -43,7 +44,8 @@ public class MailQueueSender {
   private JavaMailSenderImpl emailSender;
 
   @Autowired
-  public MailQueueSender(MailingProperties mailingProperties, JavaMailSenderImpl emailSender) {
+  public MailQueueSender(MailingProperties mailingProperties,
+    JavaMailSenderImpl emailSender) {
     this.mailingProperties = mailingProperties;
     this.emailSender = emailSender;
   }
@@ -55,7 +57,8 @@ public class MailQueueSender {
    * @param vo The DTO with the attributes to set.
    * @throws MessagingException Indicating an error while setting recipients.
    */
-  private void setupCommons(MimeMessageHelper email, @Valid EmailDTO vo) throws MessagingException {
+  private void setupCommons(MimeMessageHelper email, @Valid EmailDTO vo)
+    throws MessagingException {
 
     email.setFrom(vo.getFromEmail());
     email.setSubject(vo.getSubject());
@@ -91,13 +94,15 @@ public class MailQueueSender {
    *
    * @param email The email to attach the attachments to.
    * @param vo The DTO with the attachments to attach.
-   * @throws MessagingException Indicating an error while processing attachments.
+   * @throws MessagingException Indicating an error while processing
+   * attachments.
    */
-  private void setupAttachments(MimeMessageHelper email, EmailDTO vo) throws MessagingException {
+  private void setupAttachments(MimeMessageHelper email, EmailDTO vo)
+    throws MessagingException {
     if (!CollectionUtils.isEmpty(vo.getAttachments())) {
       for (AttachmentDTO attachmentDTO : vo.getAttachments()) {
         DataSource source = new ByteArrayDataSource(attachmentDTO.getData(),
-            attachmentDTO.getContentType());
+          attachmentDTO.getContentType());
         email.addAttachment(attachmentDTO.getFilename(), source);
       }
     }
@@ -125,7 +130,7 @@ public class MailQueueSender {
           setupSimpleMailCommons(simpleMailMessage, vo);
 
           LOGGER.log(Level.FINEST, EMAIL_NOTIFICATION, new Object[]{
-              vo.getSubject(), Arrays.asList(vo.getToEmails()), isTlsEnabled()
+            vo.getSubject(), Arrays.asList(vo.getToEmails()), isTlsEnabled()
           });
 
           //Send simple mail
@@ -134,7 +139,7 @@ public class MailQueueSender {
       }
 
       LOGGER.log(Level.FINEST, EMAIL_NOTIFICATION, new Object[]{
-          vo.getSubject(), Arrays.asList(vo.getToEmails()), isTlsEnabled()
+        vo.getSubject(), Arrays.asList(vo.getToEmails()), isTlsEnabled()
       });
 
     } catch (Exception e) {
@@ -148,7 +153,8 @@ public class MailQueueSender {
    * @param simpleMailMessage The Email to set the attributes to.
    * @param vo The DTO with the attributes to set.
    */
-  private void setupSimpleMailCommons(SimpleMailMessage simpleMailMessage, @Valid EmailDTO vo) {
+  private void setupSimpleMailCommons(SimpleMailMessage simpleMailMessage,
+    @Valid EmailDTO vo) {
     simpleMailMessage.setFrom(vo.getFromEmail());
     simpleMailMessage.setSubject(vo.getSubject());
     simpleMailMessage.setSentDate(new Date());
@@ -178,15 +184,16 @@ public class MailQueueSender {
    * @param isHtmlEmail Whether the email body content is html
    * @throws MessagingException Indicating an error while processing attachments, recipients etc.
    */
-  public void prepareAndSendMimeMessage(MimeMessage message, EmailDTO vo, boolean isHtmlEmail)
-      throws MessagingException {
+  public void prepareAndSendMimeMessage(MimeMessage message, EmailDTO vo,
+    boolean isHtmlEmail)
+    throws MessagingException {
     MimeMessageHelper email = new MimeMessageHelper(message, true);
     setupAttachments(email, vo);
     email.setText(vo.getBody(), isHtmlEmail);
     setupCommons(email, vo);
 
     LOGGER.log(Level.FINEST, EMAIL_NOTIFICATION, new Object[]{
-        vo.getSubject(), Arrays.asList(vo.getToEmails()), isTlsEnabled()
+      vo.getSubject(), Arrays.asList(vo.getToEmails()), isTlsEnabled()
     });
 
     emailSender.send(message);
@@ -199,7 +206,8 @@ public class MailQueueSender {
    */
   private boolean isTlsEnabled() {
     return (this.mailingProperties.getProperties() != null
-        && !this.mailingProperties.getProperties().isEmpty())
-        && this.mailingProperties.getProperties().get("mail.smtp.starttls.enable").equals("true");
+      && !this.mailingProperties.getProperties().isEmpty())
+      && this.mailingProperties.getProperties().get("mail.smtp.starttls.enable")
+      .equals("true");
   }
 }

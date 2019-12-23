@@ -58,7 +58,8 @@ public class DocumentService {
 
   @Autowired
   public DocumentService(ConcurrencyControlService concurrencyControlService,
-      VersionService versionService, NodeRepository nodeRepository, NodeMapper mapper) {
+    VersionService versionService, NodeRepository nodeRepository,
+    NodeMapper mapper) {
     this.concurrencyControlService = concurrencyControlService;
     this.versionService = versionService;
     this.nodeRepository = nodeRepository;
@@ -66,30 +67,35 @@ public class DocumentService {
   }
 
 
-  private void checkNodeConflict(String nodeId, String lockToken, String errorMsg) {
+  private void checkNodeConflict(String nodeId, String lockToken,
+    String errorMsg) {
     NodeDTO selConflict = concurrencyControlService
-        .getSelectedNodeWithLockConflict(nodeId, lockToken);
+      .getSelectedNodeWithLockConflict(nodeId, lockToken);
     if (selConflict != null && selConflict.getName() != null) {
-      throw new QSelectedNodeLockException(errorMsg, selConflict.getId(), selConflict.getName());
+      throw new QSelectedNodeLockException(errorMsg, selConflict.getId(),
+        selConflict.getName());
     }
   }
 
 
-  private void renameNode(String nodeID, String newName, String userID, String lockToken,
-      NodeType nodeType) {
+  private void renameNode(String nodeID, String newName, String userID,
+    String lockToken,
+    NodeType nodeType) {
     String type = nodeType.name().toLowerCase();
     Node node = nodeRepository.fetchById(nodeID);
 
     checkNodeConflict(nodeID, lockToken,
-        type + " with ID " + nodeID + " is locked and an invalid lock token was passed; the " + type
-            + " cannot be renamed.");
+      type + " with ID " + nodeID
+        + " is locked and an invalid lock token was passed; the " + type
+        + " cannot be renamed.");
 
     node.setAttribute(CMConstants.ATTR_NAME, newName);
 
     // Update last modified information
     if (userID != null) {
       long timeInMillis = Calendar.getInstance().getTimeInMillis();
-      node.setAttribute(CMConstants.ATTR_LAST_MODIFIED_ON, String.valueOf(timeInMillis));
+      node.setAttribute(CMConstants.ATTR_LAST_MODIFIED_ON,
+        String.valueOf(timeInMillis));
       node.setAttribute(CMConstants.ATTR_LAST_MODIFIED_BY, userID);
     }
 
@@ -99,25 +105,30 @@ public class DocumentService {
   private void addNodeAttributes(NodeDTO dto, Node nodeEntity, String userID) {
     nodeEntity.setAttributes(new ArrayList<>());
     nodeEntity.getAttributes()
-        .add(new NodeAttribute(CMConstants.ATTR_NAME, dto.getName(), nodeEntity));
+      .add(new NodeAttribute(CMConstants.ATTR_NAME, dto.getName(), nodeEntity));
     nodeEntity.getAttributes()
-        .add(new NodeAttribute(CMConstants.LOCKABLE, String.valueOf(dto.isLockable()), nodeEntity));
+      .add(new NodeAttribute(CMConstants.LOCKABLE,
+        String.valueOf(dto.isLockable()), nodeEntity));
     nodeEntity.getAttributes().add(
-        new NodeAttribute(CMConstants.VERSIONABLE, String.valueOf(dto.isVersionable()),
-            nodeEntity));
+      new NodeAttribute(CMConstants.VERSIONABLE,
+        String.valueOf(dto.isVersionable()),
+        nodeEntity));
     addCreationAndModificationAttributes(nodeEntity, userID);
   }
 
-  private void addCreationAndModificationAttributes(Node nodeEntity, String userID) {
+  private void addCreationAndModificationAttributes(Node nodeEntity,
+    String userID) {
     long timeInMillis = Calendar.getInstance().getTimeInMillis();
     nodeEntity.setCreatedOn(timeInMillis);
     nodeEntity.getAttributes()
-        .add(new NodeAttribute(CMConstants.ATTR_CREATED_BY, userID, nodeEntity));
+      .add(new NodeAttribute(CMConstants.ATTR_CREATED_BY, userID, nodeEntity));
     nodeEntity.getAttributes().add(
-        new NodeAttribute(CMConstants.ATTR_LAST_MODIFIED_ON, String.valueOf(timeInMillis),
-            nodeEntity));
+      new NodeAttribute(CMConstants.ATTR_LAST_MODIFIED_ON,
+        String.valueOf(timeInMillis),
+        nodeEntity));
     nodeEntity.getAttributes()
-        .add(new NodeAttribute(CMConstants.ATTR_LAST_MODIFIED_BY, userID, nodeEntity));
+      .add(new NodeAttribute(CMConstants.ATTR_LAST_MODIFIED_BY, userID,
+        nodeEntity));
   }
 
   /**
@@ -125,23 +136,25 @@ public class DocumentService {
    *
    * @param folder The FolderDTO of the folder to be created.
    * @param userID The ID of the logged in user who is creating the folder.
-   * @param lockToken A lock token id, which will used to examine whether the user is allowed to
-   * create a folder under the specific hierarchy (check for locked ascendant).
+   * @param lockToken A lock token id, which will used to examine whether the
+   * user is allowed to create a folder under the specific hierarchy (check
+   * for locked ascendant).
    * @return The id of the newly created folder conflict
-   * @throws QNodeLockException If the folder/node cannot be created under the specific hierarchy
-   * since an ascendant is already locked
+   * @throws QNodeLockException If the folder/node cannot be created under the
+   * specific hierarchy since an ascendant is already locked
    */
-  public String createFolder(FolderDTO folder, String userID, String lockToken) {
+  public String createFolder(FolderDTO folder, String userID,
+    String lockToken) {
     Node parent = null;
     if (folder.getParentId() != null) {
       parent = nodeRepository.fetchById(folder.getParentId());
       if (parent != null) {
         NodeDTO ancConflict = concurrencyControlService
-            .getAncestorFolderWithLockConflict(parent.getId(), lockToken);
+          .getAncestorFolderWithLockConflict(parent.getId(), lockToken);
         if (ancConflict != null && ancConflict.getId() != null) {
           throw new QAncestorFolderLockException(
-              "An ancestor folder is locked and an invalid lock token was passed; the folder cannot be created.",
-              ancConflict.getId(), ancConflict.getName());
+            "An ancestor folder is locked and an invalid lock token was passed; the folder cannot be created.",
+            ancConflict.getId(), ancConflict.getName());
         }
       }
     }
@@ -157,38 +170,40 @@ public class DocumentService {
    * Deletes a folder .
    *
    * @param folderID The ID of the folder to be deleted.
-   * @param lockToken A lock token id, which will used to examine whether the user is allowed to
-   * delete the folder under the specific hierarchy. It checks for locked ascendant or if the folder
-   * has been locked by other user.
-   * @throws QNodeLockException If the folder/node cannot be deleted under the specific hierarchy
-   * since an ascendant or the folder itself is already locked
+   * @param lockToken A lock token id, which will used to examine whether the
+   * user is allowed to delete the folder under the specific hierarchy. It
+   * checks for locked ascendant or if the folder has been locked by other
+   * user.
+   * @throws QNodeLockException If the folder/node cannot be deleted under the
+   * specific hierarchy since an ascendant or the folder itself is already
+   * locked
    */
   public void deleteFolder(String folderID, String lockToken) {
     Node node = nodeRepository.fetchById(folderID);
 
     // Check whether there is a lock conflict with the current node.
     checkNodeConflict(folderID, lockToken,
-        "The selected folder is locked and an invalid lock token was passed; the folder cannot be deleted.");
+      "The selected folder is locked and an invalid lock token was passed; the folder cannot be deleted.");
 
     // Check for ancestor node (folder) lock conflicts.
     if (node.getParent() != null) {
       NodeDTO ancConflict = concurrencyControlService
-          .getAncestorFolderWithLockConflict(node.getParent().getId(), lockToken);
+        .getAncestorFolderWithLockConflict(node.getParent().getId(), lockToken);
       if (ancConflict != null && ancConflict.getId() != null) {
         throw new QAncestorFolderLockException(
-            "An ancestor folder is locked and an invalid lock token was passed; the folder cannot be deleted.",
-            ancConflict.getId(), ancConflict.getName());
+          "An ancestor folder is locked and an invalid lock token was passed; the folder cannot be deleted.",
+          ancConflict.getId(), ancConflict.getName());
       }
     }
 
     // Check for descendant node lock conflicts
     if (!CollectionUtils.isEmpty(node.getChildren())) {
       NodeDTO desConflict = concurrencyControlService
-          .getDescendantNodeWithLockConflict(folderID, lockToken);
+        .getDescendantNodeWithLockConflict(folderID, lockToken);
       if (desConflict != null && desConflict.getId() != null) {
         throw new QDescendantNodeLockException(
-            "An descendant node is locked and an invalid lock token was passed; the folder cannot be deleted.",
-            desConflict.getId(), desConflict.getName());
+          "An descendant node is locked and an invalid lock token was passed; the folder cannot be deleted.",
+          desConflict.getId(), desConflict.getName());
       }
     }
 
@@ -204,20 +219,25 @@ public class DocumentService {
    * @param lockToken the lock token
    * @throws QNodeLockException the q node lock exception
    */
-  public void renameFolder(String folderID, String newName, String userID, String lockToken) {
+  public void renameFolder(String folderID, String newName, String userID,
+    String lockToken) {
     renameNode(folderID, newName, userID, lockToken, NodeType.FOLDER);
   }
 
   /**
-   * Finds ands returns a folder with the specific ID along with is children (optionally).
+   * Finds ands returns a folder with the specific ID along with is children
+   * (optionally).
    *
    * @param folderID The ID of the folder to be retrieved.
-   * @param lazyRelatives When true it will not compute the relatives (ancestors/descendats) of the
-   * required folder.
-   * @param findPath When true the directory path until the required folder will be computed.
-   * @return The FolderDTO which contains all the information about the folder.
+   * @param lazyRelatives When true it will not compute the relatives
+   * (ancestors/descendats) of the required folder.
+   * @param findPath When true the directory path until the required folder
+   * will be computed.
+   * @return The FolderDTO which contains all the information about the
+   * folder.
    */
-  public FolderDTO getFolderByID(String folderID, boolean lazyRelatives, boolean findPath) {
+  public FolderDTO getFolderByID(String folderID, boolean lazyRelatives,
+    boolean findPath) {
     return getFolder(folderID, lazyRelatives, findPath, false);
   }
 
@@ -232,31 +252,38 @@ public class DocumentService {
     return getFolder(nodeID, lazyRelatives, false, true);
   }
 
-  private FolderDTO getFolder(String nodeID, boolean lazyRelatives, boolean findPath,
-      boolean returnParent) {
+  private FolderDTO getFolder(String nodeID, boolean lazyRelatives,
+    boolean findPath,
+    boolean returnParent) {
     Node node = nodeRepository.fetchById(nodeID);
-    RelativesType relativesType = lazyRelatives ? RelativesType.LAZY : RelativesType.EAGER;
+    RelativesType relativesType =
+      lazyRelatives ? RelativesType.LAZY : RelativesType.EAGER;
     Node retVal = returnParent ? node.getParent() : node;
     return nodeMapper.mapToFolderDTO(retVal, relativesType, findPath);
   }
 
   /**
-   * Gets the content of a folder node in a zip file. This method retrieves the binary contents of
-   * all files included in the folder node specified as well as their attributes if the
-   * includeAttributes argument is true. The contents of files included in other folders contained
-   * by the folder specified are also retrieved in case the isDeep argument is true.
+   * Gets the content of a folder node in a zip file. This method retrieves
+   * the binary contents of all files included in the folder node specified as
+   * well as their attributes if the includeAttributes argument is true. The
+   * contents of files included in other folders contained by the folder
+   * specified are also retrieved in case the isDeep argument is true.
    *
-   * @param folderID The ID of the folder the content of which is to be retrieved
-   * @param includeProperties If true then a separate properties file will be created inside the
-   * final zip file for each node included in the result, containing the nodes' properties in the
-   * form: propertyName = propertyValue
-   * @param isDeep If true then the whole tree commencing by the specified folder will be traversed
-   * in order to be included in the final result. Otherwise only the file nodes which are direct
-   * children of the specified folder will be included in the result.
-   * @return The binary content (and properties if applicable) of the specified folder as a byte
-   * array representing a zip file.
+   * @param folderID The ID of the folder the content of which is to be
+   * retrieved
+   * @param includeProperties If true then a separate properties file will be
+   * created inside the final zip file for each node included in the result,
+   * containing the nodes' properties in the form: propertyName =
+   * propertyValue
+   * @param isDeep If true then the whole tree commencing by the specified
+   * folder will be traversed in order to be included in the final result.
+   * Otherwise only the file nodes which are direct children of the specified
+   * folder will be included in the result.
+   * @return The binary content (and properties if applicable) of the
+   * specified folder as a byte array representing a zip file.
    */
-  public byte[] getFolderAsZip(String folderID, boolean includeProperties, boolean isDeep) {
+  public byte[] getFolderAsZip(String folderID, boolean includeProperties,
+    boolean isDeep) {
     Node folder = nodeRepository.fetchById(folderID);
 
     byte[] retVal = null;
@@ -267,51 +294,59 @@ public class DocumentService {
 
     try (ZipOutputStream out = StreamsUtil.createZipOutputStream(outStream)) {
       List<Node> filteredChilden = folder.getChildren().stream()
-          .filter(child -> child.getType() != null).collect(
-              Collectors.toList());
+        .filter(child -> child.getType() != null).collect(
+          Collectors.toList());
 
       for (Node child : filteredChilden) {
         if (child.getType() == NodeType.FILE) {
-          byte[] fileRetVal = versionService.getFileAsZip(child.getId(), includeProperties);
+          byte[] fileRetVal = versionService
+            .getFileAsZip(child.getId(), includeProperties);
           if (fileRetVal != null) {
             hasEntries = true;
             getFolderAsZipZip(child, out, fileRetVal);
           }
           //if type if FOLDER and isDeep is true
         } else if (isDeep) {
-          byte[] folderRetVal = getFolderAsZip(child.getId(), includeProperties, true);
+          byte[] folderRetVal = getFolderAsZip(child.getId(), includeProperties,
+            true);
           if (folderRetVal != null) {
             hasEntries = true;
             getFolderAsZipZip(child, out, folderRetVal);
           }
         }
       }
-      retVal = getFolderAsZipIncludeProperties(hasEntries, includeProperties, nodeName, out, folder,
-          outStream, retVal);
+      retVal = getFolderAsZipIncludeProperties(hasEntries, includeProperties,
+        nodeName, out, folder,
+        outStream, retVal);
     } catch (IOException ex) {
-      throw new QIOException("Error writing ZIP for folder  with ID " + folderID);
+      throw new QIOException(
+        "Error writing ZIP for folder  with ID " + folderID);
     }
 
     return retVal;
   }
 
-  private void getFolderAsZipZip(Node child, ZipOutputStream out, byte[] fileRetVal)
-      throws IOException {
+  private void getFolderAsZipZip(Node child, ZipOutputStream out,
+    byte[] fileRetVal)
+    throws IOException {
     ZipEntry entry = new ZipEntry(
-        child.getAttribute(CMConstants.ATTR_NAME).getValue() + ".zip");
+      child.getAttribute(CMConstants.ATTR_NAME).getValue() + ".zip");
     out.putNextEntry(entry);
     out.write(fileRetVal, 0, fileRetVal.length);
   }
 
-  private byte[] getFolderAsZipIncludeProperties(boolean hasEntries, boolean includeProperties,
-      String nodeName, ZipOutputStream out, Node folder, ByteArrayOutputStream outStream,
-      byte[] retVal) throws IOException {
+  private byte[] getFolderAsZipIncludeProperties(boolean hasEntries,
+    boolean includeProperties,
+    String nodeName, ZipOutputStream out, Node folder,
+    ByteArrayOutputStream outStream,
+    byte[] retVal) throws IOException {
     if (includeProperties) {
       hasEntries = true;
       ZipEntry entry = new ZipEntry(nodeName + ".properties");
       out.putNextEntry(entry);
 
-      StringBuilder buf = new NodeAttributeStringBuilder().nodeAttributeBuilder(folder);
+      StringBuilder buf = new NodeAttributeStringBuilder()
+        .nodeAttributeBuilder(folder);
       out.write(buf.toString().getBytes());
     }
     if (hasEntries) {
@@ -341,11 +376,11 @@ public class DocumentService {
       // Check for ancestor node (folder) lock conflicts.
       if (parent != null) {
         NodeDTO ancConflict = concurrencyControlService
-            .getAncestorFolderWithLockConflict(parent.getId(), lockToken);
+          .getAncestorFolderWithLockConflict(parent.getId(), lockToken);
         if (ancConflict != null && ancConflict.getId() != null) {
           throw new QAncestorFolderLockException(
-              "An ancestor folder is locked and an invalid lock token was passed; the file cannot be created.",
-              ancConflict.getId(), ancConflict.getName());
+            "An ancestor folder is locked and an invalid lock token was passed; the file cannot be created.",
+            ancConflict.getId(), ancConflict.getName());
         }
       }
     }
@@ -362,27 +397,30 @@ public class DocumentService {
    * Deletes a file .
    *
    * @param fileID The ID of the file to be deleted.
-   * @param lockToken A lock token id, which will used to examine whether the user is allowed to
-   * delete the file, under the specific hierarchy. It checks for locked ascendant or if the file
-   * itself has been locked by other user.
-   * @throws QNodeLockException If the node cannot be deleted under the specific hierarchy since an
-   * ascendant or the folder itself is already locked
+   * @param lockToken A lock token id, which will used to examine whether the
+   * user is allowed to delete the file, under the specific hierarchy. It
+   * checks for locked ascendant or if the file itself has been locked by
+   * other user.
+   * @throws QNodeLockException If the node cannot be deleted under the
+   * specific hierarchy since an ascendant or the folder itself is already
+   * locked
    */
   public void deleteFile(String fileID, String lockToken) {
     Node node = nodeRepository.fetchById(fileID);
 
     // Check whether there is a lock conflict with the current node.
     checkNodeConflict(fileID, lockToken,
-        "The selected file is locked and an invalid lock token was passed; the file cannot be deleted.");
+      "The selected file is locked and an invalid lock token was passed; the file cannot be deleted.");
 
     // Check for ancestor node (folder) lock conflicts.
     if (node.getParent() != null) {
       NodeDTO ancConflict = concurrencyControlService
-          .getAncestorFolderWithLockConflict(node.getParent().getId(), lockToken);
+        .getAncestorFolderWithLockConflict(node.getParent().getId(), lockToken);
       if (ancConflict != null && ancConflict.getId() != null) {
         throw new QAncestorFolderLockException(
-            "An ancestor folder is locked and an invalid lock token was passed; "
-                + "the file cannot be deleted.", ancConflict.getId(), ancConflict.getName());
+          "An ancestor folder is locked and an invalid lock token was passed; "
+            + "the file cannot be deleted.", ancConflict.getId(),
+          ancConflict.getName());
       }
     }
     nodeRepository.delete(node);
@@ -397,20 +435,26 @@ public class DocumentService {
    * @param lockToken the lock token
    * @throws QNodeLockException the q node lock exception
    */
-  public void renameFile(String fileID, String newName, String userID, String lockToken) {
+  public void renameFile(String fileID, String newName, String userID,
+    String lockToken) {
     renameNode(fileID, newName, userID, lockToken, NodeType.FILE);
   }
 
   /**
-   * Finds an return a file with the specific ID along with its versions (optionally).
+   * Finds an return a file with the specific ID along with its versions
+   * (optionally).
    *
    * @param fileID The ID of the folder to be retrieved.
    * @param includeVersions When true all versions of the file are included.
-   * @param findPath When true the directory path until the required folder will be computed.
-   * @return The FileDTO which contains all the information about the required file
+   * @param findPath When true the directory path until the required folder
+   * will be computed.
+   * @return The FileDTO which contains all the information about the required
+   * file
    */
-  public FileDTO getFileByID(String fileID, boolean includeVersions, boolean findPath) {
-    FileDTO retVal = nodeMapper.mapToFileDTO(nodeRepository.fetchById(fileID), findPath);
+  public FileDTO getFileByID(String fileID, boolean includeVersions,
+    boolean findPath) {
+    FileDTO retVal = nodeMapper
+      .mapToFileDTO(nodeRepository.fetchById(fileID), findPath);
     if (includeVersions) {
       retVal.setVersions(versionService.getFileVersions(fileID));
     }
@@ -433,22 +477,26 @@ public class DocumentService {
   }
 
   /**
-   * Retrieves a list of nodes of a specified parent. In addition the method can return a list of
-   * nodes of the given parent having the attributes passed as a parameter
+   * Retrieves a list of nodes of a specified parent. In addition the method
+   * can return a list of nodes of the given parent having the attributes
+   * passed as a parameter
    *
    * @param parentId the parent id
    * @param attributes the attributes
    * @return the node by attributes
    */
-  public List<NodeDTO> getNodeByAttributes(String parentId, Map<String, String> attributes) {
+  public List<NodeDTO> getNodeByAttributes(String parentId,
+    Map<String, String> attributes) {
     StringBuilder sbQuery = new StringBuilder("SELECT n FROM Node n ");
 
     if (attributes != null && !attributes.isEmpty()) {
 
       for (int i = 0; i < attributes.size(); i++) {
-        sbQuery.append("INNER JOIN  n.attributes attr").append(i).append(" WITH ( ");
-        sbQuery.append("attr").append(i).append(".name = :attr_").append(i).append(" AND attr")
-            .append(i).append(".value = :value_").append(i).append(")");
+        sbQuery.append("INNER JOIN  n.attributes attr").append(i)
+          .append(" WITH ( ");
+        sbQuery.append("attr").append(i).append(".name = :attr_").append(i)
+          .append(" AND attr")
+          .append(i).append(".value = :value_").append(i).append(")");
       }
     }
 
@@ -484,7 +532,8 @@ public class DocumentService {
       return new ArrayList<>();
     }
     List<FolderDTO> retVal = getAncestors(node.getParent().getId());
-    retVal.add(nodeMapper.mapToFolderDTO(node.getParent(), RelativesType.LAZY, false));
+    retVal.add(
+      nodeMapper.mapToFolderDTO(node.getParent(), RelativesType.LAZY, false));
     return retVal;
   }
 
@@ -499,15 +548,17 @@ public class DocumentService {
    * @return the string
    * @throws QNodeLockException the q node lock exception
    */
-  public String createAttribute(String nodeId, String attributeName, String attributeValue,
-      String userId, String lockToken) {
+  public String createAttribute(String nodeId, String attributeName,
+    String attributeValue,
+    String userId, String lockToken) {
     Node node = nodeRepository.fetchById(nodeId);
 
     checkNodeConflict(nodeId, lockToken,
-        NODE_WITH_ID_MSG + nodeId
-            + "is locked and an invalid lock token was passed; the file attributes cannot be updated.");
+      NODE_WITH_ID_MSG + nodeId
+        + "is locked and an invalid lock token was passed; the file attributes cannot be updated.");
 
-    NodeAttribute attribute = new NodeAttribute(attributeName, attributeValue, node);
+    NodeAttribute attribute = new NodeAttribute(attributeName, attributeValue,
+      node);
     node.getAttributes().add(attribute);
 
     // Set created / last modified information
@@ -515,7 +566,8 @@ public class DocumentService {
       long timeInMillis = Calendar.getInstance().getTimeInMillis();
       node.setCreatedOn(timeInMillis);
       node.setAttribute(CMConstants.ATTR_CREATED_BY, userId);
-      node.setAttribute(CMConstants.ATTR_LAST_MODIFIED_ON, String.valueOf(timeInMillis));
+      node.setAttribute(CMConstants.ATTR_LAST_MODIFIED_ON,
+        String.valueOf(timeInMillis));
       node.setAttribute(CMConstants.ATTR_LAST_MODIFIED_BY, userId);
     }
 
@@ -534,20 +586,22 @@ public class DocumentService {
    * @param lockToken the lock token
    * @throws QNodeLockException the q node lock exception
    */
-  public void updateAttribute(String nodeID, String attributeName, String attributeValue,
-      String userID, String lockToken) {
+  public void updateAttribute(String nodeID, String attributeName,
+    String attributeValue,
+    String userID, String lockToken) {
     Node node = nodeRepository.fetchById(nodeID);
 
     checkNodeConflict(nodeID, lockToken,
-        NODE_WITH_ID_MSG + nodeID
-            + " is locked and an invalid lock token was passed; the file attributes cannot be updated.");
+      NODE_WITH_ID_MSG + nodeID
+        + " is locked and an invalid lock token was passed; the file attributes cannot be updated.");
 
     node.setAttribute(attributeName, attributeValue);
 
     // Update last modified information
     if (userID != null) {
       long timeInMillis = Calendar.getInstance().getTimeInMillis();
-      node.setAttribute(CMConstants.ATTR_LAST_MODIFIED_ON, String.valueOf(timeInMillis));
+      node.setAttribute(CMConstants.ATTR_LAST_MODIFIED_ON,
+        String.valueOf(timeInMillis));
       node.setAttribute(CMConstants.ATTR_LAST_MODIFIED_BY, userID);
     }
     nodeRepository.save(node);
@@ -562,13 +616,14 @@ public class DocumentService {
    * @param lockToken the lock token
    * @throws QNodeLockException the q node lock exception
    */
-  void updateAttributes(String nodeID, Map<String, String> attributes, String userID,
-      String lockToken) {
+  void updateAttributes(String nodeID, Map<String, String> attributes,
+    String userID,
+    String lockToken) {
     Node node = nodeRepository.fetchById(nodeID);
 
     checkNodeConflict(nodeID, lockToken,
-        NODE_WITH_ID_MSG + nodeID
-            + " is locked and an invalid lock token was passed; the file attributes cannot be updated.");
+      NODE_WITH_ID_MSG + nodeID
+        + " is locked and an invalid lock token was passed; the file attributes cannot be updated.");
 
     for (Map.Entry<String, String> attribute : attributes.entrySet()) {
       node.setAttribute(attribute.getKey(), attribute.getValue());
@@ -577,7 +632,8 @@ public class DocumentService {
     // Update last modified information
     if (userID != null) {
       long timeInMillis = Calendar.getInstance().getTimeInMillis();
-      node.setAttribute(CMConstants.ATTR_LAST_MODIFIED_ON, String.valueOf(timeInMillis));
+      node.setAttribute(CMConstants.ATTR_LAST_MODIFIED_ON,
+        String.valueOf(timeInMillis));
       node.setAttribute(CMConstants.ATTR_LAST_MODIFIED_BY, userID);
     }
 
@@ -593,21 +649,23 @@ public class DocumentService {
    * @param lockToken the lock token
    * @throws QNodeLockException the q node lock exception
    */
-  public void deleteAttribute(String nodeID, String attributeName, String userID,
-      String lockToken) {
+  public void deleteAttribute(String nodeID, String attributeName,
+    String userID,
+    String lockToken) {
 
     Node node = nodeRepository.fetchById(nodeID);
 
     checkNodeConflict(nodeID, lockToken,
-        NODE_WITH_ID_MSG + nodeID
-            + " is locked and an invalid lock token was passed; the file attributes cannot be deleted.");
+      NODE_WITH_ID_MSG + nodeID
+        + " is locked and an invalid lock token was passed; the file attributes cannot be deleted.");
 
     node.removeAttribute(attributeName);
 
     // Update last modified information
     if (userID != null) {
       long timeInMillis = Calendar.getInstance().getTimeInMillis();
-      node.setAttribute(CMConstants.ATTR_LAST_MODIFIED_ON, String.valueOf(timeInMillis));
+      node.setAttribute(CMConstants.ATTR_LAST_MODIFIED_ON,
+        String.valueOf(timeInMillis));
       node.setAttribute(CMConstants.ATTR_LAST_MODIFIED_BY, userID);
     }
 
@@ -623,13 +681,14 @@ public class DocumentService {
    * @param lockToken the lock token
    * @return the string
    */
-  public String copy(String nodeID, String newParentID, String userID, String lockToken) {
+  public String copy(String nodeID, String newParentID, String userID,
+    String lockToken) {
     Node node = nodeRepository.fetchById(nodeID);
 
     Node newParent = nodeRepository.fetchById(newParentID);
     checkNodeConflict(newParentID, lockToken,
-        NODE_WITH_ID_MSG + newParentID
-            + " is locked and an invalid lock token was passed; a new node cannot be copied into it.");
+      NODE_WITH_ID_MSG + newParentID
+        + " is locked and an invalid lock token was passed; a new node cannot be copied into it.");
 
     checkCyclicPath(nodeID, newParent);
 
@@ -644,21 +703,22 @@ public class DocumentService {
    * @param userID the user ID
    * @param lockToken the lock token
    */
-  public void move(String nodeID, String newParentID, String userID, String lockToken) {
+  public void move(String nodeID, String newParentID, String userID,
+    String lockToken) {
     Node node = nodeRepository.fetchById(nodeID);
 
     checkNodeConflict(nodeID, lockToken,
-        NODE_WITH_ID_MSG + nodeID
-            + " is locked and an invalid lock token was passed; it cannot be moved.");
+      NODE_WITH_ID_MSG + nodeID
+        + " is locked and an invalid lock token was passed; it cannot be moved.");
 
     Node newParent = nodeRepository.fetchById(newParentID);
     NodeDTO ancConflict = concurrencyControlService
-        .getAncestorFolderWithLockConflict(newParentID, lockToken);
+      .getAncestorFolderWithLockConflict(newParentID, lockToken);
     if (ancConflict != null && ancConflict.getId() != null) {
       throw new QAncestorFolderLockException(
-          NODE_WITH_ID_MSG + newParentID
-              + " is locked and an invalid lock token was passed; a new node cannot be moved into it.",
-          ancConflict.getId(), ancConflict.getName());
+        NODE_WITH_ID_MSG + newParentID
+          + " is locked and an invalid lock token was passed; a new node cannot be moved into it.",
+        ancConflict.getId(), ancConflict.getName());
     }
 
     checkCyclicPath(nodeID, newParent);
@@ -671,8 +731,9 @@ public class DocumentService {
     while (checkedNode != null) {
       if (checkedNode.getId().equals(nodeID)) {
         throw new QInvalidPathException(
-            "Cannot move node with ID " + nodeID + " under node with ID " + newParent.getId()
-                + " since this will create a cyclic path.");
+          "Cannot move node with ID " + nodeID + " under node with ID "
+            + newParent.getId()
+            + " since this will create a cyclic path.");
       }
       checkedNode = checkedNode.getParent();
     }
@@ -696,7 +757,8 @@ public class DocumentService {
           break;
         default:
           newNode.getAttributes()
-              .add(new NodeAttribute(attribute.getName(), attribute.getValue(), newNode));
+            .add(new NodeAttribute(attribute.getName(), attribute.getValue(),
+              newNode));
           break;
       }
     }
@@ -713,15 +775,18 @@ public class DocumentService {
   }
 
   /**
-   * Checks whether a file or folder with the same name, already exists in a specified directory.
+   * Checks whether a file or folder with the same name, already exists in a
+   * specified directory.
    *
-   * @param name The name of the new file which should be checked to find out if a duplicate name
-   * exists
-   * @param parentNodeID The ID of the folder within which a file is a specified name is searched
+   * @param name The name of the new file which should be checked to find out
+   * if a duplicate name exists
+   * @param parentNodeID The ID of the folder within which a file is a
+   * specified name is searched
    * @return true if the specified file name is unique in the folder.
    */
   public boolean isFileNameUnique(String name, String parentNodeID) {
-    JPAQuery<Node> q = JPAQueryUtil.createJpaQueryForName(em, name, parentNodeID);
+    JPAQuery<Node> q = JPAQueryUtil
+      .createJpaQueryForName(em, name, parentNodeID);
 
     boolean isFileNameUnique = true;
 
@@ -736,16 +801,19 @@ public class DocumentService {
 
 
   /**
-   * Checks whether the folder or file names are unique in the specified directory and returns a
-   * lists on the duplicate.
+   * Checks whether the folder or file names are unique in the specified
+   * directory and returns a lists on the duplicate.
    *
-   * @param fileNames The file names which will be checked id it is unique in a provided directory.
-   * @param parentId The id of the parent folder within which duplicate file and folder names are
-   * searched.
+   * @param fileNames The file names which will be checked id it is unique in
+   * a provided directory.
+   * @param parentId The id of the parent folder within which duplicate file
+   * and folder names are searched.
    * @return a lists on the duplicates.
    */
-  public List<String> duplicateFileNamesInDirectory(List<String> fileNames, String parentId) {
-    JPAQuery<Node> q = JPAQueryUtil.createJpaQueryForMultipleNames(em, fileNames, parentId);
+  public List<String> duplicateFileNamesInDirectory(List<String> fileNames,
+    String parentId) {
+    JPAQuery<Node> q = JPAQueryUtil
+      .createJpaQueryForMultipleNames(em, fileNames, parentId);
 
     List<Node> nodeResultList = q.fetchResults().getResults();
     List<String> namesList = new ArrayList<>();
@@ -763,22 +831,25 @@ public class DocumentService {
    *
    * @param file The FileDTO which contain all the new file information
    * @param cmVersion The new version.
-   * @param content The binary content of the new version. It is optional, so null can be used
-   * instead.
+   * @param content The binary content of the new version. It is optional, so
+   * null can be used instead.
    * @param userID The user ID of the creator.
-   * @param lockToken The lock token to be used so as to avoid lock conflicts.
-   * @return CreateFileAndVersionStatusDTO which contains the ids of the newly created file and
-   * version.
+   * @param lockToken The lock token to be used so as to avoid lock
+   * conflicts.
+   * @return CreateFileAndVersionStatusDTO which contains the ids of the newly
+   * created file and version.
    */
-  public CreateFileAndVersionStatusDTO createFileAndVersion(FileDTO file, VersionDTO cmVersion,
-      byte[] content, String userID,
-      String lockToken) {
+  public CreateFileAndVersionStatusDTO createFileAndVersion(FileDTO file,
+    VersionDTO cmVersion,
+    byte[] content, String userID,
+    String lockToken) {
 
     CreateFileAndVersionStatusDTO status = new CreateFileAndVersionStatusDTO();
     String newFileID = createFile(file, userID, lockToken);
     status.setFileID(newFileID);
     status.setVersionID(versionService
-        .createVersion(newFileID, cmVersion, file.getName(), content, userID, lockToken));
+      .createVersion(newFileID, cmVersion, file.getName(), content, userID,
+        lockToken));
     return status;
   }
 }

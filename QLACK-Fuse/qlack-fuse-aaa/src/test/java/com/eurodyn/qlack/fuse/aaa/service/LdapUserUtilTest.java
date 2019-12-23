@@ -39,8 +39,9 @@ public class LdapUserUtilTest {
 
   @Before
   public void init() {
-    ldapUserUtil = new LdapUserUtil(ldapProperties, userRepository, userGroupRepository,
-        userAttributeRepository);
+    ldapUserUtil = new LdapUserUtil(ldapProperties, userRepository,
+      userGroupRepository,
+      userAttributeRepository);
     initTestValues = new InitTestValues();
     user = initTestValues.createUser();
     userDTO = initTestValues.createUserDTO();

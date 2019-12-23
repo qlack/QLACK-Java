@@ -7,7 +7,8 @@ import org.springframework.data.domain.Pageable;
 
 
 /**
- * A class that specifies the criteria that is used in order to search for a specific Key
+ * A class that specifies the criteria that is used in order to search for a
+ * specific Key
  *
  * @author European Dynamics SA
  */
@@ -26,8 +27,9 @@ public class KeySearchCriteria {
   }
 
   /**
-   * A Criteria Builder class that is used to construct CriteriaQuery for searching a specific key
-   * object and its expression that is used to achieve it.
+   * A Criteria Builder class that is used to construct CriteriaQuery for
+   * searching a specific key object and its expression that is used to
+   * achieve it.
    */
   public static class KeySearchCriteriaBuilder {
 
@@ -70,14 +72,15 @@ public class KeySearchCriteria {
     }
 
     /**
-     * A Criteria Query to search for a specific key using criteria such as number of page and the
-     * size of the page
+     * A Criteria Query to search for a specific key using criteria such as
+     * number of page and the size of the page
      *
      * @param pageSize the page size
      * @param page the page number
      * @return the key
      */
-    public KeySearchCriteriaBuilder setPageSizeWithPageNum(int pageSize, int page) {
+    public KeySearchCriteriaBuilder setPageSizeWithPageNum(int pageSize,
+      int page) {
       pageable = PageRequest.of(page, pageSize);
       return this;
     }

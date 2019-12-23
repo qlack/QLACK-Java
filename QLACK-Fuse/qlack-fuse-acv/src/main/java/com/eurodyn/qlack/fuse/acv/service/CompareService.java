@@ -34,8 +34,8 @@ public class CompareService {
    *
    * @param obj1 the first object to compare
    * @param obj2 the second object to compare
-   * @param <T> the type of the objects to compare, so to ensure that the objects are of the same
-   * class
+   * @param <T> the type of the objects to compare, so to ensure that the
+   * objects are of the same class
    * @return true if the objects they have changes, else false
    */
   public <T> boolean hasChanges(@NonNull T obj1, @NonNull T obj2) {
@@ -47,16 +47,17 @@ public class CompareService {
    *
    * @param obj1 the first object to compare
    * @param obj2 the second object to compare
-   * @param <T> the type of the objects to compare, so to ensure that the objects are of the same
-   * class
+   * @param <T> the type of the objects to compare, so to ensure that the
+   * objects are of the same class
    * @return a list with the changes between the two comparing objects
    */
   public <T> List<ChangeDTO> compare(@NonNull T obj1, @NonNull T obj2) {
 
     Diff result = javers.compare(obj1, obj2);
 
-    List<ChangeDTO> changes = result.getChangesByType(ValueChange.class).parallelStream()
-        .map(this::convertToChangeDTO).collect(Collectors.toList());
+    List<ChangeDTO> changes = result.getChangesByType(ValueChange.class)
+      .parallelStream()
+      .map(this::convertToChangeDTO).collect(Collectors.toList());
 
     return Collections.unmodifiableList(changes);
   }
@@ -64,23 +65,26 @@ public class CompareService {
   /**
    * Compares two object versions and returns the changes.
    * <br><br>
-   * Throws a QDoesNotExistException when one of the requested versions doesn't exist.
+   * Throws a QDoesNotExistException when one of the requested versions
+   * doesn't exist.
    *
    * @param object the object to find the requested versions.
    * @param version1 number of the first version to compare with
    * @param version2 number of the second version to compare with
    * @return a list with the changes between the two comparing objects
    */
-  public List<ChangeDTO> compareVersions(Object object, long version1, long version2) {
+  public List<ChangeDTO> compareVersions(Object object, long version1,
+    long version2) {
 
     return compare(versioningService.retrieveVersion(object, version1),
-        versioningService.retrieveVersion(object, version2));
+      versioningService.retrieveVersion(object, version2));
   }
 
   /**
    * Compares an object with a specific version and returns the changes.
    * <br><br>
-   * Throws a QDoesNotExistException when the requested version doesn't exist.
+   * Throws a QDoesNotExistException when the requested version doesn't
+   * exist.
    *
    * @param object the object to compare with the latest version.
    * @param version number of the version to compare with

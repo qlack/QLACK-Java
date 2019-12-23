@@ -37,7 +37,8 @@ public class FileUploadRestTemplateTest {
   @Before
   public void init() {
     fileUploadRestTemplate = spy(FileUploadRestTemplate.class);
-    ReflectionTestUtils.setField(fileUploadRestTemplate, "fileUpload", fileUpload);
+    ReflectionTestUtils
+      .setField(fileUploadRestTemplate, "fileUpload", fileUpload);
   }
 
   @Test
@@ -62,20 +63,25 @@ public class FileUploadRestTemplateTest {
 
   @Test
   public void uploadExceptionTest() {
-    when(multipartHttpServletRequest.getParameter("flowChunkNumber")).thenReturn("null");
+    when(multipartHttpServletRequest.getParameter("flowChunkNumber"))
+      .thenReturn("null");
     fileUploadRestTemplate.upload(multipartHttpServletRequest);
     verify(fileUpload, times(0)).upload(any(DBFileDTO.class));
   }
 
   @Test
   public void uploadWithValuesTest() throws IOException {
-    when(multipartHttpServletRequest.getParameter("flowChunkNumber")).thenReturn("2");
-    when(multipartHttpServletRequest.getParameter("flowChunkSize")).thenReturn("100");
-    when(multipartHttpServletRequest.getParameter("flowTotalChunks")).thenReturn("5");
-    when(multipartHttpServletRequest.getParameter("flowTotalSize")).thenReturn("430");
+    when(multipartHttpServletRequest.getParameter("flowChunkNumber"))
+      .thenReturn("2");
+    when(multipartHttpServletRequest.getParameter("flowChunkSize"))
+      .thenReturn("100");
+    when(multipartHttpServletRequest.getParameter("flowTotalChunks"))
+      .thenReturn("5");
+    when(multipartHttpServletRequest.getParameter("flowTotalSize"))
+      .thenReturn("430");
     when(multipartHttpServletRequest.getFile("file")).thenReturn(multipartFile);
     when(multipartFile.getInputStream())
-        .thenReturn(IOUtils.toInputStream("file", StandardCharsets.UTF_8));
+      .thenReturn(IOUtils.toInputStream("file", StandardCharsets.UTF_8));
     fileUploadRestTemplate.upload(multipartHttpServletRequest);
     verify(fileUpload, times(1)).upload(any(DBFileDTO.class));
   }

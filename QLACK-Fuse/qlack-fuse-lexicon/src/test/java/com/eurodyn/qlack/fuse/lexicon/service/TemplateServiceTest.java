@@ -39,8 +39,10 @@ public class TemplateServiceTest {
   @InjectMocks
   private TemplateService templateService;
 
-  private TemplateRepository templateRepository = mock(TemplateRepository.class);
-  private LanguageRepository languageRepository = mock(LanguageRepository.class);
+  private TemplateRepository templateRepository = mock(
+    TemplateRepository.class);
+  private LanguageRepository languageRepository = mock(
+    LanguageRepository.class);
 
   @Spy
   private TemplateMapper templateMapper;
@@ -58,7 +60,8 @@ public class TemplateServiceTest {
 
   @Before
   public void init() {
-    templateService = new TemplateService(templateRepository, languageRepository, templateMapper);
+    templateService = new TemplateService(templateRepository,
+      languageRepository, templateMapper);
 
     initTestValues = new InitTestValues();
     templateDTO = initTestValues.createTemplateDTO();
@@ -71,22 +74,23 @@ public class TemplateServiceTest {
     templateData.put("template", template);
 
     expectedProcessedTemplate =
-        "<h1>Template example</h1><p>Add attachment description</p>";
+      "<h1>Template example</h1><p>Add attachment description</p>";
 
     expectedProcessedNestedTemplate = "<html>"
-        + "<body>"
-        + "<title>Nested Template</title>"
-        + "<div>"
-        + "<h1>Template example</h1>"
-        + "<p>Add attachment description</p>"
-        + "</div>"
-        + "</body>"
-        + "</html>";
+      + "<body>"
+      + "<title>Nested Template</title>"
+      + "<div>"
+      + "<h1>Template example</h1>"
+      + "<p>Add attachment description</p>"
+      + "</div>"
+      + "</body>"
+      + "</html>";
   }
 
   @Test
   public void testCreateTemplate() {
-    when(languageRepository.fetchById(templateDTO.getLanguageId())).thenReturn(language);
+    when(languageRepository.fetchById(templateDTO.getLanguageId()))
+      .thenReturn(language);
     templateService.createTemplate(templateDTO);
     verify(templateRepository, times(1)).save(any());
   }
@@ -95,8 +99,10 @@ public class TemplateServiceTest {
   public void testUpdateTemplate() {
     templateDTO.setName("Updated name");
     templateDTO.setContent("Updated content");
-    when(templateRepository.fetchById(templateDTO.getId())).thenReturn(template);
-    when(languageRepository.fetchById(templateDTO.getLanguageId())).thenReturn(language);
+    when(templateRepository.fetchById(templateDTO.getId()))
+      .thenReturn(template);
+    when(languageRepository.fetchById(templateDTO.getLanguageId()))
+      .thenReturn(language);
     templateService.updateTemplate(templateDTO);
 
     verify(templateRepository, times(1)).save(template);
@@ -112,9 +118,11 @@ public class TemplateServiceTest {
 
   @Test
   public void testGetTemplate() {
-    when(templateRepository.findById(template.getId())).thenReturn(Optional.of(template));
+    when(templateRepository.findById(template.getId()))
+      .thenReturn(Optional.of(template));
     when(templateMapper.mapToDTO(template)).thenReturn(templateDTO);
-    TemplateDTO foundTemplateDTO = templateService.getTemplate(template.getId());
+    TemplateDTO foundTemplateDTO = templateService
+      .getTemplate(template.getId());
     assertEquals(templateDTO, foundTemplateDTO);
   }
 
@@ -127,58 +135,65 @@ public class TemplateServiceTest {
   public void testGetTemplateContentByName() {
     Map<String, String> expectedTemplateContentsByName = new HashMap<>();
     templates
-        .forEach(t -> expectedTemplateContentsByName.put(t.getLanguage().getId(), t.getContent()));
-    when(templateRepository.findByName(template.getName())).thenReturn(templates);
+      .forEach(t -> expectedTemplateContentsByName
+        .put(t.getLanguage().getId(), t.getContent()));
+    when(templateRepository.findByName(template.getName()))
+      .thenReturn(templates);
     Map<String, String> templateContentByName = templateService
-        .getTemplateContentByName(template.getName());
+      .getTemplateContentByName(template.getName());
     assertEquals(expectedTemplateContentsByName, templateContentByName);
   }
 
   @Test
   public void testGetTemplateContentByNameNotFound() {
     Map<String, String> templateContentByName = templateService
-        .getTemplateContentByName(template.getName());
+      .getTemplateContentByName(template.getName());
     assertNull(templateContentByName);
   }
 
   @Test
   public void testGetTemplateContentByNameAndLanguageId() {
-    when(templateRepository.findByNameAndLanguageId(template.getName(), language.getId()))
-        .thenReturn(template);
+    when(templateRepository
+      .findByNameAndLanguageId(template.getName(), language.getId()))
+      .thenReturn(template);
     String templateContentByName = templateService
-        .getTemplateContentByName(template.getName(), language.getId());
+      .getTemplateContentByName(template.getName(), language.getId());
     assertEquals(template.getContent(), templateContentByName);
   }
 
   @Test
   public void testGetTemplateContentByNameAndLanguageIdNotFound() {
     String templateContentByName = templateService
-        .getTemplateContentByName(template.getName(), language.getId());
+      .getTemplateContentByName(template.getName(), language.getId());
     assertNull(templateContentByName);
   }
 
   @Test
   public void testProcessTemplateByName() {
-    when(templateRepository.findByNameAndLanguageId(template.getName(), language.getId()))
-        .thenReturn(template);
+    when(templateRepository
+      .findByNameAndLanguageId(template.getName(), language.getId()))
+      .thenReturn(template);
     String processedTemplate = templateService
-        .processTemplateByName(template.getName(), language.getId(), templateData);
+      .processTemplateByName(template.getName(), language.getId(),
+        templateData);
     assertEquals(expectedProcessedTemplate, processedTemplate);
   }
 
   @Test
   public void testProcessTemplateByNameAndLocale() {
-    when(templateRepository.findByNameAndLanguageLocale(template.getName(), language.getLocale()))
-        .thenReturn(template);
+    when(templateRepository
+      .findByNameAndLanguageLocale(template.getName(), language.getLocale()))
+      .thenReturn(template);
     String processedTemplate = templateService
-        .processTemplateByNameAndLocale(template.getName(), language.getLocale(), templateData);
+      .processTemplateByNameAndLocale(template.getName(), language.getLocale(),
+        templateData);
     assertEquals(expectedProcessedTemplate, processedTemplate);
   }
 
   @Test
   public void testProcessTemplateNested() {
     String processedTemplate = templateService
-        .processTemplate(initTestValues.nestedTemplateContent, templateData);
+      .processTemplate(initTestValues.nestedTemplateContent, templateData);
     assertEquals(expectedProcessedNestedTemplate, processedTemplate);
   }
 
@@ -186,7 +201,8 @@ public class TemplateServiceTest {
   public void testProcessTemplateException() {
     templateData = new HashMap<>();
     templateData.put("data", null);
-    String processedTemplate = templateService.processTemplate(template.getContent(), templateData);
+    String processedTemplate = templateService
+      .processTemplate(template.getContent(), templateData);
     assertEquals(expectedProcessedTemplate, processedTemplate);
   }
 
@@ -194,10 +210,12 @@ public class TemplateServiceTest {
   public void processTemplateByNameNoValuesTest() {
     String content = "<h1>Template example</h1><p>message</p>";
     template.setContent(content);
-    when(templateRepository.findByNameAndLanguageId(template.getName(), language.getId()))
-        .thenReturn(template);
+    when(templateRepository
+      .findByNameAndLanguageId(template.getName(), language.getId()))
+      .thenReturn(template);
     String processedTemplate = templateService
-        .processTemplateByName(template.getName(), language.getId(), templateData);
+      .processTemplateByName(template.getName(), language.getId(),
+        templateData);
     assertEquals(content, processedTemplate);
   }
 

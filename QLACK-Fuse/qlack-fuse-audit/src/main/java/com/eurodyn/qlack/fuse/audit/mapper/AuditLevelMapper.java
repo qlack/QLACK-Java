@@ -11,6 +11,7 @@ import org.mapstruct.ReportingPolicy;
  * @author European Dynamics SA.
  */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface AuditLevelMapper extends AuditBaseMapper<AuditLevel, AuditLevelDTO> {
+public interface AuditLevelMapper extends
+  AuditBaseMapper<AuditLevel, AuditLevelDTO> {
 
 }

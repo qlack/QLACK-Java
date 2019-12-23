@@ -5,8 +5,9 @@ import lombok.Setter;
 
 
 /**
- * A Simple DTO (Data Transfer Object) that does not contain any business logic. The usage of it is
- * to save and retrieve data for @{@link UserHasOperationDTO} objects.
+ * A Simple DTO (Data Transfer Object) that does not contain any business logic.
+ * The usage of it is to save and retrieve data for @{@link UserHasOperationDTO}
+ * objects.
  *
  * @author European Dynamics SA
  */

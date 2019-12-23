@@ -12,7 +12,7 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.lang.NonNull;
 
 public interface DBFileRepository extends JpaRepository<DBFile, DBFilePK>,
-    QuerydslPredicateExecutor<DBFile> {
+  QuerydslPredicateExecutor<DBFile> {
 
 
   @Override
@@ -33,7 +33,7 @@ public interface DBFileRepository extends JpaRepository<DBFile, DBFilePK>,
   default DBFile getChunk(String id, Long chunkOrder) {
     QDBFile qdbFile = QDBFile.dBFile;
     Predicate predicate = qdbFile.dbFilePK.id.eq(id)
-        .and(qdbFile.dbFilePK.chunkOrder.eq(chunkOrder));
+      .and(qdbFile.dbFilePK.chunkOrder.eq(chunkOrder));
     Optional<DBFile> optional = findOne(predicate);
     return optional.orElse(null);
   }

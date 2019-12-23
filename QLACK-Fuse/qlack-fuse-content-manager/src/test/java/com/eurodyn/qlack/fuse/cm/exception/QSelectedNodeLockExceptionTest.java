@@ -12,7 +12,8 @@ public class QSelectedNodeLockExceptionTest {
   @Test
   public void constructorWithMessageTest() {
     String message = "exception message";
-    QSelectedNodeLockException qSelectedNodeLockException = new QSelectedNodeLockException(message);
+    QSelectedNodeLockException qSelectedNodeLockException = new QSelectedNodeLockException(
+      message);
     assertEquals(message, qSelectedNodeLockException.getMessage());
   }
 
@@ -22,11 +23,14 @@ public class QSelectedNodeLockExceptionTest {
     String conflictNodeID = "conflictNodeID";
     String conflictNodeName = "conflictNodeName";
 
-    QSelectedNodeLockException qSelectedNodeLockException = new QSelectedNodeLockException(message,
-        conflictNodeID, conflictNodeName);
+    QSelectedNodeLockException qSelectedNodeLockException = new QSelectedNodeLockException(
+      message,
+      conflictNodeID, conflictNodeName);
     assertEquals(message, qSelectedNodeLockException.getMessage());
-    assertEquals(conflictNodeID, qSelectedNodeLockException.getConflictNodeID());
-    assertEquals(conflictNodeName, qSelectedNodeLockException.getConflictNodeName());
+    assertEquals(conflictNodeID,
+      qSelectedNodeLockException.getConflictNodeID());
+    assertEquals(conflictNodeName,
+      qSelectedNodeLockException.getConflictNodeName());
   }
 
 }

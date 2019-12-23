@@ -16,7 +16,8 @@ import org.mapstruct.Mapping;
 public interface SettingMapper {
 
   /**
-   * Maps a list of {@link Setting} objects to a list of {@link SettingDTO} objects
+   * Maps a list of {@link Setting} objects to a list of {@link SettingDTO}
+   * objects
    *
    * @param o the list of {@link Setting} objects
    * @return a list of {@link SettingDTO}
@@ -32,8 +33,8 @@ public interface SettingMapper {
   SettingDTO map(Setting o);
 
   /**
-   * Maps the group property of {@link Setting} class to the name property of the {@link GroupDTO}
-   * class
+   * Maps the group property of {@link Setting} class to the name property of
+   * the {@link GroupDTO} class
    *
    * @param o the {@link Setting} object
    * @return a {@link GroupDTO} object
@@ -42,7 +43,8 @@ public interface SettingMapper {
   GroupDTO mapToGroupDTO(Setting o);
 
   /**
-   * Maps a list of {@link Setting} objects to a listof {@link GroupDTO} objects
+   * Maps a list of {@link Setting} objects to a listof {@link GroupDTO}
+   * objects
    *
    * @param o the list of {@link Setting} objects
    * @return a list of {@link GroupDTO} objects
@@ -50,8 +52,8 @@ public interface SettingMapper {
   List<GroupDTO> mapToGroupDTO(List<Setting> o);
 
   /**
-   * Maps a {@link SettingDTO} to entity. The properties 'id', 'dbversion' are excluded from
-   * mapping.
+   * Maps a {@link SettingDTO} to entity. The properties 'id', 'dbversion' are
+   * excluded from mapping.
    *
    * @param dto the {@link SettingDTO} object
    * @return a {@link Setting} object

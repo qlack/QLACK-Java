@@ -32,7 +32,8 @@ public class ResourceServiceTest {
   private ResourceService resourceService;
 
   private InitTestValues initTestValues;
-  private ResourceRepository resourceRepository = mock(ResourceRepository.class);
+  private ResourceRepository resourceRepository = mock(
+    ResourceRepository.class);
   private ResourceDTO resourceDTO;
   private Resource resource;
 
@@ -58,7 +59,8 @@ public class ResourceServiceTest {
 
   @Test
   public void testUpdateResource() {
-    when(resourceRepository.fetchById(resourceDTO.getId())).thenReturn(resource);
+    when(resourceRepository.fetchById(resourceDTO.getId()))
+      .thenReturn(resource);
     resourceService.updateResource(resourceDTO);
     assertEquals(resourceDTO.getId(), resourceDTO.getId());
     verify(resourceMapper, times(1)).mapToExistingEntity(resourceDTO, resource);
@@ -81,7 +83,8 @@ public class ResourceServiceTest {
 
     for (int i = 0; i < resources.size(); i++) {
       ids.add(resources.get(i).getId());
-      when(resourceRepository.fetchById(resources.get(i).getId())).thenReturn(resources2.get(i));
+      when(resourceRepository.fetchById(resources.get(i).getId()))
+        .thenReturn(resources2.get(i));
     }
     resourceService.deleteResources(ids);
     verify(resourceRepository, times(ids.size())).delete(any());
@@ -90,7 +93,8 @@ public class ResourceServiceTest {
   @Test
   public void testDeleteResourceByObjectId() {
     Resource resource2 = initTestValues.createResource();
-    when(resourceRepository.findByObjectId(resource.getObjectId())).thenReturn(resource2);
+    when(resourceRepository.findByObjectId(resource.getObjectId()))
+      .thenReturn(resource2);
     resourceService.deleteResourceByObjectId(resource.getObjectId());
     verify(resourceRepository, times(1)).delete(resource2);
   }
@@ -105,7 +109,7 @@ public class ResourceServiceTest {
     for (int i = 0; i < resources.size(); i++) {
       ids.add(resources.get(i).getId());
       when(resourceRepository.findByObjectId(resources.get(i).getObjectId()))
-          .thenReturn(resources2.get(i));
+        .thenReturn(resources2.get(i));
     }
     resourceService.deleteResourcesByObjectIds(ids);
     verify(resourceRepository, times(ids.size())).delete(any());
@@ -113,17 +117,21 @@ public class ResourceServiceTest {
 
   @Test
   public void testGetResource() {
-    when(resourceRepository.fetchById(resourceDTO.getId())).thenReturn(resource);
+    when(resourceRepository.fetchById(resourceDTO.getId()))
+      .thenReturn(resource);
     when(resourceMapper.mapToDTO(resource)).thenReturn(resourceDTO);
-    ResourceDTO foundResourceDTO = resourceService.getResourceById(resourceDTO.getId());
+    ResourceDTO foundResourceDTO = resourceService
+      .getResourceById(resourceDTO.getId());
     assertEquals(resourceDTO, foundResourceDTO);
   }
 
   @Test
   public void testGetResourceByObjectId() {
-    when(resourceRepository.findByObjectId(resourceDTO.getObjectId())).thenReturn(resource);
+    when(resourceRepository.findByObjectId(resourceDTO.getObjectId()))
+      .thenReturn(resource);
     when(resourceMapper.mapToDTO(resource)).thenReturn(resourceDTO);
-    ResourceDTO foundResourceDTO = resourceService.getResourceByObjectId(resourceDTO.getObjectId());
+    ResourceDTO foundResourceDTO = resourceService
+      .getResourceByObjectId(resourceDTO.getObjectId());
     assertEquals(resourceDTO, foundResourceDTO);
   }
 }

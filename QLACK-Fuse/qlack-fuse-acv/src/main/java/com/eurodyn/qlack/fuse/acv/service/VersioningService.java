@@ -19,7 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * Provides functionality to persist and retrieve versions of a given entity object.
+ * Provides functionality to persist and retrieve versions of a given entity
+ * object.
  *
  * @author European Dynamics SA
  */
@@ -36,20 +37,23 @@ public class VersioningService {
   }
 
   /**
-   * Persists a current state of a given domain object, creating so a createVersion of this object.
+   * Persists a current state of a given domain object, creating so a
+   * createVersion of this object.
    *
    * @param author the author who commits the changes
    * @param obj the object to be committed
    * @param commitMessage a message regarding the commit
    * @return the number of the persisted version
    */
-  public long createVersion(@NonNull String author, @NonNull Object obj, String commitMessage) {
+  public long createVersion(@NonNull String author, @NonNull Object obj,
+    String commitMessage) {
 
     return createVersion(author, obj, commitMessage, new HashMap<>());
   }
 
   /**
-   * Persists a current state of a given domain object, creating so a createVersion of this object.
+   * Persists a current state of a given domain object, creating so a
+   * createVersion of this object.
    *
    * @param author the author who commits the changes
    * @param obj the object to be committed
@@ -57,8 +61,9 @@ public class VersioningService {
    * @param commitProperties additional commit properties
    * @return the new version number
    */
-  public long createVersion(@NonNull String author, @NonNull Object obj, String commitMessage,
-      @NonNull Map<String, String> commitProperties) {
+  public long createVersion(@NonNull String author, @NonNull Object obj,
+    String commitMessage,
+    @NonNull Map<String, String> commitProperties) {
 
     commitProperties.put(COMMIT_MESSAGE_KEY, commitMessage);
     Commit commit = javers.commit(author, obj, commitProperties);
@@ -82,7 +87,8 @@ public class VersioningService {
   /**
    * Returns a specific version of the requested object.
    * <br><br>
-   * Throws a QDoesNotExistException when the requested version does not exist.
+   * Throws a QDoesNotExistException when the requested version does not
+   * exist.
    *
    * @param object the object to retrieve the specific versions for
    * @param version the version to retrieve
@@ -93,8 +99,8 @@ public class VersioningService {
     JqlQuery query = QueryBuilder.byInstance(object).build();
 
     List<T> versions = javers.findShadowsAndStream(query)
-        .filter(shadow -> shadow.getCommitId().getMajorId() == version)
-        .map(shadow -> (T) shadow.get()).collect(Collectors.toList());
+      .filter(shadow -> shadow.getCommitId().getMajorId() == version)
+      .map(shadow -> (T) shadow.get()).collect(Collectors.toList());
 
     if (versions.isEmpty()) {
       throw new QDoesNotExistException("version doesn't exist");
@@ -106,7 +112,8 @@ public class VersioningService {
   /**
    * Returns the latest version of the requested object.
    * <br><br>
-   * Throws a QDoesNotExistException when the requested version does not exist.
+   * Throws a QDoesNotExistException when the requested version does not
+   * exist.
    *
    * @param object the object to retrieve the latest version for
    * @param <T> the class of the object to retrieve the latest version for
@@ -116,7 +123,8 @@ public class VersioningService {
 
     JqlQuery query = QueryBuilder.byInstance(object).build();
 
-    Optional<Shadow<Object>> versions = javers.findShadowsAndStream(query).findFirst();
+    Optional<Shadow<Object>> versions = javers.findShadowsAndStream(query)
+      .findFirst();
 
     if (versions.isPresent()) {
       return (T) versions.get().get();
@@ -127,7 +135,7 @@ public class VersioningService {
 
   private List<VersionDTO> findShadowsAndConvertToVersions(JqlQuery query) {
     List<VersionDTO> versions = javers.findShadowsAndStream(query)
-        .map(this::convertToVersionDTO).collect(Collectors.toList());
+      .map(this::convertToVersionDTO).collect(Collectors.toList());
 
     return Collections.unmodifiableList(versions);
   }
@@ -136,10 +144,10 @@ public class VersioningService {
     CommitMetadata metadata = shadow.getCommitMetadata();
 
     return VersionDTO.builder().author(metadata.getAuthor())
-        .commitDate(metadata.getCommitDateInstant())
-        .commitMessage(metadata.getProperties().get(COMMIT_MESSAGE_KEY))
-        .version(shadow.getCommitId().getMajorId())
-        .build();
+      .commitDate(metadata.getCommitDateInstant())
+      .commitMessage(metadata.getProperties().get(COMMIT_MESSAGE_KEY))
+      .version(shadow.getCommitId().getMajorId())
+      .build();
   }
 
 }

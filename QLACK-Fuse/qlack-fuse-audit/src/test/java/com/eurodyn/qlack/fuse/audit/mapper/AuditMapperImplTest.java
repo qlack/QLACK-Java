@@ -1,5 +1,9 @@
 package com.eurodyn.qlack.fuse.audit.mapper;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import com.eurodyn.qlack.fuse.audit.InitTestValues;
 import com.eurodyn.qlack.fuse.audit.dto.AuditDTO;
 import com.eurodyn.qlack.fuse.audit.dto.AuditLevelDTO;
@@ -7,20 +11,13 @@ import com.eurodyn.qlack.fuse.audit.dto.AuditTraceDTO;
 import com.eurodyn.qlack.fuse.audit.model.Audit;
 import com.eurodyn.qlack.fuse.audit.model.AuditLevel;
 import com.eurodyn.qlack.fuse.audit.model.AuditTrace;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.test.context.TestPropertySource;
-
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AuditMapperImplTest {
@@ -64,13 +61,14 @@ public class AuditMapperImplTest {
   }
 
   @Test
-  public void mapToDTOTest(){
+  public void mapToDTOTest() {
     audit.getLevelId().setName(null);
     AuditDTO auditDTO = auditMapper.mapToDTO(audit);
     audit.setLevelId(null);
-    assertEquals(null,auditDTO.getLevel());
+    assertEquals(null, auditDTO.getLevel());
 
   }
+
   @Test
   public void mapToEntityNullTest() {
     Audit audit = auditMapper.mapToEntity((AuditDTO) null);
@@ -78,34 +76,34 @@ public class AuditMapperImplTest {
   }
 
   @Test
-  public void mapToExistingEntityTest(){
+  public void mapToExistingEntityTest() {
     auditMapper.mapToExistingEntity(auditDTO, audit);
     auditDTO.setLevel(null);
-    assertEquals(null,auditDTO.getLevel());
+    assertEquals(null, auditDTO.getLevel());
   }
 
   @Test
-  public void mapToExistingEntityNullTest(){
+  public void mapToExistingEntityNullTest() {
     auditMapper.mapToExistingEntity(null, audit);
     auditDTO.setLevel(null);
-    assertEquals(null,auditDTO.getLevel());
+    assertEquals(null, auditDTO.getLevel());
   }
 
 
   @Test
-  public void mapToExistingEntitySetTraceNullTest(){
+  public void mapToExistingEntitySetTraceNullTest() {
     auditDTO.setTrace(null);
-    assertNull(null,auditDTO.getTrace());
+    assertNull(null, auditDTO.getTrace());
     audit.setTrace(null);
     assertNull(audit.getTrace());
-    auditMapper.mapToExistingEntity(auditDTO,audit);
+    auditMapper.mapToExistingEntity(auditDTO, audit);
   }
 
 
   @Test
   public void mapToExistingEntityNewObjectTest() {
     audit.setTrace(null);
-    auditMapper.mapToExistingEntity(auditDTO,audit);
+    auditMapper.mapToExistingEntity(auditDTO, audit);
     assertNotNull(audit.getTrace());
 
   }
@@ -113,8 +111,8 @@ public class AuditMapperImplTest {
 
   @Test
   public void mapToEntityListNullTest() {
-    assertEquals(null, auditMapper.mapToEntity((List<AuditDTO> )null));
-    List<Audit> audits = auditMapper.mapToEntity((List<AuditDTO> ) null);
+    assertEquals(null, auditMapper.mapToEntity((List<AuditDTO>) null));
+    List<Audit> audits = auditMapper.mapToEntity((List<AuditDTO>) null);
     assertEquals(null, audits);
 
   }
@@ -122,7 +120,7 @@ public class AuditMapperImplTest {
 
   @Test
   public void mapToDTOListNullTest() {
-    List<AuditDTO> audits = auditMapper.mapToDTO((List<Audit> ) null);
+    List<AuditDTO> audits = auditMapper.mapToDTO((List<Audit>) null);
     assertEquals(null, audits);
 
   }
@@ -139,14 +137,14 @@ public class AuditMapperImplTest {
   public void versionAttributeNullTest() {
     auditDTO = auditMapper.mapToDTO((Audit) null);
     audit.setLevelId(null);
-   assertEquals(null, audit.getLevelId());
+    assertEquals(null, audit.getLevelId());
   }
 
   @Test
-  public void mapToExistingDTONullTest(){
+  public void mapToExistingDTONullTest() {
     auditDTO.setLevel(null);
-    auditMapper.mapToExistingEntity(null,audit);
-    assertEquals(null,auditDTO.getLevel());
+    auditMapper.mapToExistingEntity(null, audit);
+    assertEquals(null, auditDTO.getLevel());
   }
 
 }

@@ -1,46 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <groupId>com.eurodyn.qlack.util</groupId>
-        <artifactId>qlack-util</artifactId>
-        <version>3.2.4-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>com.eurodyn.qlack.util</groupId>
+    <artifactId>qlack-util</artifactId>
+    <version>3.2.4-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>qlack-util-data</artifactId>
+  <artifactId>qlack-util-data</artifactId>
 
-    <dependencies>
-        <!-- QLACK dependencies -->
-        <dependency>
-            <groupId>com.eurodyn.qlack.common</groupId>
-            <artifactId>qlack-common</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+  <dependencies>
+    <!-- QLACK dependencies -->
+    <dependency>
+      <groupId>com.eurodyn.qlack.common</groupId>
+      <artifactId>qlack-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
-        <!-- Spring dependencies -->
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-commons</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-        </dependency>
+    <!-- Spring dependencies -->
+    <dependency>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+    </dependency>
 
-        <!-- Third-party dependencies -->
-        <dependency>
-            <groupId>com.github.bohnman</groupId>
-            <artifactId>squiggly-filter-jackson</artifactId>
-            <version>${squiggly-filter-jackson}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-        </dependency>
-    </dependencies>
-
+    <!-- Third-party dependencies -->
+    <dependency>
+      <groupId>com.github.bohnman</groupId>
+      <artifactId>squiggly-filter-jackson</artifactId>
+      <version>${squiggly-filter-jackson}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.aspectj</groupId>
+      <artifactId>aspectjweaver</artifactId>
+    </dependency>
+  </dependencies>
 </project>

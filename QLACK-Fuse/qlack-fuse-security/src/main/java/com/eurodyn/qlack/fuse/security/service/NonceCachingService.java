@@ -44,8 +44,9 @@ public class NonceCachingService {
       return null;
     }
 
-    return Objects.requireNonNull(cacheManager.getCache(NONCE_CACHE_PREFIX + username))
-        .get(nonce, type);
+    return Objects
+      .requireNonNull(cacheManager.getCache(NONCE_CACHE_PREFIX + username))
+      .get(nonce, type);
   }
 
   /**
@@ -62,7 +63,8 @@ public class NonceCachingService {
       return;
     }
 
-    Objects.requireNonNull(cacheManager.getCache(NONCE_CACHE_PREFIX + username)).put(nonce, value);
+    Objects.requireNonNull(cacheManager.getCache(NONCE_CACHE_PREFIX + username))
+      .put(nonce, value);
   }
 
   /**
@@ -76,7 +78,7 @@ public class NonceCachingService {
     }
 
     Optional.ofNullable(cacheManager.getCache(NONCE_CACHE_PREFIX + username))
-        .ifPresent(Cache::clear);
+      .ifPresent(Cache::clear);
   }
 
 }

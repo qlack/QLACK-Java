@@ -44,7 +44,8 @@ public class VersionAttributeMapperImplTest {
 
   @Test
   public void mapToDTONullTest() {
-    versionAttributeDTO = versionAttributeMapper.mapToDTO((VersionAttribute) null);
+    versionAttributeDTO = versionAttributeMapper
+      .mapToDTO((VersionAttribute) null);
     assertEquals(null, versionAttributeDTO);
   }
 
@@ -56,13 +57,15 @@ public class VersionAttributeMapperImplTest {
 
   @Test
   public void mapToDTOListNullTest() {
-    versionAttributeDTOS = versionAttributeMapper.mapToDTO((List<VersionAttribute>) null);
+    versionAttributeDTOS = versionAttributeMapper
+      .mapToDTO((List<VersionAttribute>) null);
     assertEquals(null, versionAttributeDTOS);
   }
 
   @Test
   public void mapListToListDTOTest() {
-    versionAttributeDTOS = versionAttributeMapper.mapToDTO(versionAttributeList);
+    versionAttributeDTOS = versionAttributeMapper
+      .mapToDTO(versionAttributeList);
     versionAttributeList.add(versionAttribute);
     assertNotNull(versionAttributeList);
     versionAttributeDTO = versionAttributeMapper.mapToDTO(versionAttribute);
@@ -73,14 +76,15 @@ public class VersionAttributeMapperImplTest {
 
   @Test
   public void mapToEntityNullTest() {
-    versionAttribute = versionAttributeMapper.mapToEntity((VersionAttributeDTO) null);
+    versionAttribute = versionAttributeMapper
+      .mapToEntity((VersionAttributeDTO) null);
     assertEquals(null, versionAttribute);
   }
 
   @Test
   public void mapToEntityListNullTest() {
     assertNull(versionAttributeList = versionAttributeMapper
-        .mapToEntity((List<VersionAttributeDTO>) null));
+      .mapToEntity((List<VersionAttributeDTO>) null));
   }
 
   @Test
@@ -93,7 +97,8 @@ public class VersionAttributeMapperImplTest {
   public void mapEntityListToDTOListTest() {
     versionAttributeDTOS.add(versionAttributeDTO);
     assertNotNull(versionAttributeDTOS);
-    versionAttributeList = versionAttributeMapper.mapToEntity(versionAttributeDTOS);
+    versionAttributeList = versionAttributeMapper
+      .mapToEntity(versionAttributeDTOS);
     versionAttributeList.add(versionAttribute);
     assertNotNull(versionAttributeList);
   }
@@ -102,7 +107,8 @@ public class VersionAttributeMapperImplTest {
   public void mapListEntityToDTOListTest() {
     versionAttributeList.add(versionAttribute);
     assertNotNull(versionAttributeList);
-    versionAttributeDTOS = versionAttributeMapper.mapToDTO(versionAttributeList);
+    versionAttributeDTOS = versionAttributeMapper
+      .mapToDTO(versionAttributeList);
     versionAttributeDTOS.add(versionAttributeDTO);
     assertNotNull(versionAttributeList);
   }
@@ -113,7 +119,8 @@ public class VersionAttributeMapperImplTest {
     version.setId("id");
     versionAttribute.setVersion(version);
     versionAttributeDTO = versionAttributeMapper.mapToDTO(versionAttribute);
-    assertEquals(versionAttribute.getVersion().getId(), versionAttributeDTO.getVersionId());
+    assertEquals(versionAttribute.getVersion().getId(),
+      versionAttributeDTO.getVersionId());
   }
 
   @Test
@@ -127,7 +134,8 @@ public class VersionAttributeMapperImplTest {
 
   @Test
   public void versionAttributeNullTest() {
-    versionAttributeDTO = versionAttributeMapper.mapToDTO((VersionAttribute) null);
+    versionAttributeDTO = versionAttributeMapper
+      .mapToDTO((VersionAttribute) null);
     assertNull(versionAttributeDTO);
   }
 

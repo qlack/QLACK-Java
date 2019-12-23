@@ -11,8 +11,8 @@ public class JWTClaimsRequestDTO extends JWTTokenDTO {
   private String secret;
 
   /**
-   * The amount of seconds local and remote clocks can drift
-   * to still consider the expiration of the JWT valid.
+   * The amount of seconds local and remote clocks can drift to still consider
+   * the expiration of the JWT valid.
    */
   private long allowedTimeSkew = 60;
 

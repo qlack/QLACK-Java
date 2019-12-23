@@ -1,4 +1,4 @@
-# QLACK logger module
+# QLACK Util - Logger
 
 This module provides method execution logging functionality based on the `@Logged` annotation and AspectJ.
 
@@ -7,15 +7,10 @@ This module provides method execution logging functionality based on the `@Logge
 ### Add qlack-util-logger dependency to your pom.xml:
 
 ```xml
-    <properties>
-        <!-- ... -->
-        <version.qlack>3.0.0-SNAPSHOT</version.qlack>
-    </properties>
-
     <dependency>
         <groupId>com.eurodyn.qlack.util</groupId>
         <artifactId>qlack-util-logger</artifactId>
-        <version>${version.qlack}</version>
+        <version>${qlack.version}</version>
     </dependency>
 ```
 

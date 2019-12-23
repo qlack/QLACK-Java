@@ -4,8 +4,8 @@ import com.eurodyn.qlack.fuse.aaa.model.Resource;
 import org.springframework.stereotype.Repository;
 
 /**
- * A Repository interface for Resource model. It is used to define a number of abstract crud
- * methods.
+ * A Repository interface for Resource model. It is used to define a number of
+ * abstract crud methods.
  *
  * @author European Dynamics SA
  */

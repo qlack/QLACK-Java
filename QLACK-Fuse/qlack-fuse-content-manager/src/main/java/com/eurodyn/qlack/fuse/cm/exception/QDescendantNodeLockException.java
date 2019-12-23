@@ -10,7 +10,7 @@ public class QDescendantNodeLockException extends QNodeLockException {
   }
 
   public QDescendantNodeLockException(String message, String conflictNodeID,
-      String conflictNodeName) {
+    String conflictNodeName) {
     super(message, conflictNodeID, conflictNodeName);
   }
 }

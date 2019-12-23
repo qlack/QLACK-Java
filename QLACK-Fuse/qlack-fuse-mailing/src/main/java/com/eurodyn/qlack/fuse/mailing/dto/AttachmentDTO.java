@@ -28,7 +28,8 @@ public class AttachmentDTO implements Serializable {
   private String filename;
 
   /**
-   * A {@link java.lang.String} representing the Content-Type of the attachment
+   * A {@link java.lang.String} representing the Content-Type of the
+   * attachment
    */
   private String contentType;
 
@@ -54,7 +55,8 @@ public class AttachmentDTO implements Serializable {
   public String toString() {
     StringBuilder strBuf = new StringBuilder();
     strBuf.append("Attachment id is :").append(getId()).append("file name is:")
-        .append(getFilename()).append("content type is :").append(getContentType());
+      .append(getFilename()).append("content type is :")
+      .append(getContentType());
     return strBuf.toString();
   }
 
@@ -67,15 +69,16 @@ public class AttachmentDTO implements Serializable {
       return false;
     }
     final AttachmentDTO other = (AttachmentDTO) obj;
-    if ((this.getId() == null) ? (other.getId() != null) : !this.id.equals(other.id)) {
+    if ((this.getId() == null) ? (other.getId() != null)
+      : !this.id.equals(other.id)) {
       return false;
     }
     if ((this.getFilename() == null) ? (other.getFilename() != null)
-        : !this.filename.equals(other.filename)) {
+      : !this.filename.equals(other.filename)) {
       return false;
     }
     if ((this.getContentType() == null) ? (other.getContentType() != null)
-        : !this.contentType.equals(other.contentType)) {
+      : !this.contentType.equals(other.contentType)) {
       return false;
     }
     return Arrays.equals(this.data, other.data);
@@ -85,8 +88,11 @@ public class AttachmentDTO implements Serializable {
   public int hashCode() {
     int hash = 7;
     hash = 13 * hash + (this.getId() != null ? this.getId().hashCode() : 0);
-    hash = 13 * hash + (this.getFilename() != null ? this.getFilename().hashCode() : 0);
-    hash = 13 * hash + (this.getContentType() != null ? this.getContentType().hashCode() : 0);
+    hash =
+      13 * hash + (this.getFilename() != null ? this.getFilename().hashCode()
+        : 0);
+    hash = 13 * hash + (this.getContentType() != null ? this.getContentType()
+      .hashCode() : 0);
     hash = 13 * hash + Arrays.hashCode(this.getData());
     return hash;
   }

@@ -10,7 +10,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Audit Level entity, that holds all information about the level of an Audit.
+ * The Audit Level entity, that holds all information about the level of an
+ * Audit.
  *
  * @author European Dynamics SA.
  */
@@ -23,7 +24,8 @@ public class AuditLevel extends QlackBaseModel {
   /**
    * the cache of the Audit level
    */
-  private static Cache<String, String> cache = CacheBuilder.newBuilder().build();
+  private static Cache<String, String> cache = CacheBuilder.newBuilder()
+    .build();
 
   /**
    * the name of the Audit level

@@ -5,12 +5,14 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 /**
- * A Repository interface for UserHasOperation.It is used to define a number of crud methods.
+ * A Repository interface for UserHasOperation.It is used to define a number of
+ * crud methods.
  *
  * @author European Dynamics SA
  */
 @Repository
-public interface UserHasOperationRepository extends AAARepository<UserHasOperation, String> {
+public interface UserHasOperationRepository extends
+  AAARepository<UserHasOperation, String> {
 
   /**
    * Finds a {@link UserHasOperation} object
@@ -21,13 +23,15 @@ public interface UserHasOperationRepository extends AAARepository<UserHasOperati
   List<UserHasOperation> findByUserId(String userId);
 
   /**
-   * Finds a {@link UserHasOperation} object by its userId and the operationName
+   * Finds a {@link UserHasOperation} object by its userId and the
+   * operationName
    *
    * @param userId the userId
    * @param operationName the operationName
    * @return a {@link UserHasOperation} object
    */
-  UserHasOperation findByUserIdAndOperationName(String userId, String operationName);
+  UserHasOperation findByUserIdAndOperationName(String userId,
+    String operationName);
 
   /**
    * Finds a {@link UserHasOperation} object
@@ -37,8 +41,9 @@ public interface UserHasOperationRepository extends AAARepository<UserHasOperati
    * @param operationName the operationName
    * @return a {@link UserHasOperation} object
    */
-  UserHasOperation findByUserIdAndResourceIdAndOperationName(String userId, String resourceId,
-      String operationName);
+  UserHasOperation findByUserIdAndResourceIdAndOperationName(String userId,
+    String resourceId,
+    String operationName);
 
   /**
    * Finds a list of {@link UserHasOperation}
@@ -55,5 +60,6 @@ public interface UserHasOperationRepository extends AAARepository<UserHasOperati
    * @param operationName the operationName
    * @return a list of {@link UserHasOperation} objects
    */
-  List<UserHasOperation> findByResourceIdAndOperationName(String resourceId, String operationName);
+  List<UserHasOperation> findByResourceIdAndOperationName(String resourceId,
+    String operationName);
 }

@@ -29,7 +29,8 @@ public class NodeAttributeMapperTest {
     Node node = initTestValues.createNode("nodeId");
     nodeAttributeList = initTestValues.createAttributes(node);
     nodeAttributeDTO = initTestValues.createNodeAttributeDTO();
-    nodeAttributeListDTO = initTestValues.createNodeAttributesDTOList(nodeAttributeDTO);
+    nodeAttributeListDTO = initTestValues
+      .createNodeAttributesDTOList(nodeAttributeDTO);
     nodeAttribute = initTestValues.createNodeAttribute();
   }
 

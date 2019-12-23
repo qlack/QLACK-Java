@@ -8,7 +8,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
 /**
- * A repository interface for Session.It is used to define a number of abstract crud methods
+ * A repository interface for Session.It is used to define a number of abstract
+ * crud methods
  *
  * @author European Dynamics
  */

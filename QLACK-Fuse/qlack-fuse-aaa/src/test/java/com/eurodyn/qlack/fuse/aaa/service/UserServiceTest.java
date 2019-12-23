@@ -78,7 +78,8 @@ public class UserServiceTest {
 
   private AccountingService accountingService = mock(AccountingService.class);
   private UserRepository userRepository = mock(UserRepository.class);
-  private UserAttributeRepository userAttributeRepository = mock(UserAttributeRepository.class);
+  private UserAttributeRepository userAttributeRepository = mock(
+    UserAttributeRepository.class);
   private SessionRepository sessionRepository = mock(SessionRepository.class);
   private PasswordEncoder passwordEncoder = mock(PasswordEncoder.class);
   private InitTestValues initTestValues;
@@ -97,9 +98,9 @@ public class UserServiceTest {
   public void init() {
     initTestValues = new InitTestValues();
     userService = new UserService(accountingService, ldapUserUtil,
-        userRepository, userAttributeRepository,
-        sessionRepository, userGroupRepository, userMapper,
-        sessionMapper, userAttributeMapper, passwordEncoder);
+      userRepository, userAttributeRepository,
+      sessionRepository, userGroupRepository, userMapper,
+      sessionMapper, userAttributeMapper, passwordEncoder);
     qUser = new QUser("user");
     qSession = new QSession(("session"));
     user = initTestValues.createUser();
@@ -109,7 +110,8 @@ public class UserServiceTest {
     userGroup = initTestValues.createUserGroup();
     userGroupNoChildren = initTestValues.createUserGroupNoChildren();
     userAttributeDTOList = initTestValues.createUserAttributesDTO(user.getId());
-    userSearchCriteriaBuilder = UserSearchCriteria.UserSearchCriteriaBuilder.createCriteria();
+    userSearchCriteriaBuilder = UserSearchCriteria.UserSearchCriteriaBuilder
+      .createCriteria();
     userSearchCriteria = userSearchCriteriaBuilder.build();
   }
 
@@ -184,13 +186,15 @@ public class UserServiceTest {
     userDTO.setUsername("updated username");
 
     int index = 0;
-    for (Iterator<UserAttributeDTO> iter = userDTO.getUserAttributes().iterator();
-        iter.hasNext(); ) {
+    for (
+      Iterator<UserAttributeDTO> iter = userDTO.getUserAttributes().iterator();
+      iter.hasNext(); ) {
       UserAttributeDTO u = iter.next();
       u.setData("updated " + u.getData());
 
-      when(userAttributeRepository.findByUserIdAndName(user.getId(), u.getName()))
-          .thenReturn(user.getUserAttributes().get(index));
+      when(
+        userAttributeRepository.findByUserIdAndName(user.getId(), u.getName()))
+        .thenReturn(user.getUserAttributes().get(index));
       index++;
     }
 
@@ -322,7 +326,8 @@ public class UserServiceTest {
   public void testCanNotAuthenticate() {
     user.setSalt(null);
     when(userRepository.findByUsername(user.getUsername())).thenReturn(user);
-    String userId = userService.canAuthenticate(user.getUsername(), user.getPassword());
+    String userId = userService
+      .canAuthenticate(user.getUsername(), user.getPassword());
     verify(userRepository, times(1)).findByUsername(user.getUsername());
     assertNotEquals(userId, user.getId());
   }
@@ -332,7 +337,8 @@ public class UserServiceTest {
     when(userRepository.findByUsername(user.getUsername())).thenReturn(null);
     when(ldapUserUtil.getProperties()).thenReturn(properties);
     when(ldapUserUtil.getProperties().isEnabled()).thenReturn(true);
-    String userId = userService.canAuthenticate(user.getUsername(), user.getPassword());
+    String userId = userService
+      .canAuthenticate(user.getUsername(), user.getPassword());
     verify(userRepository, times(1)).findByUsername(user.getUsername());
     assertNotEquals(userId, user.getId());
   }
@@ -341,7 +347,8 @@ public class UserServiceTest {
   public void testCanAuthenticate() {
     when(passwordEncoder.matches(any(), any())).thenReturn(true);
     when(userRepository.findByUsername(user.getUsername())).thenReturn(user);
-    String userId = userService.canAuthenticate(user.getUsername(), user.getPassword());
+    String userId = userService
+      .canAuthenticate(user.getUsername(), user.getPassword());
     verify(userRepository, times(1)).findByUsername(user.getUsername());
     assertEquals(userId, user.getId());
   }
@@ -353,7 +360,8 @@ public class UserServiceTest {
     when(ldapUserUtil.getProperties().isEnabled()).thenReturn(true);
     when(ldapUserUtil.canAuthenticate(any(), any())).thenReturn(user.getId());
     when(userRepository.findByUsername(user.getUsername())).thenReturn(user);
-    String userId = userService.canAuthenticate(user.getUsername(), user.getPassword());
+    String userId = userService
+      .canAuthenticate(user.getUsername(), user.getPassword());
     verify(userRepository, times(1)).findByUsername(user.getUsername());
     assertEquals(userId, user.getId());
   }
@@ -363,7 +371,8 @@ public class UserServiceTest {
     when(userRepository.fetchById(user.getId())).thenReturn(user);
     when(userMapper.mapToDTO(user)).thenReturn(userDTO);
 
-    UserDTO loggedUser = userService.login(user.getId(), UUID.randomUUID().toString(), false);
+    UserDTO loggedUser = userService
+      .login(user.getId(), UUID.randomUUID().toString(), false);
     assertEquals(loggedUser, userDTO);
     verify(accountingService, never()).terminateSession(any());
   }
@@ -374,7 +383,8 @@ public class UserServiceTest {
     when(userMapper.mapToDTO(user)).thenReturn(userDTO);
     user.getSessions().forEach(session -> session.setTerminatedOn(123L));
 
-    UserDTO loggedUser = userService.login(user.getId(), UUID.randomUUID().toString(), true);
+    UserDTO loggedUser = userService
+      .login(user.getId(), UUID.randomUUID().toString(), true);
     assertEquals(loggedUser, userDTO);
     verify(accountingService, times(1)).createSession(any());
   }
@@ -384,7 +394,8 @@ public class UserServiceTest {
     when(userRepository.fetchById(user.getId())).thenReturn(user);
     when(userMapper.mapToDTO(user)).thenReturn(userDTO);
 
-    UserDTO loggedUser = userService.login(user.getId(), UUID.randomUUID().toString(), true);
+    UserDTO loggedUser = userService
+      .login(user.getId(), UUID.randomUUID().toString(), true);
     assertEquals(loggedUser, userDTO);
     verify(accountingService, times(2)).terminateSession(any());
   }
@@ -395,7 +406,8 @@ public class UserServiceTest {
     when(userMapper.mapToDTO(user)).thenReturn(userDTO);
     user.setSessions(null);
 
-    UserDTO loggedUser = userService.login(user.getId(), UUID.randomUUID().toString(), true);
+    UserDTO loggedUser = userService
+      .login(user.getId(), UUID.randomUUID().toString(), true);
     assertEquals(loggedUser, userDTO);
     verify(accountingService, times(1)).createSession(any());
   }
@@ -418,7 +430,8 @@ public class UserServiceTest {
 
   @Test
   public void testLogoutNoSessionApplicationId() {
-    user.getSessions().forEach(session -> session.setApplicationSessionId(null));
+    user.getSessions()
+      .forEach(session -> session.setApplicationSessionId(null));
     when(userRepository.fetchById(user.getId())).thenReturn(user);
     userService.logout(user.getId(), null);
     verify(userRepository, times(1)).fetchById(any());
@@ -435,7 +448,8 @@ public class UserServiceTest {
 
   @Test
   public void testLogoutAll() {
-    when(sessionRepository.findAll(qSession.terminatedOn.isNull())).thenReturn(user.getSessions());
+    when(sessionRepository.findAll(qSession.terminatedOn.isNull()))
+      .thenReturn(user.getSessions());
     when(userRepository.fetchById(user.getId())).thenReturn(user);
     userService.logoutAll();
     verify(accountingService, times(2)).terminateSession(any());
@@ -443,25 +457,32 @@ public class UserServiceTest {
 
   @Test
   public void testIsUserAlreadyLoggedIn() {
-    List<SessionDTO> sessionsDTO = initTestValues.createSessionsDTO(user.getId());
+    List<SessionDTO> sessionsDTO = initTestValues
+      .createSessionsDTO(user.getId());
     when(sessionRepository
-        .findAll(qSession.user.id.eq(user.getId()).and(qSession.terminatedOn.isNull()),
-            Sort.by("createdOn").ascending())).thenReturn(user.getSessions());
+      .findAll(
+        qSession.user.id.eq(user.getId()).and(qSession.terminatedOn.isNull()),
+        Sort.by("createdOn").ascending())).thenReturn(user.getSessions());
     when(sessionMapper.mapToDTO(user.getSessions())).thenReturn(sessionsDTO);
 
-    List<SessionDTO> foundSessionsDTO = userService.isUserAlreadyLoggedIn(user.getId());
+    List<SessionDTO> foundSessionsDTO = userService
+      .isUserAlreadyLoggedIn(user.getId());
     assertEquals(foundSessionsDTO, sessionsDTO);
   }
 
   @Test
   public void testIsUserAlreadyLoggedInRetValNull() {
-    List<SessionDTO> sessionsDTO = initTestValues.createSessionsDTO(user.getId());
+    List<SessionDTO> sessionsDTO = initTestValues
+      .createSessionsDTO(user.getId());
     when(sessionRepository
-        .findAll(qSession.user.id.eq(user.getId()).and(qSession.terminatedOn.isNull()),
-            Sort.by("createdOn").ascending())).thenReturn(user.getSessions());
-    when(sessionMapper.mapToDTO(user.getSessions())).thenReturn(new ArrayList<>());
+      .findAll(
+        qSession.user.id.eq(user.getId()).and(qSession.terminatedOn.isNull()),
+        Sort.by("createdOn").ascending())).thenReturn(user.getSessions());
+    when(sessionMapper.mapToDTO(user.getSessions()))
+      .thenReturn(new ArrayList<>());
 
-    List<SessionDTO> foundSessionsDTO = userService.isUserAlreadyLoggedIn(user.getId());
+    List<SessionDTO> foundSessionsDTO = userService
+      .isUserAlreadyLoggedIn(user.getId());
     assertNull(foundSessionsDTO);
   }
 
@@ -479,12 +500,15 @@ public class UserServiceTest {
   public void testBelongsToGroupByName() {
     userGroup.setName("groupName");
     userGroup.setUsers(users);
-    when(userGroupRepository.findByName(userGroup.getName())).thenReturn(userGroup);
-    when(userGroupRepository.findByName(userGroup.getChildren().get(0).getName()))
-        .thenReturn(userGroupNoChildren);
+    when(userGroupRepository.findByName(userGroup.getName()))
+      .thenReturn(userGroup);
+    when(
+      userGroupRepository.findByName(userGroup.getChildren().get(0).getName()))
+      .thenReturn(userGroupNoChildren);
     userGroupNoChildren.setUsers(users);
-    when(userGroupRepository.findByName(userGroup.getChildren().get(1).getName()))
-        .thenReturn(userGroupNoChildren);
+    when(
+      userGroupRepository.findByName(userGroup.getChildren().get(1).getName()))
+      .thenReturn(userGroupNoChildren);
     when(userRepository.fetchById(user.getId())).thenReturn(user);
     userService.belongsToGroupByName(user.getId(), userGroup.getName(), true);
     verify(userRepository, times(3)).fetchById(user.getId());
@@ -494,28 +518,33 @@ public class UserServiceTest {
   public void testUpdateAttributes() {
     userService.updateAttributes(userAttributeDTOList, false);
     verify(userAttributeRepository, times(2)).
-        findByUserIdAndName(any(), any());
+      findByUserIdAndName(any(), any());
   }
 
   @Test
   public void testDeleteAttributeNull() {
-    userService.deleteAttribute(user.getId(), user.getUserAttributes().get(0).getName());
+    userService
+      .deleteAttribute(user.getId(), user.getUserAttributes().get(0).getName());
     verify(userAttributeRepository, times(1)).findByUserIdAndName(any(), any());
   }
 
   @Test
   public void testDeleteAttribute() {
     when(userAttributeRepository.findByUserIdAndName(any(), any()))
-        .thenReturn(user.getUserAttributes().get(0));
-    userService.deleteAttribute(user.getId(), user.getUserAttributes().get(0).getName());
+      .thenReturn(user.getUserAttributes().get(0));
+    userService
+      .deleteAttribute(user.getId(), user.getUserAttributes().get(0).getName());
     verify(userAttributeRepository, times(1)).
-        findByUserIdAndName(user.getId(), user.getUserAttributes().get(0).getName());
-    verify(userAttributeRepository, times(1)).delete(user.getUserAttributes().get(0));
+      findByUserIdAndName(user.getId(),
+        user.getUserAttributes().get(0).getName());
+    verify(userAttributeRepository, times(1))
+      .delete(user.getUserAttributes().get(0));
   }
 
   @Test
   public void testGetAttribute() {
-    userService.getAttribute(user.getId(), user.getUserAttributes().get(0).getName());
+    userService
+      .getAttribute(user.getId(), user.getUserAttributes().get(0).getName());
     verify(userAttributeRepository, times(1)).findByUserIdAndName(any(), any());
   }
 
@@ -524,8 +553,9 @@ public class UserServiceTest {
     Collection<String> userIds = new ArrayList<>();
     userIds.add(user.getId());
     userIds.add(user.getId());
-    userService.getUserIDsForAttribute(userIds, user.getUserAttributes().get(0).getName(),
-        user.getUserAttributes().get(0).getData());
+    userService.getUserIDsForAttribute(userIds,
+      user.getUserAttributes().get(0).getName(),
+      user.getUserAttributes().get(0).getData());
     verify(userRepository, times(1)).findAll((Predicate) any());
   }
 
@@ -564,10 +594,13 @@ public class UserServiceTest {
 
   @Test
   public void isAttributeValueUniqueTest() {
-    List<UserAttribute> userAttributeList = initTestValues.createUserAttributes(user);
-    when(userAttributeRepository.findAll((Predicate) any())).thenReturn(userAttributeList);
-    when(userAttributeMapper.mapToDTO(userAttributeRepository.findAll((Predicate) any())))
-        .thenReturn(userAttributeDTOList);
+    List<UserAttribute> userAttributeList = initTestValues
+      .createUserAttributes(user);
+    when(userAttributeRepository.findAll((Predicate) any()))
+      .thenReturn(userAttributeList);
+    when(userAttributeMapper
+      .mapToDTO(userAttributeRepository.findAll((Predicate) any())))
+      .thenReturn(userAttributeDTOList);
     userService.isAttributeValueUnique("name", user.getId());
     verify(userAttributeRepository, times(2)).findAll((Predicate) any());
   }

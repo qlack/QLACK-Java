@@ -7,15 +7,15 @@ package com.eurodyn.qlack.common.exception;
  */
 public class QMutationNotPermittedException extends QException {
 
-    public QMutationNotPermittedException() {
-        super();
-    }
+  public QMutationNotPermittedException() {
+    super();
+  }
 
-    public QMutationNotPermittedException(String message) {
-        super(message);
-    }
+  public QMutationNotPermittedException(String message) {
+    super(message);
+  }
 
-    public QMutationNotPermittedException(String message, Throwable cause) {
-        super(message, cause);
-    }
+  public QMutationNotPermittedException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }

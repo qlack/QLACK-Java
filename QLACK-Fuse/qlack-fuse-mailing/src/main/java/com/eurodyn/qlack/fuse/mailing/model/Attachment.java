@@ -38,7 +38,8 @@ public class Attachment extends MailingModel {
   private String filename;
 
   /**
-   * A {@link java.lang.String} representing the Content-Type of the attachment
+   * A {@link java.lang.String} representing the Content-Type of the
+   * attachment
    */
   @Column(name = "content_type", nullable = false, length = 254)
   private String contentType;

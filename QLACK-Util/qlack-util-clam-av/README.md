@@ -1,4 +1,4 @@
-# QLACK Clam AntiVirus module
+# QLACK Util - Clam AV
 
 This module provides file virus scanning functionality using a Clam AntiVirus server instance.
 
@@ -7,15 +7,10 @@ This module provides file virus scanning functionality using a Clam AntiVirus se
 ### Add qlack-util-clam-av dependency to your pom.xml:
 
 ```xml
-    <properties>
-        <!-- ... -->
-        <version.qlack>3.0.1-SNAPSHOT</version.qlack>
-    </properties>
-
     <dependency>
         <groupId>com.eurodyn.qlack.util</groupId>
         <artifactId>qlack-util-clam-av</artifactId>
-        <version>${version.qlack}</version>
+        <version>${qlack.version}</version>
     </dependency>
 ```
 

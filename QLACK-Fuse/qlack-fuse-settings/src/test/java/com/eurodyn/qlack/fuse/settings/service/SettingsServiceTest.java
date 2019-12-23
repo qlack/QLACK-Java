@@ -65,41 +65,49 @@ public class SettingsServiceTest {
     settingsDTO = initTestValues.createSettingsDTO();
 
     ownerKeyGroupPredicate = qSetting.owner.eq(setting.getOwner())
-        .and(qSetting.key.eq(setting.getKey()))
-        .and(qSetting.group.eq(setting.getGroup()));
+      .and(qSetting.key.eq(setting.getKey()))
+      .and(qSetting.group.eq(setting.getGroup()));
   }
 
   @Test
   public void testGetSettings() {
 
-    when(settingRepository.findAll(qSetting.owner.endsWith(settingDTO.getOwner())))
-        .thenReturn(settings);
+    when(
+      settingRepository.findAll(qSetting.owner.endsWith(settingDTO.getOwner())))
+      .thenReturn(settings);
     when(settingMapper.map(settings)).thenReturn(settingsDTO);
 
-    List<SettingDTO> foundSettings = settingsService.getSettings(setting.getOwner(), true);
+    List<SettingDTO> foundSettings = settingsService
+      .getSettings(setting.getOwner(), true);
     assertEquals(settingsDTO, foundSettings);
   }
 
   @Test
   public void testGetSettingsExcludingSensitive() {
 
-    List<Setting> notSensitiveSettings = settings.stream().filter(s -> !s.isSensitive())
-        .collect(Collectors.toList());
-    List<SettingDTO> notSensitiveSettingsDTO = settingsDTO.stream().filter(s -> !s.isSensitive())
-        .collect(Collectors.toList());
+    List<Setting> notSensitiveSettings = settings.stream()
+      .filter(s -> !s.isSensitive())
+      .collect(Collectors.toList());
+    List<SettingDTO> notSensitiveSettingsDTO = settingsDTO.stream()
+      .filter(s -> !s.isSensitive())
+      .collect(Collectors.toList());
     Predicate predicate = qSetting.owner.endsWith(settingDTO.getOwner());
-    predicate = ((BooleanExpression) predicate).and(qSetting.sensitive.ne(true));
+    predicate = ((BooleanExpression) predicate)
+      .and(qSetting.sensitive.ne(true));
 
     when(settingRepository.findAll(predicate)).thenReturn(notSensitiveSettings);
-    when(settingMapper.map(notSensitiveSettings)).thenReturn(notSensitiveSettingsDTO);
+    when(settingMapper.map(notSensitiveSettings))
+      .thenReturn(notSensitiveSettingsDTO);
 
-    List<SettingDTO> foundSettings = settingsService.getSettings(setting.getOwner(), false);
+    List<SettingDTO> foundSettings = settingsService
+      .getSettings(setting.getOwner(), false);
     assertEquals(notSensitiveSettingsDTO, foundSettings);
   }
 
   @Test
   public void testGetGroupNames() {
-    List<String> names = settings.stream().map(s -> s.getGroup()).collect(Collectors.toList());
+    List<String> names = settings.stream().map(s -> s.getGroup())
+      .collect(Collectors.toList());
     Predicate predicate = qSetting.owner.eq(setting.getOwner());
 
     List<GroupDTO> groupsDTO = new ArrayList<>();
@@ -111,7 +119,8 @@ public class SettingsServiceTest {
 
     when(settingRepository.findAll(predicate)).thenReturn(settings);
     when(settingMapper.mapToGroupDTO(settings)).thenReturn(groupsDTO);
-    List<GroupDTO> foundGroups = settingsService.getGroupNames(setting.getOwner());
+    List<GroupDTO> foundGroups = settingsService
+      .getGroupNames(setting.getOwner());
     assertEquals(groupsDTO, foundGroups);
   }
 
@@ -119,40 +128,43 @@ public class SettingsServiceTest {
   public void testGetSetting() {
 
     Optional<Setting> optionalSetting = Optional.of(setting);
-    when(settingRepository.findOne(ownerKeyGroupPredicate)).thenReturn(optionalSetting);
+    when(settingRepository.findOne(ownerKeyGroupPredicate))
+      .thenReturn(optionalSetting);
     when(settingMapper.map(optionalSetting.get())).thenReturn(settingDTO);
     SettingDTO foundSetting = settingsService
-        .getSetting(setting.getOwner(), setting.getKey(), setting.getGroup());
+      .getSetting(setting.getOwner(), setting.getKey(), setting.getGroup());
     assertEquals(settingDTO, foundSetting);
   }
 
   @Test(expected = QDoesNotExistException.class)
   public void testGetSettingException() {
     SettingDTO foundSetting = settingsService
-        .getSetting(setting.getOwner(), setting.getKey(), setting.getGroup());
+      .getSetting(setting.getOwner(), setting.getKey(), setting.getGroup());
     assertEquals(settingDTO, foundSetting);
   }
 
   @Test
   public void testGetGroupSettings() {
     List<Setting> expectedSettings = settings.stream()
-        .filter(
-            s -> setting.getOwner().equals(s.getOwner()) && setting.getGroup().equals(s.getGroup()))
-        .collect(Collectors.toList());
+      .filter(
+        s -> setting.getOwner().equals(s.getOwner()) && setting.getGroup()
+          .equals(s.getGroup()))
+      .collect(Collectors.toList());
 
     List<SettingDTO> expectedSettingsDTO = settingsDTO.stream()
-        .filter(dto -> setting.getOwner().equals(dto.getOwner()) && setting.getGroup()
-            .equals(dto.getGroup()))
-        .collect(Collectors.toList());
+      .filter(
+        dto -> setting.getOwner().equals(dto.getOwner()) && setting.getGroup()
+          .equals(dto.getGroup()))
+      .collect(Collectors.toList());
 
     Predicate predicate = qSetting.owner.eq(setting.getOwner())
-        .and(qSetting.group.eq(setting.getGroup()));
+      .and(qSetting.group.eq(setting.getGroup()));
 
     when(settingRepository.findAll(predicate)).thenReturn(expectedSettings);
     when(settingMapper.map(expectedSettings)).thenReturn(expectedSettingsDTO);
 
     List<SettingDTO> foundGroupSettings = settingsService
-        .getGroupSettings(setting.getOwner(), setting.getGroup());
+      .getGroupSettings(setting.getOwner(), setting.getGroup());
     assertEquals(expectedSettingsDTO, foundGroupSettings);
   }
 
@@ -160,7 +172,8 @@ public class SettingsServiceTest {
   public void testCreateSettingExisting() {
 
     Optional<Setting> optionalSetting = Optional.of(setting);
-    when(settingRepository.findOne(ownerKeyGroupPredicate)).thenReturn(optionalSetting);
+    when(settingRepository.findOne(ownerKeyGroupPredicate))
+      .thenReturn(optionalSetting);
     when(settingMapper.map(optionalSetting.get())).thenReturn(settingDTO);
     settingsService.createSetting(settingDTO);
   }
@@ -186,15 +199,18 @@ public class SettingsServiceTest {
 
   @Test(expected = QDoesNotExistException.class)
   public void testSetValException() {
-    settingsService.setVal(setting.getOwner(), setting.getKey(), "New Val", setting.getGroup());
+    settingsService.setVal(setting.getOwner(), setting.getKey(), "New Val",
+      setting.getGroup());
   }
 
   @Test
   public void testSetVal() {
     String newVal = "New Val";
     Optional<Setting> optionalSetting = Optional.of(setting);
-    when(settingRepository.findOne(ownerKeyGroupPredicate)).thenReturn(optionalSetting);
-    settingsService.setVal(setting.getOwner(), setting.getKey(), newVal, setting.getGroup());
+    when(settingRepository.findOne(ownerKeyGroupPredicate))
+      .thenReturn(optionalSetting);
+    settingsService
+      .setVal(setting.getOwner(), setting.getKey(), newVal, setting.getGroup());
     assertEquals(newVal, setting.getVal());
   }
 
@@ -207,10 +223,11 @@ public class SettingsServiceTest {
     expectedSettings.add(settingDTO);
 
     Optional<Setting> optionalSetting = Optional.of(setting);
-    when(settingRepository.findOne(ownerKeyGroupPredicate)).thenReturn(optionalSetting);
+    when(settingRepository.findOne(ownerKeyGroupPredicate))
+      .thenReturn(optionalSetting);
     when(settingMapper.map(optionalSetting.get())).thenReturn(settingDTO);
     assertEquals(expectedSettings, settingsService
-        .getSettings(setting.getOwner(), keys, setting.getGroup()));
+      .getSettings(setting.getOwner(), keys, setting.getGroup()));
   }
 
   @Test
@@ -222,12 +239,13 @@ public class SettingsServiceTest {
     vals.add(newVal);
 
     Optional<Setting> optionalSetting = Optional.of(setting);
-    when(settingRepository.findOne(ownerKeyGroupPredicate)).thenReturn(optionalSetting);
+    when(settingRepository.findOne(ownerKeyGroupPredicate))
+      .thenReturn(optionalSetting);
     settingsService.setVals(setting.getOwner(), keys, vals, setting.getGroup());
     assertEquals(newVal, setting.getVal());
   }
 
-  @Test (expected = QMismatchException.class)
+  @Test(expected = QMismatchException.class)
   public void setValsExceptionTest() {
     List<String> keys = new ArrayList<>();
     keys.add("key");

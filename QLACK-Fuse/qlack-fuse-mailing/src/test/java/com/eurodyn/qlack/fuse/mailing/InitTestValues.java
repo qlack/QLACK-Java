@@ -32,7 +32,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 public class InitTestValues {
 
   /**
-   * This byte array stands for an attachment actual data for testing purposes
+   * This byte array stands for an attachment actual data for testing
+   * purposes
    */
   byte[] data = {80, 65, 78, 75, 65, 74};
   @Autowired
@@ -184,10 +185,14 @@ public class InitTestValues {
 
   public EmailDTO createEmailDTO() {
     EmailDTO emailDTO = new EmailDTO();
-    List<String> toEmails = Arrays.asList("test@eurodyn.com", "test2@eurodyn.com");
-    List<String> ccEmails = Arrays.asList("test3@eurodyn.com", "test4@eurodyn.com");
-    List<String> bccEmails = Arrays.asList("test4@eurodyn.com", "test5@eurodyn.com");
-    List<String> replyToEmails = Arrays.asList("test@eurodyn.com", "test2@eurodyn.com");
+    List<String> toEmails = Arrays
+      .asList("test@eurodyn.com", "test2@eurodyn.com");
+    List<String> ccEmails = Arrays
+      .asList("test3@eurodyn.com", "test4@eurodyn.com");
+    List<String> bccEmails = Arrays
+      .asList("test4@eurodyn.com", "test5@eurodyn.com");
+    List<String> replyToEmails = Arrays
+      .asList("test@eurodyn.com", "test2@eurodyn.com");
 
     emailDTO.setId("ad1f5bb0-e1a9-4960-b0ca-1998fa5a1d6c");
     emailDTO.setFromEmail("from@eurodyn.com");

@@ -1,4 +1,4 @@
-# QLACK Search module
+# QLACK Fuse - Search
  
  This module provides connection and communication with an elastic search database. 
 
@@ -11,13 +11,12 @@
 
 ## Integration
 
-### Run elastictic search:
+### Run elastic search:
 Run the following cmd command to start ElasticSearch v6.4.3:
 `docker run --name=A_NAME_OF_YOUR_FLAVOR -p 9400:9200  -p 9401:9300 -e "http.host=0.0.0.0" -e "transport.host=0.0.0.0"  -e "xpack.security.enabled=false" -d docker.elastic.co/elasticsearch/elasticsearch:6.4.3`
 
 ### Add qlack-fuse-search to your pom.xml:
 ```xml
-  <!-- ... -->
   <dependency>
 	   <groupId>com.eurodyn.qlack.fuse</groupId>
 	   <artifactId>qlack-fuse-search</artifactId>

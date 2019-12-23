@@ -5,7 +5,8 @@ import com.eurodyn.qlack.fuse.lexicon.model.Group;
 import org.springframework.stereotype.Repository;
 
 /**
- * An interface Repository for Group that is used to declare abstract methord for crud operations
+ * An interface Repository for Group that is used to declare abstract methord
+ * for crud operations
  *
  * @author European Dynamics SA
  */

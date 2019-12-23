@@ -29,19 +29,22 @@ public class InternalAttachmentMapperImplTest {
 
   @Test
   public void mapToDTOTest() {
-    InternalAttachment internalAttachment = initTestValues.createInternalAttachment();
+    InternalAttachment internalAttachment = initTestValues
+      .createInternalAttachment();
     InternalAttachmentDTO internalAttachmentDTO = internalAttachmentMapper
-        .mapToDTO(internalAttachment);
-    assertEquals(internalAttachment.getFilename(), internalAttachmentDTO.getFilename());
+      .mapToDTO(internalAttachment);
+    assertEquals(internalAttachment.getFilename(),
+      internalAttachmentDTO.getFilename());
 
   }
 
   @Test
   public void mapToDTONullTest() {
-    assertEquals(null, internalAttachmentMapper.mapToDTO((InternalAttachment) null));
+    assertEquals(null,
+      internalAttachmentMapper.mapToDTO((InternalAttachment) null));
 
     List<InternalAttachmentDTO> internalAttachmentDTOS = internalAttachmentMapper
-        .mapToDTO((List<InternalAttachment>) null);
+      .mapToDTO((List<InternalAttachment>) null);
     assertEquals(null, internalAttachmentDTOS);
   }
 
@@ -50,26 +53,29 @@ public class InternalAttachmentMapperImplTest {
     List<InternalAttachment> internalAttachments = new ArrayList<>();
     internalAttachments.add(initTestValues.createInternalAttachment());
     List<InternalAttachmentDTO> internalAttachmentDTOS = internalAttachmentMapper
-        .mapToDTO(internalAttachments);
+      .mapToDTO(internalAttachments);
 
     assertEquals(internalAttachments.size(), internalAttachmentDTOS.size());
   }
 
   @Test
   public void mapToEntityTest() {
-    InternalAttachmentDTO internalAttachmentDTO = initTestValues.createFwdInternalAttachmentDTO();
+    InternalAttachmentDTO internalAttachmentDTO = initTestValues
+      .createFwdInternalAttachmentDTO();
     InternalAttachment internalAttachment = internalAttachmentMapper
-        .mapToEntity(internalAttachmentDTO);
-    assertEquals(internalAttachment.getFilename(), internalAttachmentDTO.getFilename());
+      .mapToEntity(internalAttachmentDTO);
+    assertEquals(internalAttachment.getFilename(),
+      internalAttachmentDTO.getFilename());
 
   }
 
   @Test
   public void mapToEntityNullTest() {
-    assertEquals(null, internalAttachmentMapper.mapToEntity((InternalAttachmentDTO) null));
+    assertEquals(null,
+      internalAttachmentMapper.mapToEntity((InternalAttachmentDTO) null));
 
     InternalAttachment internalAttachment = internalAttachmentMapper
-        .mapToEntity((InternalAttachmentDTO) null);
+      .mapToEntity((InternalAttachmentDTO) null);
     assertEquals(null, internalAttachment);
   }
 
@@ -79,32 +85,36 @@ public class InternalAttachmentMapperImplTest {
     List<InternalAttachmentDTO> internalAttachmentDTOS = new ArrayList<>();
     internalAttachmentDTOS.add(initTestValues.createFwdInternalAttachmentDTO());
     List<InternalAttachment> internalAttachments = internalAttachmentMapper
-        .mapToEntity(internalAttachmentDTOS);
+      .mapToEntity(internalAttachmentDTOS);
 
     assertEquals(internalAttachmentDTOS.size(), internalAttachments.size());
   }
 
   @Test
   public void mapToEntityListNullTest() {
-    assertEquals(null, internalAttachmentMapper.mapToEntity((List<InternalAttachmentDTO>) null));
+    assertEquals(null,
+      internalAttachmentMapper.mapToEntity((List<InternalAttachmentDTO>) null));
     List<InternalAttachment> internalAttachments = internalAttachmentMapper
-        .mapToEntity((List<InternalAttachmentDTO>) null);
+      .mapToEntity((List<InternalAttachmentDTO>) null);
     assertEquals(null, internalAttachments);
 
   }
 
   @Test
   public void testInternalAttachmentDTOToInternalAttachmentDataNotNull() {
-    InternalAttachment internalAttachment = initTestValues.createInternalAttachment();
+    InternalAttachment internalAttachment = initTestValues
+      .createInternalAttachment();
     internalAttachment.setData(null);
     assertNull(internalAttachmentMapper.mapToDTO(internalAttachment).getData());
   }
 
   @Test
   public void testInternalAttachmentToInternalAttachmentDTODataNotNull() {
-    InternalAttachmentDTO internalAttachmentDTO = initTestValues.createFwdInternalAttachmentDTO();
+    InternalAttachmentDTO internalAttachmentDTO = initTestValues
+      .createFwdInternalAttachmentDTO();
     internalAttachmentDTO.setData(null);
-    assertNull(internalAttachmentMapper.mapToEntity(internalAttachmentDTO).getData());
+    assertNull(
+      internalAttachmentMapper.mapToEntity(internalAttachmentDTO).getData());
   }
 
 

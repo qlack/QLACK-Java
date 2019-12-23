@@ -27,7 +27,8 @@ public class MailingExceptionTest {
   public void constructorWithMessageAndCauseTest() {
     String message = "exception message";
     Throwable throwable = new Throwable();
-    MailingException mailingException = new MailingException(message, throwable);
+    MailingException mailingException = new MailingException(message,
+      throwable);
     assertEquals(throwable, mailingException.getCause());
     assertEquals(message, mailingException.getMessage());
   }

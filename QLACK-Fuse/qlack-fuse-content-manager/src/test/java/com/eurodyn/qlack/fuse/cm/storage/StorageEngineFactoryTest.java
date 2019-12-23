@@ -30,14 +30,16 @@ public class StorageEngineFactoryTest {
   @Test
   public void getFsEngineTest() {
     storageEngineFactory.setFsStorage(fsStorage);
-    ReflectionTestUtils.setField(storageEngineFactory, "defaultStorageStrategy", "FS_STORAGE");
+    ReflectionTestUtils
+      .setField(storageEngineFactory, "defaultStorageStrategy", "FS_STORAGE");
     assertEquals(fsStorage, storageEngineFactory.getEngine());
   }
 
   @Test
   public void getDBEngineTest() {
     storageEngineFactory.setDbStorage(dbStorage);
-    ReflectionTestUtils.setField(storageEngineFactory, "defaultStorageStrategy", "DB_STORAGE");
+    ReflectionTestUtils
+      .setField(storageEngineFactory, "defaultStorageStrategy", "DB_STORAGE");
     assertEquals(dbStorage, storageEngineFactory.getEngine());
   }
 

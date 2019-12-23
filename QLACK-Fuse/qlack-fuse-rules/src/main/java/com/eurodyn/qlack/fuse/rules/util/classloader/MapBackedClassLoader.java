@@ -22,7 +22,8 @@ import java.util.logging.Logger;
  */
 public class MapBackedClassLoader extends ClassLoader {
 
-  private static final Logger logger = Logger.getLogger(MapBackedClassLoader.class.getName());
+  private static final Logger logger = Logger
+    .getLogger(MapBackedClassLoader.class.getName());
 
   private static final ProtectionDomain PROTECTION_DOMAIN;
 
@@ -30,8 +31,8 @@ public class MapBackedClassLoader extends ClassLoader {
 
   static {
     PROTECTION_DOMAIN = AccessController
-        .doPrivileged(
-            (PrivilegedAction<ProtectionDomain>) MapBackedClassLoader.class::getProtectionDomain);
+      .doPrivileged(
+        (PrivilegedAction<ProtectionDomain>) MapBackedClassLoader.class::getProtectionDomain);
   }
 
   public MapBackedClassLoader(ClassLoader parentClassLoader) {
@@ -72,7 +73,8 @@ public class MapBackedClassLoader extends ClassLoader {
       if (clazzBytes != null) {
         // new class definition ...
         logger.log(Level.FINER, "Define class {0}", name);
-        return defineClass(name, clazzBytes, 0, clazzBytes.length, PROTECTION_DOMAIN);
+        return defineClass(name, clazzBytes, 0, clazzBytes.length,
+          PROTECTION_DOMAIN);
       }
     }
     return clazz;
@@ -84,8 +86,9 @@ public class MapBackedClassLoader extends ClassLoader {
   }
 
   @Override
-  public synchronized Class<?> loadClass(final String name, final boolean resolve)
-      throws ClassNotFoundException {
+  public synchronized Class<?> loadClass(final String name,
+    final boolean resolve)
+    throws ClassNotFoundException {
     Class<?> clazz = fastFindClass(name);
 
     if (clazz == null) {

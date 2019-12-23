@@ -46,7 +46,7 @@ public interface NodeMapper extends CMBaseMapper<Node, NodeDTO> {
   @Mapping(target = "children", qualifiedByName = "mapChildren")
   @Mapping(source = "parent", target = "parentId", qualifiedByName = "mapParent")
   FolderDTO mapToFolderDTO(Node node, @Context RelativesType relativesType,
-      @Context boolean findPath);
+    @Context boolean findPath);
 
   @Mapping(source = "attributes", target = "name", qualifiedByName = "mapName")
   @Mapping(source = "attributes", target = "lockable", qualifiedByName = "mapLockable")
@@ -86,7 +86,7 @@ public interface NodeMapper extends CMBaseMapper<Node, NodeDTO> {
 
   @AfterMapping
   default <T extends NodeDTO> void mapPath(Node node, @MappingTarget T dto,
-      @Context boolean findPath) {
+    @Context boolean findPath) {
 
     List<BreadcrumbPartDTO> path = new ArrayList<>();
 
@@ -186,7 +186,8 @@ public interface NodeMapper extends CMBaseMapper<Node, NodeDTO> {
   }
 
   @Named("mapChildren")
-  default Set<NodeDTO> mapChildren(List<Node> children, @Context RelativesType relativesType) {
+  default Set<NodeDTO> mapChildren(List<Node> children,
+    @Context RelativesType relativesType) {
     Set<NodeDTO> childrenDTO = new HashSet<>();
     if (relativesType.equals(RelativesType.EAGER)) {
       children.forEach(node -> childrenDTO.add(mapToDTO(node, true)));
@@ -206,9 +207,6 @@ public interface NodeMapper extends CMBaseMapper<Node, NodeDTO> {
       return null;
     }
     String id = parent.getId();
-    if (id == null) {
-      return null;
-    }
     return id;
   }
 }

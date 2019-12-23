@@ -10,7 +10,8 @@ import org.mapstruct.ReportingPolicy;
  * A Mapper interface for {@link UserAttribute} objects.
  */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface UserAttributeMapper extends AAAMapper<UserAttribute, UserAttributeDTO> {
+public interface UserAttributeMapper extends
+  AAAMapper<UserAttribute, UserAttributeDTO> {
 
   /**
    * Maps a UserAttribute entity to DTO

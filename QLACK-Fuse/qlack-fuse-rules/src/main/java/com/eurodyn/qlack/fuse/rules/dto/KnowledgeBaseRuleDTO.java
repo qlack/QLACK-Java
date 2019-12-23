@@ -5,7 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * A DTO that represents the KnowledgeBaseRule entity and contains the rules of a Knowledge Base.
+ * A DTO that represents the KnowledgeBaseRule entity and contains the rules of
+ * a Knowledge Base.
  *
  * @author European Dynamics SA
  */

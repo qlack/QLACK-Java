@@ -7,20 +7,19 @@ import com.eurodyn.qlack.fuse.aaa.dto.UserGroupDTO;
 import com.eurodyn.qlack.fuse.aaa.dto.UserGroupHasOperationDTO;
 import com.eurodyn.qlack.fuse.aaa.dto.UserHasOperationDTO;
 import com.eurodyn.qlack.fuse.aaa.model.User;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 public class InitTestValues {
 
-  public User createUser(){
+  public User createUser() {
     User user = new User();
     user.setId("57d30f8d-cf0c-4742-9893-09e2aa08c255");
     user.setUsername("test@test.com");
     user.setPassword("Test1234");
     user.setSalt("thisisaveryrandomsalt");
-    user.setStatus((byte)1);
+    user.setStatus((byte) 1);
     user.setSuperadmin(true);
     user.setExternal(false);
 
@@ -41,18 +40,19 @@ public class InitTestValues {
     return userDTO;
   }
 
-  public UserDetailsDTO createUserDetailDTO(User user){
+  public UserDetailsDTO createUserDetailDTO(User user) {
     UserDetailsDTO userDetailsDTO = new UserDetailsDTO();
 
-    userDetailsDTO.setId( user.getId() );
-    userDetailsDTO.setUsername( user.getUsername() );
-    userDetailsDTO.setPassword( user.getPassword() );
-    userDetailsDTO.setSalt( user.getSalt() );
-    userDetailsDTO.setStatus( user.getStatus() );
-    userDetailsDTO.setSuperadmin( user.isSuperadmin() );
-    userDetailsDTO.setExternal( user.isExternal() );
+    userDetailsDTO.setId(user.getId());
+    userDetailsDTO.setUsername(user.getUsername());
+    userDetailsDTO.setPassword(user.getPassword());
+    userDetailsDTO.setSalt(user.getSalt());
+    userDetailsDTO.setStatus(user.getStatus());
+    userDetailsDTO.setSuperadmin(user.isSuperadmin());
+    userDetailsDTO.setExternal(user.isExternal());
     userDetailsDTO.setUserHasOperations(createUserHasOperations());
-    userDetailsDTO.setUserGroupHasOperations(createUserGroupHasOperationList(createUserGroupHasOperation()));
+    userDetailsDTO.setUserGroupHasOperations(
+      createUserGroupHasOperationList(createUserGroupHasOperation()));
     userDetailsDTO.setUserGroups(createUserGroupsDTO());
     userDetailsDTO.setSessionId("1234567");
     userDetailsDTO.setUserGroups(createUserGroupsDTO());
@@ -68,7 +68,8 @@ public class InitTestValues {
     userHasOperation2.setId("fef0b119-c239-49b8-8ed1-2a63ea11c040");
     userHasOperationDTOS.add(userHasOperation2);
 
-    userHasOperationDTOS.stream().forEach(userHasOperation -> userHasOperation.setOperation(
+    userHasOperationDTOS.stream()
+      .forEach(userHasOperation -> userHasOperation.setOperation(
         createOperationDTO()));
 
     return userHasOperationDTOS;
@@ -95,7 +96,8 @@ public class InitTestValues {
     return userGroupHasOperationDTO;
   }
 
-  public List<UserGroupHasOperationDTO> createUserGroupHasOperationList(UserGroupHasOperationDTO groupHasOperationDTO) {
+  public List<UserGroupHasOperationDTO> createUserGroupHasOperationList(
+    UserGroupHasOperationDTO groupHasOperationDTO) {
     List<UserGroupHasOperationDTO> userGroupHasOperationDTOS = new ArrayList<>();
     userGroupHasOperationDTOS.add(groupHasOperationDTO);
 
@@ -128,7 +130,7 @@ public class InitTestValues {
     return userGroupDTO;
   }
 
-  public List<UserGroupDTO> createUserGroupsDTO(){
+  public List<UserGroupDTO> createUserGroupsDTO() {
     List<UserGroupDTO> userGroupsDTO = new ArrayList<>();
     userGroupsDTO.add(createUserGroupDTO());
 

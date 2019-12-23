@@ -9,7 +9,8 @@ import lombok.Setter;
 import org.springframework.data.domain.Pageable;
 
 /**
- * A UserSearchCriteria class that is used to specify the criteria to search for a User
+ * A UserSearchCriteria class that is used to specify the criteria to search for
+ * a User
  *
  * @author European Dynamics SA
  */
@@ -50,7 +51,8 @@ public class UserSearchCriteria {
       return retVal;
     }
 
-    public static UserAttributeCriteria and(Collection<UserAttributeDTO> attributes) {
+    public static UserAttributeCriteria and(
+      Collection<UserAttributeDTO> attributes) {
       UserAttributeCriteria retVal = new UserAttributeCriteria();
       retVal.setAttributes(attributes);
       retVal.setType(Type.AND);
@@ -64,7 +66,8 @@ public class UserSearchCriteria {
       return retVal;
     }
 
-    public static UserAttributeCriteria or(Collection<UserAttributeDTO> attributes) {
+    public static UserAttributeCriteria or(
+      Collection<UserAttributeDTO> attributes) {
       UserAttributeCriteria retVal = new UserAttributeCriteria();
       retVal.setAttributes(attributes);
       retVal.setType(Type.OR);
@@ -76,7 +79,8 @@ public class UserSearchCriteria {
     }
 
     /**
-     * Specify a collection of IDs in which the IDs of the retrieved users should be contained.
+     * Specify a collection of IDs in which the IDs of the retrieved users
+     * should be contained.
      *
      * @param ids the ids of the users
      * @return UserSearchCriteriaBuilder
@@ -87,7 +91,8 @@ public class UserSearchCriteria {
     }
 
     /**
-     * Specify a collection of IDs in which the IDs of the retrieved users should not be contained.
+     * Specify a collection of IDs in which the IDs of the retrieved users
+     * should not be contained.
      *
      * @param ids the ids of the users
      * @return UserSearchCriteriaBuilder
@@ -98,8 +103,8 @@ public class UserSearchCriteria {
     }
 
     /**
-     * Specify a collection of IDs in which the IDs of the retrieved users userGroups should be
-     * contained.
+     * Specify a collection of IDs in which the IDs of the retrieved users
+     * userGroups should be contained.
      *
      * @param ids the ids of the user groups
      * @return UserSearchCriteriaBuilder
@@ -110,8 +115,8 @@ public class UserSearchCriteria {
     }
 
     /**
-     * Specify a collection of IDs in which the IDs of the retrieved users userGroups should not be
-     * contained.
+     * Specify a collection of IDs in which the IDs of the retrieved users
+     * userGroups should not be contained.
      *
      * @param ids the ids of the user groups
      * @return UserSearchCriteriaBuilder
@@ -122,8 +127,8 @@ public class UserSearchCriteria {
     }
 
     /**
-     * Specify a collection of statuses in which the status of the retrieved users should be
-     * contained.
+     * Specify a collection of statuses in which the status of the retrieved
+     * users should be contained.
      *
      * @param statuses The list of statuses.
      * @return UserSearchCriteriaBuilder
@@ -134,13 +139,14 @@ public class UserSearchCriteria {
     }
 
     /**
-     * Specify a collection of statuses in which the status of the retrieved users should not be
-     * contained.
+     * Specify a collection of statuses in which the status of the retrieved
+     * users should not be contained.
      *
      * @param statuses The list of statuses.
      * @return UserSearchCriteriaBuilder
      */
-    public UserSearchCriteriaBuilder withStatusNotIn(Collection<Byte> statuses) {
+    public UserSearchCriteriaBuilder withStatusNotIn(
+      Collection<Byte> statuses) {
       criteria.setExcludeStatuses(statuses);
       return this;
     }
@@ -157,15 +163,17 @@ public class UserSearchCriteria {
     }
 
     /**
-     * Specify the attributes the retrieved users should have. This method is intended to be called
-     * in conjuction with the and and or static methods which are used to specify the relationship
-     * between the different criteria, for example: UserSearchCriteriaBuilder.createCriteria().withAttributes(and(and(att1,
+     * Specify the attributes the retrieved users should have. This method
+     * is intended to be called in conjuction with the and and or static
+     * methods which are used to specify the relationship between the
+     * different criteria, for example: UserSearchCriteriaBuilder.createCriteria().withAttributes(and(and(att1,
      * att2, att3), or (att4, att5), or(att6, att7)))
      *
      * @param attCriteria attributes
      * @return UserSearchCriteriaBuilder
      */
-    public UserSearchCriteriaBuilder withAttributes(UserAttributeCriteria attCriteria) {
+    public UserSearchCriteriaBuilder withAttributes(
+      UserAttributeCriteria attCriteria) {
       criteria.setAttributeCriteria(attCriteria);
       return this;
     }

@@ -61,17 +61,19 @@ public class TokenServerService {
     boolean retVal = false;
     Token token = repository.fetchById(tokenId);
     if (!token.isRevoked()
-        && ((token.getValidUntil() == null) || Instant.now().isBefore(token.getValidUntil()))) {
+      && ((token.getValidUntil() == null) || Instant.now()
+      .isBefore(token.getValidUntil()))) {
       retVal = true;
     }
 
-    if (retVal && token.getValidUntil() != null && token.getAutoExtendDuration() != null
-        && token.getAutoExtendDuration() > 0) {
+    if (retVal && token.getValidUntil() != null
+      && token.getAutoExtendDuration() != null
+      && token.getAutoExtendDuration() > 0) {
       Instant now = Instant.now();
       Instant newValidUntil;
       if (token.getAutoExtendUntil() == null
-          || now.plusMillis(token.getAutoExtendDuration()).isBefore(token
-          .getAutoExtendUntil())) {
+        || now.plusMillis(token.getAutoExtendDuration()).isBefore(token
+        .getAutoExtendUntil())) {
         newValidUntil = now.plusMillis(token.getAutoExtendDuration());
       } else {
         newValidUntil = token.getAutoExtendUntil();
@@ -91,8 +93,8 @@ public class TokenServerService {
     Token token = repository.fetchById(tokenId);
     if (token.isRevoked()) {
       throw new QTokenRevokedException(MessageFormat.format(
-          "Cannot revoke token with ID {0}; the token is already "
-              + "revoked", tokenId));
+        "Cannot revoke token with ID {0}; the token is already "
+          + "revoked", tokenId));
     }
     token.setRevoked(true);
     token.setLastModifiedAt(Instant.now());
@@ -108,20 +110,21 @@ public class TokenServerService {
     Token token = repository.fetchById(tokenId);
     if (token.isRevoked()) {
       throw new QTokenRevokedException(MessageFormat.format(
-          "Cannot extend the validity of token with ID "
-              + "{0}; the token is revoked.", tokenId));
+        "Cannot extend the validity of token with ID "
+          + "{0}; the token is revoked.", tokenId));
     }
     token.setValidUntil(validUntil);
     token.setLastModifiedAt(Instant.now());
   }
 
-  public void extendAutoExtendValidity(String tokenId, Instant autoExtendUntil) {
+  public void extendAutoExtendValidity(String tokenId,
+    Instant autoExtendUntil) {
     Token token = repository.fetchById(tokenId);
     if (token.isRevoked()) {
       throw new QTokenRevokedException(MessageFormat.format(
-          "Cannot extend the auto extend date of token with ID {0} "
-              + "; the token is revoked.",
-          tokenId));
+        "Cannot extend the auto extend date of token with ID {0} "
+          + "; the token is revoked.",
+        tokenId));
     }
     token.setAutoExtendUntil(autoExtendUntil);
     token.setLastModifiedAt(Instant.now());

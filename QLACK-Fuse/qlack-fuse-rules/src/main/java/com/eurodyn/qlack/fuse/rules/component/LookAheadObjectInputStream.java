@@ -8,8 +8,8 @@ import java.io.ObjectStreamClass;
 import java.util.List;
 
 /**
- * Custom class that ensures that Look-ahead class validation is performed before the
- * de-serialization of the byte array into an object.
+ * Custom class that ensures that Look-ahead class validation is performed
+ * before the de-serialization of the byte array into an object.
  *
  * @author European Dynamics SA
  */
@@ -24,12 +24,14 @@ public class LookAheadObjectInputStream extends ObjectInputStream {
    *
    * @param classLoader the Drools Classloader
    * @param inputStream the object to be read
-   * @param whitelistedClasses the packages that are allowed to be de-serialized
+   * @param whitelistedClasses the packages that are allowed to be
+   * de-serialized
    * @throws IOException exception during the stream read
    */
-  public LookAheadObjectInputStream(ClassLoader classLoader, InputStream inputStream,
-      List<String> whitelistedClasses)
-      throws IOException {
+  public LookAheadObjectInputStream(ClassLoader classLoader,
+    InputStream inputStream,
+    List<String> whitelistedClasses)
+    throws IOException {
     super(inputStream);
     this.classLoader = classLoader;
     this.whitelistedClasses = whitelistedClasses;
@@ -41,12 +43,12 @@ public class LookAheadObjectInputStream extends ObjectInputStream {
    * @param desc the object
    * @return the classname of the object
    * @throws IOException exception if the object cannot be read
-   * @throws ClassNotFoundException exception if the classname does not belong on the Drools
-   * Classloader
+   * @throws ClassNotFoundException exception if the classname does not belong
+   * on the Drools Classloader
    */
   @Override
   protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException,
-      ClassNotFoundException {
+    ClassNotFoundException {
     String name = desc.getName();
     acceptedClassName(name);
     Class<?> clazz = classLoader.loadClass(name);
@@ -58,7 +60,8 @@ public class LookAheadObjectInputStream extends ObjectInputStream {
   }
 
   /**
-   * Checks if the given class is part of the whitelist and throws an exception if it not.
+   * Checks if the given class is part of the whitelist and throws an
+   * exception if it not.
    *
    * @param name the classname
    */
@@ -69,6 +72,6 @@ public class LookAheadObjectInputStream extends ObjectInputStream {
       }
     }
     throw new QRulesException(
-        "The class " + name + " cannot be de-serialized for security reasons.");
+      "The class " + name + " cannot be de-serialized for security reasons.");
   }
 }

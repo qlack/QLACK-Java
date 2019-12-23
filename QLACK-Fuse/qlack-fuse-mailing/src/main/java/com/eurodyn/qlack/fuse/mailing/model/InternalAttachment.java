@@ -10,8 +10,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * This class represents an internal attachment. An internal attachment is an attachment for
- * internal messages only.
+ * This class represents an internal attachment. An internal attachment is an
+ * attachment for internal messages only.
  *
  * @author European Dynamics SA.
  */
@@ -37,7 +37,8 @@ public class InternalAttachment extends MailingModel {
   private String filename;
 
   /**
-   * A {@link java.lang.String} representing the Content-Type of the attachment
+   * A {@link java.lang.String} representing the Content-Type of the
+   * attachment
    */
   @Column(name = "content_type", length = 254)
   private String contentType;

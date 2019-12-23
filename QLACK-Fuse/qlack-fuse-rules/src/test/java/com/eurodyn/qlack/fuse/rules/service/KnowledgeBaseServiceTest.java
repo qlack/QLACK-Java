@@ -39,28 +39,33 @@ public class KnowledgeBaseServiceTest {
   @Before
   public void init() {
     InitTestValues initTestValues = new InitTestValues();
-    knowledgeBaseService = new KnowledgeBaseService(knowledgeBaseMapper, knowledgeBaseRepository);
+    knowledgeBaseService = new KnowledgeBaseService(knowledgeBaseMapper,
+      knowledgeBaseRepository);
     inputLibraries = initTestValues.createLibrariesAdd();
     inputRules = initTestValues.createRulesAdd();
   }
 
   @Test(expected = QDoesNotExistException.class)
   public void findKnowledgeBaseStateByIdNullTest() {
-    KnowledgeBase base = knowledgeBaseService.findKnowledgeBaseStateById("knowledgeBaseId");
+    KnowledgeBase base = knowledgeBaseService
+      .findKnowledgeBaseStateById("knowledgeBaseId");
     assertNull(base);
   }
 
   @Test
   public void findKnowledgeBaseStateByIdTest() {
-    when(knowledgeBaseRepository.fetchById("knowledgeBaseId")).thenReturn(knowledgeBase);
-    KnowledgeBase base = knowledgeBaseService.findKnowledgeBaseStateById("knowledgeBaseId");
+    when(knowledgeBaseRepository.fetchById("knowledgeBaseId"))
+      .thenReturn(knowledgeBase);
+    KnowledgeBase base = knowledgeBaseService
+      .findKnowledgeBaseStateById("knowledgeBaseId");
     assertNotNull(base);
     verify(knowledgeBaseRepository, times(1)).fetchById("knowledgeBaseId");
   }
 
   @Test
   public void createKnowledgeBaseTest() {
-    String base = knowledgeBaseService.createKnowledgeBase(inputLibraries, inputRules);
+    String base = knowledgeBaseService
+      .createKnowledgeBase(inputLibraries, inputRules);
     assertEquals(knowledgeBase.getId(), base);
     verify(knowledgeBaseRepository, times(1)).save(any());
   }

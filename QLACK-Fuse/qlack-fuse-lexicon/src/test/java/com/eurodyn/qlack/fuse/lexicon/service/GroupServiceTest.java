@@ -45,7 +45,8 @@ public class GroupServiceTest {
   private GroupService groupService;
 
   private GroupRepository groupRepository = mock(GroupRepository.class);
-  private LanguageRepository languageRepository = mock(LanguageRepository.class);
+  private LanguageRepository languageRepository = mock(
+    LanguageRepository.class);
   private DataRepository dataRepository = mock(DataRepository.class);
 
   @Spy
@@ -66,8 +67,9 @@ public class GroupServiceTest {
 
   @Before
   public void init() {
-    groupService = new GroupService(groupRepository, groupMapper, languageRepository,
-        dataRepository);
+    groupService = new GroupService(groupRepository, groupMapper,
+      languageRepository,
+      dataRepository);
     qGroup = new QGroup("group1");
     qKey = new QKey("key1");
     qData = new QData("data");
@@ -139,9 +141,11 @@ public class GroupServiceTest {
 
   @Test
   public void testGetRemainingGroups() {
-    List<String> groupNames = groups.stream().map(g -> g.getTitle()).collect(Collectors.toList());
-    List<String> excludedGroupNames = groupNames.stream().filter(gn -> !gn.equals("Application UI"))
-        .collect(Collectors.toList());
+    List<String> groupNames = groups.stream().map(g -> g.getTitle())
+      .collect(Collectors.toList());
+    List<String> excludedGroupNames = groupNames.stream()
+      .filter(gn -> !gn.equals("Application UI"))
+      .collect(Collectors.toList());
     List<Group> remaining = new ArrayList<>();
     remaining.add(group);
 
@@ -152,8 +156,10 @@ public class GroupServiceTest {
     when(groupRepository.findAll(predicate)).thenReturn(remaining);
     when(groupMapper.mapToDTO(remaining)).thenReturn(remainingDTO);
 
-    Set<GroupDTO> expectedGroupSet = remainingDTO.stream().collect(Collectors.toSet());
-    Set<GroupDTO> actualGroupSet = groupService.getRemainingGroups(excludedGroupNames);
+    Set<GroupDTO> expectedGroupSet = remainingDTO.stream()
+      .collect(Collectors.toSet());
+    Set<GroupDTO> actualGroupSet = groupService
+      .getRemainingGroups(excludedGroupNames);
 
     assertEquals(expectedGroupSet, actualGroupSet);
   }
@@ -162,7 +168,8 @@ public class GroupServiceTest {
   public void testGetGroups() {
     when(groupRepository.findAll()).thenReturn(groups);
     when(groupMapper.mapToDTO(groups)).thenReturn(groupsDTO);
-    Set<GroupDTO> expectedGroupSet = groupsDTO.stream().collect(Collectors.toSet());
+    Set<GroupDTO> expectedGroupSet = groupsDTO.stream()
+      .collect(Collectors.toSet());
     Set<GroupDTO> actualGroupSet = groupService.getGroups();
     assertEquals(expectedGroupSet, actualGroupSet);
   }
@@ -174,8 +181,9 @@ public class GroupServiceTest {
     List<Data> dataList = new ArrayList<>();
     dataList.add(data);
 
-    when(dataRepository.findByKeyGroupIdAndLanguageLocale(group.getId(), language.getLocale()))
-        .thenReturn(dataList);
+    when(dataRepository
+      .findByKeyGroupIdAndLanguageLocale(group.getId(), language.getLocale()))
+      .thenReturn(dataList);
     groupService.deleteLanguageTranslations(group.getId(), language.getId());
     verify(dataRepository, times(1)).delete(data);
   }
@@ -183,26 +191,32 @@ public class GroupServiceTest {
   @Test
   public void testGetLastUpdateDateForLocale() {
     List<Data> dataList = initTestValues.createDataList();
-    long expectedLastUpdateDate = dataList.stream().findFirst().get().getLastUpdatedOn();
-    Predicate predicate = qData.key.group.id.eq(group.getId()).and(qData.language.id
+    long expectedLastUpdateDate = dataList.stream().findFirst().get()
+      .getLastUpdatedOn();
+    Predicate predicate = qData.key.group.id.eq(group.getId())
+      .and(qData.language.id
         .eq(JPAExpressions.select(qLanguage.id).from(qLanguage)
-            .where(qLanguage.locale.eq(language.getLocale()))));
-    when(dataRepository.findAll(predicate, Sort.by("lastUpdatedOn").descending()))
-        .thenReturn(dataList);
+          .where(qLanguage.locale.eq(language.getLocale()))));
+    when(
+      dataRepository.findAll(predicate, Sort.by("lastUpdatedOn").descending()))
+      .thenReturn(dataList);
 
     long lastUpdateDateForLocale = groupService
-        .getLastUpdateDateForLocale(group.getId(), language.getLocale());
+      .getLastUpdateDateForLocale(group.getId(), language.getLocale());
     assertEquals(expectedLastUpdateDate, lastUpdateDateForLocale);
   }
 
   @Test
   public void getLastUpdateDateForLocaleNullTest() {
-    Predicate predicate = qData.key.group.id.eq(group.getId()).and(qData.language.id
+    Predicate predicate = qData.key.group.id.eq(group.getId())
+      .and(qData.language.id
         .eq(JPAExpressions.select(qLanguage.id).from(qLanguage)
-            .where(qLanguage.locale.eq(language.getLocale()))));
-    when(dataRepository.findAll(predicate, Sort.by("lastUpdatedOn").descending()))
-        .thenReturn(new ArrayList<>());
-    assertNotNull(groupService.getLastUpdateDateForLocale(group.getId(), language.getLocale()));
+          .where(qLanguage.locale.eq(language.getLocale()))));
+    when(
+      dataRepository.findAll(predicate, Sort.by("lastUpdatedOn").descending()))
+      .thenReturn(new ArrayList<>());
+    assertNotNull(groupService
+      .getLastUpdateDateForLocale(group.getId(), language.getLocale()));
   }
 
 }

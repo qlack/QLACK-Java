@@ -3,8 +3,8 @@ package com.eurodyn.qlack.fuse.rules.exception;
 import com.eurodyn.qlack.common.exception.QException;
 
 /**
- * The QRulesException class is used by the qlack-fuse-rules module to throw error messages on the
- * runtime and rollback the transactions.
+ * The QRulesException class is used by the qlack-fuse-rules module to throw
+ * error messages on the runtime and rollback the transactions.
  *
  * @author European Dynamics SA
  */

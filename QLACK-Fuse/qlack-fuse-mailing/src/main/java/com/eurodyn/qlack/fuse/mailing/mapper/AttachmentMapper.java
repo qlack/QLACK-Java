@@ -11,6 +11,7 @@ import org.mapstruct.ReportingPolicy;
  * @author European Dynamics SA.
  */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface AttachmentMapper extends MailingMapper<Attachment, AttachmentDTO> {
+public interface AttachmentMapper extends
+  MailingMapper<Attachment, AttachmentDTO> {
 
 }

@@ -7,8 +7,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Method-level annotation to filter JSON replies using https://github.com/bohnman/squiggly-java
- * allowing {@link org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable}
+ * Method-level annotation to filter JSON replies using
+ * https://github.com/bohnman/squiggly-java allowing {@link
+ * org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable}
  * to not be filtered.
  */
 @Target(METHOD)

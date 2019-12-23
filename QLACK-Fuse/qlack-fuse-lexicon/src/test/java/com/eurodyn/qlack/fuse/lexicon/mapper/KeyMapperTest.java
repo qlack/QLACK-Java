@@ -52,7 +52,7 @@ public class KeyMapperTest {
     assertEquals(null, keyMapper.mapToDTO((Key) null));
 
     List<KeyDTO> keyDTOS = keyMapper.mapToDTO(
-        (List<Key>) null);
+      (List<Key>) null);
     assertEquals(null, keyDTOS);
   }
 
@@ -79,7 +79,7 @@ public class KeyMapperTest {
     assertEquals(null, keyMapper.mapToEntity((KeyDTO) null));
 
     List<Key> keys = keyMapper.mapToEntity(
-        (List<KeyDTO>) null);
+      (List<KeyDTO>) null);
     assertEquals(null, keys);
   }
 
@@ -123,7 +123,8 @@ public class KeyMapperTest {
   @Test
   public void mapToDataTranslationsFalseTest() {
     Map<String, String> expectedMap = new HashMap<>();
-    Map<String, String> map = keyMapper.mapData(initTestValues.createKey().getData(), false);
+    Map<String, String> map = keyMapper
+      .mapData(initTestValues.createKey().getData(), false);
     assertEquals(expectedMap, map);
   }
 

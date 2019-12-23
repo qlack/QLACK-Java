@@ -17,8 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * This service provides methods related to the KnowledgeBase, KnowledgeBaseLibrary and
- * KnowledgeBaseRule objects.
+ * This service provides methods related to the KnowledgeBase,
+ * KnowledgeBaseLibrary and KnowledgeBaseRule objects.
  *
  * @author European Dynamics SA
  */
@@ -34,7 +34,7 @@ public class KnowledgeBaseService {
   private final KnowledgeBaseRepository knowledgeBaseRepository;
 
   public KnowledgeBaseService(KnowledgeBaseMapper knowledgeBaseMapper,
-      KnowledgeBaseRepository knowledgeBaseRepository) {
+    KnowledgeBaseRepository knowledgeBaseRepository) {
     this.knowledgeBaseMapper = knowledgeBaseMapper;
     this.knowledgeBaseRepository = knowledgeBaseRepository;
   }
@@ -51,7 +51,8 @@ public class KnowledgeBaseService {
     KnowledgeBase base = knowledgeBaseRepository.fetchById(knowledgeBaseId);
 
     if (base == null) {
-      String errorMessage = "Cannot find Knowledge Base with id " + knowledgeBaseId;
+      String errorMessage =
+        "Cannot find Knowledge Base with id " + knowledgeBaseId;
 
       log.severe(errorMessage);
       throw new QDoesNotExistException(errorMessage);
@@ -61,17 +62,19 @@ public class KnowledgeBaseService {
   }
 
   /**
-   * Creates a new Knowledge Base and its linked Knowledge Base Libraries with given libraries and
-   * rules.
+   * Creates a new Knowledge Base and its linked Knowledge Base Libraries with
+   * given libraries and rules.
    *
    * @param libraries the libraries of the base
    * @param rules the rules of the base
    * @return the id of the newly created Knowledge Base
    */
-  public String createKnowledgeBase(List<byte[]> libraries, List<String> rules) {
+  public String createKnowledgeBase(List<byte[]> libraries,
+    List<String> rules) {
     log.info(
-        "Creating new Knowledge Base with " + libraries.size() + " libraries and " + rules.size()
-            + " rules.");
+      "Creating new Knowledge Base with " + libraries.size() + " libraries and "
+        + rules.size()
+        + " rules.");
 
     KieBase kieBase = rulesUtil.createKieBase(libraries, rules);
 

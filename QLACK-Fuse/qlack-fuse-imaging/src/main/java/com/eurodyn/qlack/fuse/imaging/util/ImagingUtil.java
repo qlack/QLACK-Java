@@ -28,18 +28,19 @@ public class ImagingUtil {
   }
 
   /**
-   * Find the horizontal and vertical DPIs of the image. In case this information is not present in
-   * the image, 0 is returned instead.
+   * Find the horizontal and vertical DPIs of the image. In case this
+   * information is not present in the image, 0 is returned instead.
    *
    * @param image The image to check for DPI metadata.
    * @return Returns the DPIs of the image.
-   * @throws IOException When the image could not be properly parsed to extract DPIs.
+   * @throws IOException When the image could not be properly parsed to
+   * extract DPIs.
    */
   public static DotsPerInch getDPI(byte[] image) throws IOException {
     DotsPerInch dotsPerInch = null;
 
     try (ImageInputStream stream = ImageIO
-        .createImageInputStream(new ByteArrayInputStream(image))) {
+      .createImageInputStream(new ByteArrayInputStream(image))) {
       Iterator it = ImageIO.getImageReaders(stream);
       if (!it.hasNext()) {
         throw new ImagingException("Could not find a reader for the image.");
@@ -47,7 +48,8 @@ public class ImagingUtil {
       ImageReader reader = (ImageReader) it.next();
       reader.setInput(stream);
       IIOMetadata meta = reader.getImageMetadata(0);
-      IIOMetadataNode root = (IIOMetadataNode) meta.getAsTree("javax_imageio_1.0");
+      IIOMetadataNode root = (IIOMetadataNode) meta
+        .getAsTree("javax_imageio_1.0");
       NodeList nodes = root.getElementsByTagName("HorizontalPixelSize");
       dotsPerInch = new DotsPerInch();
       if (nodes.getLength() > 0) {
@@ -79,11 +81,13 @@ public class ImagingUtil {
    *
    * @param image The image to check.
    * @return Returns the type of the reader for this image, e.g. png.
-   * @throws IOException When the image could not be properly parsed to get its type.
+   * @throws IOException When the image could not be properly parsed to get
+   * its type.
    */
   public static String getType(byte[] image) throws IOException {
     String type = null;
-    ImageInputStream stream = ImageIO.createImageInputStream(new ByteArrayInputStream(image));
+    ImageInputStream stream = ImageIO
+      .createImageInputStream(new ByteArrayInputStream(image));
     Iterator<ImageReader> readers = ImageIO.getImageReaders(stream);
     if (readers.hasNext()) {
       type = readers.next().getFormatName();

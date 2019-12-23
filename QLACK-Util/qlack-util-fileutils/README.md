@@ -1,4 +1,4 @@
-# QLACK FileUtils module
+# QLACK Util - FileUtils
 
 This module provides basic file utility methods.
 
@@ -7,15 +7,10 @@ This module provides basic file utility methods.
 ### Add qlack-util-fileutils dependency to your pom.xml:
 
 ```xml
-    <properties>
-        <!-- ... -->
-        <version.qlack>3.1.0-SNAPSHOT</version.qlack>
-    </properties>
-
     <dependency>
         <groupId>com.eurodyn.qlack.util</groupId>
         <artifactId>qlack-util-fileutils</artifactId>
-        <version>${version.qlack}</version>
+        <version>${qlack.version}</version>
     </dependency>
 ```
 

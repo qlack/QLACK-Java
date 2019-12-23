@@ -25,7 +25,8 @@ public class InternalAttachmentDTO extends MailBaseDTO {
   private String filename;
 
   /**
-   * A {@link java.lang.String} representing the Content-Type of the attachment
+   * A {@link java.lang.String} representing the Content-Type of the
+   * attachment
    */
   private String contentType;
 

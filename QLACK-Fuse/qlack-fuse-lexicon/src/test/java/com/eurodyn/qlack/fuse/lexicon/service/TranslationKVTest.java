@@ -34,14 +34,18 @@ public class TranslationKVTest {
     translationKVTwo = new TranslationKV("key1", "value2");
     translationKVAsc = new TranslationKV(SortType.ASCENDING);
     translationKVDesc = new TranslationKV(SortType.DESCENDING);
-    translationKVAllFieldsAsc = new TranslationKV("key1", "value3", SortType.ASCENDING);
-    translationKVAllFieldsDesc = new TranslationKV("key1", "value4", SortType.DESCENDING);
+    translationKVAllFieldsAsc = new TranslationKV("key1", "value3",
+      SortType.ASCENDING);
+    translationKVAllFieldsDesc = new TranslationKV("key1", "value4",
+      SortType.DESCENDING);
   }
 
   @Test
   public void compareTest() {
-    assertEquals(-1, translationKVAsc.compare(translationKVOne, translationKVTwo));
-    assertEquals(1, translationKVDesc.compare(translationKVOne, translationKVTwo));
+    assertEquals(-1,
+      translationKVAsc.compare(translationKVOne, translationKVTwo));
+    assertEquals(1,
+      translationKVDesc.compare(translationKVOne, translationKVTwo));
   }
 
   @Test
@@ -51,7 +55,7 @@ public class TranslationKVTest {
   }
 
   @Test
-  public void equalsTest(){
+  public void equalsTest() {
     assertFalse(translationKVOne.equals(null));
     assertFalse((translationKVOne.equals(new InitTestValues())));
     assertFalse((translationKVOne.equals(translationKVDesc)));

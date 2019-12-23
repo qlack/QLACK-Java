@@ -35,7 +35,8 @@ public class MailQueueMonitor {
   /**
    * Logger reference
    */
-  private static final Logger LOGGER = Logger.getLogger(MailQueueMonitor.class.getName());
+  private static final Logger LOGGER = Logger
+    .getLogger(MailQueueMonitor.class.getName());
 
   // Service references.
   private MailQueueSender mailQueueSender;
@@ -48,10 +49,11 @@ public class MailQueueMonitor {
   private static QEmail qEmail = QEmail.email;
 
   @Autowired
-  public MailQueueMonitor(MailQueueSender mailQueueSender, MailingProperties mailingProperties,
-      EmailRepository emailRepository,
-      DistributionListRepository distributionListRepository,
-      EmailMapper emailMapper) {
+  public MailQueueMonitor(MailQueueSender mailQueueSender,
+    MailingProperties mailingProperties,
+    EmailRepository emailRepository,
+    DistributionListRepository distributionListRepository,
+    EmailMapper emailMapper) {
     this.mailQueueSender = mailQueueSender;
     this.mailingProperties = mailingProperties;
     this.emailRepository = emailRepository;
@@ -60,8 +62,8 @@ public class MailQueueMonitor {
   }
 
   /**
-   * Sends an email and update its status to the database. If an error occurs it logs the reason of
-   * failure in the database.
+   * Sends an email and update its status to the database. If an error occurs
+   * it logs the reason of failure in the database.
    *
    * @param email the email
    */
@@ -117,12 +119,14 @@ public class MailQueueMonitor {
    * @param emailId the email
    * @param distributionListId the mail distribution list
    */
-  public void sendToDistributionList(String emailId, String distributionListId) {
+  public void sendToDistributionList(String emailId,
+    String distributionListId) {
     Email email = emailRepository.fetchById(emailId);
 
     email.setToEmails(null);
     email.setCcEmails(null);
-    email.setBccEmails(getContactEmailsFromDistributionList(distributionListId));
+    email
+      .setBccEmails(getContactEmailsFromDistributionList(distributionListId));
 
     send(email);
   }
@@ -132,22 +136,25 @@ public class MailQueueMonitor {
    *
    * @param distributionListId the mail distribution list.
    * @return distribution list contacts mails in CSV format
-   * @throws MailingException Indicating no distributionListId was provided or no recipients in the
-   * distribution list
+   * @throws MailingException Indicating no distributionListId was provided or
+   * no recipients in the distribution list
    */
-  private String getContactEmailsFromDistributionList(String distributionListId) {
+  private String getContactEmailsFromDistributionList(
+    String distributionListId) {
     if (distributionListId == null || distributionListId.isEmpty()) {
-      throw new MailingException("No distribution list was provided. The email cannot be sent.");
+      throw new MailingException(
+        "No distribution list was provided. The email cannot be sent.");
     }
 
-    DistributionList dlist = distributionListRepository.fetchById(distributionListId);
+    DistributionList dlist = distributionListRepository
+      .fetchById(distributionListId);
 
     return dlist.getContacts().parallelStream()
-        .map(Contact::getEmail).reduce((t, u) -> t + ", " + u)
-        .orElseThrow(() -> new MailingException(
-            String.format(
-                "The distribution list \"%s\" has no recipients. Please add recipients first, then try again",
-                dlist.getName())));
+      .map(Contact::getEmail).reduce((t, u) -> t + ", " + u)
+      .orElseThrow(() -> new MailingException(
+        String.format(
+          "The distribution list \"%s\" has no recipients. Please add recipients first, then try again",
+          dlist.getName())));
   }
 
   /**
@@ -158,7 +165,7 @@ public class MailQueueMonitor {
     if (mailingProperties.isPolling()) {
 
       Predicate predicate = qEmail.status.eq(EMAIL_STATUS.QUEUED.toString())
-          .and(qEmail.tries.lt(mailingProperties.getMaxTries()));
+        .and(qEmail.tries.lt(mailingProperties.getMaxTries()));
 
       List<Email> emails = emailRepository.findAll(predicate);
 

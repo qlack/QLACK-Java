@@ -84,7 +84,8 @@ public class FileUploadImplTest {
 
   @Test
   public void testGetByIDAndChunk() {
-    when(dbFileRepository.findAll(any(Predicate.class), any(Sort.class))).thenReturn(dbFiles);
+    when(dbFileRepository.findAll(any(Predicate.class), any(Sort.class)))
+      .thenReturn(dbFiles);
     DBFileDTO dbfDTO = fileUploadImpl.getByIDAndChunk(dbFileId, chunkIndex);
     assertEquals(dbFileDTO.getId(), dbfDTO.getId());
     assertEquals(dbFileDTO.getChunkNumber(), dbfDTO.getChunkNumber());
@@ -93,7 +94,7 @@ public class FileUploadImplTest {
   @Test(expected = QFileNotFoundException.class)
   public void testGetByIDAndChunkFileNotFoundException() {
     when(dbFileRepository.findAll(any(Predicate.class), any(Sort.class)))
-        .thenReturn(new ArrayList<>());
+      .thenReturn(new ArrayList<>());
     DBFileDTO dbfDTO = fileUploadImpl.getByIDAndChunk(dbFileId, chunkIndex);
     assertEquals(dbFileDTO.getId(), dbfDTO.getId());
     assertEquals(dbFileDTO.getChunkNumber(), dbfDTO.getChunkNumber());
@@ -132,7 +133,8 @@ public class FileUploadImplTest {
   @Test
   public void testGetByIDIncludeBinary() {
     when(dbFileRepository.findAll()).thenReturn(dbFiles);
-    DBFileDTO dbFileDTO = fileUploadImpl.getByID("ad1f5bb0-e1a9-4960-b0ca-1998fa5a1d6c");
+    DBFileDTO dbFileDTO = fileUploadImpl
+      .getByID("ad1f5bb0-e1a9-4960-b0ca-1998fa5a1d6c");
     assertEquals(dbFileDTO.getId(), dbFiles.get(0).getDbFilePK().getId());
   }
 
@@ -199,7 +201,7 @@ public class FileUploadImplTest {
   @Test
   public void getByIDAndChunkMyltipleResults() {
     when(dbFileRepository.findAll(any(Predicate.class), any(Sort.class)))
-        .thenReturn(multipleDbFiles);
+      .thenReturn(multipleDbFiles);
     DBFileDTO dbfDTO = fileUploadImpl.getByIDAndChunk(dbFileId, chunkIndex);
     assertEquals(dbFileDTO.getId(), dbfDTO.getId());
     assertEquals(dbFileDTO.getChunkNumber(), dbfDTO.getChunkNumber());
@@ -238,7 +240,8 @@ public class FileUploadImplTest {
   @Test
   public void uploadTest() {
     fileUploadImpl.upload(dbFileDTO);
-    verify(dbFileRepository, times(1)).getChunk(dbFileDTO.getId(), dbFileDTO.getChunkNumber());
+    verify(dbFileRepository, times(1))
+      .getChunk(dbFileDTO.getId(), dbFileDTO.getChunkNumber());
     verify(dbFileRepository, times(1)).save(any(DBFile.class));
   }
 
@@ -247,16 +250,19 @@ public class FileUploadImplTest {
     ReflectionTestUtils.setField(fileUploadImpl, "isVirusScanEnabled", true);
     dbFileDTO.setTotalSize(0);
     fileUploadImpl.upload(dbFileDTO);
-    verify(dbFileRepository, times(1)).getChunk(dbFileDTO.getId(), dbFileDTO.getChunkNumber());
+    verify(dbFileRepository, times(1))
+      .getChunk(dbFileDTO.getId(), dbFileDTO.getChunkNumber());
     verify(dbFileRepository, times(1)).save(any(DBFile.class));
   }
 
   @Test
   public void uploadExistingChunkTest() {
-    when(dbFileRepository.getChunk(dbFileDTO.getId(), dbFileDTO.getChunkNumber()))
-        .thenReturn(new DBFile());
+    when(
+      dbFileRepository.getChunk(dbFileDTO.getId(), dbFileDTO.getChunkNumber()))
+      .thenReturn(new DBFile());
     fileUploadImpl.upload(dbFileDTO);
-    verify(dbFileRepository, times(1)).getChunk(dbFileDTO.getId(), dbFileDTO.getChunkNumber());
+    verify(dbFileRepository, times(1))
+      .getChunk(dbFileDTO.getId(), dbFileDTO.getChunkNumber());
     verify(dbFileRepository, times(1)).save(any(DBFile.class));
   }
 

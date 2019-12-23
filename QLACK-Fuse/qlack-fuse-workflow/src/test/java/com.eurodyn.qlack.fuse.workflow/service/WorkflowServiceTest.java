@@ -64,8 +64,9 @@ public class WorkflowServiceTest {
 
   @Before
   public void init() {
-    workflowService = new WorkflowService(runtimeService, historyService, entityManager,
-        processInitService);
+    workflowService = new WorkflowService(runtimeService, historyService,
+      entityManager,
+      processInitService);
   }
 
   @Test
@@ -74,9 +75,10 @@ public class WorkflowServiceTest {
     Map<String, Object> variables = new HashMap<>();
     variables.put("var1", this);
     when(runtimeService.startProcessInstanceByKey(processId, variables))
-        .thenReturn(processInstance);
+      .thenReturn(processInstance);
     when(processInstance.getId()).thenReturn("id");
-    assertEquals("id", workflowService.startWorkflowInstance(processId, variables));
+    assertEquals("id",
+      workflowService.startWorkflowInstance(processId, variables));
   }
 
   @Test(expected = QDoesNotExistException.class)
@@ -85,7 +87,7 @@ public class WorkflowServiceTest {
     Map<String, Object> variables = new HashMap<>();
     variables.put("var1", this);
     when(runtimeService.startProcessInstanceByKey(processId, variables))
-        .thenThrow(new ActivitiObjectNotFoundException("ex"));
+      .thenThrow(new ActivitiObjectNotFoundException("ex"));
     workflowService.startWorkflowInstance(processId, variables);
   }
 
@@ -93,14 +95,15 @@ public class WorkflowServiceTest {
   public void resumeWorkflowInstanceTest() {
     String processInstanceId = "processInstanceId";
     workflowService.resumeWorkflowInstance(processInstanceId);
-    verify(runtimeService, times(1)).activateProcessInstanceById(processInstanceId);
+    verify(runtimeService, times(1))
+      .activateProcessInstanceById(processInstanceId);
   }
 
   @Test(expected = QDoesNotExistException.class)
   public void resumeWorkflowInstanceActivitiObjectNotFoundExceptionTest() {
     String processInstanceId = "processInstanceId";
     doThrow(new ActivitiObjectNotFoundException("ex")).when(runtimeService)
-        .activateProcessInstanceById(processInstanceId);
+      .activateProcessInstanceById(processInstanceId);
     workflowService.resumeWorkflowInstance(processInstanceId);
   }
 
@@ -108,14 +111,15 @@ public class WorkflowServiceTest {
   public void suspendWorkflowInstanceTest() {
     String processInstanceId = "processInstanceId";
     workflowService.suspendWorkflowInstance(processInstanceId);
-    verify(runtimeService, times(1)).suspendProcessInstanceById(processInstanceId);
+    verify(runtimeService, times(1))
+      .suspendProcessInstanceById(processInstanceId);
   }
 
   @Test(expected = QDoesNotExistException.class)
   public void suspendWorkflowInstanceActivitiObjectNotFoundExceptionTest() {
     String processInstanceId = "processInstanceId";
     doThrow(new ActivitiObjectNotFoundException("ex")).when(runtimeService)
-        .suspendProcessInstanceById(processInstanceId);
+      .suspendProcessInstanceById(processInstanceId);
     workflowService.suspendWorkflowInstance(processInstanceId);
   }
 
@@ -124,7 +128,8 @@ public class WorkflowServiceTest {
     String processInstanceId = "processInstanceId";
     String reason = "reason";
     workflowService.deleteWorkflowInstance(processInstanceId, reason);
-    verify(runtimeService, times(1)).deleteProcessInstance(processInstanceId, reason);
+    verify(runtimeService, times(1))
+      .deleteProcessInstance(processInstanceId, reason);
   }
 
   @Test(expected = QDoesNotExistException.class)
@@ -132,35 +137,40 @@ public class WorkflowServiceTest {
     String processInstanceId = "processInstanceId";
     String reason = "reason";
     doThrow(new ActivitiObjectNotFoundException("ex")).when(runtimeService)
-        .deleteProcessInstance(processInstanceId, reason);
+      .deleteProcessInstance(processInstanceId, reason);
     workflowService.deleteWorkflowInstance(processInstanceId, reason);
   }
 
   @Test
   public void getProcessInstancesByProcessIdTest() {
     String processId = "processId";
-    when(runtimeService.createProcessInstanceQuery()).thenReturn(processInstanceQuery);
-    when(processInstanceQuery.processDefinitionKey(processId)).thenReturn(processInstanceQuery);
-    when(processInstanceQuery.includeProcessVariables()).thenReturn(processInstanceQuery);
+    when(runtimeService.createProcessInstanceQuery())
+      .thenReturn(processInstanceQuery);
+    when(processInstanceQuery.processDefinitionKey(processId))
+      .thenReturn(processInstanceQuery);
+    when(processInstanceQuery.includeProcessVariables())
+      .thenReturn(processInstanceQuery);
 
     List<ProcessInstance> processInstanceList = new ArrayList<>();
     processInstanceList.add(processInstance);
     when(processInstanceQuery.list()).thenReturn(processInstanceList);
 
-    assertFalse(workflowService.getProcessInstancesByProcessId(processId).isEmpty());
+    assertFalse(
+      workflowService.getProcessInstancesByProcessId(processId).isEmpty());
   }
 
   @Test
   public void getProcessHistoryTest() {
     String processId = "processId";
     when(historyService.createHistoricProcessInstanceQuery())
-        .thenReturn(historicProcessInstanceQuery);
+      .thenReturn(historicProcessInstanceQuery);
     when(historicProcessInstanceQuery.processDefinitionKey(processId))
-        .thenReturn(historicProcessInstanceQuery);
+      .thenReturn(historicProcessInstanceQuery);
 
     List<HistoricProcessInstance> historicProcessInstances = new ArrayList<>();
     historicProcessInstances.add(historicProcessInstance);
-    when(historicProcessInstanceQuery.list()).thenReturn(historicProcessInstances);
+    when(historicProcessInstanceQuery.list())
+      .thenReturn(historicProcessInstances);
 
     when(entityManager.createNativeQuery(anyString())).thenReturn(query);
     when(query.getSingleResult()).thenReturn("new object".getBytes());

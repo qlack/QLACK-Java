@@ -12,7 +12,8 @@ public class QFileNotFoundExceptionTest {
   @Test
   public void constructorWithMessageTest() {
     String message = "exception message";
-    QFileNotFoundException qFileNotFoundException = new QFileNotFoundException(message);
+    QFileNotFoundException qFileNotFoundException = new QFileNotFoundException(
+      message);
     assertEquals(message, qFileNotFoundException.getMessage());
   }
 

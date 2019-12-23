@@ -13,7 +13,7 @@ public class QDescendantNodeLockExceptionTest {
   public void constructorWithMessageTest() {
     String message = "exception message";
     QDescendantNodeLockException qDescendantNodeLockException = new QDescendantNodeLockException(
-        message);
+      message);
     assertEquals(message, qDescendantNodeLockException.getMessage());
   }
 
@@ -24,10 +24,12 @@ public class QDescendantNodeLockExceptionTest {
     String conflictNodeName = "conflictNodeName";
 
     QDescendantNodeLockException qDescendantNodeLockException = new QDescendantNodeLockException(
-        message, conflictNodeID, conflictNodeName);
+      message, conflictNodeID, conflictNodeName);
     assertEquals(message, qDescendantNodeLockException.getMessage());
-    assertEquals(conflictNodeID, qDescendantNodeLockException.getConflictNodeID());
-    assertEquals(conflictNodeName, qDescendantNodeLockException.getConflictNodeName());
+    assertEquals(conflictNodeID,
+      qDescendantNodeLockException.getConflictNodeID());
+    assertEquals(conflictNodeName,
+      qDescendantNodeLockException.getConflictNodeName());
   }
 
 }

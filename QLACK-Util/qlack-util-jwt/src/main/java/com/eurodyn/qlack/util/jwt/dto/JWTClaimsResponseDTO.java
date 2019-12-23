@@ -1,15 +1,16 @@
 package com.eurodyn.qlack.util.jwt.dto;
 
 import io.jsonwebtoken.Claims;
-
 import java.util.Date;
 import java.util.Map;
 
 /**
- * Encapsulates a reply from a verification request. It contains an indicator of whether the JWT
- * was found to be valid, together with an error description in case the token was invalid.
+ * Encapsulates a reply from a verification request. It contains an indicator of
+ * whether the JWT was found to be valid, together with an error description in
+ * case the token was invalid.
  */
 public class JWTClaimsResponseDTO {
+
   // Indicates whether this JWT successfully passed verification or not.
   private boolean valid;
 
@@ -47,23 +48,25 @@ public class JWTClaimsResponseDTO {
   }
 
   public String getIssuer() {
-    return claims != null ? (String)claims.get(Claims.ISSUER) : null;
+    return claims != null ? (String) claims.get(Claims.ISSUER) : null;
   }
 
   public String getId() {
-    return claims != null ? (String)claims.get(Claims.ID) : null;
+    return claims != null ? (String) claims.get(Claims.ID) : null;
   }
 
   public Date getIssuedAt() {
-    return claims != null ? new Date((int)claims.get(Claims.ISSUED_AT) * 1000l) : null;
+    return claims != null ? new Date((int) claims.get(Claims.ISSUED_AT) * 1000l)
+      : null;
   }
 
   public Date getExpiresAt() {
-    return claims != null ? new Date((int)claims.get(Claims.EXPIRATION) * 1000l) : null;
+    return claims != null ? new Date(
+      (int) claims.get(Claims.EXPIRATION) * 1000l) : null;
   }
 
   public String getSubject() {
-    return claims != null ? (String)claims.get(Claims.SUBJECT) : null;
+    return claims != null ? (String) claims.get(Claims.SUBJECT) : null;
   }
 
 }

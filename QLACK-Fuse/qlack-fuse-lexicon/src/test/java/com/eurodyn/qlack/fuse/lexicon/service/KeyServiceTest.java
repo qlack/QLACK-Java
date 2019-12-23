@@ -36,7 +36,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,7 +61,8 @@ public class KeyServiceTest {
   private KeyRepository keyRepository = mock(KeyRepository.class);
   private GroupRepository groupRepository = mock(GroupRepository.class);
   private DataRepository dataRepository = mock(DataRepository.class);
-  private LanguageRepository languageRepository = mock(LanguageRepository.class);
+  private LanguageRepository languageRepository = mock(
+    LanguageRepository.class);
   private GroupService groupService = mock(GroupService.class);
   @Spy
   private KeyMapper keyMapper;
@@ -85,8 +85,9 @@ public class KeyServiceTest {
 
   @Before
   public void init() {
-    keyService = new KeyService(keyRepository, groupRepository, keyMapper, dataRepository,
-        languageRepository,groupService);
+    keyService = new KeyService(keyRepository, groupRepository, keyMapper,
+      dataRepository,
+      languageRepository, groupService);
     initTestValues = new InitTestValues();
     key = initTestValues.createKey();
     keys = initTestValues.createKeys();
@@ -127,7 +128,8 @@ public class KeyServiceTest {
   @Test(expected = QAlreadyExistsException.class)
   public void testCreateExistingKey() {
     when(groupRepository.fetchById(keyDTO.getGroupId())).thenReturn(group);
-    when(keyService.getKeyByName(keyDTO.getName(), keyDTO.getGroupId(), false)).thenReturn(keyDTO);
+    when(keyService.getKeyByName(keyDTO.getName(), keyDTO.getGroupId(), false))
+      .thenReturn(keyDTO);
     keyService.createKey(keyDTO, false);
     verify(keyRepository, times(0)).save(any());
     verify(dataRepository, times(0)).save(any());
@@ -137,7 +139,7 @@ public class KeyServiceTest {
   public void testCreateExistingKeysWithoutGroups() {
     when(groupRepository.fetchById(keyDTO.getGroupId())).thenReturn(group);
     when(keyService.getKeyByName(keyDTO.getName(), keyDTO.getGroupId(), false))
-        .thenThrow(IncorrectResultSizeDataAccessException.class);
+      .thenThrow(IncorrectResultSizeDataAccessException.class);
     keyService.createKey(keyDTO, false);
     verify(keyRepository, times(0)).save(any());
     verify(dataRepository, times(0)).save(any());
@@ -172,7 +174,8 @@ public class KeyServiceTest {
 
   @Test
   public void testCreateKeys() {
-    groups.forEach(group1 -> when(groupRepository.fetchById(group1.getId())).thenReturn(group1));
+    groups.forEach(group1 -> when(groupRepository.fetchById(group1.getId()))
+      .thenReturn(group1));
     List<String> createdKeys = keyService.createKeys(keysDTO, true);
     assertEquals(keysDTO.size(), createdKeys.size());
   }
@@ -186,7 +189,7 @@ public class KeyServiceTest {
   @Test
   public void testDeleteKeys() {
     Collection<String> keyIds = keysDTO.stream().map(KeyDTO::getId)
-        .collect(Collectors.toCollection(ArrayList::new));
+      .collect(Collectors.toCollection(ArrayList::new));
     keyService.deleteKeys(keyIds);
     keyIds.forEach(key -> verify(keyRepository, times(1)).deleteById(key));
   }
@@ -211,7 +214,8 @@ public class KeyServiceTest {
   public void testMoveKey() {
     Group destinationGroup = groups.get(groups.size() - 1);
     when(keyRepository.fetchById(key.getId())).thenReturn(key);
-    when(groupRepository.fetchById(destinationGroup.getId())).thenReturn(destinationGroup);
+    when(groupRepository.fetchById(destinationGroup.getId()))
+      .thenReturn(destinationGroup);
     keyService.moveKey(key.getId(), destinationGroup.getId());
     assertEquals(destinationGroup.getId(), key.getGroup().getId());
   }
@@ -220,13 +224,15 @@ public class KeyServiceTest {
   public void testMoveKeys() {
     Group destinationGroup = groups.get(groups.size() - 1);
     Collection<String> keyIds = keysDTO.stream().map(KeyDTO::getId)
-        .collect(Collectors.toCollection(ArrayList::new));
+      .collect(Collectors.toCollection(ArrayList::new));
 
     keys.forEach(k -> when(keyRepository.fetchById(k.getId())).thenReturn(k));
 
-    when(groupRepository.fetchById(destinationGroup.getId())).thenReturn(destinationGroup);
+    when(groupRepository.fetchById(destinationGroup.getId()))
+      .thenReturn(destinationGroup);
     keyService.moveKeys(keyIds, destinationGroup.getId());
-    keys.forEach(k -> assertEquals(destinationGroup.getId(), k.getGroup().getId()));
+    keys.forEach(
+      k -> assertEquals(destinationGroup.getId(), k.getGroup().getId()));
   }
 
   @Test
@@ -240,9 +246,11 @@ public class KeyServiceTest {
   @Test
   public void testGetKeyByName() {
     keyDTO.setTranslations(null);
-    when(keyRepository.findByNameAndGroupId(key.getName(), group.getId())).thenReturn(key);
+    when(keyRepository.findByNameAndGroupId(key.getName(), group.getId()))
+      .thenReturn(key);
     when(keyMapper.mapToDTO(key, false)).thenReturn(keyDTO);
-    KeyDTO foundKeyDTO = keyService.getKeyByName(key.getName(), group.getId(), false);
+    KeyDTO foundKeyDTO = keyService
+      .getKeyByName(key.getName(), group.getId(), false);
     assertNull(foundKeyDTO.getTranslations());
   }
 
@@ -253,12 +261,15 @@ public class KeyServiceTest {
 
     Predicate predicate = new BooleanBuilder();
     predicate = ((BooleanBuilder) predicate)
-        .and(qKey.name.eq(criteria.getKeyName()).and(qKey.group.id.eq(criteria.getGroupId())));
+      .and(qKey.name.eq(criteria.getKeyName())
+        .and(qKey.group.id.eq(criteria.getGroupId())));
 
-    when(keyRepository.findAll(predicate, criteria.getPageable())).thenReturn(keyPages);
+    when(keyRepository.findAll(predicate, criteria.getPageable()))
+      .thenReturn(keyPages);
     keyPages.forEach(k -> {
-      KeyDTO dto = keysDTO.stream().filter(keyDTO1 -> keyDTO1.getId().equals(k.getId())).findAny()
-          .get();
+      KeyDTO dto = keysDTO.stream()
+        .filter(keyDTO1 -> keyDTO1.getId().equals(k.getId())).findAny()
+        .get();
       when(keyMapper.mapToDTO(k, false)).thenReturn(dto);
     });
 
@@ -273,9 +284,11 @@ public class KeyServiceTest {
     criteria.setKeyName(null);
 
     Predicate predicate = new BooleanBuilder();
-    predicate = ((BooleanBuilder) predicate).and(qKey.group.id.eq(criteria.getGroupId()));
+    predicate = ((BooleanBuilder) predicate)
+      .and(qKey.group.id.eq(criteria.getGroupId()));
 
-    when(keyRepository.findAll(predicate, criteria.getPageable())).thenReturn(keyPages);
+    when(keyRepository.findAll(predicate, criteria.getPageable()))
+      .thenReturn(keyPages);
 
     List<KeyDTO> foundKeys = keyService.findKeys(criteria, false);
     foundKeys.forEach(key -> assertNull(key));
@@ -288,9 +301,11 @@ public class KeyServiceTest {
     criteria.setGroupId(null);
 
     Predicate predicate = new BooleanBuilder();
-    predicate = ((BooleanBuilder) predicate).and(qKey.name.eq(criteria.getKeyName()));
+    predicate = ((BooleanBuilder) predicate)
+      .and(qKey.name.eq(criteria.getKeyName()));
 
-    when(keyRepository.findAll(predicate, criteria.getPageable())).thenReturn(keyPages);
+    when(keyRepository.findAll(predicate, criteria.getPageable()))
+      .thenReturn(keyPages);
 
     List<KeyDTO> foundKeys = keyService.findKeys(criteria, false);
     foundKeys.forEach(key -> assertNull(key));
@@ -299,15 +314,18 @@ public class KeyServiceTest {
   @Test
   public void testGetUpdateTranslationNewData() {
     when(languageRepository.fetchById(language.getId())).thenReturn(language);
-    keyService.updateTranslation(key.getId(), language.getId(), UPDATED_TRANSLATION);
+    keyService
+      .updateTranslation(key.getId(), language.getId(), UPDATED_TRANSLATION);
     verify(keyRepository, times(1)).fetchById(key.getId());
     verify(dataRepository, times(1)).save(any());
   }
 
   @Test
   public void testGetUpdateTranslationExistingData() {
-    when(dataRepository.findByKeyIdAndLanguageId(key.getId(), language.getId())).thenReturn(data);
-    keyService.updateTranslation(key.getId(), language.getId(), UPDATED_TRANSLATION);
+    when(dataRepository.findByKeyIdAndLanguageId(key.getId(), language.getId()))
+      .thenReturn(data);
+    keyService
+      .updateTranslation(key.getId(), language.getId(), UPDATED_TRANSLATION);
     verify(keyRepository, times(0)).fetchById(key.getId());
     verify(dataRepository, times(1)).save(data);
     assertEquals(UPDATED_TRANSLATION, data.getValue());
@@ -318,7 +336,8 @@ public class KeyServiceTest {
   public void testGetUpdateTranslationByLocaleNewData() {
     String locale = language.getLocale();
     when(languageRepository.findByLocale(locale)).thenReturn(language);
-    keyService.updateTranslationByLocale(key.getId(), locale, UPDATED_TRANSLATION);
+    keyService
+      .updateTranslationByLocale(key.getId(), locale, UPDATED_TRANSLATION);
     verify(keyRepository, times(1)).fetchById(key.getId());
     verify(dataRepository, times(1)).save(any());
   }
@@ -326,8 +345,10 @@ public class KeyServiceTest {
   @Test
   public void testGetUpdateTranslationByLocaleExistingData() {
     String locale = language.getLocale();
-    when(dataRepository.findByKeyIdAndLanguageLocale(key.getId(), locale)).thenReturn(data);
-    keyService.updateTranslationByLocale(key.getId(), locale, UPDATED_TRANSLATION);
+    when(dataRepository.findByKeyIdAndLanguageLocale(key.getId(), locale))
+      .thenReturn(data);
+    keyService
+      .updateTranslationByLocale(key.getId(), locale, UPDATED_TRANSLATION);
     verify(keyRepository, times(0)).fetchById(key.getId());
     verify(dataRepository, times(1)).save(data);
     assertEquals(UPDATED_TRANSLATION, data.getValue());
@@ -335,24 +356,30 @@ public class KeyServiceTest {
 
   @Test
   public void testUpdateTranslationByGroupId() {
-    Predicate predicate = qData.key.name.eq(key.getName()).and(qData.key.group.id.eq(group.getId()))
-        .and(qData.language.id.eq(language.getId()));
+    Predicate predicate = qData.key.name.eq(key.getName())
+      .and(qData.key.group.id.eq(group.getId()))
+      .and(qData.language.id.eq(language.getId()));
     when(dataRepository.findOne(predicate)).thenReturn(Optional.of(data));
-    keyService.updateTranslationByGroupId(key.getName(), group.getId(), language.getId(),
-        "Update by group id!");
-    verify(keyRepository, times(0)).findByNameAndGroupId(key.getName(), group.getId());
+    keyService.updateTranslationByGroupId(key.getName(), group.getId(),
+      language.getId(),
+      "Update by group id!");
+    verify(keyRepository, times(0))
+      .findByNameAndGroupId(key.getName(), group.getId());
     verify(dataRepository, times(1)).save(data);
   }
 
   @Test
   public void testUpdateTranslationByKeyName() {
-    when(keyRepository.findByNameAndGroupId(key.getName(), group.getId())).thenReturn(key);
+    when(keyRepository.findByNameAndGroupId(key.getName(), group.getId()))
+      .thenReturn(key);
     when(languageRepository.fetchById(language.getId())).thenReturn(language);
 
-    keyService.updateTranslationByKeyName(key.getName(), group.getId(), language.getId(),
-        "Update by group id!");
+    keyService.updateTranslationByKeyName(key.getName(), group.getId(),
+      language.getId(),
+      "Update by group id!");
 
-    verify(keyRepository, times(1)).findByNameAndGroupId(key.getName(), group.getId());
+    verify(keyRepository, times(1))
+      .findByNameAndGroupId(key.getName(), group.getId());
     verify(languageRepository, times(1)).fetchById(language.getId());
     verify(dataRepository, times(1)).save(any());
   }
@@ -362,11 +389,14 @@ public class KeyServiceTest {
     Map<String, String> keysMap = new HashMap<>();
     keysMap.put(key.getName(), "Some Value");
 
-    Predicate predicate = qData.key.name.eq(key.getName()).and(qData.key.group.id.eq(group.getId()))
-        .and(qData.language.id.eq(language.getId()));
+    Predicate predicate = qData.key.name.eq(key.getName())
+      .and(qData.key.group.id.eq(group.getId()))
+      .and(qData.language.id.eq(language.getId()));
     when(dataRepository.findOne(predicate)).thenReturn(Optional.of(data));
-    keyService.updateTranslationsByGroupId(keysMap, group.getId(), language.getId());
-    verify(keyRepository, times(0)).findByNameAndGroupId(key.getName(), group.getId());
+    keyService
+      .updateTranslationsByGroupId(keysMap, group.getId(), language.getId());
+    verify(keyRepository, times(0))
+      .findByNameAndGroupId(key.getName(), group.getId());
     verify(dataRepository, times(1)).save(data);
   }
 
@@ -374,8 +404,10 @@ public class KeyServiceTest {
   public void testUpdateTranslationsForKey() {
     Map<String, String> translationsMap = new HashMap<>();
     languages.forEach(language1 -> {
-      translationsMap.put(language1.getId(), "New translation in " + language1.getName());
-      when(languageRepository.fetchById(language1.getId())).thenReturn(language1);
+      translationsMap
+        .put(language1.getId(), "New translation in " + language1.getName());
+      when(languageRepository.fetchById(language1.getId()))
+        .thenReturn(language1);
     });
 
     when(keyRepository.fetchById(key.getId())).thenReturn(key);
@@ -389,14 +421,17 @@ public class KeyServiceTest {
   public void testUpdateTranslationsForKeyByLocale() {
     Map<String, String> translationsLocaleMap = new HashMap<>();
     languages.forEach(l -> {
-      translationsLocaleMap.put(l.getLocale(), "New translation in " + l.getName());
+      translationsLocaleMap
+        .put(l.getLocale(), "New translation in " + l.getName());
       when(languageRepository.findByLocale(l.getLocale())).thenReturn(l);
     });
 
     when(keyRepository.fetchById(key.getId())).thenReturn(key);
-    keyService.updateTranslationsForKeyByLocale(key.getId(), translationsLocaleMap);
+    keyService
+      .updateTranslationsForKeyByLocale(key.getId(), translationsLocaleMap);
 
-    verify(keyRepository, times(translationsLocaleMap.size())).fetchById(key.getId());
+    verify(keyRepository, times(translationsLocaleMap.size()))
+      .fetchById(key.getId());
     verify(dataRepository, times(translationsLocaleMap.size())).save(any());
   }
 
@@ -404,14 +439,17 @@ public class KeyServiceTest {
   public void testUpdateTranslationsForLanguage() {
     Map<String, String> updatedKeyTranslationsMap = new HashMap<>();
     keys.forEach(k -> {
-      updatedKeyTranslationsMap.put(k.getId(), "New translation in " + k.getName());
+      updatedKeyTranslationsMap
+        .put(k.getId(), "New translation in " + k.getName());
       when(keyRepository.fetchById(k.getId())).thenReturn(k);
     });
 
     when(languageRepository.fetchById(language.getId())).thenReturn(language);
-    keyService.updateTranslationsForLanguage(language.getId(), updatedKeyTranslationsMap);
+    keyService.updateTranslationsForLanguage(language.getId(),
+      updatedKeyTranslationsMap);
 
-    keys.forEach(key1 -> verify(keyRepository, times(1)).fetchById(key1.getId()));
+    keys
+      .forEach(key1 -> verify(keyRepository, times(1)).fetchById(key1.getId()));
     verify(dataRepository, times(updatedKeyTranslationsMap.size())).save(any());
   }
 
@@ -420,29 +458,36 @@ public class KeyServiceTest {
     Map<String, String> keyNameTranslationsMap = new HashMap<>();
     keys.forEach(k -> {
       keyNameTranslationsMap.put(k.getName(), "Updated translation");
-      when(keyRepository.findByNameAndGroupId(k.getName(), group.getId())).thenReturn(k);
+      when(keyRepository.findByNameAndGroupId(k.getName(), group.getId()))
+        .thenReturn(k);
     });
     when(languageRepository.fetchById(language.getId())).thenReturn(language);
-    keyService.updateTranslationsForLanguageByKeyName(language.getId(), group.getId(),
+    keyService
+      .updateTranslationsForLanguageByKeyName(language.getId(), group.getId(),
         keyNameTranslationsMap);
 
     keys.forEach(key1 ->
-        verify(keyRepository, times(1)).findByNameAndGroupId(key1.getName(), group.getId()));
-    verify(languageRepository, times(keyNameTranslationsMap.size())).fetchById(language.getId());
+      verify(keyRepository, times(1))
+        .findByNameAndGroupId(key1.getName(), group.getId()));
+    verify(languageRepository, times(keyNameTranslationsMap.size()))
+      .fetchById(language.getId());
     verify(dataRepository, times(keyNameTranslationsMap.size())).save(any());
   }
 
   @Test
   public void testGetTranslation() {
-    when(dataRepository.findByKeyNameAndLanguageLocale(key.getName(), language.getLocale()))
-        .thenReturn(data);
-    String foundTranslation = keyService.getTranslation(key.getName(), language.getLocale());
+    when(dataRepository
+      .findByKeyNameAndLanguageLocale(key.getName(), language.getLocale()))
+      .thenReturn(data);
+    String foundTranslation = keyService
+      .getTranslation(key.getName(), language.getLocale());
     assertEquals(data.getValue(), foundTranslation);
   }
 
   @Test
   public void testGetTranslationNotFoundData() {
-    String foundTranslation = keyService.getTranslation(key.getName(), language.getLocale());
+    String foundTranslation = keyService
+      .getTranslation(key.getName(), language.getLocale());
     assertNull(foundTranslation);
   }
 
@@ -450,29 +495,33 @@ public class KeyServiceTest {
   @Test
   public void testGetTranslationsForKeyName() {
     Map<String, String> expectedTranslations = new HashMap<>();
-    key.getData().forEach(d -> expectedTranslations.put(d.getLanguage().getLocale(), d.getValue()));
+    key.getData().forEach(
+      d -> expectedTranslations.put(d.getLanguage().getLocale(), d.getValue()));
 
-    when(keyRepository.findByNameAndGroupId(key.getName(), group.getId())).thenReturn(key);
+    when(keyRepository.findByNameAndGroupId(key.getName(), group.getId()))
+      .thenReturn(key);
     Map<String, String> translationsForKeyName = keyService
-        .getTranslationsForKeyName(key.getName(), group.getId());
+      .getTranslationsForKeyName(key.getName(), group.getId());
     assertEquals(expectedTranslations, translationsForKeyName);
   }
 
   @Test
   public void testGetTranslationForKeyGroupLocale() {
     Predicate predicate = qData.key.name.eq(key.getName())
-        .and(qData.key.group.title.eq(group.getTitle()))
-        .and(qData.language.locale.eq(language.getLocale()));
+      .and(qData.key.group.title.eq(group.getTitle()))
+      .and(qData.language.locale.eq(language.getLocale()));
     when(dataRepository.findAll(predicate)).thenReturn(key.getData());
     String translationForKeyGroupLocale = keyService
-        .getTranslationForKeyGroupLocale(key.getName(), group.getTitle(), language.getLocale());
+      .getTranslationForKeyGroupLocale(key.getName(), group.getTitle(),
+        language.getLocale());
     assertEquals(data.getValue(), translationForKeyGroupLocale);
   }
 
   @Test
   public void testGetTranslationForKeyGroupLocaleNull() {
     String translationForKeyGroupLocale = keyService
-        .getTranslationForKeyGroupLocale(key.getName(), group.getTitle(), language.getLocale());
+      .getTranslationForKeyGroupLocale(key.getName(), group.getTitle(),
+        language.getLocale());
     assertNull(translationForKeyGroupLocale);
   }
 
@@ -480,9 +529,10 @@ public class KeyServiceTest {
   public void testGetTranslationsForLocale() {
     Map<String, String> expectedTranslationsForLocale = new HashMap<>();
     expectedTranslationsForLocale.put(key.getName(), data.getValue());
-    when(languageRepository.findByLocale(language.getLocale())).thenReturn(language);
+    when(languageRepository.findByLocale(language.getLocale()))
+      .thenReturn(language);
     Map<String, String> translationsForLocale = keyService
-        .getTranslationsForLocale(language.getLocale());
+      .getTranslationsForLocale(language.getLocale());
     assertEquals(expectedTranslationsForLocale, translationsForLocale);
   }
 
@@ -490,11 +540,13 @@ public class KeyServiceTest {
   public void testGetTranslationsForGroupAndLocale() {
     Map<String, String> expectedTranslationsForGroupAndLocale = new HashMap<>();
     expectedTranslationsForGroupAndLocale.put(key.getName(), data.getValue());
-    when(dataRepository.findByKeyGroupIdAndLanguageLocale(group.getId(), language.getLocale()))
-        .thenReturn(language.getData());
+    when(dataRepository
+      .findByKeyGroupIdAndLanguageLocale(group.getId(), language.getLocale()))
+      .thenReturn(language.getData());
     Map<String, String> translationsForGroupAndLocale = keyService
-        .getTranslationsForGroupAndLocale(group.getId(), language.getLocale());
-    assertEquals(expectedTranslationsForGroupAndLocale, translationsForGroupAndLocale);
+      .getTranslationsForGroupAndLocale(group.getId(), language.getLocale());
+    assertEquals(expectedTranslationsForGroupAndLocale,
+      translationsForGroupAndLocale);
   }
 
   @Test
@@ -504,10 +556,11 @@ public class KeyServiceTest {
     dataList.get(1).setKey(keys.get(1));
 
     Predicate predicate = (qData.key.group.title.eq(group.getTitle()))
-        .and(qData.language.locale.eq(language.getLocale()));
+      .and(qData.language.locale.eq(language.getLocale()));
     when(dataRepository.findAll(predicate)).thenReturn(dataList);
     Map<String, String> translationsForGroupNameAndLocale = keyService
-        .getTranslationsForGroupNameAndLocale(group.getTitle(), language.getLocale());
+      .getTranslationsForGroupNameAndLocale(group.getTitle(),
+        language.getLocale());
     assertEquals(dataList.size(), translationsForGroupNameAndLocale.size());
   }
 
@@ -515,7 +568,7 @@ public class KeyServiceTest {
   public void testGetTranslationsForLocaleGroupByGroupTitle() {
     when(groupService.getGroups()).thenReturn(new HashSet<>(groupsDTO));
     Map<String, Map<String, String>> translations = keyService
-        .getTranslationsForLocaleGroupByGroupTitle("en");
+      .getTranslationsForLocaleGroupByGroupTitle("en");
 
     assertEquals(groupsDTO.size(), translations.size());
     assertNotNull(translations.get(groupsDTO.get(0).getTitle()));
@@ -528,15 +581,18 @@ public class KeyServiceTest {
     dataList.get(1).setKey(keys.get(1));
 
     Map<String, String> sortedKeyValue = new HashMap<>();
-    sortedKeyValue.put(dataList.get(1).getKey().getName(), dataList.get(1).getValue());
-    sortedKeyValue.put(dataList.get(0).getKey().getName(), dataList.get(0).getValue());
+    sortedKeyValue
+      .put(dataList.get(1).getKey().getName(), dataList.get(1).getValue());
+    sortedKeyValue
+      .put(dataList.get(0).getKey().getName(), dataList.get(0).getValue());
 
     Predicate predicate = (qData.key.group.title.eq(group.getTitle()))
-        .and(qData.language.locale.eq(language.getLocale()));
+      .and(qData.language.locale.eq(language.getLocale()));
     when(dataRepository.findAll(predicate)).thenReturn(dataList);
     Map<String, String> translationsForGroupNameAndLocaleSorted = keyService
-        .getTranslationsForGroupNameAndLocaleSorted(group.getTitle(), language.getLocale(),
-            SortType.DESCENDING);
+      .getTranslationsForGroupNameAndLocaleSorted(group.getTitle(),
+        language.getLocale(),
+        SortType.DESCENDING);
 
     assertEquals(sortedKeyValue, translationsForGroupNameAndLocaleSorted);
   }
@@ -552,10 +608,11 @@ public class KeyServiceTest {
     sortedKeys.add(dataList.get(0).getKey().getName());
 
     Predicate predicate = (qData.key.group.title.eq(group.getTitle()))
-        .and(qData.language.locale.eq(language.getLocale()));
+      .and(qData.language.locale.eq(language.getLocale()));
     when(dataRepository.findAll(predicate)).thenReturn(dataList);
     List<String> keysSortedByTranslation = keyService
-        .getKeysSortedByTranslation(group.getTitle(), language.getLocale(), SortType.DESCENDING);
+      .getKeysSortedByTranslation(group.getTitle(), language.getLocale(),
+        SortType.DESCENDING);
 
     assertEquals(sortedKeys, keysSortedByTranslation);
   }
@@ -567,7 +624,8 @@ public class KeyServiceTest {
 
     Predicate predicate = new BooleanBuilder();
     predicate = ((BooleanBuilder) predicate)
-        .and(qKey.name.eq(criteria.getKeyName()).and(qKey.group.id.eq(criteria.getGroupId())));
+      .and(qKey.name.eq(criteria.getKeyName())
+        .and(qKey.group.id.eq(criteria.getGroupId())));
 
     when(keyRepository.count(predicate)).thenReturn(countKeys);
     Long totalKeys = keyService.findTotalKeys(criteria);
@@ -582,7 +640,8 @@ public class KeyServiceTest {
     criteria.setKeyName(null);
 
     Predicate predicate = new BooleanBuilder();
-    predicate = ((BooleanBuilder) predicate).and(qKey.group.id.eq(criteria.getGroupId()));
+    predicate = ((BooleanBuilder) predicate)
+      .and(qKey.group.id.eq(criteria.getGroupId()));
 
     when(keyRepository.count(predicate)).thenReturn(countKeys);
     Long totalKeys = keyService.findTotalKeys(criteria);
@@ -597,7 +656,8 @@ public class KeyServiceTest {
     criteria.setGroupId(null);
 
     Predicate predicate = new BooleanBuilder();
-    predicate = ((BooleanBuilder) predicate).and(qKey.name.eq(criteria.getKeyName()));
+    predicate = ((BooleanBuilder) predicate)
+      .and(qKey.name.eq(criteria.getKeyName()));
 
     when(keyRepository.count(predicate)).thenReturn(countKeys);
     Long totalKeys = keyService.findTotalKeys(criteria);

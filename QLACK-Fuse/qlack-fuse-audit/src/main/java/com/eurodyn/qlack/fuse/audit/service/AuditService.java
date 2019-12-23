@@ -44,8 +44,8 @@ public class AuditService {
 
   @Autowired
   public AuditService(AuditProperties auditProperties,
-      AuditRepository auditRepository, AuditMapper auditMapper,
-      AuditLevelRepository auditLevelRepository) {
+    AuditRepository auditRepository, AuditMapper auditMapper,
+    AuditLevelRepository auditLevelRepository) {
     this.auditProperties = auditProperties;
     this.auditRepository = auditRepository;
     this.auditMapper = auditMapper;
@@ -80,12 +80,14 @@ public class AuditService {
    * @param level the audit level
    * @param event the audit EVENT
    * @param description the audit description
-   * @param args the arguments to be passed on a {@link MessageFormat} for the description
-   * argument.
+   * @param args the arguments to be passed on a {@link MessageFormat} for the
+   * description argument.
    */
-  public void audit(String level, String event, String description, Object... args) {
+  public void audit(String level, String event, String description,
+    Object... args) {
     log.trace("Adding audit.");
-    audit(level, event, null, MessageFormat.format(description, args), null, null, null);
+    audit(level, event, null, MessageFormat.format(description, args), null,
+      null, null);
   }
 
   /**
@@ -98,8 +100,9 @@ public class AuditService {
    * @param sessionID the id of the session that the audit occurred
    * @param traceData an object containing the trace of the audit
    */
-  public void audit(String level, String event, String groupName, String description,
-      String sessionID, Object traceData) {
+  public void audit(String level, String event, String groupName,
+    String description,
+    String sessionID, Object traceData) {
     log.trace("Adding audit from params and trace data as an object ");
     audit(level, event, groupName, description, sessionID, traceData, null);
   }
@@ -114,8 +117,9 @@ public class AuditService {
    * @param sessionID the id of the session that the audit occurred
    * @param traceData a String containing the trace of the audit
    */
-  public void audit(String level, String event, String groupName, String description,
-      String sessionID, String traceData) {
+  public void audit(String level, String event, String groupName,
+    String description,
+    String sessionID, String traceData) {
     log.trace("Adding audit from params and trace data as a String ");
     audit(level, event, groupName, description, sessionID, traceData, null);
   }
@@ -132,12 +136,15 @@ public class AuditService {
    * @param referenceId the reference id of the audit
    * @return the id of the created audit
    */
-  public String audit(String level, String event, String groupName, String description,
-      String sessionID, Object traceData,
-      String referenceId) {
-    AuditDTO dto = new AuditDTO(level, event, groupName, description, sessionID);
+  public String audit(String level, String event, String groupName,
+    String description,
+    String sessionID, Object traceData,
+    String referenceId) {
+    AuditDTO dto = new AuditDTO(level, event, groupName, description,
+      sessionID);
     if (referenceId != null) {
-      log.trace(MessageFormat.format("Adding audit with referenceId: {0} ", referenceId));
+      log.trace(MessageFormat
+        .format("Adding audit with referenceId: {0} ", referenceId));
       dto.setReferenceId(referenceId);
     }
     if (auditProperties.isTraceData() && !StringUtils.isEmpty(traceData)) {
@@ -164,8 +171,8 @@ public class AuditService {
   }
 
   /**
-   * Adds audits of multiple events that occurred in the application, and correlates them with a
-   * unique id
+   * Adds audits of multiple events that occurred in the application, and
+   * correlates them with a unique id
    *
    * @param auditList a list of the audits to persist
    * @param correlationId the unique id to correlate the audits
@@ -207,8 +214,10 @@ public class AuditService {
    * @param createdOn the date before which all audits will be deleted
    */
   public void truncateAudits(Date createdOn) {
-    log.trace(MessageFormat.format("Clearing audit log data before {0}", createdOn));
-    auditRepository.deleteByCreatedOnBefore(createdOn.toInstant().toEpochMilli());
+    log.trace(
+      MessageFormat.format("Clearing audit log data before {0}", createdOn));
+    auditRepository
+      .deleteByCreatedOnBefore(createdOn.toInstant().toEpochMilli());
   }
 
   /**
@@ -218,9 +227,10 @@ public class AuditService {
    */
   public void truncateAudits(long retentionPeriod) {
     log.trace(MessageFormat.format("Clearing audit log data older than {0}",
-        String.valueOf(retentionPeriod)));
+      String.valueOf(retentionPeriod)));
     auditRepository
-        .deleteByCreatedOnBefore(Calendar.getInstance().getTimeInMillis() - retentionPeriod);
+      .deleteByCreatedOnBefore(
+        Calendar.getInstance().getTimeInMillis() - retentionPeriod);
   }
 
   /**
@@ -241,10 +251,12 @@ public class AuditService {
    * @param pageable defines the maximum number of results to return
    * @param predicate an expression to describe which audits to return (eg.
    * qAudit.EVENT.like(expression("The EVENT"));
-   * @return a page containing X number of audits matching the specific expression
+   * @return a page containing X number of audits matching the specific
+   * expression
    */
   public Page<AuditDTO> getAuditLogs(Pageable pageable, Predicate predicate) {
-    log.trace(MessageFormat.format("Searching for audits matching the expression: {0}", predicate));
+    log.trace(MessageFormat
+      .format("Searching for audits matching the expression: {0}", predicate));
     return auditMapper.toAuditDTO(auditRepository.findAll(predicate, pageable));
   }
 
@@ -252,10 +264,12 @@ public class AuditService {
    * Searches distinct events for a specific reference id
    *
    * @param referenceId the reference id that each audit should have
-   * @return a list of EVENT names of audits, that have the specific reference id.
+   * @return a list of EVENT names of audits, that have the specific reference
+   * id.
    */
   public List<String> getDistinctEventsForReferenceId(String referenceId) {
-    log.trace(MessageFormat.format("Fetching distinct events for id: {0}", referenceId));
+    log.trace(MessageFormat
+      .format("Fetching distinct events for id: {0}", referenceId));
     return auditRepository.findDistinctEventsByReferenceId(referenceId);
   }
 }

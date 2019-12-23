@@ -56,7 +56,7 @@ public class OpTemplate extends AAAModel {
    * @return a {@link OpTemplateHasOperation} object
    */
   public OpTemplateHasOperation addOpTemplateHasOperation(
-      OpTemplateHasOperation opTemplateHasOperation) {
+    OpTemplateHasOperation opTemplateHasOperation) {
     if (getOpTemplateHasOperations() == null) {
       setOpTemplateHasOperations(new ArrayList<>());
     }
@@ -73,7 +73,7 @@ public class OpTemplate extends AAAModel {
    * @return a {@link OpTemplateHasOperation} object
    */
   public OpTemplateHasOperation removeOpTemplateHasOperation(
-      OpTemplateHasOperation opTemplateHasOperation) {
+    OpTemplateHasOperation opTemplateHasOperation) {
     getOpTemplateHasOperations().remove(opTemplateHasOperation);
     opTemplateHasOperation.setTemplate(null);
 

@@ -23,7 +23,8 @@ public class ResourceService {
   private final ResourceRepository resourceRepository;
   private final ResourceMapper resourceMapper;
 
-  public ResourceService(ResourceRepository resourceRepository, ResourceMapper resourceMapper) {
+  public ResourceService(ResourceRepository resourceRepository,
+    ResourceMapper resourceMapper) {
     this.resourceRepository = resourceRepository;
     this.resourceMapper = resourceMapper;
   }

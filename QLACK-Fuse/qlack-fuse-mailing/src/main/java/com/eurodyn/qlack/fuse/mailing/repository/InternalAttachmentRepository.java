@@ -9,7 +9,7 @@ import java.util.List;
  * @author European Dynamics SA.
  */
 public interface InternalAttachmentRepository extends
-    MailingRepository<InternalAttachment, String> {
+  MailingRepository<InternalAttachment, String> {
 
   List<InternalAttachment> findByMessagesId(String messageId);
 }

@@ -26,11 +26,11 @@ public class InitTestValues {
 
   public String templateContent = "<h1>Template example</h1><p>${data.value}</p>";
   public String nestedTemplateContent = "<html>"
-      + "<body>"
-      + "<title>Nested Template</title>"
-      + "<div>${template.content}</div>"
-      + "</body>"
-      + "</html>";
+    + "<body>"
+    + "<title>Nested Template</title>"
+    + "<div>${template.content}</div>"
+    + "</body>"
+    + "</html>";
   private Language englishLang;
   private Language portugueseLang;
   private Key attachment_desc;
@@ -146,8 +146,10 @@ public class InitTestValues {
     keyDTO.setName("attachment_desc");
 
     Map<String, String> translations = new HashMap<>();
-    translations.put("777119b0-bda0-4e87-9d3b-08d80e9bb9e8", "Add attachment description");
-    translations.put("71df58f1-be26-410a-94ca-cfc90ac955a4", "Adicionar descrição do anexo");
+    translations.put("777119b0-bda0-4e87-9d3b-08d80e9bb9e8",
+      "Add attachment description");
+    translations.put("71df58f1-be26-410a-94ca-cfc90ac955a4",
+      "Adicionar descrição do anexo");
     keyDTO.setTranslations(translations);
 
     return keyDTO;
@@ -263,14 +265,16 @@ public class InitTestValues {
   }
 
   public byte[] getLanguageByteArray() {
-    Path resourceDirectory = Paths.get("src/test/resources/eng_translations.xls");
+    Path resourceDirectory = Paths
+      .get("src/test/resources/eng_translations.xls");
 
     ClassLoader classLoader = getClass().getClassLoader();
     try {
       return Files.readAllBytes(resourceDirectory);
     } catch (IOException e) {
       throw new LanguageProcessingException(
-          "Error loading Excel file for language " + createEnglishLanguage().getId());
+        "Error loading Excel file for language " + createEnglishLanguage()
+          .getId());
     }
   }
 

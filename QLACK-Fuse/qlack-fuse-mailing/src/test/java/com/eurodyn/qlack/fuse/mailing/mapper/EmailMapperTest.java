@@ -76,27 +76,29 @@ public class EmailMapperTest {
   @Test
   public void testMapToDTOToEmails() {
     EmailDTO emailDTO = emailMapperImpl.mapToDTO(email);
-    assertEquals(email.getToEmails().split(EMAIL_DELIMITER).length, emailDTO.getToEmails().size());
+    assertEquals(email.getToEmails().split(EMAIL_DELIMITER).length,
+      emailDTO.getToEmails().size());
   }
 
   @Test
   public void testMapToDTOCcEmails() {
     EmailDTO emailDTO = emailMapperImpl.mapToDTO(email);
-    assertEquals(email.getCcEmails().split(EMAIL_DELIMITER).length, emailDTO.getCcEmails().size());
+    assertEquals(email.getCcEmails().split(EMAIL_DELIMITER).length,
+      emailDTO.getCcEmails().size());
   }
 
   @Test
   public void testMapToDTOBccEmails() {
     EmailDTO emailDTO = emailMapperImpl.mapToDTO(email);
     assertEquals(email.getBccEmails().split(EMAIL_DELIMITER).length,
-        emailDTO.getBccEmails().size());
+      emailDTO.getBccEmails().size());
   }
 
   @Test
   public void testMapToDTOReplyToEmails() {
     EmailDTO emailDTO = emailMapperImpl.mapToDTO(email);
     assertEquals(email.getReplyToEmails().split(EMAIL_DELIMITER).length,
-        emailDTO.getReplyToEmails().size());
+      emailDTO.getReplyToEmails().size());
   }
 
   @Test
@@ -114,7 +116,8 @@ public class EmailMapperTest {
   @Test
   public void testMapToDTOAttachments() {
     EmailDTO emailDTO = emailMapperImpl.mapToDTO(email);
-    assertEquals(email.getAttachments().size(), emailDTO.getAttachments().size());
+    assertEquals(email.getAttachments().size(),
+      emailDTO.getAttachments().size());
   }
 
   @Test
@@ -133,7 +136,7 @@ public class EmailMapperTest {
   public void testMapToDTOServerResponseDate() {
     EmailDTO emailDTO = emailMapperImpl.mapToDTO(email);
     assertEquals(email.getServerResponseDate().longValue(),
-        emailDTO.getServerResponseDate().getTime());
+      emailDTO.getServerResponseDate().getTime());
   }
 
   @Test
@@ -144,7 +147,8 @@ public class EmailMapperTest {
   @Test
   public void testMapToDTONullEmailType() {
     email.setEmailType(null);
-    assertEquals(EmailDTO.EMAIL_TYPE.TEXT, emailMapperImpl.mapToDTO(email).getEmailType());
+    assertEquals(EmailDTO.EMAIL_TYPE.TEXT,
+      emailMapperImpl.mapToDTO(email).getEmailType());
   }
 
   @Test
@@ -197,27 +201,29 @@ public class EmailMapperTest {
   @Test
   public void testMapToEntityToEmails() {
     Email email = emailMapperImpl.mapToEntity(emailDTO);
-    assertEquals(emailDTO.getToEmails().size(), email.getToEmails().split(EMAIL_DELIMITER).length);
+    assertEquals(emailDTO.getToEmails().size(),
+      email.getToEmails().split(EMAIL_DELIMITER).length);
   }
 
   @Test
   public void testMapToEntityCcEmails() {
     Email email = emailMapperImpl.mapToEntity(emailDTO);
-    assertEquals(emailDTO.getCcEmails().size(), email.getCcEmails().split(EMAIL_DELIMITER).length);
+    assertEquals(emailDTO.getCcEmails().size(),
+      email.getCcEmails().split(EMAIL_DELIMITER).length);
   }
 
   @Test
   public void testMapToEntityBccEmails() {
     Email email = emailMapperImpl.mapToEntity(emailDTO);
     assertEquals(emailDTO.getBccEmails().size(),
-        email.getBccEmails().split(EMAIL_DELIMITER).length);
+      email.getBccEmails().split(EMAIL_DELIMITER).length);
   }
 
   @Test
   public void testMapToEntityReplyToEmails() {
     Email email = emailMapperImpl.mapToEntity(emailDTO);
     assertEquals(emailDTO.getReplyToEmails().size(),
-        email.getReplyToEmails().split(EMAIL_DELIMITER).length);
+      email.getReplyToEmails().split(EMAIL_DELIMITER).length);
   }
 
   @Test
@@ -235,13 +241,15 @@ public class EmailMapperTest {
   @Test
   public void testMapToEntityAttachments() {
     Email email = emailMapperImpl.mapToEntity(emailDTO);
-    assertEquals(emailDTO.getAttachments().size(), email.getAttachments().size());
+    assertEquals(emailDTO.getAttachments().size(),
+      email.getAttachments().size());
   }
 
   @Test
   public void testMapToEntityDateSent() {
     Email email = emailMapperImpl.mapToEntity(emailDTO);
-    assertEquals(emailDTO.getDateSent().getTime(), email.getDateSent().longValue());
+    assertEquals(emailDTO.getDateSent().getTime(),
+      email.getDateSent().longValue());
   }
 
   @Test
@@ -254,7 +262,7 @@ public class EmailMapperTest {
   public void testMapToEntityServerResponseDate() {
     Email email = emailMapperImpl.mapToEntity(emailDTO);
     assertEquals(emailDTO.getServerResponseDate().getTime(),
-        email.getServerResponseDate().longValue());
+      email.getServerResponseDate().longValue());
   }
 
   @Test
@@ -293,7 +301,8 @@ public class EmailMapperTest {
   @Test
   public void testAttachmentDTOToAttachmentNullNoData() {
     attachmentDTO.setData(null);
-    assertNull(emailMapperImpl.attachmentDTOToAttachment(attachmentDTO).getData());
+    assertNull(
+      emailMapperImpl.attachmentDTOToAttachment(attachmentDTO).getData());
   }
 
   @Test

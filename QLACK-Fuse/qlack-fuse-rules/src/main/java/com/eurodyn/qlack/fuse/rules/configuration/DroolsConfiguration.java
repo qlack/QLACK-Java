@@ -11,7 +11,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * The spring configuration of the Drools library that is need for rules execution.
+ * The spring configuration of the Drools library that is need for rules
+ * execution.
  *
  * @author European Dynamics SA
  */

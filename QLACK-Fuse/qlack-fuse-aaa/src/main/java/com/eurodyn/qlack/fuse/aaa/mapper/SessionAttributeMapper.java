@@ -12,7 +12,8 @@ import org.mapstruct.ReportingPolicy;
  * @author European Dynmics SA
  */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface SessionAttributeMapper extends AAAMapper<SessionAttribute, SessionAttributeDTO> {
+public interface SessionAttributeMapper extends
+  AAAMapper<SessionAttribute, SessionAttributeDTO> {
 
   /**
    * Maps a {@link SessionAttribute} Entity to DTO

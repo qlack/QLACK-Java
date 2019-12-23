@@ -43,8 +43,8 @@ public class MailService {
 
   @Autowired
   public MailService(MailQueueMonitor mailQueueMonitor, EmailMapper emailMapper,
-      EmailRepository emailRepository, AttachmentMapper attachmentMapper,
-      AttachmentRepository attachmentRepository, EmailValidator emailValidator) {
+    EmailRepository emailRepository, AttachmentMapper attachmentMapper,
+    AttachmentRepository attachmentRepository, EmailValidator emailValidator) {
     this.mailQueueMonitor = mailQueueMonitor;
     this.emailMapper = emailMapper;
     this.emailRepository = emailRepository;
@@ -87,13 +87,15 @@ public class MailService {
     emailRepository.save(email);
 
     // Process attachments.
-    if (emailDto.getAttachments() != null && !emailDto.getAttachments().isEmpty()) {
+    if (emailDto.getAttachments() != null && !emailDto.getAttachments()
+      .isEmpty()) {
       Set<Attachment> attachments = new HashSet<>();
       for (AttachmentDTO attachmentDto : emailDto.getAttachments()) {
         Attachment attachment = attachmentMapper.mapToEntity(attachmentDto);
         attachment.setEmail(email);
 
-        attachment.setAttachmentSize(Long.valueOf(attachmentDto.getData().length));
+        attachment
+          .setAttachmentSize(Long.valueOf(attachmentDto.getData().length));
         attachments.add(attachment);
         attachmentRepository.save(attachment);
       }
@@ -104,15 +106,18 @@ public class MailService {
   }
 
   /**
-   * Removes all e-mails prior to the specified date having the requested status. Warning: If you
-   * pass a <code>null</code> date all emails irrespectively of date will be removed.
+   * Removes all e-mails prior to the specified date having the requested
+   * status. Warning: If you pass a <code>null</code> date all emails
+   * irrespectively of date will be removed.
    *
    * @param date - the date before which all e-mails will be removed.
-   * @param status - the status to be processed. Be cautious to not include e-mails of status QUEUED
-   * as such e-mails might not have been tried to be delivered yet.
+   * @param status - the status to be processed. Be cautious to not include
+   * e-mails of status QUEUED as such e-mails might not have been tried to be
+   * delivered yet.
    */
   public void cleanup(Long date, EMAIL_STATUS[] status) {
-    List<Email> emails = emailRepository.findByAddedOnDateAndStatus(date, status);
+    List<Email> emails = emailRepository
+      .findByAddedOnDateAndStatus(date, status);
     for (Email email : emails) {
       emailRepository.delete(email);
     }
@@ -157,7 +162,8 @@ public class MailService {
    * @return a list of email with the provided status
    */
   public List<EmailDTO> getByStatus(EMAIL_STATUS status) {
-    return emailRepository.findByAddedOnDateAndStatus(null, status).stream().map(o ->
+    return emailRepository.findByAddedOnDateAndStatus(null, status).stream()
+      .map(o ->
         emailMapper.mapToDTO(o)).collect(Collectors.toList());
   }
 
@@ -176,7 +182,8 @@ public class MailService {
    * @param emailId the email to send.
    * @param distributionListId the mail distribution list.
    */
-  public void sendToDistributionList(String emailId, String distributionListId) {
+  public void sendToDistributionList(String emailId,
+    String distributionListId) {
     mailQueueMonitor.sendToDistributionList(emailId, distributionListId);
   }
 }

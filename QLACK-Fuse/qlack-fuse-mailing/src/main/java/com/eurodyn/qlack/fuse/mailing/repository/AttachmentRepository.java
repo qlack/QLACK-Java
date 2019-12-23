@@ -7,6 +7,7 @@ import com.eurodyn.qlack.fuse.mailing.model.Attachment;
  *
  * @author European Dynamics SA.
  */
-public interface AttachmentRepository extends MailingRepository<Attachment, String> {
+public interface AttachmentRepository extends
+  MailingRepository<Attachment, String> {
 
 }

@@ -45,47 +45,59 @@ public class IndexingService {
   /**
    * Creates index for given document.
    *
-   * @param dto holds the document to index, as well as the information about the index and it's
-   * type
+   * @param dto holds the document to index, as well as the information about
+   * the index and it's type
    */
   public void indexDocument(IndexingDTO dto) {
     try {
       log.info(MessageFormat.format("Indexing document {0}", dto));
-      IndexRequest indexRequest = new IndexRequest(dto.getIndex(), dto.getType(), dto.getId())
-          .source(mapper.writeValueAsString(dto.getSourceObject()), XContentType.JSON);
+      IndexRequest indexRequest = new IndexRequest(dto.getIndex(),
+        dto.getType(), dto.getId())
+        .source(mapper.writeValueAsString(dto.getSourceObject()),
+          XContentType.JSON);
 
-      IndexResponse response = esClient.getClient().index(indexRequest, RequestOptions.DEFAULT);
+      IndexResponse response = esClient.getClient()
+        .index(indexRequest, RequestOptions.DEFAULT);
 
       log.log(Level.INFO,
-          MessageFormat.format("Index document created with id: {0}, {1}", dto.getId(), response));
+        MessageFormat
+          .format("Index document created with id: {0}, {1}", dto.getId(),
+            response));
 
     } catch (IOException e) {
       log.log(Level.SEVERE,
-          MessageFormat.format("Could not index document with id: {0}", dto.getId()), e);
+        MessageFormat
+          .format("Could not index document with id: {0}", dto.getId()), e);
       throw new SearchException(
-          MessageFormat.format("Could not index document with id: {0}", dto.getId()));
+        MessageFormat
+          .format("Could not index document with id: {0}", dto.getId()));
     }
   }
 
   /**
    * Deletes index for given document.
    *
-   * @param dto holds the document to delete it's index, as well as information about the index and
-   * it's type
+   * @param dto holds the document to delete it's index, as well as
+   * information about the index and it's type
    */
   public void unindexDocument(ESDocumentIdentifierDTO dto) {
     try {
       log.info(MessageFormat.format("Deleting index of document {0}", dto));
-      DeleteRequest request = new DeleteRequest(dto.getIndex(), dto.getType(), dto.getId());
-      DeleteResponse response = esClient.getClient().delete(request, RequestOptions.DEFAULT);
+      DeleteRequest request = new DeleteRequest(dto.getIndex(), dto.getType(),
+        dto.getId());
+      DeleteResponse response = esClient.getClient()
+        .delete(request, RequestOptions.DEFAULT);
 
-      log.log(Level.INFO, MessageFormat.format("Index document deleted with id: {0}", dto.getId()),
-          response);
+      log.log(Level.INFO, MessageFormat
+          .format("Index document deleted with id: {0}", dto.getId()),
+        response);
     } catch (IOException e) {
       log.log(Level.SEVERE,
-          MessageFormat.format("Could not delete document with id: {0}", dto.getId()), e);
+        MessageFormat
+          .format("Could not delete document with id: {0}", dto.getId()), e);
       throw new SearchException(
-          MessageFormat.format("Could not delete document with id: {0}", dto.getId()));
+        MessageFormat
+          .format("Could not delete document with id: {0}", dto.getId()));
     }
   }
 

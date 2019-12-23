@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * This object class contains useful information about the workflow processes tasks.
+ * This object class contains useful information about the workflow processes
+ * tasks.
  *
  * @author European Dynamics SA
  */

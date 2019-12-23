@@ -74,7 +74,8 @@ public class VersioningServiceTest {
 
     when(javers.commit(anyString(), any(), any())).thenReturn(commit);
     when(commit.getId()).thenReturn(commitId);
-    assertEquals(0, versioningService.createVersion("qlack", object1, "change"));
+    assertEquals(0,
+      versioningService.createVersion("qlack", object1, "change"));
   }
 
   @Test(expected = NullPointerException.class)
@@ -104,7 +105,8 @@ public class VersioningServiceTest {
 
   @Test
   public void findVersionsTest() {
-    assertEquals(Collections.emptyList(), versioningService.findVersions(object1));
+    assertEquals(Collections.emptyList(),
+      versioningService.findVersions(object1));
   }
 
   @Test(expected = NullPointerException.class)
@@ -114,11 +116,13 @@ public class VersioningServiceTest {
 
   @Test
   public void retrieveVersionTest() {
-    when(javers.findShadowsAndStream(any(JqlQuery.class))).thenReturn(shadowStream);
+    when(javers.findShadowsAndStream(any(JqlQuery.class)))
+      .thenReturn(shadowStream);
     when(shadowStream.filter(any(Predicate.class))).thenReturn(shadowStream);
     when(shadowStream.map(any(Function.class))).thenReturn(stream);
     when(stream.collect(any())).thenReturn(objectList);
-    assertEquals(objectList.get(0), versioningService.retrieveVersion(object1, 1L));
+    assertEquals(objectList.get(0),
+      versioningService.retrieveVersion(object1, 1L));
   }
 
   @Test(expected = QDoesNotExistException.class)
@@ -128,10 +132,11 @@ public class VersioningServiceTest {
 
   @Test
   public void retrieveLatestVersionTest() {
-    when(javers.findShadowsAndStream(any(JqlQuery.class))).thenReturn(shadowStream);
+    when(javers.findShadowsAndStream(any(JqlQuery.class)))
+      .thenReturn(shadowStream);
     when(shadowStream.findFirst()).thenReturn(Optional.of(objectShadow));
     assertEquals(Optional.of(objectShadow).get().get(),
-        versioningService.retrieveLatestVersion(object1));
+      versioningService.retrieveLatestVersion(object1));
   }
 
   @Test(expected = QDoesNotExistException.class)

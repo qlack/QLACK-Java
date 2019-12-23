@@ -133,10 +133,12 @@ public class VersionServiceTest {
 
   @Before
   public void init() throws TikaException, IOException {
-    versionService = new VersionService(concurrencyControlService, storageEngineFactory,
-        nodeRepository, versionRepository, versionDeletedRepository, versionMapper);
+    versionService = new VersionService(concurrencyControlService,
+      storageEngineFactory,
+      nodeRepository, versionRepository, versionDeletedRepository,
+      versionMapper);
     when(storageEngineFactory.getEngine())
-        .thenReturn(new DBStorage(versionRepository, versionBinRepository));
+      .thenReturn(new DBStorage(versionRepository, versionBinRepository));
     versionService.init();
 
     initTestValues = new InitTestValues();
@@ -176,10 +178,13 @@ public class VersionServiceTest {
   @Test(expected = QSelectedNodeLockException.class)
   public void testCreateVersionOfConflictingFile() {
     when(nodeRepository.fetchById(file.getId())).thenReturn(file);
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(fileDTO);
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(fileDTO);
 
-    versionService.createVersion(file.getId(), versionDTO, FILENAME, content, USER_ID, LOCK_TOKEN);
+    versionService
+      .createVersion(file.getId(), versionDTO, FILENAME, content, USER_ID,
+        LOCK_TOKEN);
 
     verify(versionRepository, times(0)).save(any());
   }
@@ -187,12 +192,16 @@ public class VersionServiceTest {
   @Test(expected = QAncestorFolderLockException.class)
   public void testCreateVersionWithConflictingParent() {
     when(nodeRepository.fetchById(file.getId())).thenReturn(file);
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(null);
-    when(concurrencyControlService.getAncestorFolderWithLockConflict(parent.getId(), LOCK_TOKEN))
-        .thenReturn(parentDTO);
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(null);
+    when(concurrencyControlService
+      .getAncestorFolderWithLockConflict(parent.getId(), LOCK_TOKEN))
+      .thenReturn(parentDTO);
 
-    versionService.createVersion(file.getId(), versionDTO, FILENAME, content, USER_ID, LOCK_TOKEN);
+    versionService
+      .createVersion(file.getId(), versionDTO, FILENAME, content, USER_ID,
+        LOCK_TOKEN);
 
     verify(versionRepository, times(0)).save(any());
   }
@@ -200,13 +209,17 @@ public class VersionServiceTest {
   @Test()
   public void testCreateVersionWithoutContent() {
     when(nodeRepository.fetchById(file.getId())).thenReturn(file);
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(null);
-    when(concurrencyControlService.getAncestorFolderWithLockConflict(parent.getId(), LOCK_TOKEN))
-        .thenReturn(null);
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(null);
+    when(concurrencyControlService
+      .getAncestorFolderWithLockConflict(parent.getId(), LOCK_TOKEN))
+      .thenReturn(null);
 
     versionDTO.setMimetype("mime");
-    versionService.createVersion(file.getId(), versionDTO, FILENAME, null, USER_ID, LOCK_TOKEN);
+    versionService
+      .createVersion(file.getId(), versionDTO, FILENAME, null, USER_ID,
+        LOCK_TOKEN);
 
     verify(versionRepository, times(1)).save(any());
   }
@@ -221,12 +234,16 @@ public class VersionServiceTest {
     versionDTO.getAttributes().add(versionAttributeDTO);
 
     when(nodeRepository.fetchById(file.getId())).thenReturn(file);
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(null);
-    when(concurrencyControlService.getAncestorFolderWithLockConflict(parent.getId(), LOCK_TOKEN))
-        .thenReturn(null);
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(null);
+    when(concurrencyControlService
+      .getAncestorFolderWithLockConflict(parent.getId(), LOCK_TOKEN))
+      .thenReturn(null);
 
-    versionService.createVersion(file.getId(), versionDTO, FILENAME, null, USER_ID, LOCK_TOKEN);
+    versionService
+      .createVersion(file.getId(), versionDTO, FILENAME, null, USER_ID,
+        LOCK_TOKEN);
 
     verify(versionRepository, times(1)).save(any());
   }
@@ -234,9 +251,11 @@ public class VersionServiceTest {
   @Test(expected = QSelectedNodeLockException.class)
   public void testUpdateVersionOfConflictedFile() {
     when(nodeRepository.fetchById(any())).thenReturn(file);
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(fileDTO);
-    versionService.updateVersion(file.getId(), versionDTO, null, USER_ID, true, LOCK_TOKEN);
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(fileDTO);
+    versionService
+      .updateVersion(file.getId(), versionDTO, null, USER_ID, true, LOCK_TOKEN);
   }
 
   @Test
@@ -244,16 +263,19 @@ public class VersionServiceTest {
     long size = 123456789L;
 
     when(nodeRepository.fetchById(any())).thenReturn(file);
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(null);
-    when(versionRepository.findOne(any(Predicate.class))).thenReturn(Optional.of(version));
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(null);
+    when(versionRepository.findOne(any(Predicate.class)))
+      .thenReturn(Optional.of(version));
 
     versionDTO.setName("New Name");
     versionDTO.setSize(size);
 
     versionDTO.setAttributes(initTestValues.createAttributeDTOS());
 
-    versionService.updateVersion(file.getId(), versionDTO, null, USER_ID, false, LOCK_TOKEN);
+    versionService.updateVersion(file.getId(), versionDTO, null, USER_ID, false,
+      LOCK_TOKEN);
 
     verify(versionRepository, times(1)).save(version);
     assertEquals("New Name", version.getName());
@@ -264,9 +286,11 @@ public class VersionServiceTest {
     long size = 123456789L;
 
     when(nodeRepository.fetchById(any())).thenReturn(file);
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(null);
-    when(versionRepository.findOne(any(Predicate.class))).thenReturn(Optional.of(version));
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(null);
+    when(versionRepository.findOne(any(Predicate.class)))
+      .thenReturn(Optional.of(version));
 
     version = initTestValues.addAttributes(version);
 
@@ -274,7 +298,8 @@ public class VersionServiceTest {
     versionDTO.setSize(size);
     versionDTO.setMimetype("mimetype");
     versionDTO.setAttributes(initTestValues.createAttributeDTOS());
-    versionService.updateVersion(file.getId(), versionDTO, null, USER_ID, true, LOCK_TOKEN);
+    versionService
+      .updateVersion(file.getId(), versionDTO, null, USER_ID, true, LOCK_TOKEN);
 
     verify(versionRepository, times(1)).save(version);
     assertEquals("New Name", version.getName());
@@ -285,9 +310,11 @@ public class VersionServiceTest {
     long size = 123456789L;
 
     when(nodeRepository.fetchById(any())).thenReturn(file);
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(null);
-    when(versionRepository.findOne(any(Predicate.class))).thenReturn(Optional.of(version));
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(null);
+    when(versionRepository.findOne(any(Predicate.class)))
+      .thenReturn(Optional.of(version));
 
     version = initTestValues.addAttributes(version);
 
@@ -295,7 +322,8 @@ public class VersionServiceTest {
     versionDTO.setSize(size);
     versionDTO.setMimetype("mimetype");
     versionDTO.setAttributes(null);
-    versionService.updateVersion(file.getId(), versionDTO, null, USER_ID, true, LOCK_TOKEN);
+    versionService
+      .updateVersion(file.getId(), versionDTO, null, USER_ID, true, LOCK_TOKEN);
 
     verify(versionRepository, times(1)).save(version);
     assertEquals("New Name", version.getName());
@@ -304,16 +332,18 @@ public class VersionServiceTest {
   @Test(expected = QSelectedNodeLockException.class)
   public void testDeleteVersionOfConflictedNode() {
     when(versionRepository.fetchById(version.getId())).thenReturn(version);
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(fileDTO);
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(fileDTO);
     versionService.deleteVersion(version.getId(), LOCK_TOKEN);
   }
 
   @Test
   public void testDeleteVersion() {
     when(versionRepository.fetchById(version.getId())).thenReturn(version);
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(null);
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(null);
 
     versionService.deleteVersion(version.getId(), LOCK_TOKEN);
 
@@ -333,7 +363,8 @@ public class VersionServiceTest {
   @Test
   public void testGetFileVersions() {
     commonMocks();
-    List<VersionDTO> fileVersionsDTO = versionService.getFileVersions(file.getId());
+    List<VersionDTO> fileVersionsDTO = versionService
+      .getFileVersions(file.getId());
 
     assertEquals(versionsDTO, fileVersionsDTO);
   }
@@ -341,7 +372,8 @@ public class VersionServiceTest {
   @Test
   public void testGetFileLatestVersion() {
     commonMocks();
-    VersionDTO fileLatestVersion = versionService.getFileLatestVersion(file.getId());
+    VersionDTO fileLatestVersion = versionService
+      .getFileLatestVersion(file.getId());
 
     assertEquals(versionsDTO.get(1), fileLatestVersion);
   }
@@ -352,7 +384,8 @@ public class VersionServiceTest {
     when(nodeRepository.fetchById(file.getId())).thenReturn(file);
     when(versionRepository.findAll(predicate)).thenReturn(new ArrayList<>());
 
-    VersionDTO fileLatestVersion = versionService.getFileLatestVersion(file.getId());
+    VersionDTO fileLatestVersion = versionService
+      .getFileLatestVersion(file.getId());
 
     assertNull(fileLatestVersion);
   }
@@ -373,26 +406,31 @@ public class VersionServiceTest {
 
     versionService.getBinContent(file.getId());
 
-    verify(versionBinRepository, times(1)).findByVersionOrderByChunkIndex(version);
+    verify(versionBinRepository, times(1))
+      .findByVersionOrderByChunkIndex(version);
   }
 
   @Test
   public void testGetBinContent() {
     when(versionRepository.fetchById(version.getId())).thenReturn(version);
     when(nodeRepository.fetchById(file.getId())).thenReturn(file);
-    when(versionRepository.findOne(any(Predicate.class))).thenReturn(Optional.of(version));
+    when(versionRepository.findOne(any(Predicate.class)))
+      .thenReturn(Optional.of(version));
 
     versionService.getBinContent(file.getId(), version.getName());
 
-    verify(versionBinRepository, times(1)).findByVersionOrderByChunkIndex(version);
+    verify(versionBinRepository, times(1))
+      .findByVersionOrderByChunkIndex(version);
   }
 
   @Test
   public void testGetFileAsZipNoVersionName() {
     Version latestVersion = versions.get(1);
     commonMocks();
-    when(versionMapper.mapToEntity(versionsDTO.get(1))).thenReturn(latestVersion);
-    when(versionRepository.findOne(any(Predicate.class))).thenReturn(Optional.of(latestVersion));
+    when(versionMapper.mapToEntity(versionsDTO.get(1)))
+      .thenReturn(latestVersion);
+    when(versionRepository.findOne(any(Predicate.class)))
+      .thenReturn(Optional.of(latestVersion));
 
     byte[] fileAsZip = versionService.getFileAsZip(file.getId(), true);
 
@@ -405,9 +443,11 @@ public class VersionServiceTest {
     version.setAttributes(initTestValues.createVersionAttributes(version));
 
     commonMocks();
-    when(versionRepository.findOne(any(Predicate.class))).thenReturn(Optional.of(version));
+    when(versionRepository.findOne(any(Predicate.class)))
+      .thenReturn(Optional.of(version));
 
-    byte[] fileAsZip = versionService.getFileAsZip(file.getId(), version.getName(), false);
+    byte[] fileAsZip = versionService
+      .getFileAsZip(file.getId(), version.getName(), false);
 
     assertNotNull(fileAsZip);
     verify(versionRepository, times(2)).findOne(any(Predicate.class));
@@ -436,7 +476,8 @@ public class VersionServiceTest {
     when(versionRepository.fetchById(version.getId())).thenReturn(version);
     BinChunkDTO binChunk = versionService.getBinChunk(version.getId(), 1);
 
-    verify(versionBinRepository, times(1)).findAll(any(Predicate.class), any(Sort.class));
+    verify(versionBinRepository, times(1))
+      .findAll(any(Predicate.class), any(Sort.class));
   }
 
   @Test
@@ -447,11 +488,13 @@ public class VersionServiceTest {
     when(versionRepository.findAll(any(Predicate.class))).thenReturn(versions);
     when(versionMapper.mapToEntity(any(VersionDTO.class))).thenReturn(version);
     when(versionMapper.mapToDTO(versions)).thenReturn(versionsDTO);
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(null);
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(null);
 
     versionService
-        .updateAttribute(file.getId(), CMConstants.LOCKABLE, "true", "NEW_USER", LOCK_TOKEN);
+      .updateAttribute(file.getId(), CMConstants.LOCKABLE, "true", "NEW_USER",
+        LOCK_TOKEN);
 
     verify(versionRepository, times(1)).save(version);
     assertNotNull(version.getAttribute(CMConstants.LOCKABLE));
@@ -467,10 +510,13 @@ public class VersionServiceTest {
     when(versionRepository.findAll(any(Predicate.class))).thenReturn(versions);
     when(versionMapper.mapToEntity(any(VersionDTO.class))).thenReturn(version);
     when(versionMapper.mapToDTO(versions)).thenReturn(versionsDTO);
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(null);
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(null);
 
-    versionService.updateAttribute(file.getId(), CMConstants.LOCKABLE, "true", null, LOCK_TOKEN);
+    versionService
+      .updateAttribute(file.getId(), CMConstants.LOCKABLE, "true", null,
+        LOCK_TOKEN);
 
     verify(versionRepository, times(1)).save(version);
     assertEquals(1, version.getAttributes().size());
@@ -482,11 +528,13 @@ public class VersionServiceTest {
   @Test(expected = QSelectedNodeLockException.class)
   public void testUpdateAttributeWithoutVersionNameAndConflicted() {
     when(nodeRepository.fetchById(file.getId())).thenReturn(file);
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(fileDTO);
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(fileDTO);
 
     versionService
-        .updateAttribute(file.getId(), CMConstants.LOCKABLE, "true", "NEW_USER", LOCK_TOKEN);
+      .updateAttribute(file.getId(), CMConstants.LOCKABLE, "true", "NEW_USER",
+        LOCK_TOKEN);
 
     verify(versionRepository, times(0)).save(version);
   }
@@ -496,13 +544,16 @@ public class VersionServiceTest {
     version.setAttributes(new ArrayList<>());
 
     when(nodeRepository.fetchById(file.getId())).thenReturn(file);
-    when(versionRepository.findOne(any(Predicate.class))).thenReturn(Optional.of(version));
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(null);
+    when(versionRepository.findOne(any(Predicate.class)))
+      .thenReturn(Optional.of(version));
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(null);
 
     versionService
-        .updateAttribute(file.getId(), CMConstants.LOCKABLE, "true", "NEW_USER", LOCK_TOKEN,
-            version.getName());
+      .updateAttribute(file.getId(), CMConstants.LOCKABLE, "true", "NEW_USER",
+        LOCK_TOKEN,
+        version.getName());
 
     verify(versionRepository, times(1)).save(version);
     assertNotNull(version.getAttribute(CMConstants.LOCKABLE));
@@ -523,10 +574,12 @@ public class VersionServiceTest {
     when(versionRepository.findAll(any(Predicate.class))).thenReturn(versions);
     when(versionMapper.mapToEntity(any(VersionDTO.class))).thenReturn(version);
     when(versionMapper.mapToDTO(versions)).thenReturn(versionsDTO);
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(null);
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(null);
 
-    versionService.updateAttributes(file.getId(), newAttributes, "NEW_USER", LOCK_TOKEN);
+    versionService
+      .updateAttributes(file.getId(), newAttributes, "NEW_USER", LOCK_TOKEN);
 
     verify(versionRepository, times(1)).save(version);
     assertNotNull(version.getAttribute(CMConstants.LOCKABLE));
@@ -545,12 +598,15 @@ public class VersionServiceTest {
     version.setAttributes(new ArrayList<>());
 
     when(nodeRepository.fetchById(file.getId())).thenReturn(file);
-    when(versionRepository.findOne(any(Predicate.class))).thenReturn(Optional.of(version));
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(null);
+    when(versionRepository.findOne(any(Predicate.class)))
+      .thenReturn(Optional.of(version));
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(null);
 
     versionService
-        .updateAttributes(file.getId(), newAttributes, "NEW_USER", LOCK_TOKEN, version.getName());
+      .updateAttributes(file.getId(), newAttributes, "NEW_USER", LOCK_TOKEN,
+        version.getName());
 
     verify(versionRepository, times(1)).save(version);
     assertNotNull(version.getAttribute(CMConstants.LOCKABLE));
@@ -568,11 +624,13 @@ public class VersionServiceTest {
     version.setAttributes(new ArrayList<>());
 
     when(nodeRepository.fetchById(file.getId())).thenReturn(file);
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(fileDTO);
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(fileDTO);
 
     versionService
-        .updateAttributes(file.getId(), newAttributes, "NEW_USER", LOCK_TOKEN, version.getName());
+      .updateAttributes(file.getId(), newAttributes, "NEW_USER", LOCK_TOKEN,
+        version.getName());
 
     verify(versionRepository, times(0)).save(version);
     assertEquals(0, version.getAttributes().size());
@@ -586,10 +644,12 @@ public class VersionServiceTest {
     when(versionRepository.findAll(any(Predicate.class))).thenReturn(versions);
     when(versionMapper.mapToEntity(any(VersionDTO.class))).thenReturn(version);
     when(versionMapper.mapToDTO(versions)).thenReturn(versionsDTO);
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(null);
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(null);
 
-    versionService.deleteAttribute(file.getId(), CMConstants.LOCKABLE, USER_ID, LOCK_TOKEN);
+    versionService
+      .deleteAttribute(file.getId(), CMConstants.LOCKABLE, USER_ID, LOCK_TOKEN);
 
     verify(versionRepository, times(1)).save(version);
     assertNull(version.getAttribute(CMConstants.LOCKABLE));
@@ -605,10 +665,12 @@ public class VersionServiceTest {
     when(versionRepository.findAll(any(Predicate.class))).thenReturn(versions);
     when(versionMapper.mapToEntity(any(VersionDTO.class))).thenReturn(version);
     when(versionMapper.mapToDTO(versions)).thenReturn(versionsDTO);
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(null);
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(null);
 
-    versionService.deleteAttribute(file.getId(), CMConstants.LOCKABLE, null, LOCK_TOKEN);
+    versionService
+      .deleteAttribute(file.getId(), CMConstants.LOCKABLE, null, LOCK_TOKEN);
 
     verify(versionRepository, times(1)).save(version);
     assertNull(version.getAttribute(CMConstants.LOCKABLE));
@@ -621,10 +683,12 @@ public class VersionServiceTest {
     version.setAttribute(CMConstants.LOCKABLE, "true");
 
     when(nodeRepository.fetchById(file.getId())).thenReturn(file);
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(fileDTO);
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(fileDTO);
 
-    versionService.deleteAttribute(file.getId(), CMConstants.LOCKABLE, USER_ID, LOCK_TOKEN);
+    versionService
+      .deleteAttribute(file.getId(), CMConstants.LOCKABLE, USER_ID, LOCK_TOKEN);
 
     verify(versionRepository, times(0)).save(version);
   }
@@ -634,11 +698,15 @@ public class VersionServiceTest {
     version.setAttribute(CMConstants.LOCKABLE, "true");
 
     when(nodeRepository.fetchById(file.getId())).thenReturn(file);
-    when(versionRepository.findOne(any(Predicate.class))).thenReturn(Optional.of(version));
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(null);
+    when(versionRepository.findOne(any(Predicate.class)))
+      .thenReturn(Optional.of(version));
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(null);
 
-    versionService.deleteAttribute(file.getId(), CMConstants.LOCKABLE, "NEW_USER", LOCK_TOKEN,
+    versionService
+      .deleteAttribute(file.getId(), CMConstants.LOCKABLE, "NEW_USER",
+        LOCK_TOKEN,
         version.getName());
 
     verify(versionRepository, times(1)).save(version);
@@ -650,10 +718,13 @@ public class VersionServiceTest {
     version.setAttribute(CMConstants.LOCKABLE, "true");
 
     when(nodeRepository.fetchById(file.getId())).thenReturn(file);
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(fileDTO);
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(fileDTO);
 
-    versionService.deleteAttribute(file.getId(), CMConstants.LOCKABLE, "NEW_USER", LOCK_TOKEN,
+    versionService
+      .deleteAttribute(file.getId(), CMConstants.LOCKABLE, "NEW_USER",
+        LOCK_TOKEN,
         version.getName());
 
     verify(versionRepository, times(0)).save(version);
@@ -667,12 +738,13 @@ public class VersionServiceTest {
     fileNames.add(version.getFilename());
     fileNames.add("ANOTHER FILE NAME");
 
-    Predicate predicate = qVersion.filename.in(fileNames).and(qVersion.node.id.eq(file.getId()));
+    Predicate predicate = qVersion.filename.in(fileNames)
+      .and(qVersion.node.id.eq(file.getId()));
     when(versionRepository.findAll(predicate)).thenReturn(versions);
     when(versionMapper.mapToDTO(versions)).thenReturn(versionsDTO);
 
     List<VersionDTO> versionsByFilenameForFile = versionService
-        .getVersionsByFilenameForFile(file.getId(), fileNames);
+      .getVersionsByFilenameForFile(file.getId(), fileNames);
 
     assertEquals(versionsDTO, versionsByFilenameForFile);
     verify(versionRepository, times(1)).findAll(predicate);
@@ -682,8 +754,9 @@ public class VersionServiceTest {
   public void deleteVersionOfConflictedNodeNullNameTest() {
     fileDTO.setName(null);
     when(versionRepository.fetchById(version.getId())).thenReturn(version);
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(fileDTO);
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(fileDTO);
     versionService.deleteVersion(version.getId(), LOCK_TOKEN);
     verify(versionRepository, times(1)).delete(any(Version.class));
   }
@@ -692,8 +765,10 @@ public class VersionServiceTest {
   public void gGetFileAsZipNoVersionNameNotFoundExceptionTest() {
     Version latestVersion = versions.get(1);
     commonMocks();
-    when(versionMapper.mapToEntity(versionsDTO.get(1))).thenReturn(latestVersion);
-    when(versionRepository.findOne(any(Predicate.class))).thenReturn(Optional.empty());
+    when(versionMapper.mapToEntity(versionsDTO.get(1)))
+      .thenReturn(latestVersion);
+    when(versionRepository.findOne(any(Predicate.class)))
+      .thenReturn(Optional.empty());
 
     versionService.getFileAsZip(file.getId(), true);
   }
@@ -702,12 +777,16 @@ public class VersionServiceTest {
   public void createVersionWithParentNullIdTest() {
     parentDTO.setId(null);
     when(nodeRepository.fetchById(file.getId())).thenReturn(file);
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(null);
-    when(concurrencyControlService.getAncestorFolderWithLockConflict(parent.getId(), LOCK_TOKEN))
-        .thenReturn(parentDTO);
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(null);
+    when(concurrencyControlService
+      .getAncestorFolderWithLockConflict(parent.getId(), LOCK_TOKEN))
+      .thenReturn(parentDTO);
 
-    versionService.createVersion(file.getId(), versionDTO, FILENAME, null, USER_ID, LOCK_TOKEN);
+    versionService
+      .createVersion(file.getId(), versionDTO, FILENAME, null, USER_ID,
+        LOCK_TOKEN);
 
     verify(versionRepository, times(1)).save(any());
   }
@@ -716,10 +795,13 @@ public class VersionServiceTest {
   public void createVersionWithNullParentTest() {
     file.setParent(null);
     when(nodeRepository.fetchById(file.getId())).thenReturn(file);
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(null);
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(null);
 
-    versionService.createVersion(file.getId(), versionDTO, FILENAME, null, USER_ID, LOCK_TOKEN);
+    versionService
+      .createVersion(file.getId(), versionDTO, FILENAME, null, USER_ID,
+        LOCK_TOKEN);
 
     verify(versionRepository, times(1)).save(any());
   }
@@ -727,28 +809,37 @@ public class VersionServiceTest {
   @Test()
   public void createVersionWithoutContentAndAttributesTest() {
     when(nodeRepository.fetchById(file.getId())).thenReturn(file);
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(null);
-    when(concurrencyControlService.getAncestorFolderWithLockConflict(parent.getId(), LOCK_TOKEN))
-        .thenReturn(null);
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(null);
+    when(concurrencyControlService
+      .getAncestorFolderWithLockConflict(parent.getId(), LOCK_TOKEN))
+      .thenReturn(null);
 
     versionDTO.setAttributes(null);
-    versionService.createVersion(file.getId(), versionDTO, FILENAME, null, USER_ID, LOCK_TOKEN);
+    versionService
+      .createVersion(file.getId(), versionDTO, FILENAME, null, USER_ID,
+        LOCK_TOKEN);
 
     verify(versionRepository, times(1)).save(any());
   }
 
   @Test
   public void createVersionWithContentTest() {
-    ReflectionTestUtils.setField(versionService, "storageEngine", storageEngine);
+    ReflectionTestUtils
+      .setField(versionService, "storageEngine", storageEngine);
     when(nodeRepository.fetchById(file.getId())).thenReturn(file);
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(null);
-    when(concurrencyControlService.getAncestorFolderWithLockConflict(parent.getId(), LOCK_TOKEN))
-        .thenReturn(null);
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(null);
+    when(concurrencyControlService
+      .getAncestorFolderWithLockConflict(parent.getId(), LOCK_TOKEN))
+      .thenReturn(null);
 
     versionDTO.setMimetype(null);
-    versionService.createVersion(file.getId(), versionDTO, FILENAME, content, USER_ID, LOCK_TOKEN);
+    versionService
+      .createVersion(file.getId(), versionDTO, FILENAME, content, USER_ID,
+        LOCK_TOKEN);
     verify(versionRepository, times(1)).save(any());
   }
 
@@ -756,36 +847,43 @@ public class VersionServiceTest {
   public void updateVersionWithContentTest() {
     long size = 123456789L;
     Predicate predicate = qVersion.name.eq(version.getName())
-        .and(qVersion.node.id.eq(file.getId()));
+      .and(qVersion.node.id.eq(file.getId()));
 
     when(nodeRepository.fetchById(any())).thenReturn(file);
-    when(concurrencyControlService.getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-        .thenReturn(null);
-    when(versionRepository.findOne(any(Predicate.class))).thenReturn(Optional.of(version));
+    when(concurrencyControlService
+      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+      .thenReturn(null);
+    when(versionRepository.findOne(any(Predicate.class)))
+      .thenReturn(Optional.of(version));
 
     versionDTO.setName("New Name");
     versionDTO.setSize(size);
     versionDTO.setAttributes(null);
 
-    versionService.updateVersion(file.getId(), versionDTO, content, null, true, LOCK_TOKEN);
+    versionService
+      .updateVersion(file.getId(), versionDTO, content, null, true, LOCK_TOKEN);
 
     verify(versionRepository, times(1)).save(version);
     assertEquals("New Name", version.getName());
   }
 
   @Test(expected = QIOException.class)
-  public void getBinContentWithoutVersionNameExceptionTest() throws IOException {
+  public void getBinContentWithoutVersionNameExceptionTest()
+    throws IOException {
     when(nodeRepository.fetchById(file.getId())).thenReturn(file);
     when(versionRepository.findAll(any(Predicate.class))).thenReturn(versions);
     when(versionMapper.mapToEntity(any(VersionDTO.class))).thenReturn(version);
     when(versionMapper.mapToDTO(versions)).thenReturn(versionsDTO);
 
-    ReflectionTestUtils.setField(versionService, "storageEngine", storageEngine);
-    when(storageEngine.getVersionContent(anyString())).thenThrow(new IOException());
+    ReflectionTestUtils
+      .setField(versionService, "storageEngine", storageEngine);
+    when(storageEngine.getVersionContent(anyString()))
+      .thenThrow(new IOException());
 
     versionService.getBinContent(file.getId());
 
-    verify(versionBinRepository, times(1)).findByVersionOrderByChunkIndex(version);
+    verify(versionBinRepository, times(1))
+      .findByVersionOrderByChunkIndex(version);
   }
 
   @Test
@@ -801,7 +899,8 @@ public class VersionServiceTest {
 
   @Test
   public void replaceVersionContentTest() {
-    ReflectionTestUtils.setField(versionService, "storageEngine", storageEngine);
+    ReflectionTestUtils
+      .setField(versionService, "storageEngine", storageEngine);
     doNothing().when(storageEngine).setVersionContent(version.getId(), content);
     version.setVersionBins(Collections.emptyList());
     when(versionRepository.fetchById(version.getId())).thenReturn(version);
@@ -813,7 +912,7 @@ public class VersionServiceTest {
   public void transferFromFluToVersionBinTest() {
     ReflectionTestUtils.setField(versionService, "em", entityManager);
     when(entityManager.createStoredProcedureQuery("flu_to_version_bin"))
-        .thenReturn(storedProcedureQuery);
+      .thenReturn(storedProcedureQuery);
     versionService.transferFromFluToVersionBin("attachmentId", "versionId");
     verify(storedProcedureQuery, times(1)).executeUpdate();
   }
@@ -821,30 +920,35 @@ public class VersionServiceTest {
   @Test
   public void cleanupFSTest() {
     ReflectionTestUtils.setField(versionService, "cycleLength", 10);
-    when(versionDeletedRepository.findAll(any(Pageable.class))).thenReturn(page);
+    when(versionDeletedRepository.findAll(any(Pageable.class)))
+      .thenReturn(page);
 
     List<VersionDeleted> versionDeleteds = new ArrayList<>();
     versionDeleteds.add(new VersionDeleted());
 
     when(page.getContent()).thenReturn(versionDeleteds);
     versionService.cleanupFS();
-    verify(versionDeletedRepository, times(1)).delete(any(VersionDeleted.class));
+    verify(versionDeletedRepository, times(1))
+      .delete(any(VersionDeleted.class));
   }
 
   @Test
   public void cleanupFSNullResultsTest() {
     ReflectionTestUtils.setField(versionService, "cycleLength", 10);
-    when(versionDeletedRepository.findAll(any(Pageable.class))).thenReturn(page);
+    when(versionDeletedRepository.findAll(any(Pageable.class)))
+      .thenReturn(page);
     when(page.getContent()).thenReturn(Collections.EMPTY_LIST);
     versionService.cleanupFS();
-    verify(versionDeletedRepository, times(0)).delete(any(VersionDeleted.class));
+    verify(versionDeletedRepository, times(0))
+      .delete(any(VersionDeleted.class));
   }
 
   @Test
   public void setBinChunkIoExceptionTest() throws IOException {
     ReflectionTestUtils.setField(versionService, "tika", tikaConfig);
     when(tikaConfig.getDetector()).thenReturn(detector);
-    when(detector.detect(any(InputStream.class), any(Metadata.class))).thenThrow(new IOException());
+    when(detector.detect(any(InputStream.class), any(Metadata.class)))
+      .thenThrow(new IOException());
 
     when(versionRepository.fetchById(version.getId())).thenReturn(version);
     versionService.setBinChunk(version.getId(), content, 1);
@@ -855,7 +959,8 @@ public class VersionServiceTest {
 
   @Test
   public void initTest() throws TikaException, IOException {
-    ReflectionTestUtils.setField(versionService, "storageEngine", storageEngine);
+    ReflectionTestUtils
+      .setField(versionService, "storageEngine", storageEngine);
     versionService.init();
     verify(storageEngineFactory, times(1)).getEngine();
   }

@@ -32,13 +32,15 @@ public class KnowledgeBase extends QlackBaseModel {
   /**
    * the libraries of the Knowledge Base
    */
-  @OneToMany(mappedBy = "base", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @OneToMany(mappedBy = "base", cascade = {CascadeType.PERSIST,
+    CascadeType.MERGE})
   private List<KnowledgeBaseLibrary> libraries;
 
   /**
    * the rules of the Knowledge Base
    */
-  @OneToMany(mappedBy = "base", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @OneToMany(mappedBy = "base", cascade = {CascadeType.PERSIST,
+    CascadeType.MERGE})
   private List<KnowledgeBaseRule> rules;
 
 }

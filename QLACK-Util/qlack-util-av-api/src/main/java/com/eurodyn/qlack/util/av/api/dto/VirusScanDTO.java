@@ -4,9 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Holds the necessary data to
- * perform a file virus scan
- * and return its result
+ * Holds the necessary data to perform a file virus scan and return its result
  *
  * @author European Dynamics SA.
  */

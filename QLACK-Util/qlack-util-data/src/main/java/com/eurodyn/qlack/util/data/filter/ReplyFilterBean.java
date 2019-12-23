@@ -25,7 +25,8 @@ public class ReplyFilterBean {
   @Bean
   public Jackson2ObjectMapperBuilderCustomizer addCustomSquigglyDeserialization() {
     return jacksonObjectMapperBuilder -> {
-      jacksonObjectMapperBuilder.mixIn(Object.class, SquigglyPropertyFilterMixin.class);
+      jacksonObjectMapperBuilder
+        .mixIn(Object.class, SquigglyPropertyFilterMixin.class);
       jacksonObjectMapperBuilder.filters(new SimpleFilterProvider()
         .addFilter(SquigglyPropertyFilter.FILTER_ID, new SquigglyPropertyFilter(
           new SimpleSquigglyContextProvider(new SquigglyParser(), "**"))));

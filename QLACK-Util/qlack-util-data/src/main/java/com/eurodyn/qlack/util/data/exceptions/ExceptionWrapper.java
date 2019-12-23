@@ -6,12 +6,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * An annotation going together with {@link ExceptionWrapperAspect} to indicate methods that need
- * to have their exception wrapped.
+ * An annotation going together with {@link ExceptionWrapperAspect} to indicate
+ * methods that need to have their exception wrapped.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface ExceptionWrapper {
+
   // The log message to be forwarded as an error cause higher up the calling stack.
   String logMessage() default "An unexpected error occurred.";
 

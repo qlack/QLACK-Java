@@ -23,13 +23,15 @@ public abstract class CreateIndexRequestMapper {
   abstract InternalCreateIndexRequest mapToInternal(CreateIndexRequest request);
 
   public NStringEntity mapToNStringEntity(CreateIndexRequest createIndexRequest)
-      throws JsonProcessingException, UnsupportedEncodingException {
+    throws JsonProcessingException, UnsupportedEncodingException {
 
-    return new NStringEntity(mapper.writeValueAsString(mapToInternal(createIndexRequest)));
+    return new NStringEntity(
+      mapper.writeValueAsString(mapToInternal(createIndexRequest)));
   }
 
-  public NStringEntity mapToNStringEntity(UpdateMappingRequest updateMappingRequest)
-      throws JsonProcessingException, UnsupportedEncodingException {
+  public NStringEntity mapToNStringEntity(
+    UpdateMappingRequest updateMappingRequest)
+    throws JsonProcessingException, UnsupportedEncodingException {
 
     InternalUpdateMappingRequest request = new InternalUpdateMappingRequest();
     request.setProperties(updateMappingRequest.getIndexMapping());

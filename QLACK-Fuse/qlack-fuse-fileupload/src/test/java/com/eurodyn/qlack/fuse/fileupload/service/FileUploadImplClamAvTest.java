@@ -54,7 +54,8 @@ public class FileUploadImplClamAvTest {
     ReflectionTestUtils.setField(fileUpload, "isVirusScanEnabled", true);
     when(avService.virusScan(dbFileDTO.getFileData())).thenReturn(virusScanDTO);
     fileUpload.upload(dbFileDTO);
-    verify(dbFileRepository, times(1)).getChunk(dbFileDTO.getId(), dbFileDTO.getChunkNumber());
+    verify(dbFileRepository, times(1))
+      .getChunk(dbFileDTO.getId(), dbFileDTO.getChunkNumber());
     verify(dbFileRepository, times(1)).save(any(DBFile.class));
   }
 
@@ -64,15 +65,18 @@ public class FileUploadImplClamAvTest {
     virusScanDTO.setVirusFree(false);
     when(avService.virusScan(dbFileDTO.getFileData())).thenReturn(virusScanDTO);
     fileUpload.upload(dbFileDTO);
-    verify(dbFileRepository, times(1)).getChunk(dbFileDTO.getId(), dbFileDTO.getChunkNumber());
+    verify(dbFileRepository, times(1))
+      .getChunk(dbFileDTO.getId(), dbFileDTO.getChunkNumber());
   }
 
   @Test
   public void uploadVirusExceptionTest() {
     ReflectionTestUtils.setField(fileUpload, "isVirusScanEnabled", true);
-    when(avService.virusScan(dbFileDTO.getFileData())).thenThrow(new VirusScanException());
+    when(avService.virusScan(dbFileDTO.getFileData()))
+      .thenThrow(new VirusScanException());
     fileUpload.upload(dbFileDTO);
-    verify(dbFileRepository, times(1)).getChunk(dbFileDTO.getId(), dbFileDTO.getChunkNumber());
+    verify(dbFileRepository, times(1))
+      .getChunk(dbFileDTO.getId(), dbFileDTO.getChunkNumber());
   }
 
 }

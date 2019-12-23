@@ -10,7 +10,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
- * A class that is used to provide information about the procedure of an aaa username password
+ * A class that is used to provide information about the procedure of an aaa
+ * username password
  *
  * @author EUROPEAN DYNAMICS SA
  */
@@ -29,31 +30,34 @@ public class AAAUsernamePasswordProvider extends DaoAuthenticationProvider {
 
   @Override
   protected void additionalAuthenticationChecks(UserDetails userDetails,
-      UsernamePasswordAuthenticationToken authentication)
-      throws AuthenticationException {
+    UsernamePasswordAuthenticationToken authentication)
+    throws AuthenticationException {
     if (authentication.getCredentials() == null) {
       logger.debug("Authentication failed: no credentials provided");
 
       throw new BadCredentialsException(messages.getMessage(
-          "AaaProvider.badCredentials",
-          "Bad credentials"));
+        "AaaProvider.badCredentials",
+        "Bad credentials"));
     }
 
     String presentedPassword;
     UserDetailsDTO user = (UserDetailsDTO) userDetails;
 
     if (user.getSalt() != null) {
-      presentedPassword = user.getSalt() + authentication.getCredentials().toString();
+      presentedPassword =
+        user.getSalt() + authentication.getCredentials().toString();
     } else {
       presentedPassword = authentication.getCredentials().toString();
     }
 
-    if (!getPasswordEncoder().matches(presentedPassword, userDetails.getPassword())) {
-      logger.debug("Authentication failed: password does not match stored value");
+    if (!getPasswordEncoder()
+      .matches(presentedPassword, userDetails.getPassword())) {
+      logger
+        .debug("Authentication failed: password does not match stored value");
 
       throw new BadCredentialsException(messages.getMessage(
-          "AaaProvider.badCredentials",
-          "Bad credentials"));
+        "AaaProvider.badCredentials",
+        "Bad credentials"));
     }
   }
 

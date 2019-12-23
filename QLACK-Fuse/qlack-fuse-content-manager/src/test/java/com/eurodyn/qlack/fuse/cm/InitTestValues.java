@@ -43,10 +43,13 @@ public class InitTestValues {
   public List<NodeAttribute> createAttributes(Node node) {
     List<NodeAttribute> attributes = new ArrayList<>();
 
-    NodeAttribute name = new NodeAttribute(CMConstants.ATTR_NAME, "test folder" + node.getId(),
-        node);
-    NodeAttribute lockable = new NodeAttribute(CMConstants.LOCKABLE, "true", node);
-    NodeAttribute createdBy = new NodeAttribute(CMConstants.ATTR_CREATED_BY, "User#1", node);
+    NodeAttribute name = new NodeAttribute(CMConstants.ATTR_NAME,
+      "test folder" + node.getId(),
+      node);
+    NodeAttribute lockable = new NodeAttribute(CMConstants.LOCKABLE, "true",
+      node);
+    NodeAttribute createdBy = new NodeAttribute(CMConstants.ATTR_CREATED_BY,
+      "User#1", node);
 
     attributes.add(name);
     attributes.add(lockable);
@@ -55,13 +58,15 @@ public class InitTestValues {
     return attributes;
   }
 
-  public Set<NodeAttributeDTO> createNodeAttributesDTOSet(NodeAttributeDTO nodeAttributeDTO) {
+  public Set<NodeAttributeDTO> createNodeAttributesDTOSet(
+    NodeAttributeDTO nodeAttributeDTO) {
     Set<NodeAttributeDTO> nodeAttributeDTOSet = new HashSet<>();
     nodeAttributeDTOSet.add(nodeAttributeDTO);
     return nodeAttributeDTOSet;
   }
 
-  public List<NodeAttributeDTO> createNodeAttributesDTOList(NodeAttributeDTO nodeAttributeDTO) {
+  public List<NodeAttributeDTO> createNodeAttributesDTOList(
+    NodeAttributeDTO nodeAttributeDTO) {
     List<NodeAttributeDTO> nodeAttributeDTOList = new ArrayList<>();
     nodeAttributeDTOList.add(nodeAttributeDTO);
     return nodeAttributeDTOList;
@@ -87,7 +92,8 @@ public class InitTestValues {
 
   public FolderDTO createFolderDTO(String nodeDTOId) {
     FolderDTO folderDTO = new FolderDTO();
-    folderDTO.setId(nodeDTOId == null ? "219d51f2-6f78-4de8-bbf6-92091b34a7e0" : nodeDTOId);
+    folderDTO.setId(
+      nodeDTOId == null ? "219d51f2-6f78-4de8-bbf6-92091b34a7e0" : nodeDTOId);
     folderDTO.setName("test folder");
     folderDTO.setLockable(true);
     folderDTO.setCreatedBy("User#1");
@@ -209,13 +215,19 @@ public class InitTestValues {
   public Set<VersionAttributeDTO> createAttributeDTOS() {
     Set<VersionAttributeDTO> attributes = new HashSet<>();
     attributes.add(new VersionAttributeDTO(CMConstants.ATTR_NAME, "one", ""));
-    attributes.add(new VersionAttributeDTO(CMConstants.ATTR_CREATED_BY, "two", ""));
-    attributes.add(new VersionAttributeDTO(CMConstants.ATTR_LAST_MODIFIED_ON, "three", ""));
-    attributes.add(new VersionAttributeDTO(CMConstants.ATTR_LAST_MODIFIED_BY, "four", ""));
-    attributes.add(new VersionAttributeDTO(CMConstants.ATTR_LOCKED_ON, "five", ""));
-    attributes.add(new VersionAttributeDTO(CMConstants.ATTR_LOCKED_BY, "six", ""));
+    attributes
+      .add(new VersionAttributeDTO(CMConstants.ATTR_CREATED_BY, "two", ""));
+    attributes.add(
+      new VersionAttributeDTO(CMConstants.ATTR_LAST_MODIFIED_ON, "three", ""));
+    attributes.add(
+      new VersionAttributeDTO(CMConstants.ATTR_LAST_MODIFIED_BY, "four", ""));
+    attributes
+      .add(new VersionAttributeDTO(CMConstants.ATTR_LOCKED_ON, "five", ""));
+    attributes
+      .add(new VersionAttributeDTO(CMConstants.ATTR_LOCKED_BY, "six", ""));
     attributes.add(new VersionAttributeDTO(CMConstants.LOCKABLE, "eight", ""));
-    attributes.add(new VersionAttributeDTO(CMConstants.VERSIONABLE, "nine", ""));
+    attributes
+      .add(new VersionAttributeDTO(CMConstants.VERSIONABLE, "nine", ""));
 
     return attributes;
   }

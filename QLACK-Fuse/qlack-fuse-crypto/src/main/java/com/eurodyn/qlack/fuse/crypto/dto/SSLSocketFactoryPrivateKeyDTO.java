@@ -7,8 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * The representation of a private key in PEM format to be used while creating an SSL socket
- * factory.
+ * The representation of a private key in PEM format to be used while creating
+ * an SSL socket factory.
  */
 @Data
 @Builder

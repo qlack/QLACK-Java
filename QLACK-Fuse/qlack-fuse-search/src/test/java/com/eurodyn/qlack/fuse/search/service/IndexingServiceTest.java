@@ -54,10 +54,12 @@ public class IndexingServiceTest {
 
   @Test
   public void indexDocumentTest() throws IOException {
-    when(restHighLevelClient.index(any(IndexRequest.class), any(RequestOptions.class)))
-        .thenReturn(indexResponse);
+    when(restHighLevelClient
+      .index(any(IndexRequest.class), any(RequestOptions.class)))
+      .thenReturn(indexResponse);
     indexingService.indexDocument(initTestValues.createIndexingDTO());
-    verify(restHighLevelClient, times(1)).index(any(IndexRequest.class), any(RequestOptions.class));
+    verify(restHighLevelClient, times(1))
+      .index(any(IndexRequest.class), any(RequestOptions.class));
   }
 
   @Test(expected = SearchException.class)
@@ -69,20 +71,22 @@ public class IndexingServiceTest {
 
   @Test
   public void unindexDocumentTest() throws IOException {
-    when(restHighLevelClient.delete(any(DeleteRequest.class), any(RequestOptions.class)))
-        .thenReturn(deleteResponse);
+    when(restHighLevelClient
+      .delete(any(DeleteRequest.class), any(RequestOptions.class)))
+      .thenReturn(deleteResponse);
     indexingService.unindexDocument(new ESDocumentIdentifierDTO());
     verify(restHighLevelClient, times(1))
-        .delete(any(DeleteRequest.class), any(RequestOptions.class));
+      .delete(any(DeleteRequest.class), any(RequestOptions.class));
   }
 
   @Test(expected = SearchException.class)
   public void unindexDocumentIoExceptionTest() throws IOException {
-    when(restHighLevelClient.delete(any(DeleteRequest.class), any(RequestOptions.class)))
-        .thenThrow(new IOException());
+    when(restHighLevelClient
+      .delete(any(DeleteRequest.class), any(RequestOptions.class)))
+      .thenThrow(new IOException());
     indexingService.unindexDocument(new ESDocumentIdentifierDTO());
     verify(restHighLevelClient, times(1))
-        .delete(any(DeleteRequest.class), any(RequestOptions.class));
+      .delete(any(DeleteRequest.class), any(RequestOptions.class));
   }
 
 }

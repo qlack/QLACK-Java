@@ -4,7 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Represents a specific hit within a set of hitList held by {@link SearchResultDTO}
+ * Represents a specific hit within a set of hitList held by {@link
+ * SearchResultDTO}
  *
  * @author European Dynamics SA.
  */
@@ -13,9 +14,10 @@ import lombok.Setter;
 public class SearchHitDTO {
 
   /**
-   * The source representation of this hit as a JSON object. This property holds the properties and
-   * values of the original document that was indexed, therefore it is a good candidate to be
-   * deserialized to get a a concrete objects out of a search result hit.
+   * The source representation of this hit as a JSON object. This property
+   * holds the properties and values of the original document that was
+   * indexed, therefore it is a good candidate to be deserialized to get a a
+   * concrete objects out of a search result hit.
    */
   private String source;
 
@@ -43,7 +45,8 @@ public class SearchHitDTO {
 
   @Override
   public String toString() {
-    return "SearchHitDTO [source=" + source + ", score=" + score + ", type=" + type + ", innerHits="
-        + innerHits + "]";
+    return "SearchHitDTO [source=" + source + ", score=" + score + ", type="
+      + type + ", innerHits="
+      + innerHits + "]";
   }
 }

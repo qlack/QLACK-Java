@@ -41,7 +41,7 @@ public class RulesUtilExceptionTest {
   @Test(expected = QRulesException.class)
   public void serializeKnowledgeBaseExceptionTest() throws IOException {
     KieBase kbase = KnowledgeBaseFactory
-        .newKnowledgeBase("test", null);
+      .newKnowledgeBase("test", null);
     when(DroolsStreamUtils.streamOut(kbase)).thenThrow(new IOException());
 
     rulesUtil.serializeKnowledgeBase(kbase);
@@ -49,12 +49,14 @@ public class RulesUtilExceptionTest {
 
   @Test(expected = QRulesException.class)
   public void deserializeKnowledgeBaseExceptionTest()
-      throws IOException, ClassNotFoundException {
+    throws IOException, ClassNotFoundException {
 
     JarClassLoaderBuilder classLoaderBuilder = new JarClassLoaderBuilder();
-    MapBackedClassLoader classLoader = classLoaderBuilder.buildClassLoader("null");
+    MapBackedClassLoader classLoader = classLoaderBuilder
+      .buildClassLoader("null");
 
-    when(DroolsStreamUtils.streamIn(bytes.get(0), classLoader)).thenThrow(new IOException());
+    when(DroolsStreamUtils.streamIn(bytes.get(0), classLoader))
+      .thenThrow(new IOException());
 
     rulesUtil.deserializeKnowledgeBase(bytes.get(0), classLoader);
   }

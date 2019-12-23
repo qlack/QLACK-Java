@@ -13,7 +13,7 @@ public class QAncestorFolderLockExceptionTest {
   public void constructorWithMessageTest() {
     String message = "exception message";
     QAncestorFolderLockException qAncestorFolderLockException = new QAncestorFolderLockException(
-        message);
+      message);
     assertEquals(message, qAncestorFolderLockException.getMessage());
   }
 
@@ -24,10 +24,12 @@ public class QAncestorFolderLockExceptionTest {
     String conflictNodeName = "conflictNodeName";
 
     QAncestorFolderLockException qAncestorFolderLockException = new QAncestorFolderLockException(
-        message, conflictNodeID, conflictNodeName);
+      message, conflictNodeID, conflictNodeName);
     assertEquals(message, qAncestorFolderLockException.getMessage());
-    assertEquals(conflictNodeID, qAncestorFolderLockException.getConflictNodeID());
-    assertEquals(conflictNodeName, qAncestorFolderLockException.getConflictNodeName());
+    assertEquals(conflictNodeID,
+      qAncestorFolderLockException.getConflictNodeID());
+    assertEquals(conflictNodeName,
+      qAncestorFolderLockException.getConflictNodeName());
   }
 
 }

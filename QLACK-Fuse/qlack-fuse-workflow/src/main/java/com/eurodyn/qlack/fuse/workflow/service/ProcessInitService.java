@@ -3,6 +3,9 @@ package com.eurodyn.qlack.fuse.workflow.service;
 import com.eurodyn.qlack.fuse.crypto.service.CryptoDigestService;
 import com.eurodyn.qlack.fuse.workflow.model.ProcessFile;
 import com.eurodyn.qlack.fuse.workflow.repository.ProcessFileRepository;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import org.activiti.engine.RepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +14,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.logging.Logger;
-
 /**
- * This service provides methods related to the initialization of the processes.
+ * This service provides methods related to the initialization of the
+ * processes.
  *
  * @author European Dynamics
  */
@@ -24,7 +24,8 @@ import java.util.logging.Logger;
 @Transactional
 public class ProcessInitService {
 
-  private static final Logger LOGGER = Logger.getLogger(ProcessInitService.class.getName());
+  private static final Logger LOGGER = Logger
+    .getLogger(ProcessInitService.class.getName());
 
   private final ProcessFileRepository processFileRepository;
 
@@ -37,7 +38,8 @@ public class ProcessInitService {
 
   @Autowired
   public ProcessInitService(ProcessFileRepository processFileRepository,
-      RepositoryService repositoryService, CryptoDigestService cryptoDigestService) {
+    RepositoryService repositoryService,
+    CryptoDigestService cryptoDigestService) {
     this.processFileRepository = processFileRepository;
     this.repositoryService = repositoryService;
     this.cryptoDigestService = cryptoDigestService;
@@ -52,13 +54,15 @@ public class ProcessInitService {
   }
 
   /**
-   * This method reads the .xml files located under the resources/processes folder and reads their
-   * content. If their content has already been persisted in the Activiti tables and no changes are
-   * found, nothing happens. In any other case, a new version of the process is created.
+   * This method reads the .xml files located under the resources/processes
+   * folder and reads their content. If their content has already been
+   * persisted in the Activiti tables and no changes are found, nothing
+   * happens. In any other case, a new version of the process is created.
    */
   public void updateProcessesFromResources() {
     Arrays.stream(resources).forEach(r -> {
-      ProcessFile existingProcessFile = processFileRepository.findOneByFilename(r.getFilename());
+      ProcessFile existingProcessFile = processFileRepository
+        .findOneByFilename(r.getFilename());
 
       try {
         String sha256 = cryptoDigestService.sha256(r.getInputStream());
@@ -66,13 +70,14 @@ public class ProcessInitService {
         if (existingProcessFile == null) {
           ProcessFile newProcessFile = new ProcessFile(r.getFilename(), sha256);
           processFileRepository.save(newProcessFile);
-          repositoryService.createDeployment().addClasspathResource("processes/" + r.getFilename())
-              .deploy();
+          repositoryService.createDeployment()
+            .addClasspathResource("processes/" + r.getFilename())
+            .deploy();
         } else if (!existingProcessFile.getChecksum().equals(sha256)) {
           existingProcessFile.setChecksum(sha256);
           processFileRepository.save(existingProcessFile);
           repositoryService.createDeployment()
-              .addClasspathResource("processes/" + r.getFilename()).deploy();
+            .addClasspathResource("processes/" + r.getFilename()).deploy();
         }
       } catch (IOException e) {
         LOGGER.severe(e.getMessage());

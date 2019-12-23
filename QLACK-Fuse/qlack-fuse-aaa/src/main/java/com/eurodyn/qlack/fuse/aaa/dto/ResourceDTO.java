@@ -4,7 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * A simple DTO (Data Transfer Object) that is used to set and retrieve data of Resource Object
+ * A simple DTO (Data Transfer Object) that is used to set and retrieve data of
+ * Resource Object
  *
  * @author European Dynamics
  */

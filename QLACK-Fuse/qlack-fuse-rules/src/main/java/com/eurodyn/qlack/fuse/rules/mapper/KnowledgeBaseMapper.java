@@ -11,8 +11,9 @@ import org.mapstruct.ReportingPolicy;
  * @author European Dynamics SA.
  */
 @Mapper(componentModel = "spring",
-    unmappedTargetPolicy = ReportingPolicy.IGNORE,
-    uses = {KnowledgeBaseLibraryMapper.class, KnowledgeBaseRuleMapper.class})
-public interface KnowledgeBaseMapper extends RulesMapper<KnowledgeBase, KnowledgeBaseDTO> {
+  unmappedTargetPolicy = ReportingPolicy.IGNORE,
+  uses = {KnowledgeBaseLibraryMapper.class, KnowledgeBaseRuleMapper.class})
+public interface KnowledgeBaseMapper extends
+  RulesMapper<KnowledgeBase, KnowledgeBaseDTO> {
 
 }

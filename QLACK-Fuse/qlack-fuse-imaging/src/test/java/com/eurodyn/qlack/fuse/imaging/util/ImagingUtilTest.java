@@ -15,7 +15,7 @@ public class ImagingUtilTest {
 
   private byte[] createByteImage() throws IOException {
     BufferedImage bImage = ImageIO
-        .read(this.getClass().getResource("/image/tiff.png"));
+      .read(this.getClass().getResource("/image/tiff.png"));
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     ImageIO.write(bImage, "tiff", bos);
     return bos.toByteArray();

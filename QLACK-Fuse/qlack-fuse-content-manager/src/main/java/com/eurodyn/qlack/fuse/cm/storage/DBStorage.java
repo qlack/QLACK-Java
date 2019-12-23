@@ -32,13 +32,15 @@ public class DBStorage implements StorageEngine {
   @Value("${qlack.fuse.cm.chunkSize:4096000}")
   private int chunkSize;
 
-  public DBStorage(VersionRepository versionRepository, VersionBinRepository versionBinRepository) {
+  public DBStorage(VersionRepository versionRepository,
+    VersionBinRepository versionBinRepository) {
     this.versionRepository = versionRepository;
     this.versionBinRepository = versionBinRepository;
   }
 
 
-  private String persistBinChunk(Version version, byte[] content, int chunkIndex) {
+  private String persistBinChunk(Version version, byte[] content,
+    int chunkIndex) {
 
     VersionBin versionBin = new VersionBin();
     versionBin.setBinContent(content);
@@ -74,7 +76,8 @@ public class DBStorage implements StorageEngine {
   public byte[] getVersionContent(String versionID) throws IOException {
     Version version = versionRepository.fetchById(versionID);
 
-    List<VersionBin> versionBins = versionBinRepository.findByVersionOrderByChunkIndex(version);
+    List<VersionBin> versionBins = versionBinRepository
+      .findByVersionOrderByChunkIndex(version);
     ByteArrayOutputStream bOut = new ByteArrayOutputStream();
     for (VersionBin vb : versionBins) {
       bOut.write(vb.getBinContent());
@@ -94,9 +97,10 @@ public class DBStorage implements StorageEngine {
     BinChunkDTO binChunkDTO = null;
     Version version = versionRepository.fetchById(versionID);
     Predicate predicate = qVersionBin.version.eq(version)
-        .and(qVersionBin.chunkIndex.in(Arrays.asList(chunkIndex, chunkIndex + 1)));
+      .and(
+        qVersionBin.chunkIndex.in(Arrays.asList(chunkIndex, chunkIndex + 1)));
     List<VersionBin> versionBins = versionBinRepository
-        .findAll(predicate, Sort.by("chunkIndex").descending());
+      .findAll(predicate, Sort.by("chunkIndex").descending());
 
     if (!versionBins.isEmpty()) {
       binChunkDTO = mapper.mapToDTO(versionBins.get(0));

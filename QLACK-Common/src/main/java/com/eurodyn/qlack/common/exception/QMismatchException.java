@@ -7,19 +7,19 @@ package com.eurodyn.qlack.common.exception;
  */
 public class QMismatchException extends QException {
 
-    public QMismatchException() {
-        super();
-    }
+  public QMismatchException() {
+    super();
+  }
 
-    public QMismatchException(String message) {
-        super(message);
-    }
+  public QMismatchException(String message) {
+    super(message);
+  }
 
-    public QMismatchException(String message, Throwable cause) {
-        super(message, cause);
-    }
+  public QMismatchException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-    public QMismatchException(String message, Object... args) {
-        super(message, args);
-    }
+  public QMismatchException(String message, Object... args) {
+    super(message, args);
+  }
 }

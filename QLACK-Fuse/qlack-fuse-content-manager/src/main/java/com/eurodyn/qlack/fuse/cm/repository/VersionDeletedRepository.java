@@ -9,7 +9,8 @@ import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface VersionDeletedRepository extends QlackBaseRepository<VersionDeleted, String> {
+public interface VersionDeletedRepository extends
+  QlackBaseRepository<VersionDeleted, String> {
 
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   @Override

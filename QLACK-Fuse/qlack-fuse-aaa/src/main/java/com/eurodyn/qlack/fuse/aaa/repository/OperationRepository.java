@@ -4,8 +4,8 @@ import com.eurodyn.qlack.fuse.aaa.model.Operation;
 import org.springframework.stereotype.Repository;
 
 /**
- * A Repository interface written for Operation . It is used to define abstract crud methods for
- * Operation model.
+ * A Repository interface written for Operation . It is used to define abstract
+ * crud methods for Operation model.
  *
  * @author European Dynamics SA
  */

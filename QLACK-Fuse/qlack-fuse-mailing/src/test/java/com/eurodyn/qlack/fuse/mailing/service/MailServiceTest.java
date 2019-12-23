@@ -43,7 +43,8 @@ public class MailServiceTest {
   private MailQueueMonitor mailQueueMonitor;
 
   private EmailRepository emailRepository = mock(EmailRepository.class);
-  private AttachmentRepository attachmentRepository = mock(AttachmentRepository.class);
+  private AttachmentRepository attachmentRepository = mock(
+    AttachmentRepository.class);
   private EmailValidator emailValidator = new EmailValidator();
 
   @Spy
@@ -65,12 +66,14 @@ public class MailServiceTest {
   private final String distributionListId = "0f9a2472-cde0-44a6-ba3d-8e609929043d";
 
   private final long emailDate = 2121545432165L;
-  private MailConstants.EMAIL_STATUS[] statuses = {MailConstants.EMAIL_STATUS.QUEUED};
+  private MailConstants.EMAIL_STATUS[] statuses = {
+    MailConstants.EMAIL_STATUS.QUEUED};
 
   @Before
   public void init() {
-    mailService = new MailService(mailQueueMonitor, emailMapper, emailRepository,
-        attachmentMapper, attachmentRepository, emailValidator);
+    mailService = new MailService(mailQueueMonitor, emailMapper,
+      emailRepository,
+      attachmentMapper, attachmentRepository, emailValidator);
     initTestValues = new InitTestValues();
     email = initTestValues.createEmail();
     emailDTO = initTestValues.createEmailDTO();
@@ -125,8 +128,9 @@ public class MailServiceTest {
     for (EmailDTO e : emailsDTO) {
       e.setAttachments(null);
       when(emailMapper.mapToEntity(e))
-          .thenReturn(emails.stream().filter(em -> em.getId().equals(e.getId())).findFirst()
-              .get());
+        .thenReturn(
+          emails.stream().filter(em -> em.getId().equals(e.getId())).findFirst()
+            .get());
     }
     List<String> queuedEmailsIds = mailService.queueEmails(emailsDTO);
     assertEquals(emailsDTO.size(), queuedEmailsIds.size());
@@ -134,8 +138,9 @@ public class MailServiceTest {
 
   @Test
   public void testCleanup() {
-    when(emailRepository.findByAddedOnDateAndStatus(emailDate, MailConstants.EMAIL_STATUS.QUEUED))
-        .thenReturn(emails);
+    when(emailRepository
+      .findByAddedOnDateAndStatus(emailDate, MailConstants.EMAIL_STATUS.QUEUED))
+      .thenReturn(emails);
     mailService.cleanup(emailDate, statuses);
     for (Email email : emails) {
       verify(emailRepository, times(1)).delete(email);
@@ -166,14 +171,18 @@ public class MailServiceTest {
 
   @Test
   public void testGetByStatus() {
-    when(emailRepository.findByAddedOnDateAndStatus(null, MailConstants.EMAIL_STATUS.QUEUED))
-        .thenReturn(emails);
+    when(emailRepository
+      .findByAddedOnDateAndStatus(null, MailConstants.EMAIL_STATUS.QUEUED))
+      .thenReturn(emails);
     for (Email e : emails) {
       when(emailMapper.mapToDTO(e))
-          .thenReturn(emailsDTO.stream().filter(em -> em.getId().equals(e.getId())).findFirst()
-              .get());
+        .thenReturn(
+          emailsDTO.stream().filter(em -> em.getId().equals(e.getId()))
+            .findFirst()
+            .get());
     }
-    List<EmailDTO> byStatus = mailService.getByStatus(MailConstants.EMAIL_STATUS.QUEUED);
+    List<EmailDTO> byStatus = mailService
+      .getByStatus(MailConstants.EMAIL_STATUS.QUEUED);
     assertEquals(emails.size(), byStatus.size());
   }
 
@@ -186,7 +195,8 @@ public class MailServiceTest {
   @Test
   public void sendToDistributionList() {
     mailService.sendToDistributionList(emailId, distributionListId);
-    verify(mailQueueMonitor, times(1)).sendToDistributionList(emailId, distributionListId);
+    verify(mailQueueMonitor, times(1))
+      .sendToDistributionList(emailId, distributionListId);
   }
 
   @Test(expected = ValidationException.class)

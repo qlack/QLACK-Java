@@ -115,7 +115,8 @@ public class InitTestValues {
     userDTO.setStatus((byte) 1);
     userDTO.setSuperadmin(true);
     userDTO.setExternal(false);
-    userDTO.setUserAttributes(new HashSet<>(this.createUserAttributesDTO(userDTO.getId())));
+    userDTO.setUserAttributes(
+      new HashSet<>(this.createUserAttributesDTO(userDTO.getId())));
 
     return userDTO;
   }
@@ -462,7 +463,8 @@ public class InitTestValues {
     userHasOperations.add(userHasOperation2);
 
     userHasOperations.stream()
-        .forEach(userHasOperation -> userHasOperation.setOperation(createOperation()));
+      .forEach(
+        userHasOperation -> userHasOperation.setOperation(createOperation()));
 
     return userHasOperations;
   }

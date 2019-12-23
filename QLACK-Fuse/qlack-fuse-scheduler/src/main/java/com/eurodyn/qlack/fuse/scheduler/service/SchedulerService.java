@@ -47,7 +47,8 @@ public class SchedulerService {
   }
 
   /**
-   * A helper method to define the name of a job based on the class implementing the job.
+   * A helper method to define the name of a job based on the class
+   * implementing the job.
    *
    * @param jobClass the class implementing the job
    * @param <J> the Job Object
@@ -60,7 +61,8 @@ public class SchedulerService {
   }
 
   /**
-   * A helper method to define the name of a trigger based on the class implementing the job.
+   * A helper method to define the name of a trigger based on the class
+   * implementing the job.
    *
    * @param jobClass the class implementing the job.
    * @param <J> the Job Object
@@ -72,7 +74,8 @@ public class SchedulerService {
   }
 
   /**
-   * Retrieves the name of the Quartz scheduler instance used in the application
+   * Retrieves the name of the Quartz scheduler instance used in the
+   * application
    *
    * @return the name of the Quartz scheduler instance
    */
@@ -86,7 +89,8 @@ public class SchedulerService {
   }
 
   /**
-   * Retrieves the id of the of the Quartz scheduler instance used in the application
+   * Retrieves the id of the of the Quartz scheduler instance used in the
+   * application
    *
    * @return the id of the Quartz scheduler instance
    */
@@ -178,8 +182,8 @@ public class SchedulerService {
   }
 
   /**
-   * Registers a job to the scheduler's list of jobs. A registered job, should be scheduled
-   * manually.
+   * Registers a job to the scheduler's list of jobs. A registered job, should
+   * be scheduled manually.
    *
    * @param jobClass a class implementing the Job interface
    * @param <J> the Job Object
@@ -189,20 +193,23 @@ public class SchedulerService {
   }
 
   /**
-   * Registers a job to the scheduler's list of jobs. A registered job, should be scheduled
-   * manually.
+   * Registers a job to the scheduler's list of jobs. A registered job, should
+   * be scheduled manually.
    *
    * @param jobClass a class implementing the Job interface
-   * @param jobData a map containing any number of serializable objects, that the job will be able
+   * @param jobData a map containing any number of serializable objects, that
+   * the job will be able
    * @param <J> the Job Object to access on execution
    */
-  public <J extends Job> void registerJob(Class<J> jobClass, Map<String, Object> jobData) {
+  public <J extends Job> void registerJob(Class<J> jobClass,
+    Map<String, Object> jobData) {
     log.info("Registering job: " + getJobName(jobClass));
     try {
       // Check if the job is already registered and ignore the request.
 
       if (isJobExisting(jobClass)) {
-        log.info(MessageFormat.format("Job {0} is already registered. ", getJobName(jobClass)));
+        log.info(MessageFormat
+          .format("Job {0} is already registered. ", getJobName(jobClass)));
       } else {
         scheduler.addJob(buildJob(jobClass, jobData), true);
       }
@@ -215,10 +222,12 @@ public class SchedulerService {
    * Schedules a job for execution
    *
    * @param jobClass a class implementing the job interface
-   * @param cronExpression a cron expression defining the execution interval of the job
+   * @param cronExpression a cron expression defining the execution interval
+   * of the job
    * @param <J> the Job Object
    */
-  public <J extends Job> void scheduleJob(Class<J> jobClass, String cronExpression) {
+  public <J extends Job> void scheduleJob(Class<J> jobClass,
+    String cronExpression) {
     scheduleJob(jobClass, cronExpression, null);
   }
 
@@ -226,22 +235,26 @@ public class SchedulerService {
    * Schedules a job for execution
    *
    * @param jobClass a class implementing the job interface
-   * @param cronExpression a cron expression defining the execution interval of the job
-   * @param jobData a map containing any number of serializable objects, that the job will be able
-   * to access on execution
+   * @param cronExpression a cron expression defining the execution interval
+   * of the job
+   * @param jobData a map containing any number of serializable objects, that
+   * the job will be able to access on execution
    * @param <J> the Job Object
    */
-  public <J extends Job> void scheduleJob(Class<J> jobClass, String cronExpression,
-      Map<String, Object> jobData) {
+  public <J extends Job> void scheduleJob(Class<J> jobClass,
+    String cronExpression,
+    Map<String, Object> jobData) {
     log.info(MessageFormat.format("Scheduling job {0} ", getJobName(jobClass)));
     try {
       // Check if the job is already registered, in that case only reschedule it.
       if (isJobExisting(jobClass)) {
         log.info(MessageFormat
-            .format("Job {0} is already registered, rescheduling it.", getJobName(jobClass)));
+          .format("Job {0} is already registered, rescheduling it.",
+            getJobName(jobClass)));
         rescheduleJob(jobClass, cronExpression);
       } else {
-        scheduler.scheduleJob(buildJob(jobClass, jobData), buildTrigger(jobClass, cronExpression));
+        scheduler.scheduleJob(buildJob(jobClass, jobData),
+          buildTrigger(jobClass, cronExpression));
       }
     } catch (SchedulerException e) {
       throw new QSchedulerException(e);
@@ -252,14 +265,17 @@ public class SchedulerService {
    * Reschedules a job
    *
    * @param jobClass a class implementing the job interface
-   * @param cronExpression a cron expression defining the execution interval of the job
+   * @param cronExpression a cron expression defining the execution interval
+   * of the job
    * @param <J> the Job Object
    */
-  public <J extends Job> void rescheduleJob(Class<J> jobClass, String cronExpression) {
-    log.info(MessageFormat.format("Rescheduling job {0} ", getJobName(jobClass)));
+  public <J extends Job> void rescheduleJob(Class<J> jobClass,
+    String cronExpression) {
+    log.info(
+      MessageFormat.format("Rescheduling job {0} ", getJobName(jobClass)));
     try {
       scheduler.rescheduleJob(TriggerKey.triggerKey(getTriggerName(jobClass)),
-          buildTrigger(jobClass, cronExpression));
+        buildTrigger(jobClass, cronExpression));
     } catch (SchedulerException e) {
       throw new QSchedulerException(e);
     }
@@ -310,14 +326,17 @@ public class SchedulerService {
    * Triggers the execution of a job
    *
    * @param jobClass a class implementing the Job interface
-   * @param jobData a map containing any number of serializable objects, that the job will be able
-   * to access on execution
+   * @param jobData a map containing any number of serializable objects, that
+   * the job will be able to access on execution
    * @param <J> the Job Object
    */
-  public <J extends Job> void triggerJob(Class<J> jobClass, Map<String, Object> jobData) {
-    log.info(MessageFormat.format("Triggering execution of job {0} ", getJobName(jobClass)));
+  public <J extends Job> void triggerJob(Class<J> jobClass,
+    Map<String, Object> jobData) {
+    log.info(MessageFormat
+      .format("Triggering execution of job {0} ", getJobName(jobClass)));
     try {
-      scheduler.triggerJob(JobKey.jobKey(getJobName(jobClass)), createJobDataMap(jobData));
+      scheduler.triggerJob(JobKey.jobKey(getJobName(jobClass)),
+        createJobDataMap(jobData));
     } catch (SchedulerException ex) {
       throw new QSchedulerException(ex);
     }
@@ -331,7 +350,8 @@ public class SchedulerService {
    */
   public <J extends Job> void pauseJob(Class<J> jobClass) {
     log.info(
-        MessageFormat.format("Pausing all future executions of job {0}", getJobName(jobClass)));
+      MessageFormat.format("Pausing all future executions of job {0}",
+        getJobName(jobClass)));
     try {
       scheduler.pauseJob(JobKey.jobKey(getJobName(jobClass)));
     } catch (SchedulerException ex) {
@@ -382,10 +402,12 @@ public class SchedulerService {
    * @return the job's next execution date
    */
   public <J extends Job> Date getNextFireForJob(Class<J> jobClass) {
-    log.info(MessageFormat.format("Finding the next execution of job {0} ", getJobName(jobClass)));
+    log.info(MessageFormat
+      .format("Finding the next execution of job {0} ", getJobName(jobClass)));
     try {
-      return scheduler.getTrigger(TriggerKey.triggerKey(getTriggerName(jobClass)))
-          .getNextFireTime();
+      return scheduler
+        .getTrigger(TriggerKey.triggerKey(getTriggerName(jobClass)))
+        .getNextFireTime();
     } catch (SchedulerException ex) {
       throw new QSchedulerException(ex);
     }
@@ -433,7 +455,8 @@ public class SchedulerService {
   public List<String> getCurrentlyExecutingJobsNames() {
     log.info("Finding jobs that are currently executed");
     try {
-      List<JobExecutionContext> runningJobs = scheduler.getCurrentlyExecutingJobs();
+      List<JobExecutionContext> runningJobs = scheduler
+        .getCurrentlyExecutingJobs();
       List<String> names = new ArrayList<>();
 
       for (JobExecutionContext runningJob : runningJobs) {
@@ -446,8 +469,8 @@ public class SchedulerService {
   }
 
   /**
-   * Collects information about all existing jobs. The information collected is the job's name,
-   * group and next execution date
+   * Collects information about all existing jobs. The information collected
+   * is the job's name, group and next execution date
    *
    * @return a list of JobDTO containing the information about each job
    */
@@ -457,11 +480,14 @@ public class SchedulerService {
 
     try {
       for (String groupName : scheduler.getJobGroupNames()) {
-        for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
-          List<Trigger> triggers = (List<Trigger>) scheduler.getTriggersOfJob(jobKey);
+        for (JobKey jobKey : scheduler
+          .getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
+          List<Trigger> triggers = (List<Trigger>) scheduler
+            .getTriggersOfJob(jobKey);
           Date nextFireTime = triggers.get(0).getNextFireTime();
 
-          JobDTO jobDTO = new JobDTO(jobKey.getName(), jobKey.getGroup(), nextFireTime);
+          JobDTO jobDTO = new JobDTO(jobKey.getName(), jobKey.getGroup(),
+            nextFireTime);
           jobs.add(jobDTO);
         }
       }
@@ -475,44 +501,50 @@ public class SchedulerService {
    * Builds a new job
    *
    * @param jobClass a class implementing the Job interface
-   * @param jobData a map containing any number of serializable objects, that the job will be able
-   * to access on execution
+   * @param jobData a map containing any number of serializable objects, that
+   * the job will be able to access on execution
    * @param <J> the Job Object
-   * @return a {@link JobDetail} object containing all the info for the new job
+   * @return a {@link JobDetail} object containing all the info for the new
+   * job
    */
-  private <J extends Job> JobDetail buildJob(Class<J> jobClass, Map<String, Object> jobData) {
+  private <J extends Job> JobDetail buildJob(Class<J> jobClass,
+    Map<String, Object> jobData) {
     return JobBuilder
-        .newJob(jobClass)
-        .withIdentity(getJobName(jobClass))
-        .storeDurably()
-        .setJobData(createJobDataMap(jobData))
-        .build();
+      .newJob(jobClass)
+      .withIdentity(getJobName(jobClass))
+      .storeDurably()
+      .setJobData(createJobDataMap(jobData))
+      .build();
   }
 
   /**
    * Builds a new trigger
    *
    * @param jobClass a class implementing the Job interface
-   * @param cronExpression a cron expression defining the execution interval of the job
+   * @param cronExpression a cron expression defining the execution interval
+   * of the job
    * @param <J> the Job Object
-   * @return a {@link CronTrigger} object containing all the info for the new trigger
+   * @return a {@link CronTrigger} object containing all the info for the new
+   * trigger
    */
-  private <J extends Job> CronTrigger buildTrigger(Class<J> jobClass, String cronExpression) {
+  private <J extends Job> CronTrigger buildTrigger(Class<J> jobClass,
+    String cronExpression) {
     return TriggerBuilder
-        .newTrigger()
-        .forJob(getJobName(jobClass))
-        .withIdentity(getTriggerName(jobClass))
-        .startNow()
-        .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression))
-        .build();
+      .newTrigger()
+      .forJob(getJobName(jobClass))
+      .withIdentity(getTriggerName(jobClass))
+      .startNow()
+      .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression))
+      .build();
   }
 
   /**
    * Creates a new job data map
    *
-   * @param jobData a map containing any number of serializable objects, that the job will be able
-   * to access on execution
-   * @return a {@link JobDataMap} object containing all the info for the job data
+   * @param jobData a map containing any number of serializable objects, that
+   * the job will be able to access on execution
+   * @return a {@link JobDataMap} object containing all the info for the job
+   * data
    */
   private JobDataMap createJobDataMap(Map<String, Object> jobData) {
     JobDataMap jobDataMap = new JobDataMap();

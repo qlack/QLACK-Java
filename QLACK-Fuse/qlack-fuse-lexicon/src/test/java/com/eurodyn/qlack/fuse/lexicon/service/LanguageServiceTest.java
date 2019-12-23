@@ -52,7 +52,8 @@ public class LanguageServiceTest {
   private LanguageService languageService;
 
   private KeyRepository keyRepository = mock(KeyRepository.class);
-  private LanguageRepository languageRepository = mock(LanguageRepository.class);
+  private LanguageRepository languageRepository = mock(
+    LanguageRepository.class);
 
   private KeyService keyService = mock(KeyService.class);
   private GroupService groupService = mock(GroupService.class);
@@ -78,8 +79,9 @@ public class LanguageServiceTest {
 
   @Before
   public void init() {
-    languageService = new LanguageService(keyService, groupService, languageRepository,
-        keyRepository, languageMapper);
+    languageService = new LanguageService(keyService, groupService,
+      languageRepository,
+      keyRepository, languageMapper);
     initTestValues = new InitTestValues();
     languageDTO = initTestValues.createEnglishLanguageDTO();
     language = initTestValues.createEnglishLanguage();
@@ -102,8 +104,10 @@ public class LanguageServiceTest {
       prefixedTranslationsMap.put(k.getId(), "en_" + k.getName());
     });
 
-    key.getData().forEach(data1 -> translationsForLocale.put(key.getName(), data1.getValue()));
-    translationsForLocale.forEach((k, v) -> prefixedTranslationsForLocale.put(k, "en_" + v));
+    key.getData().forEach(
+      data1 -> translationsForLocale.put(key.getName(), data1.getValue()));
+    translationsForLocale
+      .forEach((k, v) -> prefixedTranslationsForLocale.put(k, "en_" + v));
   }
 
   @Test
@@ -117,15 +121,18 @@ public class LanguageServiceTest {
   @Test
   public void testCreateLanguageIfNotExists() {
     when(languageMapper.mapToEntity(languageDTO)).thenReturn(language);
-    String createdLanguageId = languageService.createLanguageIfNotExists(languageDTO);
+    String createdLanguageId = languageService
+      .createLanguageIfNotExists(languageDTO);
     verify(languageRepository, times(1)).save(language);
     assertEquals(languageDTO.getId(), createdLanguageId);
   }
 
   @Test(expected = QAlreadyExistsException.class)
   public void testCreateLanguageIfNotExistsException() {
-    when(languageRepository.findByLocale(languageDTO.getLocale())).thenReturn(language);
-    String createdLanguageId = languageService.createLanguageIfNotExists(languageDTO);
+    when(languageRepository.findByLocale(languageDTO.getLocale()))
+      .thenReturn(language);
+    String createdLanguageId = languageService
+      .createLanguageIfNotExists(languageDTO);
     verify(languageRepository, times(1)).save(language);
     assertEquals(languageDTO.getId(), createdLanguageId);
   }
@@ -134,9 +141,11 @@ public class LanguageServiceTest {
   public void testCreateLanguageWithoutPrefix() {
     when(languageMapper.mapToEntity(languageDTO)).thenReturn(language);
     when(keyRepository.findAll()).thenReturn(keys);
-    String createdLanguageId = languageService.createLanguage(languageDTO, null);
+    String createdLanguageId = languageService
+      .createLanguage(languageDTO, null);
     verify(languageRepository, times(1)).save(language);
-    verify(keyService, times(1)).updateTranslationsForLanguage(language.getId(), translationsMap);
+    verify(keyService, times(1))
+      .updateTranslationsForLanguage(language.getId(), translationsMap);
     assertEquals(languageDTO.getId(), createdLanguageId);
   }
 
@@ -144,42 +153,48 @@ public class LanguageServiceTest {
   public void testCreateLanguageWithPrefix() {
     when(languageMapper.mapToEntity(languageDTO)).thenReturn(language);
     when(keyRepository.findAll()).thenReturn(keys);
-    String createdLanguageId = languageService.createLanguage(languageDTO, "en_");
+    String createdLanguageId = languageService
+      .createLanguage(languageDTO, "en_");
     verify(languageRepository, times(1)).save(language);
     verify(keyService, times(1))
-        .updateTranslationsForLanguage(language.getId(), prefixedTranslationsMap);
+      .updateTranslationsForLanguage(language.getId(), prefixedTranslationsMap);
     assertEquals(languageDTO.getId(), createdLanguageId);
   }
 
   @Test
   public void testCreateLanguageByLocaleWithoutPrefix() {
     Map<String, String> translationsForLocale = new HashMap<>();
-    key.getData().forEach(data1 -> translationsForLocale.put(key.getName(), data1.getValue()));
+    key.getData().forEach(
+      data1 -> translationsForLocale.put(key.getName(), data1.getValue()));
 
     when(languageMapper.mapToEntity(languageDTO)).thenReturn(language);
     when(languageRepository.fetchById(language.getId())).thenReturn(language);
     when(keyService.getTranslationsForLocale(language.getLocale()))
-        .thenReturn(translationsForLocale);
-    String createdLanguageId = languageService.createLanguage(languageDTO, language.getId(), null);
+      .thenReturn(translationsForLocale);
+    String createdLanguageId = languageService
+      .createLanguage(languageDTO, language.getId(), null);
     verify(languageRepository, times(1)).save(language);
     verify(keyService, times(1))
-        .updateTranslationsForLanguage(language.getId(), translationsForLocale);
+      .updateTranslationsForLanguage(language.getId(), translationsForLocale);
     assertEquals(languageDTO.getId(), createdLanguageId);
   }
 
   @Test
   public void testCreateLanguageByLocaleWithPrefix() {
     Map<String, String> translationsForLocale = new HashMap<>();
-    key.getData().forEach(data1 -> translationsForLocale.put(key.getName(), data1.getValue()));
+    key.getData().forEach(
+      data1 -> translationsForLocale.put(key.getName(), data1.getValue()));
 
     when(languageMapper.mapToEntity(languageDTO)).thenReturn(language);
     when(languageRepository.fetchById(language.getId())).thenReturn(language);
     when(keyService.getTranslationsForLocale(language.getLocale()))
-        .thenReturn(translationsForLocale);
-    String createdLanguageId = languageService.createLanguage(languageDTO, language.getId(), "en_");
+      .thenReturn(translationsForLocale);
+    String createdLanguageId = languageService
+      .createLanguage(languageDTO, language.getId(), "en_");
     verify(languageRepository, times(1)).save(language);
     verify(keyService, times(1))
-        .updateTranslationsForLanguage(language.getId(), prefixedTranslationsForLocale);
+      .updateTranslationsForLanguage(language.getId(),
+        prefixedTranslationsForLocale);
     assertEquals(languageDTO.getId(), createdLanguageId);
   }
 
@@ -187,7 +202,8 @@ public class LanguageServiceTest {
   public void testUpdateLanguage() {
     language.setLocale("gr");
     language.setName("Greek");
-    when(languageRepository.fetchById(languageDTO.getId())).thenReturn(language);
+    when(languageRepository.fetchById(languageDTO.getId()))
+      .thenReturn(language);
     languageService.updateLanguage(languageDTO);
     assertEquals(languageDTO.getName(), language.getName());
     assertEquals(languageDTO.getLocale(), language.getLocale());
@@ -219,17 +235,18 @@ public class LanguageServiceTest {
   public void testGetLanguage() {
     when(languageRepository.fetchById(language.getId())).thenReturn(language);
     when(languageMapper.mapToDTO(language)).thenReturn(languageDTO);
-    LanguageDTO foundLanguageDTO = languageService.getLanguage(language.getId());
+    LanguageDTO foundLanguageDTO = languageService
+      .getLanguage(language.getId());
     assertEquals(languageDTO, foundLanguageDTO);
   }
 
   @Test
   public void testGetLanguageByLocale() {
     when(languageRepository.findByLocale(language.getLocale()))
-        .thenReturn(language);
+      .thenReturn(language);
     when(languageMapper.mapToDTO(language)).thenReturn(languageDTO);
     LanguageDTO foundLanguageDTO = languageService
-        .getLanguageByLocale(language.getLocale());
+      .getLanguageByLocale(language.getLocale());
     assertEquals(languageDTO, foundLanguageDTO);
   }
 
@@ -237,15 +254,19 @@ public class LanguageServiceTest {
   public void testGetLanguageByLocaleWithFallbackAndReducedLocale() {
     language.setActive(true);
     when(languageMapper.mapToDTO(language)).thenReturn(languageDTO);
-    when(languageRepository.findByLocale(language.getLocale())).thenReturn(language);
-    LanguageDTO foundLanguageDTO = languageService.getLanguageByLocale("en_", true);
+    when(languageRepository.findByLocale(language.getLocale()))
+      .thenReturn(language);
+    LanguageDTO foundLanguageDTO = languageService
+      .getLanguageByLocale("en_", true);
     assertEquals(languageDTO, foundLanguageDTO);
   }
 
   @Test
   public void getLanguageByLocaleWithFallbackAndReducedLocaleInactiveTest() {
-    when(languageRepository.findByLocale(language.getLocale())).thenReturn(language);
-    LanguageDTO foundLanguageDTO = languageService.getLanguageByLocale("en_", true);
+    when(languageRepository.findByLocale(language.getLocale()))
+      .thenReturn(language);
+    LanguageDTO foundLanguageDTO = languageService
+      .getLanguageByLocale("en_", true);
     assertNull(foundLanguageDTO);
   }
 
@@ -256,14 +277,17 @@ public class LanguageServiceTest {
 
   @Test
   public void getLanguageByLocaleNoFallbackTest() {
-    LanguageDTO foundLanguageDTO = languageService.getLanguageByLocale("en_", false);
+    LanguageDTO foundLanguageDTO = languageService
+      .getLanguageByLocale("en_", false);
     assertNull(foundLanguageDTO);
   }
 
   @Test
   public void getLanguageByLocaleNoLanguageTest() {
-    when(languageRepository.findByLocale(language.getLocale())).thenReturn(language);
-    LanguageDTO foundLanguageDTO = languageService.getLanguageByLocale(language.getLocale(), true);
+    when(languageRepository.findByLocale(language.getLocale()))
+      .thenReturn(language);
+    LanguageDTO foundLanguageDTO = languageService
+      .getLanguageByLocale(language.getLocale(), true);
     assertNull(foundLanguageDTO);
   }
 
@@ -277,14 +301,19 @@ public class LanguageServiceTest {
 
   @Test
   public void testGetActiveLanguages() {
-    List<Language> activeLanguages = languages.stream().filter(l -> l.isActive())
-        .collect(Collectors.toList());
-    List<LanguageDTO> activeLanguagesDTO = languagesDTO.stream().filter(languageDTO ->
+    List<Language> activeLanguages = languages.stream()
+      .filter(l -> l.isActive())
+      .collect(Collectors.toList());
+    List<LanguageDTO> activeLanguagesDTO = languagesDTO.stream()
+      .filter(languageDTO ->
         languageDTO.isActive()).collect(Collectors.toList());
 
-    when(languageRepository.findByActiveTrueOrderByNameAsc()).thenReturn(activeLanguages);
-    when(languageMapper.mapToDTO(activeLanguages)).thenReturn(activeLanguagesDTO);
-    List<LanguageDTO> foundActiveLanguagesDTO = languageService.getLanguages(false);
+    when(languageRepository.findByActiveTrueOrderByNameAsc())
+      .thenReturn(activeLanguages);
+    when(languageMapper.mapToDTO(activeLanguages))
+      .thenReturn(activeLanguagesDTO);
+    List<LanguageDTO> foundActiveLanguagesDTO = languageService
+      .getLanguages(false);
     assertEquals(activeLanguagesDTO, foundActiveLanguagesDTO);
   }
 
@@ -293,7 +322,8 @@ public class LanguageServiceTest {
     String locale = "en";
     language.setActive(true);
     when(languageRepository.findByLocale(locale)).thenReturn(language);
-    String effectiveLanguage = languageService.getEffectiveLanguage("en", locale);
+    String effectiveLanguage = languageService
+      .getEffectiveLanguage("en", locale);
     assertEquals(locale, effectiveLanguage);
   }
 
@@ -301,7 +331,8 @@ public class LanguageServiceTest {
   public void getEffectiveLanguageInactiveTest() {
     String locale = "en";
     when(languageRepository.findByLocale(locale)).thenReturn(language);
-    String effectiveLanguage = languageService.getEffectiveLanguage("en", locale);
+    String effectiveLanguage = languageService
+      .getEffectiveLanguage("en", locale);
     assertNull(effectiveLanguage);
   }
 
@@ -310,7 +341,8 @@ public class LanguageServiceTest {
     String defaultLocale = "en";
     language.setActive(true);
     when(languageRepository.findByLocale(defaultLocale)).thenReturn(language);
-    String effectiveLanguage = languageService.getEffectiveLanguage("eng", defaultLocale);
+    String effectiveLanguage = languageService
+      .getEffectiveLanguage("eng", defaultLocale);
     assertEquals(defaultLocale, effectiveLanguage);
   }
 
@@ -318,7 +350,8 @@ public class LanguageServiceTest {
   public void testGetEffectiveLanguageNoResult() {
     String defaultLocale = "en";
     language.setActive(false);
-    String effectiveLanguage = languageService.getEffectiveLanguage("esp", defaultLocale);
+    String effectiveLanguage = languageService
+      .getEffectiveLanguage("esp", defaultLocale);
     assertNull(effectiveLanguage);
   }
 
@@ -335,10 +368,12 @@ public class LanguageServiceTest {
     when(languageRepository.fetchById(language.getId())).thenReturn(language);
     when(groupService.findAll()).thenReturn(groups);
 
-    when(keyService.getTranslationsForGroupAndLocale(groups.get(0).getId(), language.getLocale()))
-        .thenReturn(translationsOfApplicationUI);
-    when(keyService.getTranslationsForGroupAndLocale(groups.get(1).getId(), language.getLocale()))
-        .thenReturn(translationsOfApplicationReports);
+    when(keyService.getTranslationsForGroupAndLocale(groups.get(0).getId(),
+      language.getLocale()))
+      .thenReturn(translationsOfApplicationUI);
+    when(keyService.getTranslationsForGroupAndLocale(groups.get(1).getId(),
+      language.getLocale()))
+      .thenReturn(translationsOfApplicationReports);
 
     byte[] bytes = languageService.downloadLanguage(language.getId());
     Path resourceDirectory = Paths.get("target/eng_translations_generated.xls");
@@ -348,7 +383,7 @@ public class LanguageServiceTest {
       e.printStackTrace();
     }
     groups.forEach(group -> verify(keyService, times(1))
-        .getTranslationsForGroupAndLocale(group.getId(), language.getLocale()));
+      .getTranslationsForGroupAndLocale(group.getId(), language.getLocale()));
     //assertArrayEquals(lgXl, bytes);
   }
 
@@ -362,7 +397,8 @@ public class LanguageServiceTest {
     }
     languageService.uploadLanguage(language.getId(), lgXl);
 
-    Workbook wb = WorkbookFactory.create(new BufferedInputStream(new ByteArrayInputStream(lgXl)));
+    Workbook wb = WorkbookFactory
+      .create(new BufferedInputStream(new ByteArrayInputStream(lgXl)));
     for (int si = 0; si < wb.getNumberOfSheets(); si++) {
       Map<String, String> translations = new HashMap<>();
       Sheet sheet = wb.getSheetAt(si);
@@ -377,14 +413,16 @@ public class LanguageServiceTest {
         translations.put(keyName, keyValue);
       }
       verify(keyService, times(1))
-          .updateTranslationsForLanguageByKeyName(language.getId(), groupsIds.get(si),
-              translations);
+        .updateTranslationsForLanguageByKeyName(language.getId(),
+          groupsIds.get(si),
+          translations);
     }
   }
 
   @Test(expected = LanguageProcessingException.class)
   public void uploadLanguageIoExceptionTest() {
-    languageService.uploadLanguage(language.getId(), "unsupported type".getBytes());
+    languageService
+      .uploadLanguage(language.getId(), "unsupported type".getBytes());
   }
 
   @Test

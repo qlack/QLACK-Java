@@ -5,7 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * A DTO for SessionAttribute. It is used to retrieve and save SessionAttributes data
+ * A DTO for SessionAttribute. It is used to retrieve and save SessionAttributes
+ * data
  *
  * @author European Dynamics S.A
  */

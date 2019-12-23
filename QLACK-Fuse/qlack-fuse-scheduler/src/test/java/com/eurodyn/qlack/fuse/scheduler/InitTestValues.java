@@ -19,14 +19,15 @@ import org.quartz.TriggerBuilder;
  */
 public class InitTestValues {
 
-  public <J extends Job> Trigger createTrigger(Class<J> clazz, String cronExpression) {
+  public <J extends Job> Trigger createTrigger(Class<J> clazz,
+    String cronExpression) {
     return TriggerBuilder
-        .newTrigger()
-        .forJob(clazz.getName())
-        .withIdentity(clazz.getName() + "_trigger")
-        .startNow()
-        .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression))
-        .build();
+      .newTrigger()
+      .forJob(clazz.getName())
+      .withIdentity(clazz.getName() + "_trigger")
+      .startNow()
+      .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression))
+      .build();
   }
 
   public JobDetail createJobDetail(boolean addData) {
@@ -37,11 +38,11 @@ public class InitTestValues {
     }
 
     return JobBuilder
-        .newJob(TestJob.class)
-        .withIdentity(TestJob.class.getName())
-        .storeDurably()
-        .setJobData(jobDataMap)
-        .build();
+      .newJob(TestJob.class)
+      .withIdentity(TestJob.class.getName())
+      .storeDurably()
+      .setJobData(jobDataMap)
+      .build();
   }
 
   public Map<String, Object> createMap() {
@@ -51,7 +52,8 @@ public class InitTestValues {
     return map;
   }
 
-  public JobDTO createJobDTO(String jobName, String groupName, Date nextFireTime) {
+  public JobDTO createJobDTO(String jobName, String groupName,
+    Date nextFireTime) {
     JobDTO jobDTO = new JobDTO();
     jobDTO.setJobName(jobName);
     jobDTO.setJobGroup(groupName);

@@ -77,13 +77,13 @@ public class UserGroup extends AAAModel {
    **/
   @ManyToMany
   @JoinTable(
-      name = "aaa_user_has_group",
-      joinColumns = {
-          @JoinColumn(name = "user_group_id")
-      },
-      inverseJoinColumns = {
-          @JoinColumn(name = "user_id")
-      })
+    name = "aaa_user_has_group",
+    joinColumns = {
+      @JoinColumn(name = "user_group_id")
+    },
+    inverseJoinColumns = {
+      @JoinColumn(name = "user_id")
+    })
   private List<User> users;
 
   public UserGroup() {
@@ -96,7 +96,8 @@ public class UserGroup extends AAAModel {
    * @param userGroupHasOperation a @{@link UserGroupHasOperation} object
    * @return the added {@link UserGroupHasOperation} object
    */
-  public UserGroupHasOperation addGroupHasOperation(UserGroupHasOperation userGroupHasOperation) {
+  public UserGroupHasOperation addGroupHasOperation(
+    UserGroupHasOperation userGroupHasOperation) {
     if (this.getUserGroupHasOperations() == null) {
       setUserGroupHasOperations(new ArrayList<UserGroupHasOperation>());
     }
@@ -113,7 +114,7 @@ public class UserGroup extends AAAModel {
    * @return the removed {@link UserGroupHasOperation} object
    */
   public UserGroupHasOperation removeGroupHasOperation(
-      UserGroupHasOperation userGroupHasOperation) {
+    UserGroupHasOperation userGroupHasOperation) {
     this.getUserGroupHasOperations().remove(userGroupHasOperation);
     userGroupHasOperation.setUserGroup(null);
 

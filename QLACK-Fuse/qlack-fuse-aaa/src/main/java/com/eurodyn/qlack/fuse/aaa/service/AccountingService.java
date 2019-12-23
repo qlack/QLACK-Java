@@ -34,8 +34,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 /**
- * Provides accounting information for the user. For details regarding the functionality offered see
- * the respective interfaces.
+ * Provides accounting information for the user. For details regarding the
+ * functionality offered see the respective interfaces.
  *
  * @author European Dynamics SA
  */
@@ -45,7 +45,8 @@ import org.springframework.validation.annotation.Validated;
 public class AccountingService {
 
   // JUL reference.
-  private static final Logger LOGGER = Logger.getLogger(AccountingService.class.getName());
+  private static final Logger LOGGER = Logger
+    .getLogger(AccountingService.class.getName());
 
   // QuertyDSL helpers.
   private static QSession qSession = QSession.session;
@@ -60,9 +61,9 @@ public class AccountingService {
 
   @Autowired
   public AccountingService(SessionRepository sessionRepository,
-      SessionAttributeRepository sessionAttributeRepository,
-      SessionMapper sessionMapper, UserRepository userRepository,
-      SessionAttributeMapper sessionAttributeMapper) {
+    SessionAttributeRepository sessionAttributeRepository,
+    SessionMapper sessionMapper, UserRepository userRepository,
+    SessionAttributeMapper sessionAttributeMapper) {
     this.sessionRepository = sessionRepository;
     this.sessionAttributeRepository = sessionAttributeRepository;
     this.sessionMapper = sessionMapper;
@@ -102,9 +103,9 @@ public class AccountingService {
       session.get().setTerminatedOn(Instant.now().toEpochMilli());
     } else {
       LOGGER
-          .log(Level.WARNING,
-              "Requested to terminate a session that does not exist, session ID: {0}",
-              sessionID);
+        .log(Level.WARNING,
+          "Requested to terminate a session that does not exist, session ID: {0}",
+          sessionID);
     }
   }
 
@@ -114,7 +115,8 @@ public class AccountingService {
    * @param userId The user id to terminate the sessions of.
    */
   public void terminateSessionByUserId(String userId) {
-    final Page<Session> sessions = sessionRepository.findByUserId(userId, Pageable.unpaged());
+    final Page<Session> sessions = sessionRepository
+      .findByUserId(userId, Pageable.unpaged());
     sessions.get().forEach(o -> {
       o.setTerminatedOn(Instant.now().toEpochMilli());
       sessionRepository.save(o);
@@ -126,12 +128,15 @@ public class AccountingService {
    *
    * @param applicationSessionId the application session id
    */
-  public void terminateSessionByApplicationSessionId(String applicationSessionId) {
-    Predicate predicate = qSession.applicationSessionId.eq(applicationSessionId);
+  public void terminateSessionByApplicationSessionId(
+    String applicationSessionId) {
+    Predicate predicate = qSession.applicationSessionId
+      .eq(applicationSessionId);
     final Session session = sessionRepository.findOne(predicate)
-        .orElseThrow(() -> new QDoesNotExistException(MessageFormat
-            .format("Session with application session Id {0} could not be found to be terminated.",
-                applicationSessionId)));
+      .orElseThrow(() -> new QDoesNotExistException(MessageFormat
+        .format(
+          "Session with application session Id {0} could not be found to be terminated.",
+          applicationSessionId)));
 
     terminateSession(session.getId());
   }
@@ -171,7 +176,7 @@ public class AccountingService {
   public Long getUserLastLogIn(String userID) {
     Predicate predicate = qSession.user.id.eq(userID);
     List<Session> queryResult = sessionRepository
-        .findAll(predicate, Sort.by("createdOn").descending());
+      .findAll(predicate, Sort.by("createdOn").descending());
     if (queryResult.isEmpty()) {
       return null;
     }
@@ -188,7 +193,7 @@ public class AccountingService {
   public Long getUserLastLogOut(String userID) {
     Predicate predicate = qSession.user.id.eq(userID);
     List<Session> queryResult = sessionRepository
-        .findAll(predicate, Sort.by("terminatedOn").descending());
+      .findAll(predicate, Sort.by("terminatedOn").descending());
     if (queryResult.isEmpty()) {
       return null;
     }
@@ -205,8 +210,9 @@ public class AccountingService {
   public Long getUserLastLogInDuration(String userID) {
     Predicate predicate = qSession.user.id.eq(userID);
     List<Session> queryResult = sessionRepository
-        .findAll(predicate, Sort.by("terminatedOn").descending());
-    if (queryResult.isEmpty() || (queryResult.get(0).getTerminatedOn() == null)) {
+      .findAll(predicate, Sort.by("terminatedOn").descending());
+    if (queryResult.isEmpty() || (queryResult.get(0).getTerminatedOn()
+      == null)) {
       return null;
     }
     Session session = queryResult.get(0);
@@ -233,11 +239,12 @@ public class AccountingService {
    * @return the filtered online users
    */
   public Set<String> filterOnlineUsers(Collection<String> userIDs) {
-    Predicate predicate = qSession.terminatedOn.isNull().and(qSession.user.id.in(userIDs));
+    Predicate predicate = qSession.terminatedOn.isNull()
+      .and(qSession.user.id.in(userIDs));
 
     return sessionRepository.findAll(predicate).stream()
-        .map(session -> session.getUser().getId())
-        .collect(Collectors.toSet());
+      .map(session -> session.getUser().getId())
+      .collect(Collectors.toSet());
   }
 
 
@@ -248,7 +255,7 @@ public class AccountingService {
    * @param createIfMissing checking value create if missing
    */
   public void updateAttribute(SessionAttributeDTO attribute,
-      boolean createIfMissing) {
+    boolean createIfMissing) {
     Collection<SessionAttributeDTO> attributes = new ArrayList<>(1);
     attributes.add(attribute);
     updateAttributes(attributes, createIfMissing);
@@ -261,9 +268,10 @@ public class AccountingService {
    * @param createIfMissing checking value to create if missing
    */
   public void updateAttributes(Collection<SessionAttributeDTO> attributes,
-      boolean createIfMissing) {
+    boolean createIfMissing) {
     for (SessionAttributeDTO attributeDTO : attributes) {
-      SessionAttribute attribute = sessionAttributeRepository.findBySessionIdAndName(
+      SessionAttribute attribute = sessionAttributeRepository
+        .findBySessionIdAndName(
           attributeDTO.getSessionId(), attributeDTO.getName());
       if ((attribute == null) && createIfMissing) {
         attribute = new SessionAttribute();
@@ -286,7 +294,7 @@ public class AccountingService {
    */
   public void deleteAttribute(String sessionID, String attributeName) {
     SessionAttribute attribute = sessionAttributeRepository
-        .findBySessionIdAndName(sessionID, attributeName);
+      .findBySessionIdAndName(sessionID, attributeName);
     sessionAttributeRepository.delete(attribute);
   }
 
@@ -297,10 +305,12 @@ public class AccountingService {
    * @param attributeName the attributeName
    * @return a @{@link SessionAttributeDTO} object
    */
-  public SessionAttributeDTO getAttribute(String sessionID, String attributeName) {
+  public SessionAttributeDTO getAttribute(String sessionID,
+    String attributeName) {
 
     return sessionAttributeMapper.mapToDTO(
-        sessionAttributeRepository.findBySessionIdAndName(sessionID, attributeName));
+      sessionAttributeRepository
+        .findBySessionIdAndName(sessionID, attributeName));
   }
 
   /**
@@ -312,9 +322,10 @@ public class AccountingService {
    * @return the session ids for attribute
    */
   public Set<String> getSessionIDsForAttribute(Collection<String> sessionIDs,
-      String attributeName, String attributeValue) {
-    Predicate predicate = qSession.sessionAttributes.any().name.eq(attributeName)
-        .and(qSession.sessionAttributes.any().value.eq(attributeValue));
+    String attributeName, String attributeValue) {
+    Predicate predicate = qSession.sessionAttributes.any().name
+      .eq(attributeName)
+      .and(qSession.sessionAttributes.any().value.eq(attributeValue));
     if (sessionIDs != null) {
       BooleanBuilder builder = new BooleanBuilder();
       for (String id : sessionIDs) {
@@ -324,8 +335,8 @@ public class AccountingService {
     }
 
     return sessionRepository.findAll(predicate).stream()
-        .map(session -> session.getUser().getId())
-        .collect(Collectors.toSet());
+      .map(session -> session.getUser().getId())
+      .collect(Collectors.toSet());
   }
 
   /**
@@ -337,10 +348,11 @@ public class AccountingService {
    * @return a @{@link Boolean} check whether attribute is unique or not
    */
   public boolean isAttributeValueUnique(String userId, String attributeName,
-      String attributeValue) {
-    Predicate predicate = qSession.sessionAttributes.any().name.eq(attributeName)
-        .and(qSession.sessionAttributes.any().value.eq(attributeValue))
-        .and(qSession.user.id.eq(userId));
+    String attributeValue) {
+    Predicate predicate = qSession.sessionAttributes.any().name
+      .eq(attributeName)
+      .and(qSession.sessionAttributes.any().value.eq(attributeValue))
+      .and(qSession.user.id.eq(userId));
 
     return sessionRepository.findAll(predicate).isEmpty();
   }
@@ -360,7 +372,8 @@ public class AccountingService {
    * @param date the date
    */
   public void terminateSessionsBeforeDate(Date date) {
-    final List<Session> sessions = sessionRepository.findByCreatedOnBeforeAndTerminatedOnNull(
+    final List<Session> sessions = sessionRepository
+      .findByCreatedOnBeforeAndTerminatedOnNull(
         date.getTime());
     sessions.forEach(o -> terminateSession(o.getId()));
   }
@@ -373,7 +386,8 @@ public class AccountingService {
    * @return the sessions
    */
   public Page<SessionDTO> getSessions(String userId, Pageable pageable) {
-    return sessionMapper.fromSessions(sessionRepository.findByUserId(userId, pageable));
+    return sessionMapper
+      .fromSessions(sessionRepository.findByUserId(userId, pageable));
   }
 
   /**

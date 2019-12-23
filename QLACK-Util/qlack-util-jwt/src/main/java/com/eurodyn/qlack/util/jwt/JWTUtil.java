@@ -39,16 +39,18 @@ public class JWTUtil {
     Date now = new Date(nowMillis);
 
     // We will sign our JWT with our ApiKey secret
-    byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(Base64.encodeBase64String(request.getSecret().getBytes()));
-    Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
+    byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(
+      Base64.encodeBase64String(request.getSecret().getBytes()));
+    Key signingKey = new SecretKeySpec(apiKeySecretBytes,
+      signatureAlgorithm.getJcaName());
 
     // Set the JWT claims.
     JwtBuilder builder = Jwts.builder()
-            .setId(request.getId())
-            .setIssuedAt(now)
-            .setSubject(request.getSubject())
-            .setIssuer(request.getIssuer())
-            .signWith(signatureAlgorithm, signingKey);
+      .setId(request.getId())
+      .setIssuedAt(now)
+      .setSubject(request.getSubject())
+      .setIssuer(request.getIssuer())
+      .signWith(signatureAlgorithm, signingKey);
 
     // If it has been specified, add the expiration for the token.
     if (request.getTtl() >= 0) {
@@ -69,17 +71,19 @@ public class JWTUtil {
   /**
    * Returns the claims found in a JWT while it is also verifying the token.
    *
-   * @param request The JWT to be verified together with the secret used to sign it.
+   * @param request The JWT to be verified together with the secret used to
+   * sign it.
    */
   public static JWTClaimsResponseDTO getClaims(JWTClaimsRequestDTO request) {
     JWTClaimsResponseDTO response = new JWTClaimsResponseDTO();
 
     try {
       response.setClaims(
-              Jwts.parser()
-                      .setSigningKey(Base64.encodeBase64String(request.getSecret().getBytes()))
-                      .setAllowedClockSkewSeconds(request.getAllowedTimeSkew())
-                      .parseClaimsJws(request.getJwt()).getBody());
+        Jwts.parser()
+          .setSigningKey(
+            Base64.encodeBase64String(request.getSecret().getBytes()))
+          .setAllowedClockSkewSeconds(request.getAllowedTimeSkew())
+          .parseClaimsJws(request.getJwt()).getBody());
       response.setValid(true);
     } catch (Exception e) {
       response.setValid(false);
@@ -93,24 +97,28 @@ public class JWTUtil {
     String jwt = request.getJwt().replace(TOKEN_PREFIX, "");
 
     return Jwts.parser()
-            .setSigningKey(Base64.encodeBase64String(request.getSecret().getBytes()))
-            .setAllowedClockSkewSeconds(request.getAllowedTimeSkew())
-            .parseClaimsJws(jwt)
-            .getBody()
-            .getSubject();
+      .setSigningKey(Base64.encodeBase64String(request.getSecret().getBytes()))
+      .setAllowedClockSkewSeconds(request.getAllowedTimeSkew())
+      .parseClaimsJws(jwt)
+      .getBody()
+      .getSubject();
   }
 
   /**
-   * Returns the value of a specific claim in JWT while also verifying the JWT.
+   * Returns the value of a specific claim in JWT while also verifying the
+   * JWT.
    *
-   * @param jwtClaimsRequest The JWT to be verified together with the secret used to sign it.
+   * @param jwtClaimsRequest The JWT to be verified together with the secret
+   * used to sign it.
    * @param claim The name of the claim to return.
    * @return The calue of the requested claim.
    */
-  public static Object getClaimValue(JWTClaimsRequestDTO jwtClaimsRequest, String claim) {
+  public static Object getClaimValue(JWTClaimsRequestDTO jwtClaimsRequest,
+    String claim) {
     JWTClaimsResponseDTO claims = getClaims(jwtClaimsRequest);
 
-    if (claims != null && claims.getClaims() != null && claims.getClaims().containsKey(claim)) {
+    if (claims != null && claims.getClaims() != null && claims.getClaims()
+      .containsKey(claim)) {
       return claims.getClaims().get(claim);
     } else {
       return null;
@@ -118,8 +126,8 @@ public class JWTUtil {
   }
 
   /**
-   * Parses a JWT token (compact or normal) and returns its String representation while it is also
-   * validating the token.
+   * Parses a JWT token (compact or normal) and returns its String
+   * representation while it is also validating the token.
    *
    * @param jwt The JWT to decode.
    * @param secret The secret used to sign the JWT.
@@ -127,9 +135,9 @@ public class JWTUtil {
    */
   public static String tokenToString(String jwt, String secret) {
     return Jwts.parser()
-            .setSigningKey(Base64.encodeBase64String(secret.getBytes()))
-            .parse(jwt)
-            .toString();
+      .setSigningKey(Base64.encodeBase64String(secret.getBytes()))
+      .parse(jwt)
+      .toString();
   }
 
   public static String getRawToken(HttpServletRequest request) {

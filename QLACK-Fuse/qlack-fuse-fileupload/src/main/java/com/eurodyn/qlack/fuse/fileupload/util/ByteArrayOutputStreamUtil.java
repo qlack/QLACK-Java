@@ -16,12 +16,14 @@ public class ByteArrayOutputStreamUtil {
   }
 
   /**
-   * Creates a new instance of the ByteArrayOutputStream class for getting the content of a file.
+   * Creates a new instance of the ByteArrayOutputStream class for getting the
+   * content of a file.
    *
    * @param fileSize the expected size of the file
    * @return the ByteArrayOutputStream instance
    */
-  public static ByteArrayOutputStream createByteArrayOutputStream(long fileSize) {
+  public static ByteArrayOutputStream createByteArrayOutputStream(
+    long fileSize) {
     return new ByteArrayOutputStream((int) fileSize);
   }
 

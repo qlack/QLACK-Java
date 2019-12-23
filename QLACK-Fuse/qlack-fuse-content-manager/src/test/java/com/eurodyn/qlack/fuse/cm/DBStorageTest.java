@@ -68,10 +68,12 @@ public class DBStorageTest {
   @Test
   public void getVersionContentTest() throws IOException {
     when(versionRepository.fetchById("versionId")).thenReturn(version);
-    when(versionBinRepository.findByVersionOrderByChunkIndex(version)).thenReturn(versionBinList);
+    when(versionBinRepository.findByVersionOrderByChunkIndex(version))
+      .thenReturn(versionBinList);
     dbStorage.getVersionContent("versionId");
     verify(versionRepository, times(1)).fetchById(any());
-    verify(versionBinRepository, times(1)).findByVersionOrderByChunkIndex(version);
+    verify(versionBinRepository, times(1))
+      .findByVersionOrderByChunkIndex(version);
   }
 
   @Test
@@ -85,10 +87,12 @@ public class DBStorageTest {
   @Test
   public void getBinChunkTest() {
     Predicate predicate = qVersionBin.version.eq(version)
-        .and(qVersionBin.chunkIndex.in(Arrays.asList(chunkIndex, chunkIndex + 1)));
+      .and(
+        qVersionBin.chunkIndex.in(Arrays.asList(chunkIndex, chunkIndex + 1)));
     when(versionRepository.fetchById("versionId")).thenReturn(version);
-    when(versionBinRepository.findAll(predicate, Sort.by("chunkIndex").descending()))
-        .thenReturn(versionBinList);
+    when(versionBinRepository
+      .findAll(predicate, Sort.by("chunkIndex").descending()))
+      .thenReturn(versionBinList);
     when(mapper.mapToDTO(versionBinList.get(0))).thenReturn(binChunkDTO);
 
     dbStorage.getBinChunk("versionId", chunkIndex);
@@ -100,10 +104,12 @@ public class DBStorageTest {
   public void getBinChunkBinsSizeTest() {
     versionBinList.add(versionBin);
     Predicate predicate = qVersionBin.version.eq(version)
-        .and(qVersionBin.chunkIndex.in(Arrays.asList(chunkIndex, chunkIndex + 1)));
+      .and(
+        qVersionBin.chunkIndex.in(Arrays.asList(chunkIndex, chunkIndex + 1)));
     when(versionRepository.fetchById("versionId")).thenReturn(version);
-    when(versionBinRepository.findAll(predicate, Sort.by("chunkIndex").descending()))
-        .thenReturn(versionBinList);
+    when(versionBinRepository
+      .findAll(predicate, Sort.by("chunkIndex").descending()))
+      .thenReturn(versionBinList);
     when(mapper.mapToDTO(versionBinList.get(0))).thenReturn(binChunkDTO);
 
     dbStorage.getBinChunk("versionId", chunkIndex);

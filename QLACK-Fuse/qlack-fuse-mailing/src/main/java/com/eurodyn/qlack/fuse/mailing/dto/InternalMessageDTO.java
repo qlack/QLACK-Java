@@ -69,7 +69,8 @@ public class InternalMessageDTO extends MailBaseDTO {
   /**
    * Converts and sets the sent date
    *
-   * @param dateSent the date in format of milliseconds since January 1, 1970, 00:00:00 GMT
+   * @param dateSent the date in format of milliseconds since January 1, 1970,
+   * 00:00:00 GMT
    */
   public void setDateSent(Long dateSent) {
     this.dateSent = new Date(dateSent);
@@ -78,7 +79,8 @@ public class InternalMessageDTO extends MailBaseDTO {
   /**
    * Converts and sets the received date
    *
-   * @param dateReceived the date in format of milliseconds since January 1, 1970, 00:00:00 GMT
+   * @param dateReceived the date in format of milliseconds since January 1,
+   * 1970, 00:00:00 GMT
    */
   public void setDateReceived(Long dateReceived) {
     this.dateReceived = new Date(dateReceived);

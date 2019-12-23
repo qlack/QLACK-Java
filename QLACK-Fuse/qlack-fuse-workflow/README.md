@@ -1,4 +1,4 @@
-# QLACK Workflow module
+# QLACK Fuse - Workflow
 
 This module uses the Activiti BPM tool and provides functionalities for creating and managing workflow instances.
 
@@ -6,15 +6,10 @@ This module uses the Activiti BPM tool and provides functionalities for creating
 
 ### Add qlack-fuse-workflow dependency to your pom.xml:
 ```
-    <properties>
-        <!-- ... -->
-        <version.qlack>3.1.0-SNAPSHOT</version.qlack>
-    </properties>
-
     <dependency>
         <groupId>com.eurodyn.qlack.fuse</groupId>
         <artifactId>qlack-fuse-workflow</artifactId>
-        <version>${version.qlack}</version>
+        <version>${qlack.version}</version>
     </dependency>
 ```
 
@@ -30,7 +25,8 @@ This module uses the Activiti BPM tool and provides functionalities for creating
 @EnableJpaRepositories("com.eurodyn.qlack.fuse.workflow.repository")
 @EntityScan("com.eurodyn.qlack.fuse.workflow.model")
 @ComponentScan(basePackages = {
-        "com.eurodyn.qlack.fuse.workflow"
+        "com.eurodyn.qlack.fuse.workflow",
+        "com.eurodyn.qlack.fuse.crypto.service"
 })
 ```
 ### During the deployment of the application, workflow will locate all the .xml files inside the /resources/processes folder in order to persist them as processes.

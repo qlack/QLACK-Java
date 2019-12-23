@@ -40,10 +40,12 @@ public class KnowledgeSessionServiceTest {
 
   @Before
   public void init() {
-    knowledgeSessionService = new KnowledgeSessionService(rulesComponent, knowledgeBaseService);
+    knowledgeSessionService = new KnowledgeSessionService(rulesComponent,
+      knowledgeBaseService);
     InitTestValues initTestValues = new InitTestValues();
     knowledgeBaseState = initTestValues.createKnowledgeBase();
-    customKnowledgeBaseState = initTestValues.createKnowledgeBaseWithCustomRules();
+    customKnowledgeBaseState = initTestValues
+      .createKnowledgeBaseWithCustomRules();
     inputLibraries = initTestValues.createLibraries();
     inputRules = initTestValues.createRules();
     inputGlobals = initTestValues.createInputGlobals();
@@ -53,85 +55,85 @@ public class KnowledgeSessionServiceTest {
   @Test
   public void createKnowledgeSessionTest() {
     when(knowledgeBaseService.findKnowledgeBaseStateById("knowledgeBaseId"))
-        .thenReturn(knowledgeBaseState);
+      .thenReturn(knowledgeBaseState);
     KieSession newSession =
-        knowledgeSessionService.createKnowledgeSession("knowledgeBaseId");
+      knowledgeSessionService.createKnowledgeSession("knowledgeBaseId");
     assertNotNull(newSession);
   }
 
   @Test
   public void statelessExecuteTest() {
     when(knowledgeBaseService.findKnowledgeBaseStateById("knowledgeBaseId"))
-        .thenReturn(knowledgeBaseState);
+      .thenReturn(knowledgeBaseState);
     ExecutionResultsDTO executionResultsDTO = knowledgeSessionService
-        .statelessExecute("knowledgeBaseId", inputLibraries, null,
-            null, null, "ruleName");
+      .statelessExecute("knowledgeBaseId", inputLibraries, null,
+        null, null, "ruleName");
     assertNull(executionResultsDTO);
   }
 
   @Test
   public void statelessExecuteNullBaseIdTest() {
     ExecutionResultsDTO executionResultsDTO = knowledgeSessionService
-        .statelessExecute(null, inputLibraries, inputRules,
-            null, null, "ruleName");
+      .statelessExecute(null, inputLibraries, inputRules,
+        null, null, "ruleName");
     assertNull(executionResultsDTO);
   }
 
   @Test
   public void statelessExecuteInputGlobalsTest() {
     when(knowledgeBaseService.findKnowledgeBaseStateById("knowledgeBaseId"))
-        .thenReturn(knowledgeBaseState);
+      .thenReturn(knowledgeBaseState);
     ExecutionResultsDTO executionResultsDTO = knowledgeSessionService
-        .statelessExecute("knowledgeBaseId", inputLibraries, inputRules,
-            inputGlobals, facts, "ruleName");
+      .statelessExecute("knowledgeBaseId", inputLibraries, inputRules,
+        inputGlobals, facts, "ruleName");
     assertNotNull(executionResultsDTO);
   }
 
   @Test
   public void statelessExecuteInputGlobalsTestWithNullRuleNames() {
     when(knowledgeBaseService.findKnowledgeBaseStateById("knowledgeBaseId"))
-        .thenReturn(knowledgeBaseState);
+      .thenReturn(knowledgeBaseState);
     ExecutionResultsDTO executionResultsDTO = knowledgeSessionService
-        .statelessExecute("knowledgeBaseId", inputLibraries, inputRules,
-            inputGlobals, facts, null);
+      .statelessExecute("knowledgeBaseId", inputLibraries, inputRules,
+        inputGlobals, facts, null);
     assertNotNull(executionResultsDTO);
   }
 
   @Test
   public void statelessExecuteInputGlobalsTestWithNullKnowledgeBase() {
     ExecutionResultsDTO executionResultsDTO = knowledgeSessionService
-        .statelessExecute(null, inputLibraries, inputRules,
-            inputGlobals, facts, "ruleName");
+      .statelessExecute(null, inputLibraries, inputRules,
+        inputGlobals, facts, "ruleName");
     assertNotNull(executionResultsDTO);
   }
 
   @Test
   public void fireRulesTest() {
     when(knowledgeBaseService.findKnowledgeBaseStateById("knowledgeBaseId"))
-        .thenReturn(knowledgeBaseState);
+      .thenReturn(knowledgeBaseState);
     ExecutionResultsDTO executionResultsDTO = knowledgeSessionService
-        .fireRules("knowledgeBaseId", null,
-            null, null);
+      .fireRules("knowledgeBaseId", null,
+        null, null);
     assertNotNull(executionResultsDTO);
   }
 
   @Test
   public void fireRulesInputGlobalsFactsTest() {
     when(knowledgeBaseService.findKnowledgeBaseStateById("knowledgeBaseId"))
-        .thenReturn(knowledgeBaseState);
+      .thenReturn(knowledgeBaseState);
     ExecutionResultsDTO executionResultsDTO = knowledgeSessionService
-        .fireRules("knowledgeBaseId", inputRules,
-            inputGlobals, facts);
+      .fireRules("knowledgeBaseId", inputRules,
+        inputGlobals, facts);
     assertNotNull(executionResultsDTO);
   }
 
   @Test
   public void fireRulesInputGlobalsFactsLambdaExpression() {
     when(knowledgeBaseService.findKnowledgeBaseStateById("knowledgeBaseId"))
-        .thenReturn(customKnowledgeBaseState);
+      .thenReturn(customKnowledgeBaseState);
     ExecutionResultsDTO executionResultsDTO = knowledgeSessionService
-        .fireRules("knowledgeBaseId", inputRules,
-            inputGlobals, facts);
+      .fireRules("knowledgeBaseId", inputRules,
+        inputGlobals, facts);
     assertNotNull(executionResultsDTO);
   }
 }

@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * A DTO that is used to send the results of a KieSession execution. It contains the updated values
- * of the globals and the facts in byte[] representation.
+ * A DTO that is used to send the results of a KieSession execution. It contains
+ * the updated values of the globals and the facts in byte[] representation.
  *
  * @author European Dynamics SA
  */

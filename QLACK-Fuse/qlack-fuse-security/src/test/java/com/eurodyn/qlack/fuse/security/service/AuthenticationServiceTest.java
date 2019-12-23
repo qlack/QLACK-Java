@@ -46,32 +46,36 @@ public class AuthenticationServiceTest {
     user = initTestValues.createUser();
     userDTO = initTestValues.userDTO(user);
     userDetailsDTO = initTestValues.createUserDetailDTO(user);
-    ReflectionTestUtils.setField(authenticationService, "jwtSecret", "randomString");
+    ReflectionTestUtils
+      .setField(authenticationService, "jwtSecret", "randomString");
     ReflectionTestUtils.setField(authenticationService, "jwtExpiration", 3600);
-    ReflectionTestUtils.setField(authenticationService, "jwtIncludeRoles", false);
+    ReflectionTestUtils
+      .setField(authenticationService, "jwtIncludeRoles", false);
   }
 
   private void commonMocks() {
     when(authentication.getPrincipal()).thenReturn(userDetailsDTO);
     when(userService.login(user.getId(), userDetailsDTO.getSessionId(), true)).
-        thenReturn(userDTO);
+      thenReturn(userDTO);
 
   }
 
   @Test
   public void authenticateTest() {
-    when(authenticationProvider.authenticate(authentication)).thenReturn(authentication);
+    when(authenticationProvider.authenticate(authentication))
+      .thenReturn(authentication);
     commonMocks();
     String generatedJWT = authenticationService
-        .authenticate(authentication, userDetailsDTO.getSessionId());
+      .authenticate(authentication, userDetailsDTO.getSessionId());
 
     assertTrue(generatedJWT.contains("Bearer"));
   }
 
   @Test
   public void authenticateWithUserDetailsDTOTest() {
-    when(authenticationProvider.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-        .thenReturn(authentication);
+    when(authenticationProvider
+      .authenticate(any(UsernamePasswordAuthenticationToken.class)))
+      .thenReturn(authentication);
     commonMocks();
     String generatedJWT = authenticationService.authenticate(userDetailsDTO);
 
@@ -80,9 +84,11 @@ public class AuthenticationServiceTest {
 
   @Test
   public void authenticateWithUserDTOAndRolesIncluded() {
-    ReflectionTestUtils.setField(authenticationService, "jwtIncludeRoles", true);
-    when(authenticationProvider.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-        .thenReturn(authentication);
+    ReflectionTestUtils
+      .setField(authenticationService, "jwtIncludeRoles", true);
+    when(authenticationProvider
+      .authenticate(any(UsernamePasswordAuthenticationToken.class)))
+      .thenReturn(authentication);
     commonMocks();
     String generatedJWT = authenticationService.authenticate(userDetailsDTO);
 

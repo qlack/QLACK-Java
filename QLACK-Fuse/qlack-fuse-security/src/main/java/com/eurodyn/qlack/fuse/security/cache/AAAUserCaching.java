@@ -10,7 +10,8 @@ import org.springframework.security.core.userdetails.cache.SpringCacheBasedUserC
 import org.springframework.stereotype.Component;
 
 /**
- * Creates a default user cache based on the system's configured caching mechanism.
+ * Creates a default user cache based on the system's configured caching
+ * mechanism.
  *
  * @author EUROPEAN DYNAMICS SA
  */
@@ -31,7 +32,7 @@ public class AAAUserCaching implements InitializingBean {
   public void afterPropertiesSet() throws Exception {
     if (cacheManager != null) {
       this.userCache = new SpringCacheBasedUserCache(
-          Objects.requireNonNull(cacheManager.getCache(cacheName)));
+        Objects.requireNonNull(cacheManager.getCache(cacheName)));
     }
   }
 

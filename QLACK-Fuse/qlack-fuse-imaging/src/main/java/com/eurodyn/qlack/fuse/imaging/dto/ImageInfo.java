@@ -21,8 +21,8 @@ public class ImageInfo {
   private int bitsPerPixel;
 
   /**
-   * The format of the image. This format is what is returned by the respective ImageFormatHandler
-   * class
+   * The format of the image. This format is what is returned by the
+   * respective ImageFormatHandler class
    */
   private String format;
 
@@ -42,7 +42,8 @@ public class ImageInfo {
   private int width;
 
   /**
-   * The color-type found in the image as represented by ColorSpaceType class.
+   * The color-type found in the image as represented by ColorSpaceType
+   * class.
    */
   private ColorSpaceType colorType;
 

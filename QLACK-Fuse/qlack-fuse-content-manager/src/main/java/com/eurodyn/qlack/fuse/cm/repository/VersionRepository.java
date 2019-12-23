@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface VersionRepository extends QlackBaseRepository<Version, String> {
+public interface VersionRepository extends
+  QlackBaseRepository<Version, String> {
 
 }

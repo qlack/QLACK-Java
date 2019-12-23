@@ -10,7 +10,8 @@ import org.springframework.stereotype.Repository;
  * @author European Dynamics
  */
 @Repository
-public interface VersionBinRepository extends QlackBaseRepository<VersionBin, String> {
+public interface VersionBinRepository extends
+  QlackBaseRepository<VersionBin, String> {
 
   List<VersionBin> findByVersionOrderByChunkIndex(Version version);
 

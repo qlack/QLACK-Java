@@ -1,10 +1,9 @@
 package com.eurodyn.qlack.util.clamav.util;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author European Dynamics
@@ -13,6 +12,7 @@ import lombok.Setter;
 @Setter
 @Configuration
 public class ClamAvProperties {
+
   @Value("${qlack.util.clamav.host:localhost}")
   private String clamAvHost;
   @Value("${qlack.util.clamav.port:3310}")

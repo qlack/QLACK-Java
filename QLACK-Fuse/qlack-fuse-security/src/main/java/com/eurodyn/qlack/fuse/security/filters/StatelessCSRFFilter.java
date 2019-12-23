@@ -26,9 +26,10 @@ public class StatelessCSRFFilter extends OncePerRequestFilter {
   private final AccessDeniedHandler accessDeniedHandler = new AccessDeniedHandlerImpl();
 
   @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-      FilterChain filterChain)
-      throws ServletException, IOException {
+  protected void doFilterInternal(HttpServletRequest request,
+    HttpServletResponse response,
+    FilterChain filterChain)
+    throws ServletException, IOException {
 
     if (requireCsrfProtectionMatcher.matches(request)) {
       final String csrfTokenValue = request.getHeader(X_CSRF_TOKEN);
@@ -45,7 +46,7 @@ public class StatelessCSRFFilter extends OncePerRequestFilter {
 
       if (csrfTokenValue == null || !csrfTokenValue.equals(csrfCookieValue)) {
         accessDeniedHandler.handle(request, response,
-            new AccessDeniedException("Missing or non-matching CSRF-token"));
+          new AccessDeniedException("Missing or non-matching CSRF-token"));
         return;
       }
     }
@@ -53,9 +54,11 @@ public class StatelessCSRFFilter extends OncePerRequestFilter {
     filterChain.doFilter(request, response);
   }
 
-  public static final class DefaultRequiresCsrfMatcher implements RequestMatcher {
+  public static final class DefaultRequiresCsrfMatcher implements
+    RequestMatcher {
 
-    private final Pattern allowedMethods = Pattern.compile("^(GET|HEAD|TRACE|OPTIONS)$");
+    private final Pattern allowedMethods = Pattern
+      .compile("^(GET|HEAD|TRACE|OPTIONS)$");
 
     @Override
     public boolean matches(HttpServletRequest request) {

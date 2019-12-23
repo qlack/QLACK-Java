@@ -1,18 +1,17 @@
 package com.eurodyn.qlack.fuse.audit.mapper;
 
+import static junit.framework.TestCase.assertNotNull;
+
 import com.eurodyn.qlack.common.model.QlackBaseModel;
 import com.eurodyn.qlack.fuse.audit.InitTestValues;
 import com.eurodyn.qlack.fuse.audit.dto.AuditBaseDTO;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
-
-import java.util.List;
-
-import static junit.framework.TestCase.assertNotNull;
 
 /**
  * @author European Dynamics
@@ -23,23 +22,28 @@ public class AuditBaseMapperTest {
 
 
   private AuditBaseMapper auditBaseMapper = new AuditBaseMapper() {
-    @Override public AuditBaseDTO mapToDTO(QlackBaseModel entity) {
+    @Override
+    public AuditBaseDTO mapToDTO(QlackBaseModel entity) {
       return null;
     }
 
-    @Override public List mapToDTO(List entity) {
+    @Override
+    public List mapToDTO(List entity) {
       return null;
     }
 
-    @Override public QlackBaseModel mapToEntity(AuditBaseDTO dto) {
+    @Override
+    public QlackBaseModel mapToEntity(AuditBaseDTO dto) {
       return null;
     }
 
-    @Override public void mapToExistingEntity(AuditBaseDTO dto, QlackBaseModel entity) {
+    @Override
+    public void mapToExistingEntity(AuditBaseDTO dto, QlackBaseModel entity) {
 
     }
 
-    @Override public List mapToEntity(List dto) {
+    @Override
+    public List mapToEntity(List dto) {
       return null;
     }
   };

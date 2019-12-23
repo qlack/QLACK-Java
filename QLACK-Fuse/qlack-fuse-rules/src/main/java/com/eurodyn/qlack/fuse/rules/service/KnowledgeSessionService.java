@@ -40,47 +40,54 @@ public class KnowledgeSessionService {
   private final KnowledgeBaseService knowledgeBaseService;
 
   public KnowledgeSessionService(RulesComponent rulesComponent,
-      KnowledgeBaseService knowledgeBaseService) {
+    KnowledgeBaseService knowledgeBaseService) {
     this.rulesComponent = rulesComponent;
     this.knowledgeBaseService = knowledgeBaseService;
   }
 
   /**
-   * Creates a new stateful Knowledge Session using an existing Knowledge Base.
+   * Creates a new stateful Knowledge Session using an existing Knowledge
+   * Base.
    *
    * @param knowledgeBaseId the id of the existing Knowledge Base
    * @return the id of the newly created Knowledge Session
    */
   public KieSession createKnowledgeSession(String knowledgeBaseId) {
-    log.info("Creating new Knowledge Session for Knowledge Base with id " + knowledgeBaseId);
+    log.info("Creating new Knowledge Session for Knowledge Base with id "
+      + knowledgeBaseId);
 
     KnowledgeBase knowledgeBaseState = knowledgeBaseService
-        .findKnowledgeBaseStateById(knowledgeBaseId);
+      .findKnowledgeBaseStateById(knowledgeBaseId);
 
-    KieBase kieBase = rulesUtil.createKieBaseFromBaseState(knowledgeBaseState).knowledgeBase;
+    KieBase kieBase = rulesUtil
+      .createKieBaseFromBaseState(knowledgeBaseState).knowledgeBase;
 
     return kieBase.newKieSession();
   }
 
   /**
-   * Execute rules directly using a stateless session. The rules and the libraries can be retrieved
-   * from an existing Knowledge Base or can be given as parameter.
+   * Execute rules directly using a stateless session. The rules and the
+   * libraries can be retrieved from an existing Knowledge Base or can be
+   * given as parameter.
    *
-   * @param knowledgeBaseId the id of the Knowledge Base that included the libraries and the rules
-   * to be executed
+   * @param knowledgeBaseId the id of the Knowledge Base that included the
+   * libraries and the rules to be executed
    * @param inputLibraries the libraries to be used
    * @param inputRules the rules to be executed
    * @param inputGlobals the globals to be added in the session
    * @param inputFacts the objects that the rules will be executed against
-   * @param ruleNameToExecute the name of a specific rule that can be executed from the Knowledge
-   * Base, while the others are ignored
+   * @param ruleNameToExecute the name of a specific rule that can be executed
+   * from the Knowledge Base, while the others are ignored
    * @return the results of the execution
    */
-  public ExecutionResultsDTO statelessExecute(String knowledgeBaseId, List<byte[]> inputLibraries,
-      List<String> inputRules,
-      Map<String, byte[]> inputGlobals, List<byte[]> inputFacts, String ruleNameToExecute) {
+  public ExecutionResultsDTO statelessExecute(String knowledgeBaseId,
+    List<byte[]> inputLibraries,
+    List<String> inputRules,
+    Map<String, byte[]> inputGlobals, List<byte[]> inputFacts,
+    String ruleNameToExecute) {
     log.info(
-        "Creating Stateless Knowledge Session using the Knowledge Base with id " + knowledgeBaseId);
+      "Creating Stateless Knowledge Session using the Knowledge Base with id "
+        + knowledgeBaseId);
 
     KieBase kieBase;
     ClassLoader classLoader;
@@ -88,8 +95,9 @@ public class KnowledgeSessionService {
 
     if (knowledgeBaseId != null) {
       KnowledgeBase knowledgeBaseState = knowledgeBaseService
-          .findKnowledgeBaseStateById(knowledgeBaseId);
-      ClassLoaderKnowledgeBase clkb = rulesUtil.createKieBaseFromBaseState(knowledgeBaseState);
+        .findKnowledgeBaseStateById(knowledgeBaseId);
+      ClassLoaderKnowledgeBase clkb = rulesUtil
+        .createKieBaseFromBaseState(knowledgeBaseState);
       kieBase = clkb.knowledgeBase;
 
       classLoader = clkb.classLoader;
@@ -105,29 +113,34 @@ public class KnowledgeSessionService {
     if (inputGlobals != null) {
       for (Entry<String, byte[]> inputGlobal : inputGlobals.entrySet()) {
         String id = inputGlobal.getKey();
-        Object object = rulesComponent.deserializeObject(classLoader, inputGlobal.getValue());
+        Object object = rulesComponent
+          .deserializeObject(classLoader, inputGlobal.getValue());
         globals.put(id, object);
       }
       globals.entrySet().stream()
-          .forEach(g -> commands.add(CommandFactory.newSetGlobal(g.getKey(), g.getValue())));
+        .forEach(g -> commands
+          .add(CommandFactory.newSetGlobal(g.getKey(), g.getValue())));
     }
 
     //set facts
     List<Object> facts = new ArrayList<>();
     try {
       for (byte[] inputFact : inputFacts) {
-        Object object = rulesComponent.deserializeObject(classLoader, inputFact);
+        Object object = rulesComponent
+          .deserializeObject(classLoader, inputFact);
         facts.add(object);
       }
       facts.stream().forEach(f -> commands.add(CommandFactory.newInsert(f)));
     } catch (NullPointerException e) {
-      log.severe("Cannot execute session without facts. At least one fact must be provided.");
+      log.severe(
+        "Cannot execute session without facts. At least one fact must be provided.");
       return null;
     }
 
     //set rules
     if ((ruleNameToExecute != null) && (knowledgeBaseId != null)) {
-      AgendaFilter ruleNameFilter = new RuleNameEqualsAgendaFilter(ruleNameToExecute);
+      AgendaFilter ruleNameFilter = new RuleNameEqualsAgendaFilter(
+        ruleNameToExecute);
       commands.add(new FireAllRulesCommand(ruleNameFilter));
     }
 
@@ -143,21 +156,23 @@ public class KnowledgeSessionService {
    * Execute the rules of an existing Knowledge Base.
    *
    * @param knowledgeBaseId the id of the Knowledge Base
-   * @param rules a list containing the names of the rules that can be executed from the Knowledge
-   * Base, while the others are ignored
+   * @param rules a list containing the names of the rules that can be
+   * executed from the Knowledge Base, while the others are ignored
    * @param inputGlobals the globals to be added in the session
    * @param inputFacts the objects that the rules will be executed against
    * @return the results of the execution
    */
-  public ExecutionResultsDTO fireRules(String knowledgeBaseId, List<String> rules,
-      Map<String, byte[]> inputGlobals,
-      List<byte[]> inputFacts) {
+  public ExecutionResultsDTO fireRules(String knowledgeBaseId,
+    List<String> rules,
+    Map<String, byte[]> inputGlobals,
+    List<byte[]> inputFacts) {
     log.info("Firing rules of the Knowledge Base with id " + knowledgeBaseId);
 
     KnowledgeBase knowledgeBaseState = knowledgeBaseService
-        .findKnowledgeBaseStateById(knowledgeBaseId);
+      .findKnowledgeBaseStateById(knowledgeBaseId);
 
-    ClassLoaderKnowledgeBase clkb = rulesUtil.createKieBaseFromBaseState(knowledgeBaseState);
+    ClassLoaderKnowledgeBase clkb = rulesUtil
+      .createKieBaseFromBaseState(knowledgeBaseState);
 
     KieSession kieSession = clkb.knowledgeBase.newKieSession();
     ClassLoader classLoader = clkb.classLoader;
@@ -167,9 +182,11 @@ public class KnowledgeSessionService {
     if (inputGlobals != null) {
       for (Entry<String, byte[]> inputGlobal : inputGlobals.entrySet()) {
         globals.put(inputGlobal.getKey(),
-            rulesComponent.deserializeObject(classLoader, inputGlobal.getValue()));
+          rulesComponent
+            .deserializeObject(classLoader, inputGlobal.getValue()));
       }
-      globals.entrySet().stream().forEach(g -> kieSession.setGlobal(g.getKey(), g.getValue()));
+      globals.entrySet().stream()
+        .forEach(g -> kieSession.setGlobal(g.getKey(), g.getValue()));
     }
 
     //set facts
@@ -197,7 +214,8 @@ public class KnowledgeSessionService {
     return getResults(globals, facts);
   }
 
-  private ExecutionResultsDTO getResults(Map<String, Object> globals, List<Object> facts) {
+  private ExecutionResultsDTO getResults(Map<String, Object> globals,
+    List<Object> facts) {
     //get global results
     Map<String, byte[]> outputGlobals = new LinkedHashMap<>();
     for (Entry<String, Object> object : globals.entrySet()) {

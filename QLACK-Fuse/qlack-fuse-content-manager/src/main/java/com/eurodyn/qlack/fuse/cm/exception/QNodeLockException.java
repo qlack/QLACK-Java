@@ -18,7 +18,8 @@ public class QNodeLockException extends QException {
     this.conflictNodeName = "";
   }
 
-  public QNodeLockException(String message, String conflictNodeID, String conflictNodeName) {
+  public QNodeLockException(String message, String conflictNodeID,
+    String conflictNodeName) {
     super(message);
     this.conflictNodeID = conflictNodeID;
     this.conflictNodeName = conflictNodeName;

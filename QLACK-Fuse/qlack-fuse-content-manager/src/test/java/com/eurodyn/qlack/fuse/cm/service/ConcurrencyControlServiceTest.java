@@ -66,7 +66,8 @@ public class ConcurrencyControlServiceTest {
 
   @Before
   public void init() {
-    concurrencyControlService = new ConcurrencyControlService(nodeMapper, nodeRepository);
+    concurrencyControlService = new ConcurrencyControlService(nodeMapper,
+      nodeRepository);
 
     initTestValues = new InitTestValues();
     node = initTestValues.createNode(null);
@@ -82,9 +83,11 @@ public class ConcurrencyControlServiceTest {
     node.getChildren().add(child);
     parent.getChildren().add(node);
 
-    parentDTO = initTestValues.createFolderDTO("16874d37-1c90-4767-8e23-f78da332e89c");
+    parentDTO = initTestValues
+      .createFolderDTO("16874d37-1c90-4767-8e23-f78da332e89c");
     nodeDTO = initTestValues.createFolderDTO(null);
-    childDTO = initTestValues.createFolderDTO("25874d37-cl92-1111-9e13-f99da113e89d");
+    childDTO = initTestValues
+      .createFolderDTO("25874d37-cl92-1111-9e13-f99da113e89d");
 
     userId = node.getAttribute(CMConstants.ATTR_CREATED_BY).getValue();
 
@@ -108,7 +111,8 @@ public class ConcurrencyControlServiceTest {
   public void testLockNodeConflict() {
     node.setLockToken("lockToken");
     when(nodeRepository.fetchById(node.getId())).thenReturn(node);
-    when(nodeMapper.mapToFolderDTO(node, RelativesType.LAZY, false)).thenReturn(nodeDTO);
+    when(nodeMapper.mapToFolderDTO(node, RelativesType.LAZY, false))
+      .thenReturn(nodeDTO);
     concurrencyControlService.lock(node.getId(), "token123", false, userId);
   }
 
@@ -121,7 +125,8 @@ public class ConcurrencyControlServiceTest {
 
     concurrencyControlService.lock(node.getId(), "token123", false, userId);
     verify(nodeRepository, times(1)).save(node);
-    assertEquals(userId, node.getAttribute(CMConstants.ATTR_LOCKED_BY).getValue());
+    assertEquals(userId,
+      node.getAttribute(CMConstants.ATTR_LOCKED_BY).getValue());
     assertNotNull(node.getAttribute(CMConstants.ATTR_LOCKED_ON).getValue());
   }
 
@@ -131,7 +136,8 @@ public class ConcurrencyControlServiceTest {
 
     when(nodeRepository.fetchById(parent.getId())).thenReturn(parent);
     when(nodeRepository.fetchById(node.getId())).thenReturn(node);
-    when(nodeMapper.mapToFolderDTO(parent, RelativesType.LAZY, false)).thenReturn(parentDTO);
+    when(nodeMapper.mapToFolderDTO(parent, RelativesType.LAZY, false))
+      .thenReturn(parentDTO);
     concurrencyControlService.lock(node.getId(), "token123", false, userId);
   }
 
@@ -144,7 +150,8 @@ public class ConcurrencyControlServiceTest {
 
     when(nodeRepository.fetchById(parent.getId())).thenReturn(parent);
     when(nodeRepository.fetchById(node.getId())).thenReturn(node);
-    when(nodeMapper.mapToFolderDTO(child, RelativesType.LAZY, false)).thenReturn(childDTO);
+    when(nodeMapper.mapToFolderDTO(child, RelativesType.LAZY, false))
+      .thenReturn(childDTO);
     concurrencyControlService.lock(node.getId(), "token123", false, userId);
   }
 
@@ -156,12 +163,14 @@ public class ConcurrencyControlServiceTest {
     concurrencyControlService.lock(node.getId(), "token123", true, userId);
 
     verify(nodeRepository, times(1)).save(node);
-    assertEquals(userId, node.getAttribute(CMConstants.ATTR_LOCKED_BY).getValue());
+    assertEquals(userId,
+      node.getAttribute(CMConstants.ATTR_LOCKED_BY).getValue());
     assertNotNull(node.getAttribute(CMConstants.ATTR_LOCKED_ON).getValue());
 
     node.getChildren().forEach(n -> {
       verify(nodeRepository, times(1)).save(n);
-      assertEquals(userId, n.getAttribute(CMConstants.ATTR_LOCKED_BY).getValue());
+      assertEquals(userId,
+        n.getAttribute(CMConstants.ATTR_LOCKED_BY).getValue());
       assertNotNull(n.getAttribute(CMConstants.ATTR_LOCKED_ON).getValue());
     });
   }
@@ -172,7 +181,8 @@ public class ConcurrencyControlServiceTest {
     node.setAttribute(CMConstants.ATTR_LOCKED_ON, anyString());
     node.setAttribute(CMConstants.ATTR_LOCKED_BY, userId);
 
-    concurrencyControlService.unlock(node.getId(), node.getLockToken(), false, userId);
+    concurrencyControlService
+      .unlock(node.getId(), node.getLockToken(), false, userId);
 
     assertNull(node.getLockToken());
     assertNull(node.getAttribute(CMConstants.ATTR_LOCKED_ON));
@@ -183,7 +193,8 @@ public class ConcurrencyControlServiceTest {
   @Test(expected = QSelectedNodeLockException.class)
   public void testUnlockWithConflict() {
     when(nodeRepository.fetchById(node.getId())).thenReturn(node);
-    when(nodeMapper.mapToFolderDTO(node, RelativesType.LAZY, false)).thenReturn(nodeDTO);
+    when(nodeMapper.mapToFolderDTO(node, RelativesType.LAZY, false))
+      .thenReturn(nodeDTO);
     node.setAttribute(CMConstants.ATTR_LOCKED_ON, anyString());
     node.setAttribute(CMConstants.ATTR_LOCKED_BY, userId);
     node.setLockToken(LOCK_TOKEN);
@@ -199,14 +210,15 @@ public class ConcurrencyControlServiceTest {
     node.setLockToken(LOCK_TOKEN);
     node.setAttribute(CMConstants.ATTR_LOCKED_BY, userId);
     node.setAttribute(CMConstants.ATTR_LOCKED_ON,
-        String.valueOf(Calendar.getInstance().getTimeInMillis()));
+      String.valueOf(Calendar.getInstance().getTimeInMillis()));
     node.setAttribute(CMConstants.ATTR_LOCKED_BY, userId);
     node.setParent(null);
     node.setChildren(new ArrayList<>());
 
     when(nodeRepository.fetchById(node.getId())).thenReturn(node);
 
-    concurrencyControlService.unlock(node.getId(), NEW_LOCK_TOKEN, true, "user2");
+    concurrencyControlService
+      .unlock(node.getId(), NEW_LOCK_TOKEN, true, "user2");
 
     verify(nodeRepository, times(1)).saveAndFlush(node);
     verify(nodeRepository, times(1)).save(node);
@@ -218,13 +230,15 @@ public class ConcurrencyControlServiceTest {
     node.setLockToken(LOCK_TOKEN);
 
     when(nodeRepository.fetchById(node.getId())).thenReturn(node);
-    when(nodeMapper.mapToFolderDTO(node, RelativesType.LAZY, false)).thenReturn(nodeDTO);
+    when(nodeMapper.mapToFolderDTO(node, RelativesType.LAZY, false))
+      .thenReturn(nodeDTO);
 
     NodeDTO nodeWithConflict = concurrencyControlService
-        .getSelectedNodeWithLockConflict(node.getId(), "differentLockToken");
+      .getSelectedNodeWithLockConflict(node.getId(), "differentLockToken");
 
     verify(nodeRepository, times(1)).fetchById(anyString());
-    verify(nodeMapper, times(1)).mapToFolderDTO(node, RelativesType.LAZY, false);
+    verify(nodeMapper, times(1))
+      .mapToFolderDTO(node, RelativesType.LAZY, false);
     assertEquals(nodeDTO.getId(), nodeWithConflict.getId());
   }
 
@@ -236,7 +250,7 @@ public class ConcurrencyControlServiceTest {
     when(nodeMapper.mapToFileDTO(file, false)).thenReturn(fileDTO);
 
     NodeDTO nodeWithConflict = concurrencyControlService
-        .getSelectedNodeWithLockConflict(file.getId(), "differentLockToken");
+      .getSelectedNodeWithLockConflict(file.getId(), "differentLockToken");
 
     verify(nodeRepository, times(1)).fetchById(anyString());
     verify(nodeMapper, times(1)).mapToFileDTO(file, false);
@@ -248,7 +262,7 @@ public class ConcurrencyControlServiceTest {
     when(nodeRepository.fetchById(node.getId())).thenReturn(node);
 
     NodeDTO nodeWithConflict = concurrencyControlService
-        .getSelectedNodeWithLockConflict(node.getId(), node.getLockToken());
+      .getSelectedNodeWithLockConflict(node.getId(), node.getLockToken());
 
     verify(nodeRepository, times(1)).fetchById(anyString());
     verify(nodeMapper, times(0)).mapToDTO(node, true);
@@ -263,12 +277,14 @@ public class ConcurrencyControlServiceTest {
     when(nodeRepository.fetchById(node.getId())).thenReturn(node);
     when(nodeRepository.fetchById(child.getId())).thenReturn(child);
 
-    when(nodeMapper.mapToFolderDTO(parent, RelativesType.LAZY, false)).thenReturn(parentDTO);
+    when(nodeMapper.mapToFolderDTO(parent, RelativesType.LAZY, false))
+      .thenReturn(parentDTO);
 
     FolderDTO ancestorNodeWithConflict = concurrencyControlService
-        .getAncestorFolderWithLockConflict(child.getId(), LOCK_TOKEN);
+      .getAncestorFolderWithLockConflict(child.getId(), LOCK_TOKEN);
 
-    allNodes.forEach(n -> verify(nodeRepository, times(1)).fetchById(n.getId()));
+    allNodes
+      .forEach(n -> verify(nodeRepository, times(1)).fetchById(n.getId()));
     assertEquals(parentDTO, ancestorNodeWithConflict);
   }
 
@@ -280,9 +296,10 @@ public class ConcurrencyControlServiceTest {
     when(nodeRepository.fetchById(child.getId())).thenReturn(child);
 
     FolderDTO ancestorNodeWithConflict = concurrencyControlService
-        .getAncestorFolderWithLockConflict(child.getId(), LOCK_TOKEN);
+      .getAncestorFolderWithLockConflict(child.getId(), LOCK_TOKEN);
 
-    allNodes.forEach(n -> verify(nodeRepository, times(1)).fetchById(n.getId()));
+    allNodes
+      .forEach(n -> verify(nodeRepository, times(1)).fetchById(n.getId()));
     verify(nodeMapper, times(0)).mapToDTO(any(), anyBoolean());
     assertNull(ancestorNodeWithConflict);
   }
@@ -295,12 +312,14 @@ public class ConcurrencyControlServiceTest {
 
     when(nodeRepository.fetchById(parent.getId())).thenReturn(parent);
     when(nodeRepository.fetchById(node.getId())).thenReturn(node);
-    when(nodeMapper.mapToFolderDTO(child, RelativesType.LAZY, false)).thenReturn(childDTO);
+    when(nodeMapper.mapToFolderDTO(child, RelativesType.LAZY, false))
+      .thenReturn(childDTO);
 
     NodeDTO descendantWithConflict = concurrencyControlService
-        .getDescendantNodeWithLockConflict(parent.getId(), LOCK_TOKEN);
+      .getDescendantNodeWithLockConflict(parent.getId(), LOCK_TOKEN);
 
-    allNodes.forEach(n -> verify(nodeRepository, times(1)).fetchById(n.getId()));
+    allNodes
+      .forEach(n -> verify(nodeRepository, times(1)).fetchById(n.getId()));
     assertEquals(childDTO, descendantWithConflict);
   }
 
@@ -311,9 +330,10 @@ public class ConcurrencyControlServiceTest {
     when(nodeRepository.fetchById(node.getId())).thenReturn(node);
 
     NodeDTO descendantWithConflict = concurrencyControlService
-        .getDescendantNodeWithLockConflict(parent.getId(), LOCK_TOKEN);
+      .getDescendantNodeWithLockConflict(parent.getId(), LOCK_TOKEN);
 
-    allNodes.forEach(n -> verify(nodeRepository, times(1)).fetchById(n.getId()));
+    allNodes
+      .forEach(n -> verify(nodeRepository, times(1)).fetchById(n.getId()));
     assertNull(descendantWithConflict);
   }
 
@@ -328,8 +348,9 @@ public class ConcurrencyControlServiceTest {
     childDescNode.setChildren(Collections.emptyList());
     when(nodeRepository.fetchById(node.getId())).thenReturn(node);
     when(nodeRepository.fetchById(child.getId())).thenReturn(childDescNode);
-    when(nodeMapper.mapToFolderDTO(node, RelativesType.LAZY, false)).thenReturn(nodeDTO)
-        .thenReturn(ancNode);
+    when(nodeMapper.mapToFolderDTO(node, RelativesType.LAZY, false))
+      .thenReturn(nodeDTO)
+      .thenReturn(ancNode);
 
     concurrencyControlService.lock(node.getId(), "token123", false, userId);
     verify(nodeRepository, times(1)).save(any(Node.class));
@@ -344,7 +365,8 @@ public class ConcurrencyControlServiceTest {
 
     when(nodeRepository.fetchById(parent.getId())).thenReturn(parent);
     when(nodeRepository.fetchById(node.getId())).thenReturn(node);
-    when(nodeMapper.mapToFolderDTO(child, RelativesType.LAZY, false)).thenReturn(childDTO);
+    when(nodeMapper.mapToFolderDTO(child, RelativesType.LAZY, false))
+      .thenReturn(childDTO);
     concurrencyControlService.lock(node.getId(), "token123", false, userId);
     verify(nodeRepository, times(1)).save(any(Node.class));
   }
@@ -353,7 +375,8 @@ public class ConcurrencyControlServiceTest {
   public void unlockWithConflictAndNullIdTest() {
     nodeDTO.setName(null);
     when(nodeRepository.fetchById(node.getId())).thenReturn(node);
-    when(nodeMapper.mapToFolderDTO(node, RelativesType.LAZY, false)).thenReturn(nodeDTO);
+    when(nodeMapper.mapToFolderDTO(node, RelativesType.LAZY, false))
+      .thenReturn(nodeDTO);
     node.setAttribute(CMConstants.ATTR_LOCKED_ON, anyString());
     node.setAttribute(CMConstants.ATTR_LOCKED_BY, userId);
     node.setLockToken(LOCK_TOKEN);
@@ -371,7 +394,7 @@ public class ConcurrencyControlServiceTest {
     when(nodeRepository.fetchById(file.getId())).thenReturn(file);
 
     concurrencyControlService
-        .getSelectedNodeWithLockConflict(file.getId(), "differentLockToken");
+      .getSelectedNodeWithLockConflict(file.getId(), "differentLockToken");
 
     verify(nodeRepository, times(1)).fetchById(anyString());
   }

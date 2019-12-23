@@ -45,7 +45,7 @@ public class MailQueueMonitorTest {
 
   private EmailRepository emailRepository = mock(EmailRepository.class);
   private DistributionListRepository distributionListRepository = mock(
-      DistributionListRepository.class);
+    DistributionListRepository.class);
 
   private MailingProperties mailingProperties = mock(MailingProperties.class);
 
@@ -66,8 +66,9 @@ public class MailQueueMonitorTest {
 
   @Before
   public void init() {
-    mailQueueMonitor = new MailQueueMonitor(mailQueueSender, mailingProperties, emailRepository,
-        distributionListRepository, emailMapper
+    mailQueueMonitor = new MailQueueMonitor(mailQueueSender, mailingProperties,
+      emailRepository,
+      distributionListRepository, emailMapper
     );
     initTestValues = new InitTestValues();
     email = initTestValues.createEmail();
@@ -106,7 +107,8 @@ public class MailQueueMonitorTest {
     when(emailRepository.fetchById(emailId)).thenReturn(email);
     when(emailMapper.mapToDTO(email)).thenReturn(emailDTO);
     when(emailMapper.mapToDTOWithRecipients(email, true)).thenReturn(emailDTO);
-    doThrow(new MailingException("ex", new Throwable())).when(mailQueueSender).send(emailDTO);
+    doThrow(new MailingException("ex", new Throwable())).when(mailQueueSender)
+      .send(emailDTO);
     mailQueueMonitor.sendOne(emailId);
     assertNull(email.getDateSent());
     assertEquals(email.getStatus(), EMAIL_STATUS.QUEUED.name());
@@ -118,7 +120,8 @@ public class MailQueueMonitorTest {
     when(emailMapper.mapToDTO(email)).thenReturn(emailDTO);
     when(emailMapper.mapToDTOWithRecipients(email, true)).thenReturn(emailDTO);
     when(emailRepository.fetchById(emailId)).thenReturn(email);
-    when(distributionListRepository.fetchById(distributionListId)).thenReturn(distributionList);
+    when(distributionListRepository.fetchById(distributionListId))
+      .thenReturn(distributionList);
     mailQueueMonitor.sendToDistributionList(emailId, distributionListId);
     assertNull(email.getToEmails());
     assertNull(email.getCcEmails());
@@ -144,7 +147,8 @@ public class MailQueueMonitorTest {
   public void testSendToDistributionListWithEmptyContactsSet() {
     when(emailRepository.fetchById(emailId)).thenReturn(email);
     distributionList.setContacts(new HashSet<>());
-    when(distributionListRepository.fetchById(distributionListId)).thenReturn(distributionList);
+    when(distributionListRepository.fetchById(distributionListId))
+      .thenReturn(distributionList);
     mailQueueMonitor.sendToDistributionList(emailId, distributionListId);
     assertNull(email.getToEmails());
     assertNull(email.getCcEmails());
@@ -158,7 +162,8 @@ public class MailQueueMonitorTest {
   public void testSendToDistributionListWithNullBodyEmail() {
     when(emailRepository.fetchById(emailId)).thenReturn(email);
     distributionList.setContacts(new HashSet<>());
-    when(distributionListRepository.fetchById(distributionListId)).thenReturn(distributionList);
+    when(distributionListRepository.fetchById(distributionListId))
+      .thenReturn(distributionList);
     mailQueueMonitor.sendToDistributionList(emailId, distributionListId);
     assertNull(email.getToEmails());
     assertNull(email.getCcEmails());
@@ -170,8 +175,9 @@ public class MailQueueMonitorTest {
 
   @Test
   public void testCheckAndSendQueuedWithPollingEnabled() {
-    Predicate predicate = qEmail.status.eq(MailConstants.EMAIL_STATUS.QUEUED.toString())
-        .and(qEmail.tries.lt(mailingProperties.getMaxTries()));
+    Predicate predicate = qEmail.status
+      .eq(MailConstants.EMAIL_STATUS.QUEUED.toString())
+      .and(qEmail.tries.lt(mailingProperties.getMaxTries()));
     for (Email e : emails) {
       when(emailMapper.mapToDTO(e)).thenReturn(emailDTO);
       when(emailMapper.mapToDTOWithRecipients(e, true)).thenReturn(emailDTO);

@@ -4,9 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * A query performing a query string against ES. A query that uses a query parser in order to parse
- * its content Multiple fields can be specified. Simple Query String is like the Query String query
- * but will never throw an exception, and discards invalid parts of the query
+ * A query performing a query string against ES. A query that uses a query
+ * parser in order to parse its content Multiple fields can be specified. Simple
+ * Query String is like the Query String query but will never throw an
+ * exception, and discards invalid parts of the query
  *
  * <pre>
  * new SimpleQueryString()
@@ -47,7 +48,8 @@ public class SimpleQueryString extends QuerySpec {
    * @param operator The field to execute the search against.
    * @return a {@link SimpleQueryString} object
    */
-  public SimpleQueryString setTerm(String field, Object value, String operator) {
+  public SimpleQueryString setTerm(String field, Object value,
+    String operator) {
     this.field = field;
     this.value = value;
     this.operator = operator;

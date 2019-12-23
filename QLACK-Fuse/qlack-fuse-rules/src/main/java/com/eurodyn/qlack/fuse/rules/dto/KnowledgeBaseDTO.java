@@ -6,7 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * A DTO that represents the KnowledgeBase entity and holds the data of a Drools Knowledge Base.
+ * A DTO that represents the KnowledgeBase entity and holds the data of a Drools
+ * Knowledge Base.
  *
  * @author European Dynamics SA
  */
