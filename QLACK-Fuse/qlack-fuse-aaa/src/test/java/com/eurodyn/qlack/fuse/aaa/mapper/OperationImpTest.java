@@ -87,6 +87,7 @@ public class OperationImpTest {
     Operation operation = initTestValues.createOperation();
     operation.setDescription(null);
     operationMapper.mapToExistingEntity(operationDTO, operation);
+    assertEquals(null, operationDTO.getDescription());
   }
 
   @Test

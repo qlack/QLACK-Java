@@ -73,6 +73,7 @@ public class QFileUtils {
    * @throws java.io.IOException if any of the I/O related methods fails to be
    * executed as expected
    */
+  @SuppressWarnings("squid:S5042")
   public void unzip(String zipFile, String destDir) throws IOException {
     byte[] buffer = new byte[1024];
 
@@ -156,6 +157,7 @@ public class QFileUtils {
    * @param filename the filename or path with the extension
    * @return the filename or path with the extension removed
    */
+  @SuppressWarnings("squid:S4784")
   public static String removeFileExtension(String filename) {
     return filename != null
       ? filename.replaceAll("\\.[^.\\\\/:*?\"<>|\\r\\n]+$", "")

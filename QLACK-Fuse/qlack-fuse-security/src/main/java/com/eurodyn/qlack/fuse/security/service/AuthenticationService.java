@@ -58,8 +58,7 @@ public class AuthenticationService {
    * @throws AuthenticationException If authentication fails
    */
   public String authenticate(Authentication authentication,
-    String applicationSessionId)
-    throws AuthenticationException {
+    String applicationSessionId) {
     return generateJWT(authenticationProvider.authenticate(authentication),
       applicationSessionId);
   }
@@ -72,8 +71,7 @@ public class AuthenticationService {
    * @return generated jwt
    * @throws AuthenticationException If authentication fails
    */
-  public String authenticate(UserDetailsDTO user)
-    throws AuthenticationException {
+  public String authenticate(UserDetailsDTO user) {
     return generateJWT(
       authenticationProvider.authenticate(
         new UsernamePasswordAuthenticationToken(user.getUsername(),

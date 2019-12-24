@@ -27,8 +27,7 @@ public interface NodeAttributeMapper extends
     if (node == null) {
       return null;
     }
-    String id = node.getId();
-    return id;
+    return node.getId();
   }
 
 }

@@ -206,7 +206,6 @@ public interface NodeMapper extends CMBaseMapper<Node, NodeDTO> {
     if (parent == null) {
       return null;
     }
-    String id = parent.getId();
-    return id;
+    return parent.getId();
   }
 }

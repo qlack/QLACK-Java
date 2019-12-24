@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
  * @author EUROPEAN DYNAMICS SA
  */
 @Component
+@SuppressWarnings("squid:S4834")
 public class AAAPermissionEvaluator implements PermissionEvaluator {
 
   @Override

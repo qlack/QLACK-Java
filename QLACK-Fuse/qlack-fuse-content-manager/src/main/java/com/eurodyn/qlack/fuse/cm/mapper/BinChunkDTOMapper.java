@@ -27,8 +27,7 @@ public interface BinChunkDTOMapper extends
     if (version == null) {
       return null;
     }
-    String id = version.getId();
-    return id;
+    return version.getId();
   }
 
 }

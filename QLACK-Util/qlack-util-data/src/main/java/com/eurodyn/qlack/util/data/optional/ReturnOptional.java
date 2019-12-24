@@ -13,6 +13,12 @@ import org.apache.commons.lang3.StringUtils;
 public class ReturnOptional {
 
   /**
+   * Private Constructor
+   */
+  private ReturnOptional() {
+  }
+
+  /**
    * Returns an optional paremeter or a message with optional arguments.
    *
    * @param arg The optional argument to evaluate.
@@ -20,7 +26,7 @@ public class ReturnOptional {
    * error messages.
    */
   private static <T> T rMsg(Optional<T> arg, String objectIdentifier) {
-    if (arg != null && arg.isPresent()) {
+    if (arg.isPresent()) {
       return arg.get();
     } else {
       if (StringUtils.isNotBlank(objectIdentifier)) {

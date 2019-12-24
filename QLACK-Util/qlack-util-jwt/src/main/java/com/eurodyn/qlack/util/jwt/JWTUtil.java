@@ -117,7 +117,7 @@ public class JWTUtil {
     String claim) {
     JWTClaimsResponseDTO claims = getClaims(jwtClaimsRequest);
 
-    if (claims != null && claims.getClaims() != null && claims.getClaims()
+    if (claims.getClaims() != null && claims.getClaims()
       .containsKey(claim)) {
       return claims.getClaims().get(claim);
     } else {

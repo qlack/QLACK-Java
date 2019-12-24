@@ -17,7 +17,7 @@ public interface AvService {
    * @return a {@link VirusScanDTO} object
    * @throws VirusScanException if any error occurs during file scanning
    */
-  VirusScanDTO virusScan(byte[] data) throws VirusScanException;
+  VirusScanDTO virusScan(byte[] data);
 
   /**
    * Checks if the Antivirus server host is up and running.

@@ -44,12 +44,14 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class LdapUserUtil {
 
+  private static final String CTX_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
+  private static final String EMPTY_STRING = "";
   private final LdapProperties properties;
   private final UserRepository userRepository;
   private final UserGroupRepository userGroupRepository;
   private final UserAttributeRepository userAttributeRepository;
-  private static final String CTX_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
-  private static final String EMPTY_STRING = "";
+  private Map<String, String> attributesMap;
+
 
   public LdapUserUtil(LdapProperties ldapProperties,
     UserRepository userRepository,
@@ -60,10 +62,6 @@ public class LdapUserUtil {
     this.userGroupRepository = userGroupRepository;
     this.userAttributeRepository = userAttributeRepository;
   }
-
-
-  private Map<String, String> attributesMap;
-
 
   public void setLdapMappingAttrs(String ldapMappingAttrs) {
     attributesMap = new HashMap<>();
@@ -173,6 +171,7 @@ public class LdapUserUtil {
     }
   }
 
+  @SuppressWarnings("squid:S1149")
   private DirContext ldapBindAdminAuth(String adminUsername,
     String ldapAdminPassword) {
     Hashtable<String, String> env = new Hashtable<>();
@@ -457,6 +456,7 @@ public class LdapUserUtil {
    * @param searchFilter the filter to search with (ex '(objectClass=*)')
    * @return a set containing the uid of the found users
    */
+  @SuppressWarnings("squid:S1149")
   public Set<String> retrieveLdapUsers(String searchFilter) {
     Set<String> users = new HashSet<>();
     try {

@@ -8,6 +8,13 @@ import org.springframework.aop.support.AopUtils;
  */
 public class SpringBeansUtils {
 
+
+  /**
+   * Private Constructor
+   */
+  private SpringBeansUtils() {
+  }
+
   /**
    * Static method that returns the class implementation of a Spring proxied
    * bean interface.
@@ -18,7 +25,7 @@ public class SpringBeansUtils {
    * @return Original class wrapped by proxy
    * @see <a href="http://web.archive.org/web/20090611002829/http://www.techper.net:80/2009/06/05/how-to-acess-target-object-behind-a-spring-proxy/">how-to-acess-target-object-behind-a-spring-proxy</a>
    */
-  @SuppressWarnings({"unchecked"})
+  @SuppressWarnings({"unchecked", "squid:S1172"})
   public static <T> T getTargetObject(Object proxy, Class<T> targetClass)
     throws Exception {
     if (AopUtils.isJdkDynamicProxy(proxy)) {

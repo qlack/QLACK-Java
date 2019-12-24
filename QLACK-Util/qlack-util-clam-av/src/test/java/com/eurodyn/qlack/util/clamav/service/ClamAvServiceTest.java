@@ -72,7 +72,7 @@ public class ClamAvServiceTest {
     whenNew(ClamAV.class).withAnyArguments().thenReturn(clamAVMock);
     when(clamAVMock.scan(ArgumentMatchers.any(ByteArrayInputStream.class)))
       .thenReturn("OK");
-    spyObj.virusScan(data);
+    assertTrue(spyObj.virusScan(data).isVirusFree());
   }
 
   @Test(expected = VirusScanException.class)

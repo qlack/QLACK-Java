@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
  */
 public class QInstantToISOUTCSerializer extends StdSerializer<Instant> {
 
-  private DateTimeFormatter formatter =
+  private transient DateTimeFormatter formatter =
     DateTimeFormatter.ISO_LOCAL_DATE_TIME.withZone(ZoneOffset.UTC);
 
   /**

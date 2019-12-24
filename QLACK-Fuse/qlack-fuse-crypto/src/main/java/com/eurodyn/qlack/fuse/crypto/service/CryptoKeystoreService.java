@@ -60,6 +60,7 @@ public class CryptoKeystoreService {
    * @throws UnrecoverableKeyException thrown when the key os not valid
    * @throws NoSuchProviderException thrown when the provider is not valid
    */
+  @SuppressWarnings("squid:MaximumInheritanceDepth")
   public CPPHolderDTO readKeyFromKeystore(final InputStream keystore,
     final String keystorePassword,
     final String keyName, final String keyPassword, final String keystoreType,
@@ -100,6 +101,7 @@ public class CryptoKeystoreService {
    * @throws UnrecoverableKeyException thrown when the key os not valid
    * @throws NoSuchProviderException thrown when the provider is not valid
    */
+  @SuppressWarnings("squid:MaximumInheritanceDepth")
   public CPPHolderDTO readKeyFromKeystore(final InputStream keystore,
     final String keystorePassword,
     final String keyName, final String keyPassword)

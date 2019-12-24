@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
@@ -30,8 +29,7 @@ public class AAAUsernamePasswordProvider extends DaoAuthenticationProvider {
 
   @Override
   protected void additionalAuthenticationChecks(UserDetails userDetails,
-    UsernamePasswordAuthenticationToken authentication)
-    throws AuthenticationException {
+    UsernamePasswordAuthenticationToken authentication) {
     if (authentication.getCredentials() == null) {
       logger.debug("Authentication failed: no credentials provided");
 

@@ -96,6 +96,7 @@ public class CryptoDigestService {
    * @deprecated Prefer the SHA256 alternatives.
    */
   @Deprecated
+  @SuppressWarnings("squid:S4790")
   public String md5(final String message) {
     return DigestUtils.md5Hex(message);
   }

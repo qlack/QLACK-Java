@@ -45,8 +45,7 @@ public interface KeyMapper extends LexiconMapper<Key, KeyDTO> {
     if (group == null) {
       return null;
     }
-    String id = group.getId();
-    return id;
+    return group.getId();
   }
 
   /**

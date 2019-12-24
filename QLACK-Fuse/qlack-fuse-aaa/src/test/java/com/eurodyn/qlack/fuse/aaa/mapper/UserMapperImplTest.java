@@ -106,6 +106,7 @@ public class UserMapperImplTest {
     User user = initTestValues.createUser();
     user.setUsername(null);
     userMapper.mapToExistingEntity(userDTO, user);
+    assertEquals(null, userDTO.getUsername());
   }
 
   @Test

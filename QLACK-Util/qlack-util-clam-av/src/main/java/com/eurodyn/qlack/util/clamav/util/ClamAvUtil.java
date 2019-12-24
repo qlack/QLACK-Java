@@ -36,6 +36,7 @@ public class ClamAvUtil {
    * @return a {@link Socket} instance
    * @throws IOException if an I/O error occurs when creating the socket.
    */
+  @SuppressWarnings("squid:S4818")
   public static Socket getSocketInstance(String clamAvHost, int clamAvPort)
     throws IOException {
     return new Socket(clamAvHost, clamAvPort);

@@ -18,6 +18,12 @@ public class JSONFilter {
     new ObjectMapper().setSerializationInclusion(Include.NON_NULL);
 
   /**
+   * Private Constructor
+   */
+  private JSONFilter() {
+  }
+
+  /**
    * Filter using an {@link ObjectMapper} with default initialisation
    * parameters.
    *

@@ -54,6 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   }
 
   @Override
+  @SuppressWarnings({"squid:S4502", "squid:S4834"})
   protected void configure(HttpSecurity http) throws Exception {
 
     http.sessionManagement()

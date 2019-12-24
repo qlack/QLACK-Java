@@ -85,6 +85,7 @@ public class ResourcesMapperImpTest {
     Resource resource = initTestValues.createResource();
     resource.setDescription(null);
     resourceMapper.mapToExistingEntity(resourceDTO, resource);
+    assertEquals(null, resourceDTO.getDescription());
   }
 
   @Test

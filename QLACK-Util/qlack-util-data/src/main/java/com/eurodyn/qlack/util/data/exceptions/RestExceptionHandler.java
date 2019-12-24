@@ -22,7 +22,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
   // JUL reference.
-  private static final Logger LOGGER = Logger
+  private static final Logger EXCEPTION_LOGGER = Logger
     .getLogger(RestExceptionHandler.class.getName());
 
   @ExceptionHandler
@@ -38,7 +38,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
       // If the exception is not one wrapped by QLACK then it was generated higher up the stack, so
       // we should log it (and provide a generic error message to not leak the actual message of
       // the exception.
-      LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
+      EXCEPTION_LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
       errorMessage = "There was a problem with this request, please try again later.";
     }
 

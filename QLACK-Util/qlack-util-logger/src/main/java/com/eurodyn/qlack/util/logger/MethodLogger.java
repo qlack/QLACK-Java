@@ -38,6 +38,7 @@ public class MethodLogger {
    * Includes all {@link Logged} annotated methods
    */
   @Pointcut("execution(@Logged * *.*(..))")
+  @SuppressWarnings("squid:S1186")
   public void loggedAnnotatedMethod() {
   }
 
@@ -45,6 +46,7 @@ public class MethodLogger {
    * Includes all methods of a {@link Logged} annotated class
    */
   @Pointcut("execution(* (@Logged *).*(..))")
+  @SuppressWarnings("squid:S1186")
   public void loggedMethodOfAnnotatedClass() {
   }
 

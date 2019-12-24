@@ -172,6 +172,7 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
    * parameter)
    * @param authentication Authentication object with user details
    */
+  @SuppressWarnings("squid:S4790")
   protected void handleNonce(HttpServletRequest request,
     Authentication authentication) {
     String username = authentication.getPrincipal().toString();

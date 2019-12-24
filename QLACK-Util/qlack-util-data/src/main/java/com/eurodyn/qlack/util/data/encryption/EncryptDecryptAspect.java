@@ -37,12 +37,6 @@ public class EncryptDecryptAspect {
   // JUL reference.
   private static final Logger LOGGER = Logger
     .getLogger(EncryptDecryptAspect.class.getName());
-
-  // Encryption/Decryption mode.
-  private enum MODE {
-    ENCRYPT, DECRYPT
-  }
-
   @Autowired(required = false)
   private EncryptorDecryptor encryptorDecryptor;
 
@@ -64,15 +58,12 @@ public class EncryptDecryptAspect {
       String fieldValue = (String) MethodUtils
         .invokeExactMethod(o, "get" + fieldName);
       if (StringUtils.isNotBlank(fieldValue)) {
-        switch (mode) {
-          case ENCRYPT:
-            MethodUtils.invokeExactMethod(o, "set" + fieldName,
-              encryptorDecryptor.encrypt(fieldValue));
-            break;
-          case DECRYPT:
-            MethodUtils.invokeExactMethod(o, "set" + fieldName,
-              encryptorDecryptor.decrypt(fieldValue));
-            break;
+        if (mode.equals(MODE.ENCRYPT)) {
+          MethodUtils.invokeExactMethod(o, "set" + fieldName,
+            encryptorDecryptor.encrypt(fieldValue));
+        } else if (mode.equals(MODE.DECRYPT)) {
+          MethodUtils.invokeExactMethod(o, "set" + fieldName,
+            encryptorDecryptor.decrypt(fieldValue));
         }
       }
     }
@@ -121,10 +112,15 @@ public class EncryptDecryptAspect {
         }
       });
     } else {
-      results = process(results, MODE.DECRYPT);
+      process(results, MODE.DECRYPT);
     }
 
     return results;
+  }
+
+  // Encryption/Decryption mode.
+  private enum MODE {
+    ENCRYPT, DECRYPT
   }
 
 }
