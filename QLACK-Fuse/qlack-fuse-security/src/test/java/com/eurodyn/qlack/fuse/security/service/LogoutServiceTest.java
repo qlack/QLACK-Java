@@ -11,6 +11,8 @@ import com.eurodyn.qlack.fuse.aaa.model.User;
 import com.eurodyn.qlack.fuse.aaa.service.UserService;
 import com.eurodyn.qlack.fuse.security.InitTestValues;
 import com.eurodyn.qlack.fuse.security.cache.AAAUserCaching;
+import com.eurodyn.qlack.util.jwt.JWTUtil;
+import com.eurodyn.qlack.util.jwt.dto.JWTGenerateRequestDTO;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,18 +47,22 @@ public class LogoutServiceTest {
   private User user;
   private UserDTO userDTO;
 
+  private final String jwtSecret = "qlackjwtsecret";
+  private final int jwtExpiration = 3600000;
+
   @Before
   public void init() {
     initTestValues = new InitTestValues();
     user = initTestValues.createUser();
     userDTO = initTestValues.userDTO(user);
     request = new MockHttpServletRequest();
-    request.addHeader(HttpHeaders.AUTHORIZATION,
-      "Bearer eyJhbGciOiJIUzI1NiJ9"
-        +
-        ".eyJpYXQiOjE1NzQwOTIzMjEsInN1YiI6InRlc3RAdGVzdC5jb20iLCJleHAiOjE1NzQxNzg3MjEsInJvbGUxIjoiVXNlciJ9.2ZRJEW-beEs647zdjwCbIWJLECokxubDZwbhEVeCe7Y");
-    ReflectionTestUtils.setField(logoutService, "jwtSecret", "qlackjwtsecret");
-    ReflectionTestUtils.setField(logoutService, "jwtExpiration", 3600000);
+
+    String jwt = JWTUtil.generateToken(new JWTGenerateRequestDTO(jwtSecret, user.getUsername(),
+        jwtExpiration));
+
+    request.addHeader(HttpHeaders.AUTHORIZATION, jwt);
+    ReflectionTestUtils.setField(logoutService, "jwtSecret", jwtSecret);
+    ReflectionTestUtils.setField(logoutService, "jwtExpiration", jwtExpiration);
   }
 
   @Test(expected = QDoesNotExistException.class)
