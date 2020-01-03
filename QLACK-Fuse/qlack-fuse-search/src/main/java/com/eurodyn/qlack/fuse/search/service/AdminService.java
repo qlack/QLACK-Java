@@ -5,10 +5,6 @@ import com.eurodyn.qlack.fuse.search.exception.SearchException;
 import com.eurodyn.qlack.fuse.search.request.CreateIndexRequest;
 import com.eurodyn.qlack.fuse.search.request.UpdateMappingRequest;
 import com.eurodyn.qlack.fuse.search.util.ESClient;
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.Map;
-import java.util.logging.Level;
 import lombok.extern.java.Log;
 import org.apache.http.entity.ContentType;
 import org.apache.http.nio.entity.NStringEntity;
@@ -20,8 +16,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.query.AliasQuery;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
+
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * Provides index administration functionality
@@ -43,7 +47,7 @@ public class AdminService {
 
   @Autowired
   public AdminService(ESClient esClient,
-    ElasticsearchOperations elasticsearchOperations) {
+      ElasticsearchOperations elasticsearchOperations) {
     this.esClient = esClient;
     this.elasticsearchOperations = elasticsearchOperations;
   }
@@ -60,16 +64,37 @@ public class AdminService {
     /** If the index already exists return without doing anything. */
     if (indexExists(createIndexRequest.getName())) {
       log.log(Level.WARNING, "Index already exists: {0}.",
-        createIndexRequest.getName());
+          createIndexRequest.getName());
       return false;
     }
 
-    boolean createdIndex = elasticsearchOperations
-      .createIndex(createIndexRequest.getName());
+    //custom indexing settings
+    Map<String, String> analysisSettings = new HashMap<>();
+
+    //if an analyzer has been provided, include it in the settings
+    if (!StringUtils.isEmpty(createIndexRequest.getAnalysis())) {
+      analysisSettings.put("analysis.analyzer.custom_analysis.type", "custom");
+      analysisSettings.put("analysis.analyzer.custom_analysis.tokenizer", "standard");
+      analysisSettings
+          .put("analysis.analyzer.custom_analysis.filter", createIndexRequest.getAnalysis());
+    }
+
+    //create index with name and settings (Java map) as parameters
+    boolean createdIndex = elasticsearchOperations.createIndex(createIndexRequest.getName(),
+        analysisSettings);
+
+    //set alias name for the newly created index
+    if (!StringUtils.isEmpty(createIndexRequest.getAliasName())) {
+      AliasQuery aliasQuery = new AliasQuery();
+      aliasQuery.setIndexName(createIndexRequest.getName());
+      aliasQuery.setAliasName(createIndexRequest.getAliasName());
+      elasticsearchOperations.addAlias(aliasQuery);
+    }
+
     return createIndexRequest.getIndexMapping() == null ? createdIndex :
-      elasticsearchOperations
-        .putMapping(createIndexRequest.getName(), createIndexRequest.getType(),
-          createIndexRequest.getIndexMapping());
+        elasticsearchOperations
+            .putMapping(createIndexRequest.getName(), createIndexRequest.getType(),
+                createIndexRequest.getIndexMapping());
   }
 
   /**
@@ -80,14 +105,14 @@ public class AdminService {
    */
   public boolean createIndex(Class clazz) {
     log.info(
-      MessageFormat.format("Creating index from class {0}", clazz.getName()));
+        MessageFormat.format("Creating index from class {0}", clazz.getName()));
     if (indexExists(clazz)) {
       log.log(Level.WARNING, "Index for class {0} already exists.",
-        clazz.getName());
+          clazz.getName());
       return false;
     }
     return !isClassValid(clazz) || (elasticsearchOperations.createIndex(clazz)
-      && elasticsearchOperations.putMapping(clazz));
+        && elasticsearchOperations.putMapping(clazz));
   }
 
   /**
@@ -98,8 +123,9 @@ public class AdminService {
    */
   public boolean deleteIndex(String indexName) {
     log.info(MessageFormat.format("Deleting index {0}", indexName));
+    //TODO check if by deleting an index, its alias get deleted
     return !canPerformOperation(indexName) || elasticsearchOperations
-      .deleteIndex(indexName);
+        .deleteIndex(indexName);
   }
 
   /**
@@ -110,10 +136,10 @@ public class AdminService {
    */
   public boolean deleteIndex(Class clazz) {
     log.info(
-      MessageFormat.format("Deleting index for class {0}", clazz.getName()));
+        MessageFormat.format("Deleting index for class {0}", clazz.getName()));
     if (!indexExists(clazz)) {
       log.log(Level.WARNING, "Index for class {0} does not exist.",
-        clazz.getName());
+          clazz.getName());
       return false;
     }
     return !isClassValid(clazz) || elasticsearchOperations.deleteIndex(clazz);
@@ -138,7 +164,7 @@ public class AdminService {
    */
   public boolean indexExists(Class clazz) {
     log.info(MessageFormat
-      .format("Checking if index for class {0} exists", clazz.getName()));
+        .format("Checking if index for class {0} exists", clazz.getName()));
     return !isClassValid(clazz) || elasticsearchOperations.indexExists(clazz);
   }
 
@@ -152,26 +178,26 @@ public class AdminService {
    */
   public boolean documentExists(String indexName, String typeName, String id) {
     ESDocumentIdentifierDTO dto = new ESDocumentIdentifierDTO(indexName,
-      typeName, id);
+        typeName, id);
     return documentExists(dto);
   }
 
   /**
    * Checks if a document exists.
    *
-   * @param dto holds all the information needed to search for the document
-   * (index name, index id, document id)
+   * @param dto holds all the information needed to search for the document (index name, index id,
+   * document id)
    * @return true if exists, false otherwise
    */
   public boolean documentExists(ESDocumentIdentifierDTO dto) {
     log.info(MessageFormat.format("Checking if document {0}exists", dto));
     try {
       GetRequest getRequest = new GetRequest(dto.getIndex(), dto.getType(),
-        dto.getId());
+          dto.getId());
       return esClient.getClient().exists(getRequest, RequestOptions.DEFAULT);
     } catch (IOException e) {
       String errorMsg = MessageFormat
-        .format("Could not check if document with id: {0} exists", dto.getId());
+          .format("Could not check if document with id: {0} exists", dto.getId());
       log.log(Level.SEVERE, errorMsg, e);
       throw new SearchException(errorMsg, e);
     }
@@ -185,18 +211,18 @@ public class AdminService {
    */
   public boolean updateTypeMapping(UpdateMappingRequest updateRequest) {
     log.info(
-      MessageFormat.format("Updating type mapping for index {0} and type {1}",
-        updateRequest.getIndexName(), updateRequest.getTypeName()));
+        MessageFormat.format("Updating type mapping for index {0} and type {1}",
+            updateRequest.getIndexName(), updateRequest.getTypeName()));
     // If the index does not exist return without doing anything.
     if (!indexExists(updateRequest.getIndexName())) {
       log.log(Level.WARNING, "Index does not exist: {0}.",
-        updateRequest.getIndexName());
+          updateRequest.getIndexName());
       return false;
     }
 
     return elasticsearchOperations
-      .putMapping(updateRequest.getIndexName(), updateRequest.getTypeName(),
-        updateRequest.getIndexMapping());
+        .putMapping(updateRequest.getIndexName(), updateRequest.getTypeName(),
+            updateRequest.getIndexMapping());
   }
 
   /**
@@ -204,16 +230,16 @@ public class AdminService {
    *
    * @param indexName the name of the index to update
    * @param settings the updated settings
-   * @param preserveExisting a flag to define whether the existing settings
-   * should be preserved or overwritten
+   * @param preserveExisting a flag to define whether the existing settings should be preserved or
+   * overwritten
    * @return true if updated, false otherwise
    */
   public boolean updateIndexSettings(String indexName,
-    Map<String, String> settings,
-    boolean preserveExisting) {
+      Map<String, String> settings,
+      boolean preserveExisting) {
     log.info(MessageFormat
-      .format("Updating settings of index {0}. Existing settings will be {1}",
-        indexName, preserveExisting ? "preserved" : "overwritten"));
+        .format("Updating settings of index {0}. Existing settings will be {1}",
+            indexName, preserveExisting ? "preserved" : "overwritten"));
     if (!canPerformOperation(indexName)) {
       return false;
     }
@@ -224,11 +250,11 @@ public class AdminService {
     }
     closeIndex(indexName);
     NStringEntity entity = new NStringEntity(
-      new JSONObject(settings).toString(),
-      ContentType.APPLICATION_JSON);
+        new JSONObject(settings).toString(),
+        ContentType.APPLICATION_JSON);
     boolean changedIndexSettings = commonIndexingOperationWithEntity("PUT",
-      endpoint,
-      "Could not change index settings.", entity);
+        endpoint,
+        "Could not change index settings.", entity);
     openIndex(indexName);
     return changedIndexSettings;
   }
@@ -243,8 +269,8 @@ public class AdminService {
     log.info(MessageFormat.format("Closing index {0}", indexName));
     String endpoint = indexName + "/_close";
     return !canPerformOperation(indexName) || commonIndexingOperation("POST",
-      endpoint,
-      "Could not close index.");
+        endpoint,
+        "Could not close index.");
   }
 
   /**
@@ -257,8 +283,8 @@ public class AdminService {
     log.info(MessageFormat.format("Opening index {0}", indexName));
     String endpoint = indexName + "/_open";
     return !canPerformOperation(indexName) || commonIndexingOperation("POST",
-      endpoint,
-      "Could not open index.");
+        endpoint,
+        "Could not open index.");
   }
 
   /**
@@ -271,7 +297,7 @@ public class AdminService {
     try {
       Request request = new Request("GET", "_cluster/health");
       Response response = esClient.getClient().getLowLevelClient()
-        .performRequest(request);
+          .performRequest(request);
 
       return response.getStatusLine().getStatusCode() == 200;
     } catch (IOException e) {
@@ -289,8 +315,8 @@ public class AdminService {
   protected boolean isClassValid(Class clazz) {
     if (!clazz.isAnnotationPresent(Document.class)) {
       log.log(Level.SEVERE,
-        "Unable to identify index name. " + clazz.getSimpleName() +
-          " is not a Document. Make sure the document class is annotated with @Document(indexName=\"foo\")");
+          "Unable to identify index name. " + clazz.getSimpleName() +
+              " is not a Document. Make sure the document class is annotated with @Document(indexName=\"foo\")");
       return false;
     }
     return true;
@@ -316,11 +342,10 @@ public class AdminService {
    * @param method an HTTP method (GET, POST etc.)
    * @param indexName an index name
    * @param errorMsg a custom error message
-   * @return true if the response http status code is 200 (OK), false
-   * otherwise
+   * @return true if the response http status code is 200 (OK), false otherwise
    */
   private boolean commonIndexingOperation(String method, String indexName,
-    String errorMsg) {
+      String errorMsg) {
     return commonIndexingOperationWithEntity(method, indexName, errorMsg, null);
   }
 
@@ -331,19 +356,18 @@ public class AdminService {
    * @param endpoint an endpoint on which the request should be performed
    * @param errorMsg a custom error message
    * @param entity an HttpEntity
-   * @return true if the response http status code is 200 (OK), false
-   * otherwise
+   * @return true if the response http status code is 200 (OK), false otherwise
    */
   private boolean commonIndexingOperationWithEntity(String method,
-    String endpoint, String errorMsg,
-    NStringEntity entity) {
+      String endpoint, String errorMsg,
+      NStringEntity entity) {
     try {
       Request request = new Request(method, endpoint);
       if (entity != null) {
         request.setEntity(entity);
       }
       Response response = esClient.getClient().getLowLevelClient()
-        .performRequest(request);
+          .performRequest(request);
       return response.getStatusLine().getStatusCode() == 200;
     } catch (IOException e) {
       log.log(Level.SEVERE, errorMsg, e);

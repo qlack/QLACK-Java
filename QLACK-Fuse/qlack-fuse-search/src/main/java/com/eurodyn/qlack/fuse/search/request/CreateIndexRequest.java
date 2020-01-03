@@ -1,10 +1,11 @@
 package com.eurodyn.qlack.fuse.search.request;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Request for creating indexes
@@ -39,6 +40,16 @@ public class CreateIndexRequest extends BaseRequest {
    * Mapping for the index
    */
   private String indexMapping;
+
+  /**
+   * Alias name of the index
+   */
+  private String aliasName;
+
+  /**
+   * Custom analyzer
+   */
+  private String analysis;
 
   /**
    * List of stopwords
