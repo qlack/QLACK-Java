@@ -27,7 +27,7 @@ public class UserAttributeDTO extends BaseDTO {
    * the userId
    */
   private String userId;
-  private byte[] binData;
+  private byte[] bindata;
   private String contentType;
 
   public UserAttributeDTO(String name, String data) {
@@ -44,7 +44,7 @@ public class UserAttributeDTO extends BaseDTO {
   public UserAttributeDTO(String columnName, String columnData,
     byte[] columnBinData, String userID, String contentType) {
     this.name = columnName;
-    this.binData = columnBinData;
+    this.bindata = columnBinData;
     this.userId = userID;
     this.data = columnData;
     this.contentType = contentType;

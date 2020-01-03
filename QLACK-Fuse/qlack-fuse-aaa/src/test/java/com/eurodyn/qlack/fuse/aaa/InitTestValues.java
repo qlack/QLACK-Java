@@ -247,7 +247,7 @@ public class InitTestValues {
     VerificationToken verificationToken = new VerificationToken();
     verificationToken.setId("fb0f80a9-ac4e-4a68-8fa6-d309ad6dd9fc");
     verificationToken.setUser(createUser());
-    verificationToken.setExpiresOn(1577836800000L);
+    verificationToken.setExpiresOn(3577836800000L);
     verificationToken.setData("Test verification data");
     return verificationToken;
   }
