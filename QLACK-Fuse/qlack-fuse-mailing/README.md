@@ -43,6 +43,10 @@ spring.mail.debug = true
 # application will not actually send any emails (in that case, you need another application instance
 # running with this property set to `true`)
 spring.mail.polling = true
+#The initial delay before sending the queued mails. (Optional - if not set default value is 30000)
+qlack.fuse.mailing.sendQueuedInitialDelay = 12345
+#The interval between sending queued mails. (Optional - if not set default value is 5000)
+qlack.fuse.mailing.sendQueuedInterval =  1234 
 ```
 
 ### Add the packages in the Spring boot application main class declaration:
