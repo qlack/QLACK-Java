@@ -4,6 +4,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FileUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.MockitoJUnitRunner;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -15,15 +25,6 @@ import java.nio.file.Paths;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.FileUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CryptoSymmetricServiceTest {
@@ -39,16 +40,15 @@ public class CryptoSymmetricServiceTest {
   @Test
   public void generateKey() throws NoSuchAlgorithmException {
     final String key = Base64
-      .encodeBase64String(cryptoSymmetricService.generateKey(128, "AES"));
+        .encodeBase64String(cryptoSymmetricService.generateKey(128, "AES").getEncoded());
     assertNotNull(key);
   }
 
   @Test
   public void keyFromString() throws NoSuchAlgorithmException {
     final String key = Base64
-      .encodeBase64String(cryptoSymmetricService.generateKey(128, "AES"));
-    final SecretKey secretKey = cryptoSymmetricService
-      .keyFromString(key, "AES");
+        .encodeBase64String(cryptoSymmetricService.generateKey(128, "AES").getEncoded());
+    final SecretKey secretKey = cryptoSymmetricService.keyFromString(key, "AES");
     assertNotNull(key);
     assertNotNull(secretKey);
     assertEquals(key, Base64.encodeBase64String(secretKey.getEncoded()));
@@ -65,65 +65,56 @@ public class CryptoSymmetricServiceTest {
   public void ivFromString() {
     final byte[] iv = cryptoSymmetricService.generateIV();
     String ivStr = Base64.encodeBase64String(iv);
-    assertEquals(ivStr,
-      Base64.encodeBase64String(cryptoSymmetricService.ivFromString(ivStr)));
+    assertEquals(ivStr, Base64.encodeBase64String(cryptoSymmetricService.ivFromString(ivStr)));
   }
 
   @Test
   public void encryptDecrypt()
-    throws NoSuchAlgorithmException, InvalidKeyException, InvalidAlgorithmParameterException,
-    NoSuchPaddingException, IOException {
+  throws NoSuchAlgorithmException, InvalidKeyException, InvalidAlgorithmParameterException,
+         NoSuchPaddingException, IOException {
     String plaintext = "Hello world!";
     final String aes = Base64
-      .encodeBase64String(cryptoSymmetricService.generateKey(128, "AES"));
+        .encodeBase64String(cryptoSymmetricService.generateKey(128, "AES").getEncoded());
     final SecretKey aesKey = cryptoSymmetricService.keyFromString(aes, "AES");
     final byte[] iv = cryptoSymmetricService.generateIV();
 
     // No IV-append test.
     byte[] ciphertext = cryptoSymmetricService
-      .encrypt(plaintext.getBytes(StandardCharsets.UTF_8), aesKey, iv,
-        "AES/CBC/PKCS5Padding",
-        "AES", false);
+        .encrypt(plaintext.getBytes(StandardCharsets.UTF_8), aesKey, iv, "AES/CBC/PKCS5Padding",
+            "AES", false);
     assertNotNull(ciphertext);
     byte[] plaintextDecrypted = cryptoSymmetricService
-      .decrypt(ciphertext, aesKey, iv, "AES/CBC/PKCS5Padding", "AES");
-    assertEquals(plaintext,
-      new String(plaintextDecrypted, StandardCharsets.UTF_8));
+        .decrypt(ciphertext, aesKey, iv, "AES/CBC/PKCS5Padding", "AES");
+    assertEquals(plaintext, new String(plaintextDecrypted, StandardCharsets.UTF_8));
 
     // IV-append test.
     ciphertext = cryptoSymmetricService
-      .encrypt(plaintext.getBytes(StandardCharsets.UTF_8), aesKey, iv,
-        "AES/CBC/PKCS5Padding",
-        "AES", true);
+        .encrypt(plaintext.getBytes(StandardCharsets.UTF_8), aesKey, iv, "AES/CBC/PKCS5Padding",
+            "AES", true);
     assertNotNull(ciphertext);
     plaintextDecrypted = cryptoSymmetricService
-      .decrypt(ciphertext, aesKey, "AES/CBC/PKCS5Padding", "AES");
-    assertEquals(plaintext,
-      new String(plaintextDecrypted, StandardCharsets.UTF_8));
+        .decrypt(ciphertext, aesKey, "AES/CBC/PKCS5Padding", "AES");
+    assertEquals(plaintext, new String(plaintextDecrypted, StandardCharsets.UTF_8));
   }
 
   @Test
   public void encryptDecryptFile()
-    throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
-    InvalidKeyException, NoSuchPaddingException {
+  throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
+         InvalidKeyException, NoSuchPaddingException {
     String execDir = Paths.get("").toAbsolutePath().toString();
-    final String aes = Base64
-      .encodeBase64String(cryptoSymmetricService.generateKey(128, "AES"));
+    final String aes = Base64.encodeBase64String(cryptoSymmetricService.generateKey(128, "AES").getEncoded());
     final SecretKey aesKey = cryptoSymmetricService.keyFromString(aes, "AES");
 
     // No IV-append test.
-    File plainFile = Paths
-      .get(execDir, "src", "test", "resources", "file-binary.jpg").toFile();
+    File plainFile = Paths.get(execDir, "src", "test", "resources", "file-binary.jpg").toFile();
     File encryptedFile = File.createTempFile("encrypted", ".bin");
     System.out.println("Temporary encrypted file: " + encryptedFile.toString());
     File decryptedFile = File.createTempFile("decrypted", ".jpg");
     System.out.println("Temporary decrypted file: " + decryptedFile.toString());
     final byte[] iv = cryptoSymmetricService.generateIV();
-    cryptoSymmetricService
-      .encrypt(plainFile, encryptedFile, aesKey, iv, "AES/CBC/PKCS5Padding",
+    cryptoSymmetricService.encrypt(plainFile, encryptedFile, aesKey, iv, "AES/CBC/PKCS5Padding",
         "AES", false);
-    cryptoSymmetricService
-      .decrypt(encryptedFile, decryptedFile, aesKey, iv, "AES/CBC/PKCS5Padding",
+    cryptoSymmetricService.decrypt(encryptedFile, decryptedFile, aesKey, iv, "AES/CBC/PKCS5Padding",
         "AES");
     assertTrue(FileUtils.contentEquals(plainFile, decryptedFile));
 
@@ -132,59 +123,50 @@ public class CryptoSymmetricServiceTest {
     System.out.println("Temporary encrypted file: " + encryptedFile.toString());
     decryptedFile = File.createTempFile("decrypted", ".jpg");
     System.out.println("Temporary decrypted file: " + decryptedFile.toString());
-    cryptoSymmetricService
-      .encrypt(plainFile, encryptedFile, aesKey, "AES/CBC/PKCS5Padding",
+    cryptoSymmetricService.encrypt(plainFile, encryptedFile, aesKey, "AES/CBC/PKCS5Padding",
         "AES");
-    cryptoSymmetricService
-      .decrypt(encryptedFile, decryptedFile, aesKey, "AES/CBC/PKCS5Padding",
+    cryptoSymmetricService.decrypt(encryptedFile, decryptedFile, aesKey, "AES/CBC/PKCS5Padding",
         "AES");
     assertTrue(FileUtils.contentEquals(plainFile, decryptedFile));
   }
 
   @Test
   public void encryptIvLongTest()
-    throws NoSuchAlgorithmException, InvalidKeyException, InvalidAlgorithmParameterException,
-    NoSuchPaddingException, IOException {
+  throws NoSuchAlgorithmException, InvalidKeyException, InvalidAlgorithmParameterException,
+         NoSuchPaddingException, IOException {
     String plaintext = "Hello world!";
-    final String aes = Base64
-      .encodeBase64String(cryptoSymmetricService.generateKey(128, "AES"));
+    final String aes = Base64.encodeBase64String(cryptoSymmetricService.generateKey(128, "AES").getEncoded());
     final SecretKey aesKey = cryptoSymmetricService.keyFromString(aes, "AES");
     final byte[] iv = cryptoSymmetricService.generateIV(30);
 
     // No IV-append test.
     byte[] ciphertext = cryptoSymmetricService
-      .encrypt(plaintext.getBytes(StandardCharsets.UTF_8), aesKey, iv,
-        "AES/CBC/PKCS5Padding",
-        "AES", false);
+        .encrypt(plaintext.getBytes(StandardCharsets.UTF_8), aesKey, iv, "AES/CBC/PKCS5Padding",
+            "AES", false);
     assertNotNull(ciphertext);
   }
 
   @Test
   public void encryptDecryptTest()
-    throws NoSuchAlgorithmException, InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException, IOException {
-    assertNotNull(cryptoSymmetricService
-      .encrypt("plaintext".getBytes(StandardCharsets.UTF_8),
+  throws NoSuchAlgorithmException, InvalidKeyException, InvalidAlgorithmParameterException,
+         NoSuchPaddingException, IOException {
+    assertNotNull(cryptoSymmetricService.encrypt("plaintext".getBytes(StandardCharsets.UTF_8),
         cryptoSymmetricService.keyFromString(
-          Base64
-            .encodeBase64String(cryptoSymmetricService.generateKey(128, "AES")),
-          "AES"),
+            Base64.encodeBase64String(cryptoSymmetricService.generateKey(128, "AES").getEncoded()), "AES"),
         "AES/CBC/PKCS5Padding", "AES"));
   }
 
   @Test
   @SuppressWarnings("squid:S2699")
   public void decryptTest()
-    throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException {
-    final String aes = Base64
-      .encodeBase64String(cryptoSymmetricService.generateKey(128, "AES"));
+  throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
+         InvalidKeyException, NoSuchPaddingException {
+    final String aes = Base64.encodeBase64String(cryptoSymmetricService.generateKey(128, "AES").getEncoded());
     final SecretKey aesKey = cryptoSymmetricService.keyFromString(aes, "AES");
 
-    InputStream encryptedFile = new FileInputStream(
-      File.createTempFile("encrypted", ".bin"));
-    OutputStream decryptedFile = new FileOutputStream(
-      File.createTempFile("decrypted", ".jpg"));
-    cryptoSymmetricService
-      .decrypt(encryptedFile, decryptedFile, aesKey, "AES/CBC/PKCS5Padding",
+    InputStream encryptedFile = new FileInputStream(File.createTempFile("encrypted", ".bin"));
+    OutputStream decryptedFile = new FileOutputStream(File.createTempFile("decrypted", ".jpg"));
+    cryptoSymmetricService.decrypt(encryptedFile, decryptedFile, aesKey, "AES/CBC/PKCS5Padding",
         "AES");
 
   }

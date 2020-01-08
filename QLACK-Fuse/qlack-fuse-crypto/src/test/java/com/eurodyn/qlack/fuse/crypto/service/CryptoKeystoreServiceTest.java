@@ -5,6 +5,14 @@ import static org.junit.Assert.assertNotNull;
 import com.eurodyn.qlack.fuse.crypto.dto.CertificateSignDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.CreateKeyPairDTO;
 import com.google.common.collect.ImmutableSet;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.operator.OperatorCreationException;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.MockitoJUnitRunner;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -21,13 +29,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
-import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.operator.OperatorCreationException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CryptoKeystoreServiceTest {
@@ -100,7 +101,7 @@ public class CryptoKeystoreServiceTest {
     final byte[] keystore = cryptoKeystoreService
       .createKeystore(keystoreType, keystoreProvider, "pass");
 
-    final byte[] key = cryptoSymmetricService.generateKey(128, "AES");
+    final byte[] key = cryptoSymmetricService.generateKey(128, "AES").getEncoded();
 
     final byte[] updatedKeystore = cryptoKeystoreService
       .saveSymmetricKey(keystore, keystoreType, keystoreProvider, "pass",
