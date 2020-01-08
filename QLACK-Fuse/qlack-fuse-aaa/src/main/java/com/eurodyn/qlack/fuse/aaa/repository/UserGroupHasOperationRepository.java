@@ -1,8 +1,9 @@
 package com.eurodyn.qlack.fuse.aaa.repository;
 
 import com.eurodyn.qlack.fuse.aaa.model.UserGroupHasOperation;
-import java.util.List;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * A Repository interface for UserGroupHasOperation.It is used to define a
@@ -52,6 +53,17 @@ public interface UserGroupHasOperationRepository extends
   UserGroupHasOperation findByUserGroupIdAndOperationNameAndResourceNameAndResourceObjectId(
     String userGroupId, String operationName, String resourceName,
     String resourceObjectId);
+
+  /**
+   * Finds {@link UserGroupHasOperation} by its userGroupId, the operationName, and resourceName.
+   *
+   * @param userGroupId the userGroupId
+   * @param operationName the operationName
+   * @param resourceName the resourceName
+   * @return the {@link UserGroupHasOperation} object
+   */
+  UserGroupHasOperation findByUserGroupIdAndOperationNameAndResourceName(
+      String userGroupId, String operationName, String resourceName);
 
   /**
    * Finds a list of {@link UserGroupHasOperation} objects

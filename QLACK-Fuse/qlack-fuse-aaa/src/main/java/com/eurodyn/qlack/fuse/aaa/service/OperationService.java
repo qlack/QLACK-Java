@@ -24,6 +24,11 @@ import com.eurodyn.qlack.fuse.aaa.repository.UserGroupHasOperationRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserGroupRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserHasOperationRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -32,9 +37,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 
 /**
  * A Service class that is used to configure Operation
@@ -533,11 +535,28 @@ public class OperationService {
    * operation
    * @param operationName The name of the operation to check
    * @param resourceName The name of the resource to check
-   * @param resourceObjectId A specific object Id the resource is referring
-   * to
-   * @return true, if the group is allowed the operation. false, if the group
-   * is denied the operation. null, if there is no information available to
-   * reply accordingly.
+   * @return true, if the group is allowed the operation. false, if the group is denied the
+   * operation. null, if there is no information available to reply accordingly.
+   */
+  public Boolean isPermittedForGroupByResource(String userGroupID, String operationName,
+      String resourceName) {
+    return isPermittedForGroupByResource(userGroupID, operationName, resourceName, null);
+  }
+
+  /**
+   * Checks whether a specific operation, for a specific userGroup on a specific resource is
+   * allowed. The check is performed by checking whether the specified userGroup is assigned the
+   * specific operation and resource, if yes, check the deny flag of the operation assignment to
+   * decide whether the userGroup is permitted the operation. In case no assignment for this
+   * operation can be found for the userGroup the userGroup's ancestors are checked recursively
+   * until we arrive to a decision.
+   *
+   * @param userGroupID The id of the userGroup for which to check the operation
+   * @param operationName The name of the operation to check
+   * @param resourceName The name of the resource to check
+   * @param resourceObjectId A specific object Id the resource is referring to
+   * @return true, if the group is allowed the operation. false, if the group is denied the
+   * operation. null, if there is no information available to reply accordingly.
    */
   public Boolean isPermittedForGroupByResource(String userGroupID,
     String operationName,
@@ -549,11 +568,17 @@ public class OperationService {
     UserGroup userGroup = userGroupRepository.fetchById(userGroupID);
 
     Boolean retVal = null;
-    UserGroupHasOperation gho = userGroupHasOperationRepository
-      .findByUserGroupIdAndOperationNameAndResourceNameAndResourceObjectId(
-        userGroupID,
-        operationName, resourceName,
-        resourceObjectId);
+    UserGroupHasOperation gho;
+    if (StringUtils.isNotBlank(resourceObjectId)) {
+      gho = userGroupHasOperationRepository
+          .findByUserGroupIdAndOperationNameAndResourceNameAndResourceObjectId(userGroupID,
+              operationName, resourceName,
+              resourceObjectId);
+    } else {
+      gho = userGroupHasOperationRepository
+          .findByUserGroupIdAndOperationNameAndResourceName(userGroupID, operationName,
+              resourceName);
+    }
     if (gho != null) {
       retVal = !gho.isDeny();
     } else if (userGroup.getParent() != null) {

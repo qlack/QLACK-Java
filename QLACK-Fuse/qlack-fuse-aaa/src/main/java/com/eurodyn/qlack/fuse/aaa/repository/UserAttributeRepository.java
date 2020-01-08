@@ -3,6 +3,8 @@ package com.eurodyn.qlack.fuse.aaa.repository;
 import com.eurodyn.qlack.fuse.aaa.model.UserAttribute;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
+
 /**
  * A repository interface for UserAttribute.It is used to define a number of
  * crud methods.
@@ -21,4 +23,6 @@ public interface UserAttributeRepository extends
    * @return the {@link UserAttribute} object
    */
   UserAttribute findByUserIdAndName(String userId, String name);
+
+  Collection<UserAttribute> findAllByUserIdInAndName(Collection<String> userIds, String name);
 }

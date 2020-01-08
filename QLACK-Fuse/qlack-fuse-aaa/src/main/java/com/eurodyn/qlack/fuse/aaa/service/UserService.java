@@ -466,6 +466,13 @@ public class UserService {
     return userAttributeMapper.mapToDTO(attribute);
   }
 
+  public List<UserAttributeDTO> getAttributes(Collection<String> userIds, String attributeName) {
+    final Collection<UserAttribute> attributes = userAttributeRepository
+        .findAllByUserIdInAndName(userIds, attributeName);
+
+    return userAttributeMapper.mapToDTO((List)attributes);
+  }
+
   /**
    * Retrieves the user ids for attribute
    *
