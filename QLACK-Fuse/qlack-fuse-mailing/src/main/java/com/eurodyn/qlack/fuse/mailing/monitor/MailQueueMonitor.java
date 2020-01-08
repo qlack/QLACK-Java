@@ -12,14 +12,15 @@ import com.eurodyn.qlack.fuse.mailing.repository.EmailRepository;
 import com.eurodyn.qlack.fuse.mailing.util.MailConstants.EMAIL_STATUS;
 import com.eurodyn.qlack.fuse.mailing.util.MailingProperties;
 import com.querydsl.core.types.Predicate;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -160,12 +161,13 @@ public class MailQueueMonitor {
   /**
    * Check for QUEUED emails and send them.
    */
-  @Scheduled(initialDelay = 30000, fixedDelay = 5000)
+  @Scheduled(initialDelayString = "${qlack.fuse.mailing.sendQueuedInitialDelay:30000}",
+      fixedDelayString = "${qlack.fuse.mailing.sendQueuedInterval:5000}")
   public void checkAndSendQueued() {
     if (mailingProperties.isPolling()) {
 
       Predicate predicate = qEmail.status.eq(EMAIL_STATUS.QUEUED.toString())
-        .and(qEmail.tries.lt(mailingProperties.getMaxTries()));
+          .and(qEmail.tries.lt(mailingProperties.getMaxTries()));
 
       List<Email> emails = emailRepository.findAll(predicate);
 
@@ -176,5 +178,4 @@ public class MailQueueMonitor {
       }
     }
   }
-
 }
