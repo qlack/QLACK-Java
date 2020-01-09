@@ -79,7 +79,7 @@ public class UserDTO extends BaseDTO {
       for (UserAttributeDTO userAttributesDTO : userAttributes) {
         if (userAttributesDTO.getName().equalsIgnoreCase(attribute.getName())) {
           userAttributesDTO.setData(attribute.getData());
-          userAttributesDTO.setBinData(attribute.getBinData());
+          userAttributesDTO.setBindata(attribute.getBindata());
           userAttributesDTO.setContentType(attribute.getContentType());
           found = true;
           break;
