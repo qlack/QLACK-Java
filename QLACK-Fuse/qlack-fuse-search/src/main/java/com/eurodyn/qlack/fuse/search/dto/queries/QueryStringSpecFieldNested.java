@@ -3,12 +3,14 @@ package com.eurodyn.qlack.fuse.search.dto.queries;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * 23/01/2018 : A query performing a query string against ES. A query that uses
- * a query parser in order to parse its content Multiple fields can be
- * specified. In addition to the simple Query String we search directly in the
- * nested objects. This will additional return a inner_hits Object that contains
- * the Id's for the matched nested terms/objects.
+ * A query performing a query string against ES. A query that uses a query parser in order to parse
+ * its content Multiple fields can be specified. In addition to the simple Query String we search
+ * directly in the nested objects. This will additional return a inner_hits Object that contains the
+ * Id's for the matched nested terms/objects.
  *
  * <pre>
  * new QueryStringSpecField()
@@ -49,7 +51,7 @@ public class QueryStringSpecFieldNested extends QuerySpec {
   /**
    * The Object name of the inner search results
    */
-  private String docvalueFields;
+  private List<String> docvalueFields = new ArrayList<>();
 
   /**
    * A convenience method to set the term of this query.
@@ -69,8 +71,8 @@ public class QueryStringSpecFieldNested extends QuerySpec {
    * @return a {@link QueryStringSpecFieldNested} object
    */
   public QueryStringSpecFieldNested setTerm(String field, Object value,
-    String operator,
-    String path, String docvalueFields) {
+      String operator,
+      String path, List<String> docvalueFields) {
     this.field = field;
     this.value = value;
     this.operator = operator;

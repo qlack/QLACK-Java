@@ -1,17 +1,25 @@
 package com.eurodyn.qlack.fuse.search.service;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.eurodyn.qlack.fuse.search.InitTestValues;
 import com.eurodyn.qlack.fuse.search.UnknownSearchDTO;
+import com.eurodyn.qlack.fuse.search.dto.SearchHitDTO;
+import com.eurodyn.qlack.fuse.search.dto.SearchResultDTO;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryBoolean;
+import com.eurodyn.qlack.fuse.search.dto.queries.QueryExists;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryMatch;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryMultiMatch;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryRange;
 import com.eurodyn.qlack.fuse.search.dto.queries.QuerySpec;
+import com.eurodyn.qlack.fuse.search.dto.queries.QueryString;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryStringSpecField;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryStringSpecFieldNested;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryTerm;
@@ -22,106 +30,101 @@ import com.eurodyn.qlack.fuse.search.dto.queries.QueryWildcard;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryWildcardNested;
 import com.eurodyn.qlack.fuse.search.dto.queries.SimpleQueryString;
 import com.eurodyn.qlack.fuse.search.exception.SearchException;
-import com.eurodyn.qlack.fuse.search.mapper.request.InternalSearchRequest;
-import com.eurodyn.qlack.fuse.search.mapper.response.QueryResponse;
-import com.eurodyn.qlack.fuse.search.mapper.response.QueryResponse.Aggregations;
-import com.eurodyn.qlack.fuse.search.mapper.response.QueryResponse.Hits;
 import com.eurodyn.qlack.fuse.search.request.ScrollRequest;
 import com.eurodyn.qlack.fuse.search.util.ESClient;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import org.apache.http.HttpEntity;
-import org.apache.http.StatusLine;
+import org.elasticsearch.action.get.GetRequest;
+import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.Request;
+import org.elasticsearch.action.search.SearchScrollRequest;
 import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.Response;
-import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.ExistsQueryBuilder;
+import org.elasticsearch.index.query.MatchAllQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.MultiMatchQueryBuilder;
+import org.elasticsearch.index.query.NestedQueryBuilder;
+import org.elasticsearch.index.query.QueryStringQueryBuilder;
+import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.index.query.SimpleQueryStringBuilder;
+import org.elasticsearch.index.query.TermQueryBuilder;
+import org.elasticsearch.index.query.TermsQueryBuilder;
+import org.elasticsearch.index.query.WildcardQueryBuilder;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
+import org.elasticsearch.search.aggregations.AggregatorFactories.Builder;
+import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
+import org.elasticsearch.search.sort.SortOrder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.io.IOException;
+import java.util.List;
+
 @RunWith(MockitoJUnitRunner.class)
 public class SearchServiceTest {
+
+  private final String TYPE_NAME = "typeName";
+  private final String ID = "id";
+  private final String INDEX_NAME = "indexName";
 
   @InjectMocks
   private SearchService searchService;
 
+  @Captor
+  private ArgumentCaptor<SearchRequest> searchRequestArgumentCaptor;
+  @Captor
+  private ArgumentCaptor<RequestOptions> requestOptionsArgumentCaptor;
+
   @Mock
   private RestHighLevelClient restHighLevelClient;
-
-  @Mock
-  private RestClient restClient;
-
   @Mock
   private ESClient esClient;
-
-  @Mock
-  private Response response;
-
-  @Mock
-  private HttpEntity httpEntity;
-
   @Mock
   private ObjectMapper mappedObjectMapper;
-
-  @Mock
-  private StatusLine statusLine;
-
   @Mock
   private SearchResponse searchResponse;
+  @Mock
+  private SearchHits searchHits;
 
   private InitTestValues initTestValues;
-
-  private QuerySpec querySpec;
-
-  private QueryResponse queryResponse;
-
+  private QueryExists queryExists;
+  private QueryString queryString;
   private ObjectMapper objectMapper;
-
   private QueryMatch queryMatch;
-
   private ScrollRequest scrollRequest;
-
   private QueryBoolean queryBoolean;
-
   private QueryMultiMatch queryMultiMatch;
-
   private QueryTerm queryTerm;
-
   private QueryTermNested queryTermNested;
-
   private QueryWildcard queryWildcard;
-
   private QueryWildcardNested queryWildcardNested;
-
   private QueryTerms queryTerms;
-
   private QueryTermsNested queryTermsNested;
-
   private QueryRange queryRange;
-
   private QueryStringSpecField queryStringSpecField;
-
   private QueryStringSpecFieldNested queryStringSpecFieldNested;
-
   private SimpleQueryString simpleQueryString;
+  private QuerySpec queryExistsNested;
 
   @Before
   public void init() throws IOException {
     searchService = new SearchService(esClient);
     initTestValues = new InitTestValues();
-    querySpec = initTestValues.createQuerySpec();
-    queryResponse = initTestValues.createQueryResponse();
+
     objectMapper = new ObjectMapper();
+
+    queryString = initTestValues.createQueryString();
     queryMatch = initTestValues.createQueryMatch();
     scrollRequest = initTestValues.createScrollRequest();
     queryBoolean = initTestValues.createQueryBoolean();
@@ -134,270 +137,307 @@ public class SearchServiceTest {
     queryTermsNested = initTestValues.createQueryTermsNested();
     queryRange = initTestValues.createQueryRange();
     queryStringSpecField = initTestValues.createQueryStringSpecField();
-    queryStringSpecFieldNested = initTestValues
-      .createQueryStringSpecFieldNested();
+    queryStringSpecFieldNested = initTestValues.createQueryStringSpecFieldNested();
     simpleQueryString = initTestValues.createSimpleQueryString();
-
-    when(esClient.getClient()).thenReturn(restHighLevelClient);
-    when(restHighLevelClient.getLowLevelClient()).thenReturn(restClient);
-    when(response.getEntity()).thenReturn(httpEntity);
-    when(httpEntity.getContent())
-      .thenReturn(new ByteArrayInputStream(
-        objectMapper.writeValueAsBytes(queryResponse)));
-  }
-
-  @Test
-  public void searchTest() throws IOException {
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
-    assertNotNull(searchService.search(querySpec));
-  }
-
-  @Test
-  public void searchCountOnlyTest() throws IOException {
-    querySpec.setCountOnly(true);
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
-    assertNotNull(searchService.search(querySpec));
-  }
-
-  @Test
-  public void searchTotalEditVariablesTest() throws IOException {
-    querySpec.setPageSize(1000);
-    querySpec.setIndex("indexName1", "indexName2");
-    querySpec.setType("type1", "type2");
-    querySpec.setAggregate("aggregate");
-    querySpec.setScroll(10);
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
-    assertNotNull(searchService.search(querySpec));
-  }
-
-  @Test
-  public void searchTotalEditVariablesScenario2Test() throws IOException {
-    querySpec.setCountOnly(false);
-    querySpec.includeAllSources();
-    querySpec.excludeResults();
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
-    assertNotNull(searchService.search(querySpec));
-  }
-
-  @Test
-  public void searchTotalEditVariablesScenario3Test() throws IOException {
-    querySpec.setCountOnly(true);
-    querySpec.includeAllSources();
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
-    assertNotNull(searchService.search(querySpec));
-  }
-
-  @Test(expected = SearchException.class)
-  public void searchMappingExceptionTest() throws IOException {
-    querySpec.setCountOnly(false);
-    querySpec.includeAllSources();
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
+    queryExists = initTestValues.createQueryExists();
+    queryExistsNested = initTestValues.createQueryExistsNested();
 
     ReflectionTestUtils.setField(searchService, "mapper", mappedObjectMapper);
-    when(
-      mappedObjectMapper.writeValueAsString(any(InternalSearchRequest.class)))
-      .thenReturn("entity");
-    when(mappedObjectMapper
-      .readValue(response.getEntity().getContent(), QueryResponse.class))
-      .thenReturn(queryResponse);
-    when(mappedObjectMapper.writeValueAsString(any(QueryResponse.class)))
-      .thenThrow(new JsonProcessingException("") {
-      });
-    searchService.search(querySpec);
+
+    when(esClient.getClient()).thenReturn(restHighLevelClient);
+    when(restHighLevelClient.search(any(SearchRequest.class), any(RequestOptions.class)))
+        .thenReturn(searchResponse);
+    when(searchResponse.getHits()).thenReturn(searchHits);
+    when(searchResponse.getTook()).thenReturn(TimeValue.ZERO);
+    when(searchHits.getHits()).thenReturn(initTestValues.searchHits());
+    when(mappedObjectMapper.writeValueAsString(any(SearchResponse.class))).thenReturn("mapped");
+  }
+
+  @Test
+  public void searchTest() {
+    assertNotNull(searchService.search(queryString));
+  }
+
+  @Test
+  public void searchCountOnlyTest() {
+    queryString.setCountOnly(true);
+    SearchResultDTO search = searchService.search(queryString);
+    assertNotNull(search);
   }
 
   @Test(expected = SearchException.class)
-  public void searchIoExceptionTest() throws IOException {
-    when(restClient.performRequest(any(Request.class)))
-      .thenThrow(new IOException());
-    searchService.search(querySpec);
-  }
-
-  @Test(expected = SearchException.class)
-  public void searchMapperIoExceptionTest() throws IOException {
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
-    when(response.getEntity().getContent()).thenThrow(new IOException());
-    searchService.search(querySpec);
+  public void searchExceptionWhenIOExceptionTest() throws IOException {
+    when(restHighLevelClient.search(any(SearchRequest.class), any(RequestOptions.class)))
+        .thenThrow(new IOException());
+    searchService.search(queryBoolean);
   }
 
   @Test
   public void findByIdTest() throws IOException {
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
-    when(response.getStatusLine()).thenReturn(statusLine);
-    when(statusLine.getStatusCode()).thenReturn(200);
-    assertNotNull(searchService.findById("indexName", "typeName", "id"));
+    GetResponse getResponse = mock(GetResponse.class);
+    when(restHighLevelClient.get(any(GetRequest.class), any(RequestOptions.class)))
+        .thenReturn(getResponse);
+    when(getResponse.getType()).thenReturn(TYPE_NAME);
+    when(getResponse.getId()).thenReturn(ID);
+
+    SearchHitDTO byId = searchService.findById(INDEX_NAME, TYPE_NAME, ID);
+
+    assertNotNull(byId);
+    assertEquals(byId.getId(), ID);
+    assertEquals(byId.getType(), TYPE_NAME);
   }
 
   @Test
   public void findByIdNullTest() throws IOException {
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
-    when(response.getStatusLine()).thenReturn(statusLine);
-    when(statusLine.getStatusCode()).thenReturn(403);
-    assertNull(searchService.findById("indexName", "typeName", "id"));
-  }
-
-  @Test
-  public void findByIdIoExceptionTest() throws IOException {
-    when(restClient.performRequest(any(Request.class)))
-      .thenThrow(new IOException());
-    assertNull(searchService.findById("indexName", "typeName", "id"));
+    when(restHighLevelClient.get(any(GetRequest.class), any(RequestOptions.class)))
+        .thenThrow(new IOException());
+    assertNull(searchService.findById(INDEX_NAME, TYPE_NAME, ID));
   }
 
   @Test
   public void prepareScrollTest() throws IOException {
     when(restHighLevelClient.search(any(SearchRequest.class), any(
-      RequestOptions.class))).thenReturn(searchResponse);
-    assertNotNull(searchService.prepareScroll("indexName", queryMatch, 10));
+        RequestOptions.class))).thenReturn(searchResponse);
+    when(searchResponse.getScrollId()).thenReturn("scrollId");
+    ScrollRequest scrollRequest = searchService.prepareScroll(INDEX_NAME, queryMatch, 10);
+    assertNotNull(scrollRequest);
+    assertEquals("scrollId", scrollRequest.getScrollId());
   }
 
   @Test
   public void prepareScrollIoExceptionTest() throws IOException {
     when(restHighLevelClient.search(any(SearchRequest.class), any(
-      RequestOptions.class))).thenThrow(new IOException());
-    assertNotNull(searchService.prepareScroll("indexName", queryMatch, 10));
+        RequestOptions.class))).thenThrow(new IOException());
+    ScrollRequest scrollRequest = searchService.prepareScroll(INDEX_NAME, queryMatch, 10);
+    assertNotNull(scrollRequest);
+    assertNull(scrollRequest.getScrollId());
   }
 
   @Test
   public void scrollTest() throws IOException {
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
+    when(restHighLevelClient.scroll(any(SearchScrollRequest.class), any(RequestOptions.class)))
+        .thenReturn(searchResponse);
     assertNotNull(searchService.scroll(scrollRequest));
   }
 
-  @Test
-  public void scrollEmptyHitsTest() throws IOException {
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
-    queryResponse.setHits(new Hits());
-    when(httpEntity.getContent())
-      .thenReturn(new ByteArrayInputStream(
-        objectMapper.writeValueAsBytes(queryResponse)));
-    assertNotNull(searchService.scroll(scrollRequest));
-  }
 
   @Test(expected = SearchException.class)
   public void scrollIoExceptionTest() throws IOException {
-    when(restClient.performRequest(any(Request.class)))
-      .thenThrow(new IOException());
+    when(restHighLevelClient.scroll(any(SearchScrollRequest.class), any(RequestOptions.class)))
+        .thenThrow(new IOException());
     assertNotNull(searchService.scroll(scrollRequest));
   }
 
   @Test
   public void searchQueryBooleanTest() throws IOException {
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
     assertNotNull(searchService.search(queryBoolean));
+    verify(restHighLevelClient).search(searchRequestArgumentCaptor.capture(),
+        requestOptionsArgumentCaptor.capture());
+    assertTrue(searchRequestArgumentCaptor.getValue().source().query() instanceof BoolQueryBuilder);
+  }
+
+  @Test
+  public void searchQueryExistsTest() throws IOException {
+    assertNotNull(searchService.search(queryExists));
+    verify(restHighLevelClient).search(searchRequestArgumentCaptor.capture(),
+        requestOptionsArgumentCaptor.capture());
+    assertTrue(
+        searchRequestArgumentCaptor.getValue().source().query() instanceof ExistsQueryBuilder);
+  }
+
+  @Test
+  public void searchQueryExistsNestedTest() throws IOException {
+    assertNotNull(searchService.search(queryExistsNested));
+    verify(restHighLevelClient).search(searchRequestArgumentCaptor.capture(),
+        requestOptionsArgumentCaptor.capture());
+    assertTrue(
+        searchRequestArgumentCaptor.getValue().source().query() instanceof NestedQueryBuilder);
+
+    NestedQueryBuilder parentQuery = (NestedQueryBuilder) searchRequestArgumentCaptor.getValue()
+        .source().query();
+    assertTrue(parentQuery.query() instanceof ExistsQueryBuilder);
   }
 
   @Test
   public void searchQueryMatchTest() throws IOException {
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
     assertNotNull(searchService.search(queryMatch));
+    verify(restHighLevelClient).search(searchRequestArgumentCaptor.capture(),
+        requestOptionsArgumentCaptor.capture());
+    assertTrue(
+        searchRequestArgumentCaptor.getValue().source().query() instanceof MatchQueryBuilder);
   }
 
   @Test
   public void searchQueryMultiMatchTest() throws IOException {
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
     assertNotNull(searchService.search(queryMultiMatch));
+    verify(restHighLevelClient).search(searchRequestArgumentCaptor.capture(),
+        requestOptionsArgumentCaptor.capture());
+    assertTrue(
+        searchRequestArgumentCaptor.getValue().source().query() instanceof MultiMatchQueryBuilder);
   }
 
   @Test
   public void searchQueryTermTest() throws IOException {
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
     assertNotNull(searchService.search(queryTerm));
+    verify(restHighLevelClient).search(searchRequestArgumentCaptor.capture(),
+        requestOptionsArgumentCaptor.capture());
+    assertTrue(searchRequestArgumentCaptor.getValue().source().query() instanceof TermQueryBuilder);
   }
 
   @Test
   public void searchQueryTermNestedTest() throws IOException {
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
     assertNotNull(searchService.search(queryTermNested));
+    verify(restHighLevelClient).search(searchRequestArgumentCaptor.capture(),
+        requestOptionsArgumentCaptor.capture());
+    assertTrue(
+        searchRequestArgumentCaptor.getValue().source().query() instanceof NestedQueryBuilder);
+
+    NestedQueryBuilder parentQuery = (NestedQueryBuilder) searchRequestArgumentCaptor.getValue()
+        .source().query();
+    assertTrue(parentQuery.query() instanceof TermQueryBuilder);
   }
 
   @Test
   public void searchQueryWildcardTest() throws IOException {
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
     assertNotNull(searchService.search(queryWildcard));
+    verify(restHighLevelClient).search(searchRequestArgumentCaptor.capture(),
+        requestOptionsArgumentCaptor.capture());
+    assertTrue(
+        searchRequestArgumentCaptor.getValue().source().query() instanceof WildcardQueryBuilder);
   }
 
   @Test
   public void searchQueryWildcardNestedTest() throws IOException {
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
     assertNotNull(searchService.search(queryWildcardNested));
+    verify(restHighLevelClient).search(searchRequestArgumentCaptor.capture(),
+        requestOptionsArgumentCaptor.capture());
+    assertTrue(
+        searchRequestArgumentCaptor.getValue().source().query() instanceof NestedQueryBuilder);
+
+    NestedQueryBuilder parentQuery = (NestedQueryBuilder) searchRequestArgumentCaptor.getValue()
+        .source().query();
+
+    assertTrue(parentQuery.query() instanceof WildcardQueryBuilder);
   }
 
   @Test
   public void searchQueryTermsTest() throws IOException {
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
     assertNotNull(searchService.search(queryTerms));
+    verify(restHighLevelClient).search(searchRequestArgumentCaptor.capture(),
+        requestOptionsArgumentCaptor.capture());
+
+    assertTrue(
+        searchRequestArgumentCaptor.getValue().source().query() instanceof TermsQueryBuilder);
   }
 
   @Test
   public void searchQueryTermsNestedTest() throws IOException {
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
     assertNotNull(searchService.search(queryTermsNested));
+    verify(restHighLevelClient).search(searchRequestArgumentCaptor.capture(),
+        requestOptionsArgumentCaptor.capture());
+    assertTrue(
+        searchRequestArgumentCaptor.getValue().source().query() instanceof NestedQueryBuilder);
+
+    NestedQueryBuilder parentQuery = (NestedQueryBuilder) searchRequestArgumentCaptor.getValue()
+        .source().query();
+
+    assertTrue(parentQuery.query() instanceof TermsQueryBuilder);
   }
 
   @Test
   public void searchQueryRangeTest() throws IOException {
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
     assertNotNull(searchService.search(queryRange));
+    verify(restHighLevelClient).search(searchRequestArgumentCaptor.capture(),
+        requestOptionsArgumentCaptor.capture());
+    assertTrue(
+        searchRequestArgumentCaptor.getValue().source().query() instanceof RangeQueryBuilder);
   }
 
   @Test
   public void searchQueryStringSpecFieldTest() throws IOException {
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
     assertNotNull(searchService.search(queryStringSpecField));
+    verify(restHighLevelClient).search(searchRequestArgumentCaptor.capture(),
+        requestOptionsArgumentCaptor.capture());
+    assertTrue(
+        searchRequestArgumentCaptor.getValue().source().query() instanceof QueryStringQueryBuilder);
   }
 
   @Test
   public void searchQueryStringSpecFieldNestedTest() throws IOException {
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
     assertNotNull(searchService.search(queryStringSpecFieldNested));
+    verify(restHighLevelClient).search(searchRequestArgumentCaptor.capture(),
+        requestOptionsArgumentCaptor.capture());
+    assertTrue(
+        searchRequestArgumentCaptor.getValue().source().query() instanceof NestedQueryBuilder);
+
+    NestedQueryBuilder parentQuery = (NestedQueryBuilder) searchRequestArgumentCaptor.getValue()
+        .source().query();
+
+    assertTrue(parentQuery.query() instanceof QueryStringQueryBuilder);
   }
 
   @Test
   public void searchSimpleQueryStringTest() throws IOException {
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
     assertNotNull(searchService.search(simpleQueryString));
-  }
-
-  @Test
-  public void searchEditAggregationTest() throws IOException {
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
-    queryResponse.setAggregations(new Aggregations());
-    when(httpEntity.getContent())
-      .thenReturn(new ByteArrayInputStream(
-        objectMapper.writeValueAsBytes(queryResponse)));
-    assertNotNull(searchService.search(querySpec));
-  }
-
-  @Test
-  public void searchEditAggregationNullTest() throws IOException {
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
-    queryResponse.setAggregations(null);
-    when(httpEntity.getContent())
-      .thenReturn(new ByteArrayInputStream(
-        objectMapper.writeValueAsBytes(queryResponse)));
-    assertNotNull(searchService.search(querySpec));
+    verify(restHighLevelClient).search(searchRequestArgumentCaptor.capture(),
+        requestOptionsArgumentCaptor.capture());
+    assertTrue(
+        searchRequestArgumentCaptor.getValue().source()
+            .query() instanceof SimpleQueryStringBuilder);
   }
 
   @Test
   public void searchMultipleSortTest() throws IOException {
-    querySpec.setQuerySort(querySpec.getQuerySort().setSort("field2", "desc"));
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
-    assertNotNull(searchService.search(querySpec));
-  }
+    queryString.setQuerySort(queryString.getQuerySort().setSort("field2", SortOrder.DESC));
 
-  @Test
-  public void searchQueryMultiMatchMultipleFieldsTest() throws IOException {
-    queryMultiMatch.setTerm(this, "field1", "field2");
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
-    assertNotNull(searchService.search(queryMultiMatch));
+    assertNotNull(searchService.search(queryString));
+    verify(restHighLevelClient).search(searchRequestArgumentCaptor.capture(),
+        requestOptionsArgumentCaptor.capture());
+
+    assertEquals(2, searchRequestArgumentCaptor.getValue().source().sorts().size());
   }
 
   @Test
   public void searchUnknownDtoInstanceTest() throws IOException {
     UnknownSearchDTO unknownSearchDTO = new UnknownSearchDTO();
     unknownSearchDTO.setQuerySort(initTestValues.createQuerySort());
-    when(restClient.performRequest(any(Request.class))).thenReturn(response);
+
     assertNotNull(searchService.search(unknownSearchDTO));
+    verify(restHighLevelClient).search(searchRequestArgumentCaptor.capture(),
+        requestOptionsArgumentCaptor.capture());
+    assertTrue(
+        searchRequestArgumentCaptor.getValue().source().query() instanceof MatchAllQueryBuilder);
+  }
+
+  @Test
+  public void searchIncludesExcludesTest() throws IOException {
+    queryBoolean.include("field2");
+    queryBoolean.exclude("field1");
+
+    assertNotNull(searchService.search(queryBoolean));
+    verify(restHighLevelClient).search(searchRequestArgumentCaptor.capture(),
+        requestOptionsArgumentCaptor.capture());
+    FetchSourceContext fetchSourceContext = searchRequestArgumentCaptor.getValue().source()
+        .fetchSource();
+
+    assertEquals("field2", fetchSourceContext.includes()[0]);
+    assertEquals("field1", fetchSourceContext.excludes()[0]);
+  }
+
+  @Test
+  public void searchAggregationTest() throws IOException {
+    queryBoolean.setAggregate("field1");
+    queryBoolean.setAggregateSize(30);
+
+    assertNotNull(searchService.search(queryBoolean));
+    verify(restHighLevelClient).search(searchRequestArgumentCaptor.capture(),
+        requestOptionsArgumentCaptor.capture());
+
+    Builder aggregations = searchRequestArgumentCaptor.getValue().source().aggregations();
+    List<AggregationBuilder> aggregatorFactories = aggregations.getAggregatorFactories();
+    AggregationBuilder aggregationBuilder = aggregatorFactories.get(0);
+
+    assertEquals("agg", aggregationBuilder.getName());
   }
 
 }

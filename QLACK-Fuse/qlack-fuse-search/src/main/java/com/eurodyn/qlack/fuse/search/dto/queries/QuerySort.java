@@ -1,13 +1,15 @@
 package com.eurodyn.qlack.fuse.search.dto.queries;
 
+import lombok.Getter;
+import org.elasticsearch.search.sort.SortOrder;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
-import lombok.Getter;
 
 /**
- * A query performing a match against ES. The default match query is of type
- * boolean. The value provided is analyzed and the analysis process constructs a
- * boolean query from the provided text using boolean OR. Example:
+ * A query performing a match against ES. The default match query is of type boolean. The value
+ * provided is analyzed and the analysis process constructs a boolean query from the provided text
+ * using boolean OR. Example:
  *
  * <pre>
  * new QueryMatch()
@@ -25,19 +27,19 @@ import lombok.Getter;
 public class QuerySort {
 
   /**
-   * The fields to order against. The key is he field to execute the sort
-   * against. The value should be asc or desc.
+   * The fields to order against. The key is the field to execute the sort against. The value should
+   * be asc or desc.
    */
-  private final Map<String, String> sortMap = new LinkedHashMap<>();
+  private final Map<String, SortOrder> sortMap = new LinkedHashMap<>();
 
   /**
    * A convenience method to set the term of this query.
    *
-   * @param field The field name to search against.
-   * @param order The value to search.
+   * @param field The field name to sort against.
+   * @param order The order of the sorting.
    * @return a {@link QuerySort} object
    */
-  public QuerySort setSort(String field, String order) {
+  public QuerySort setSort(String field, SortOrder order) {
     sortMap.put(field, order);
     return this;
   }

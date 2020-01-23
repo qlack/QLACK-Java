@@ -2,11 +2,13 @@ package com.eurodyn.qlack.fuse.search.dto.queries;
 
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * 22/01/2018 : The term query finds documents that contain the exact terms
- * specified in the inverted index. In addition to the simple Query Terms we
- * search directly in the nested objects. This will additional return a
- * inner_hits Object that contains the Id's for the matched nested
+ * 22/01/2018 : The term query finds documents that contain the exact terms specified in the
+ * inverted index. In addition to the simple Query Terms we search directly in the nested objects.
+ * This will additional return a inner_hits Object that contains the Id's for the matched nested
  * terms.Example:
  *
  * <pre>
@@ -30,9 +32,9 @@ public class QueryTermsNested extends QuerySpec {
   private String field;
 
   /**
-   * The comma delimited Search Values
+   * A list containing search values
    */
-  private Object values;
+  private List<String> values;
 
   /**
    * The nested object
@@ -42,10 +44,10 @@ public class QueryTermsNested extends QuerySpec {
   /**
    * The Object name of the inner search results
    */
-  private String docvalueFields;
+  private List<String> docvalueFields = new ArrayList<>();
 
-  public QueryTermsNested setTerm(String field, Object values, String path,
-    String docvalueFields) {
+  public QueryTermsNested setTerm(String field, List<String> values, String path,
+      List<String> docvalueFields) {
     this.field = field;
     this.values = values;
     this.path = path;

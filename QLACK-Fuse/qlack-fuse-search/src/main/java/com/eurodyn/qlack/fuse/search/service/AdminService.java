@@ -6,17 +6,22 @@ import com.eurodyn.qlack.fuse.search.request.CreateIndexRequest;
 import com.eurodyn.qlack.fuse.search.request.UpdateMappingRequest;
 import com.eurodyn.qlack.fuse.search.util.ESClient;
 import lombok.extern.java.Log;
-import org.apache.http.entity.ContentType;
-import org.apache.http.nio.entity.NStringEntity;
+import org.elasticsearch.ElasticsearchStatusException;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
+import org.elasticsearch.action.admin.indices.close.CloseIndexRequest;
+import org.elasticsearch.action.admin.indices.close.CloseIndexResponse;
+import org.elasticsearch.action.admin.indices.open.OpenIndexRequest;
+import org.elasticsearch.action.admin.indices.open.OpenIndexResponse;
+import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequest;
+import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsResponse;
 import org.elasticsearch.action.get.GetRequest;
-import org.elasticsearch.client.Request;
 import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.query.AliasQuery;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
@@ -177,8 +182,7 @@ public class AdminService {
    * @return true if exists, false otherwise
    */
   public boolean documentExists(String indexName, String typeName, String id) {
-    ESDocumentIdentifierDTO dto = new ESDocumentIdentifierDTO(indexName,
-        typeName, id);
+    ESDocumentIdentifierDTO dto = new ESDocumentIdentifierDTO(indexName, typeName, id);
     return documentExists(dto);
   }
 
@@ -192,8 +196,7 @@ public class AdminService {
   public boolean documentExists(ESDocumentIdentifierDTO dto) {
     log.info(MessageFormat.format("Checking if document {0}exists", dto));
     try {
-      GetRequest getRequest = new GetRequest(dto.getIndex(), dto.getType(),
-          dto.getId());
+      GetRequest getRequest = new GetRequest(dto.getIndex(), dto.getType(), dto.getId());
       return esClient.getClient().exists(getRequest, RequestOptions.DEFAULT);
     } catch (IOException e) {
       String errorMsg = MessageFormat
@@ -237,26 +240,25 @@ public class AdminService {
   public boolean updateIndexSettings(String indexName,
       Map<String, String> settings,
       boolean preserveExisting) {
-    log.info(MessageFormat
-        .format("Updating settings of index {0}. Existing settings will be {1}",
-            indexName, preserveExisting ? "preserved" : "overwritten"));
+    log.info(MessageFormat.format("Updating settings of index {0}. Existing settings will be {1}",
+        indexName, preserveExisting ? "preserved" : "overwritten"));
     if (!canPerformOperation(indexName)) {
       return false;
     }
 
-    String endpoint = indexName + "/_settings";
-    if (preserveExisting) {
-      endpoint += "?preserve_existing=true";
-    }
+    UpdateSettingsRequest request = new UpdateSettingsRequest(indexName)
+        .settings(settings)
+        .setPreserveExisting(preserveExisting);
+
     closeIndex(indexName);
-    NStringEntity entity = new NStringEntity(
-        new JSONObject(settings).toString(),
-        ContentType.APPLICATION_JSON);
-    boolean changedIndexSettings = commonIndexingOperationWithEntity("PUT",
-        endpoint,
-        "Could not change index settings.", entity);
-    openIndex(indexName);
-    return changedIndexSettings;
+    try {
+      UpdateSettingsResponse updateSettingsResponse =
+          esClient.getClient().indices().putSettings(request, RequestOptions.DEFAULT);
+      openIndex(indexName);
+      return updateSettingsResponse.isAcknowledged();
+    } catch (IOException e) {
+      throw new SearchException("Could not change index settings.", e);
+    }
   }
 
   /**
@@ -265,12 +267,19 @@ public class AdminService {
    * @param indexName the name of the index to close
    * @return true if closed, false otherwise
    */
+  @Async
   public boolean closeIndex(String indexName) {
     log.info(MessageFormat.format("Closing index {0}", indexName));
-    String endpoint = indexName + "/_close";
-    return !canPerformOperation(indexName) || commonIndexingOperation("POST",
-        endpoint,
-        "Could not close index.");
+    CloseIndexRequest closeIndexRequest = new CloseIndexRequest(indexName);
+
+    try {
+      CloseIndexResponse closeIndexResponse = esClient.getClient().indices()
+          .close(closeIndexRequest,
+              RequestOptions.DEFAULT);
+      return closeIndexResponse.isAcknowledged();
+    } catch (IOException | ElasticsearchStatusException e) {
+      throw new SearchException("Could not close index.", e);
+    }
   }
 
   /**
@@ -281,10 +290,15 @@ public class AdminService {
    */
   public boolean openIndex(String indexName) {
     log.info(MessageFormat.format("Opening index {0}", indexName));
-    String endpoint = indexName + "/_open";
-    return !canPerformOperation(indexName) || commonIndexingOperation("POST",
-        endpoint,
-        "Could not open index.");
+    OpenIndexRequest openIndexRequest = new OpenIndexRequest(indexName);
+
+    try {
+      OpenIndexResponse resp = esClient.getClient().indices().open(openIndexRequest,
+          RequestOptions.DEFAULT);
+      return resp.isAcknowledged();
+    } catch (IOException | ElasticsearchStatusException e) {
+      throw new SearchException("Could not open index.", e);
+    }
   }
 
   /**
@@ -294,14 +308,13 @@ public class AdminService {
    */
   public boolean checkIsUp() {
     log.info("Checking cluster health");
+    ClusterHealthRequest clusterHealthRequest = new ClusterHealthRequest();
     try {
-      Request request = new Request("GET", "_cluster/health");
-      Response response = esClient.getClient().getLowLevelClient()
-          .performRequest(request);
-
-      return response.getStatusLine().getStatusCode() == 200;
-    } catch (IOException e) {
-      log.log(Level.SEVERE, "Could not check cluster health", e);
+      ClusterHealthResponse health = esClient.getClient().cluster()
+          .health(clusterHealthRequest, RequestOptions.DEFAULT);
+      return health.status().getStatus() == 200;
+    } catch (IOException ex) {
+      log.log(Level.SEVERE, "Could not check cluster health", ex);
       return false;
     }
   }
@@ -334,44 +347,5 @@ public class AdminService {
       return false;
     }
     return true;
-  }
-
-  /**
-   * Executes a request on Elastic Search client
-   *
-   * @param method an HTTP method (GET, POST etc.)
-   * @param indexName an index name
-   * @param errorMsg a custom error message
-   * @return true if the response http status code is 200 (OK), false otherwise
-   */
-  private boolean commonIndexingOperation(String method, String indexName,
-      String errorMsg) {
-    return commonIndexingOperationWithEntity(method, indexName, errorMsg, null);
-  }
-
-  /**
-   * Executes a request on Elastic Search client
-   *
-   * @param method an HTTP method (GET, POST etc.)
-   * @param endpoint an endpoint on which the request should be performed
-   * @param errorMsg a custom error message
-   * @param entity an HttpEntity
-   * @return true if the response http status code is 200 (OK), false otherwise
-   */
-  private boolean commonIndexingOperationWithEntity(String method,
-      String endpoint, String errorMsg,
-      NStringEntity entity) {
-    try {
-      Request request = new Request(method, endpoint);
-      if (entity != null) {
-        request.setEntity(entity);
-      }
-      Response response = esClient.getClient().getLowLevelClient()
-          .performRequest(request);
-      return response.getStatusLine().getStatusCode() == 200;
-    } catch (IOException e) {
-      log.log(Level.SEVERE, errorMsg, e);
-      throw new SearchException(errorMsg, e);
-    }
   }
 }

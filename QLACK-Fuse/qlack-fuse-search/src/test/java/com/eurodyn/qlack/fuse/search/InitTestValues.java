@@ -3,11 +3,12 @@ package com.eurodyn.qlack.fuse.search;
 import com.eurodyn.qlack.fuse.search.dto.IndexingDTO;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryBoolean;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryBoolean.BooleanType;
+import com.eurodyn.qlack.fuse.search.dto.queries.QueryExists;
+import com.eurodyn.qlack.fuse.search.dto.queries.QueryExistsNested;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryMatch;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryMultiMatch;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryRange;
 import com.eurodyn.qlack.fuse.search.dto.queries.QuerySort;
-import com.eurodyn.qlack.fuse.search.dto.queries.QuerySpec;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryString;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryStringSpecField;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryStringSpecFieldNested;
@@ -18,20 +19,16 @@ import com.eurodyn.qlack.fuse.search.dto.queries.QueryTermsNested;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryWildcard;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryWildcardNested;
 import com.eurodyn.qlack.fuse.search.dto.queries.SimpleQueryString;
-import com.eurodyn.qlack.fuse.search.mapper.response.QueryResponse;
-import com.eurodyn.qlack.fuse.search.mapper.response.QueryResponse.Aggregations;
-import com.eurodyn.qlack.fuse.search.mapper.response.QueryResponse.Aggregations.Agg;
-import com.eurodyn.qlack.fuse.search.mapper.response.QueryResponse.Aggregations.Agg.Bucket;
-import com.eurodyn.qlack.fuse.search.mapper.response.QueryResponse.Hits;
-import com.eurodyn.qlack.fuse.search.mapper.response.QueryResponse.Hits.Hit;
-import com.eurodyn.qlack.fuse.search.mapper.response.QueryResponse.Shards;
 import com.eurodyn.qlack.fuse.search.request.CreateIndexRequest;
 import com.eurodyn.qlack.fuse.search.request.ScrollRequest;
 import com.eurodyn.qlack.fuse.search.request.UpdateMappingRequest;
-import java.util.ArrayList;
+import org.elasticsearch.common.bytes.BytesArray;
+import org.elasticsearch.common.bytes.BytesReference;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.SortOrder;
+
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class InitTestValues {
@@ -84,64 +81,25 @@ public class InitTestValues {
     return settings;
   }
 
-  public QueryResponse createQueryResponse() {
-    QueryResponse queryResponse = new QueryResponse();
-    queryResponse.setTook(1000);
-    queryResponse.setTimeOut(false);
-    queryResponse.setCount(100);
-
-    Hits hits = new Hits();
-    hits.setMaxScore(100.0f);
-    hits.setTotal(700);
-
-    Hit hit = new Hit();
-    hit.setId("id");
-    List<Hit> hitList = new ArrayList<>();
-    hitList.add(hit);
-    hits.setHitList(hitList);
-    queryResponse.setHits(hits);
-
-    Shards shards = new Shards();
-    shards.setFailed(2);
-    shards.setSuccessful(20);
-    shards.setTotal(22);
-    queryResponse.setShards(shards);
-
-    Aggregations aggregations = new Aggregations();
-    Agg agg = new Agg();
-    List<Bucket> buckets = new ArrayList<>();
-    Bucket bucket = new Bucket();
-    bucket.setKey(100L);
-    buckets.add(bucket);
-    agg.setBuckets(buckets);
-    aggregations.setAgg(agg);
-    queryResponse.setAggregations(aggregations);
-
-    return queryResponse;
-  }
-
   public QuerySort createQuerySort() {
     QuerySort querySort = new QuerySort();
-    querySort.setSort("field1", "asc");
+    querySort.setSort("field1", SortOrder.ASC);
 
     return querySort;
   }
 
-  public QuerySpec createQuerySpec() {
-    QuerySpec querySpec = new QueryString();
+  public QueryString createQueryString() {
+    QueryString queryString = new QueryString().setQueryStringValue("fooField: valueToMatch");
 
-    querySpec.setScroll(10);
-    querySpec.setQuerySort(createQuerySort());
-    querySpec.setScroll(null);
+    queryString.setScroll(10);
+    queryString.setQuerySort(createQuerySort());
 
-    return querySpec;
+    return queryString;
   }
 
   public QueryMatch createQueryMatch() {
     QueryMatch queryMatch = new QueryMatch();
-    queryMatch.setField("field1");
-    queryMatch.setTerm("term1", this);
-    queryMatch.setValue(this);
+    queryMatch.setTerm("fieldName", "valueToMatch");
     queryMatch.setQuerySort(createQuerySort());
 
     return queryMatch;
@@ -158,18 +116,16 @@ public class InitTestValues {
   public QueryBoolean createQueryBoolean() {
     QueryBoolean queryBoolean = new QueryBoolean();
     queryBoolean.setQuerySort(createQuerySort());
-    queryBoolean.setTerm(createQuerySpec(), BooleanType.MUST);
-    queryBoolean.setTerm(createQuerySpec(), BooleanType.MUST);
-    queryBoolean.setTerm(createQuerySpec(), BooleanType.MUSTNOT);
-    queryBoolean.setTerm(createQuerySpec(), BooleanType.SHOULD);
-    queryBoolean.setTerm(createQuerySpec(), null);
+    queryBoolean.setTerm(createQueryString(), BooleanType.MUST);
+    queryBoolean.setTerm(createQueryString(), BooleanType.MUSTNOT);
+    queryBoolean.setTerm(createQueryString(), BooleanType.SHOULD);
 
     return queryBoolean;
   }
 
   public QueryMultiMatch createQueryMultiMatch() {
     QueryMultiMatch queryMultiMatch = new QueryMultiMatch();
-    queryMultiMatch.setTerm(this, "field1");
+    queryMultiMatch.setTerm("valueToMatch", "field1", "field2");
     queryMultiMatch.setQuerySort(createQuerySort());
 
     return queryMultiMatch;
@@ -177,6 +133,7 @@ public class InitTestValues {
 
   public QueryTerm createQueryTerm() {
     QueryTerm queryTerm = new QueryTerm();
+    queryTerm.setTerm("fieldName", "valueToMatch");
     queryTerm.setQuerySort(createQuerySort());
 
     return queryTerm;
@@ -184,6 +141,8 @@ public class InitTestValues {
 
   public QueryTermNested createQueryTermNested() {
     QueryTermNested queryTermNested = new QueryTermNested();
+    queryTermNested.setTerm("nestedObjectName.fieldName", "valueToMatch", "nestedObjectName",
+        Arrays.asList("field1, field2"));
     queryTermNested.setQuerySort(createQuerySort());
 
     return queryTermNested;
@@ -191,6 +150,7 @@ public class InitTestValues {
 
   public QueryWildcard createQueryWildcard() {
     QueryWildcard queryWildcard = new QueryWildcard();
+    queryWildcard.setTerm("filedName", "valueToMa*");
     queryWildcard.setQuerySort(createQuerySort());
 
     return queryWildcard;
@@ -198,6 +158,8 @@ public class InitTestValues {
 
   public QueryWildcardNested createQueryWildcardNested() {
     QueryWildcardNested queryWildcardNested = new QueryWildcardNested();
+    queryWildcardNested.setTerm("nestedObjectName.fieldName", "valueToMa*", "nestedObjectName",
+        Arrays.asList("field1, field2"));
     queryWildcardNested.setQuerySort(createQuerySort());
 
     return queryWildcardNested;
@@ -205,6 +167,7 @@ public class InitTestValues {
 
   public QueryTerms createQueryTerms() {
     QueryTerms queryTerms = new QueryTerms();
+    queryTerms.setTerm("fieldName", Arrays.asList("valueToMatch1, valueToMatch2"));
     queryTerms.setQuerySort(createQuerySort());
 
     return queryTerms;
@@ -212,6 +175,10 @@ public class InitTestValues {
 
   public QueryTermsNested createQueryTermsNested() {
     QueryTermsNested queryTermsNested = new QueryTermsNested();
+    queryTermsNested.setTerm("nestedObjectName.fieldName", Arrays.asList("valueToMatch1",
+        "valueToMatch2"),
+        "nestedObjectName",
+        Arrays.asList("field1, field2"));
     queryTermsNested.setQuerySort(createQuerySort());
 
     return queryTermsNested;
@@ -219,6 +186,7 @@ public class InitTestValues {
 
   public QueryRange createQueryRange() {
     QueryRange queryRange = new QueryRange();
+    queryRange.setTerm("fieldName", 10, 50);
     queryRange.setQuerySort(createQuerySort());
 
     return queryRange;
@@ -226,6 +194,8 @@ public class InitTestValues {
 
   public QueryStringSpecField createQueryStringSpecField() {
     QueryStringSpecField queryStringSpecField = new QueryStringSpecField();
+
+    queryStringSpecField.setTerm("fieldName", "ra* em*", "OR");
     queryStringSpecField.setQuerySort(createQuerySort());
 
     return queryStringSpecField;
@@ -233,6 +203,9 @@ public class InitTestValues {
 
   public QueryStringSpecFieldNested createQueryStringSpecFieldNested() {
     QueryStringSpecFieldNested queryStringSpecFieldNested = new QueryStringSpecFieldNested();
+    queryStringSpecFieldNested.setTerm("nestedObjectName.fieldName", "ra* em*", "OR",
+        "nestedObjectName",
+        Arrays.asList("field1, field2"));
     queryStringSpecFieldNested.setQuerySort(createQuerySort());
 
     return queryStringSpecFieldNested;
@@ -240,9 +213,33 @@ public class InitTestValues {
 
   public SimpleQueryString createSimpleQueryString() {
     SimpleQueryString simpleQueryString = new SimpleQueryString();
+    simpleQueryString.setTerm("fieldName", "valueToMatch?", "OR");
     simpleQueryString.setQuerySort(createQuerySort());
 
     return simpleQueryString;
   }
 
+  public QueryExists createQueryExists() {
+    QueryExists queryExists = new QueryExists();
+    queryExists.setField("fieldName");
+    queryExists.setQuerySort(createQuerySort());
+
+    return queryExists;
+  }
+
+  public QueryExistsNested createQueryExistsNested() {
+    QueryExistsNested queryExistsNested = new QueryExistsNested();
+    queryExistsNested.setTerm("nestedObjectName.fieldName", "nestedObjectName");
+    queryExistsNested.setQuerySort(createQuerySort());
+
+    return queryExistsNested;
+  }
+
+  public SearchHit[] searchHits() {
+    BytesReference source = new BytesArray("{search source result}");
+    SearchHit[] searchHits = new SearchHit[1];
+    searchHits[0] = new SearchHit(1).sourceRef(source);
+
+    return searchHits;
+  }
 }
