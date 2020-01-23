@@ -47,7 +47,7 @@ public interface UserGroupMapper {
    * @param userGroupDTO the userGroupDTO
    * @return the relative entity
    */
-  @Mapping(source = "parentId", target = "parent.id")
+  @Mapping(target = "parent", source="parentId", qualifiedByName = "mapParent")
   UserGroup mapToEntity(UserGroupDTO userGroupDTO);
 
   /**
@@ -81,5 +81,15 @@ public interface UserGroupMapper {
       return new HashSet<>(mapToDTO(children, true));
     }
     return new HashSet<>();
+  }
+
+  @Named("mapParent")
+  default UserGroup mapParent(String parentId) {
+   if (parentId != null){
+     UserGroup parent = new UserGroup();
+     parent.setId(parentId);
+     return parent;
+   }
+   return null;
   }
 }

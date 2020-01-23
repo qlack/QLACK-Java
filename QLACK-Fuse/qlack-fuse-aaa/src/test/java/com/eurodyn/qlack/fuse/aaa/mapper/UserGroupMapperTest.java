@@ -187,12 +187,6 @@ public class UserGroupMapperTest {
   }
 
   @Test
-  public void userGroupDTOToUserGroupTest() {
-    userGroup = userGroupMapperImpl.userGroupDTOToUserGroup(null);
-    assertEquals(null, userGroup);
-  }
-
-  @Test
   public void mapToExistingEntityNullTest() {
     UserGroupDTO userGroupDTO = initTestValues.createUserGroupDTO();
     userGroupDTO.setName("updated name");
