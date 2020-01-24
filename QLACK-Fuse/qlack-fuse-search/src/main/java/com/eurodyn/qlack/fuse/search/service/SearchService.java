@@ -52,6 +52,7 @@ import org.springframework.validation.annotation.Validated;
 
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -107,11 +108,10 @@ public class SearchService {
     searchSourceBuilder.query(queryBuilder);
 
     List<String> docValueFields = getDocValueFields(dto);
-    if (docValueFields != null) {
+    if (!docValueFields.isEmpty()) {
 
-      docValueFields.forEach(docValueField -> {
-        searchSourceBuilder.docValueField(docValueField, "use_field_mapping");
-      });
+      docValueFields.forEach(
+          docValueField -> searchSourceBuilder.docValueField(docValueField, "use_field_mapping"));
     }
 
     if (!dto.isCountOnly()) {
@@ -144,9 +144,8 @@ public class SearchService {
 
     try {
       SearchResponse response = client.search(searchRequest, RequestOptions.DEFAULT);
-      SearchResultDTO resultDTO = buildResultFrom(response, dto.isCountOnly(),
-          dto.isIncludeAllSource(), dto.isIncludeResults());
-      return resultDTO;
+      return buildResultFrom(response, dto.isCountOnly(), dto.isIncludeAllSource(),
+          dto.isIncludeResults());
     } catch (IOException e) {
       throw new SearchException("Could not execute query.", e);
     }
@@ -178,7 +177,6 @@ public class SearchService {
       return sh;
 
     } catch (IOException e) {
-      e.printStackTrace();
       return null;
     }
   }
@@ -368,7 +366,7 @@ public class SearchService {
       return ((QueryWildcardNested) dto).getDocvalueFields();
     }
 
-    return null;
+    return new ArrayList<>();
 
   }
 
@@ -424,9 +422,9 @@ public class SearchService {
 
     if (aggs != null) {
       Terms agg = aggs.get("agg");
-      agg.getBuckets().forEach(bucket -> {
-        resultDTO.getAggregations().put(bucket.getKeyAsString(), bucket.getDocCount());
-      });
+      agg.getBuckets().forEach(bucket ->
+          resultDTO.getAggregations().put(bucket.getKeyAsString(), bucket.getDocCount())
+      );
     }
 
     return resultDTO;
@@ -444,7 +442,7 @@ public class SearchService {
     sh.setType(hit.getType());
     sh.setSource(hit.getSourceAsString());
     sh.setId(hit.getId());
-    if (sh.getInnerHits() != null) {
+    if (hit.getInnerHits() != null) {
       sh.setInnerHits(hit.getInnerHits().toString());
     }
     return sh;
