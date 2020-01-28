@@ -112,7 +112,6 @@ public class SearchService {
 
     List<String> docValueFields = getDocValueFields(dto);
     if (!docValueFields.isEmpty()) {
-
       docValueFields.forEach(
           docValueField -> searchSourceBuilder.docValueField(docValueField, "use_field_mapping"));
     }
@@ -138,34 +137,9 @@ public class SearchService {
         searchRequest.scroll(TimeValue.timeValueMinutes(dto.getScroll()));
       }
 
-      QueryHighlight highlight = dto.getHighlight();
-      if (highlight != null) {
-        HighlightBuilder highlightBuilder = new HighlightBuilder();
-
-        if (!StringUtils.isEmpty(highlight.getPreTag())) {
-          highlightBuilder.preTags(highlight.getPreTag());
-        }
-
-        if (!StringUtils.isEmpty(highlight.getPostTag())) {
-          highlightBuilder.postTags(highlight.getPostTag());
-        }
-
-        if (highlight.getHighlightQuery() != null) {
-          highlightBuilder.highlightQuery(buildQuery(highlight.getHighlightQuery()));
-        }
-
-        highlight.getFields().forEach(
-            highlightField ->
-                highlightBuilder
-                    .field(highlightField.getField())
-                    .fragmentSize(highlightField.getFragmentSize())
-                    .highlighterType(highlightField.getType())
-                    .forceSource(highlightField.isForceSource())
-                    .noMatchSize(highlightField.getNoMatchSize())
-        );
-
-        searchSourceBuilder.highlighter(highlightBuilder);
-
+      //add highlight
+      if (dto.getHighlight() != null) {
+        searchSourceBuilder.highlighter(buildHighlightQuery(dto.getHighlight()));
       }
     }
 
@@ -345,6 +319,38 @@ public class SearchService {
     }
 
     return QueryBuilders.matchAllQuery();
+  }
+
+  /**
+   * Utility method that constructs highlight query
+   *
+   * @param highlight contains the highlight specs.
+   */
+  private HighlightBuilder buildHighlightQuery(QueryHighlight highlight) {
+    HighlightBuilder highlightBuilder = new HighlightBuilder();
+
+    if (!StringUtils.isEmpty(highlight.getPreTag())) {
+      highlightBuilder.preTags(highlight.getPreTag());
+    }
+
+    if (!StringUtils.isEmpty(highlight.getPostTag())) {
+      highlightBuilder.postTags(highlight.getPostTag());
+    }
+
+    if (highlight.getHighlightQuery() != null) {
+      highlightBuilder.highlightQuery(buildQuery(highlight.getHighlightQuery()));
+    }
+
+    highlight.getFields().forEach(
+        highlightField ->
+            highlightBuilder
+                .field(highlightField.getField())
+                .fragmentSize(highlightField.getFragmentSize())
+                .highlighterType(highlightField.getType())
+                .forceSource(highlightField.isForceSource())
+                .noMatchSize(highlightField.getNoMatchSize())
+    );
+    return highlightBuilder;
   }
 
   /**
