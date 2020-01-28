@@ -5,6 +5,7 @@ import com.eurodyn.qlack.fuse.search.dto.SearchResultDTO;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryBoolean;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryExists;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryExistsNested;
+import com.eurodyn.qlack.fuse.search.dto.queries.QueryHighlight;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryMatch;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryMultiMatch;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryRange;
@@ -46,8 +47,10 @@ import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 
 import java.io.IOException;
@@ -133,6 +136,36 @@ public class SearchService {
       //add scroll
       if (dto.getScroll() != null) {
         searchRequest.scroll(TimeValue.timeValueMinutes(dto.getScroll()));
+      }
+
+      QueryHighlight highlight = dto.getHighlight();
+      if (highlight != null) {
+        HighlightBuilder highlightBuilder = new HighlightBuilder();
+
+        if (!StringUtils.isEmpty(highlight.getPreTag())) {
+          highlightBuilder.preTags(highlight.getPreTag());
+        }
+
+        if (!StringUtils.isEmpty(highlight.getPostTag())) {
+          highlightBuilder.postTags(highlight.getPostTag());
+        }
+
+        if (highlight.getHighlightQuery() != null) {
+          highlightBuilder.highlightQuery(buildQuery(highlight.getHighlightQuery()));
+        }
+
+        highlight.getFields().forEach(
+            highlightField ->
+                highlightBuilder
+                    .field(highlightField.getField())
+                    .fragmentSize(highlightField.getFragmentSize())
+                    .highlighterType(highlightField.getType())
+                    .forceSource(highlightField.isForceSource())
+                    .noMatchSize(highlightField.getNoMatchSize())
+        );
+
+        searchSourceBuilder.highlighter(highlightBuilder);
+
       }
     }
 
@@ -445,6 +478,8 @@ public class SearchService {
     if (hit.getInnerHits() != null) {
       sh.setInnerHits(hit.getInnerHits().toString());
     }
+    sh.setHighlight(hit.getHighlightFields().toString());
+
     return sh;
   }
 }

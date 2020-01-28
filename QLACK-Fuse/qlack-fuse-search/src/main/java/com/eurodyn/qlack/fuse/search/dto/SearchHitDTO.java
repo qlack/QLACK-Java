@@ -43,10 +43,15 @@ public class SearchHitDTO {
    */
   private String id;
 
+  /**
+   * The highlight section of the hit.
+   */
+  private String highlight;
+
   @Override
   public String toString() {
     return "SearchHitDTO [source=" + source + ", score=" + score + ", type="
-      + type + ", innerHits="
-      + innerHits + "]";
+        + type + ", innerHits="
+        + innerHits + "]";
   }
 }

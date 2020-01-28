@@ -17,6 +17,7 @@ public abstract class QuerySpec {
   private final List<String> includes = new ArrayList<>();
   private final List<String> excludes = new ArrayList<>();
   protected QuerySort querySort;
+  private QueryHighlight highlight;
   /**
    * The list of indices a query is executed against.
    */
@@ -208,6 +209,11 @@ public abstract class QuerySpec {
 
   public QuerySpec exclude(String exclude) {
     excludes.add(exclude);
+    return this;
+  }
+
+  public QuerySpec setHighlight(QueryHighlight highlight) {
+    this.highlight = highlight;
     return this;
   }
 }

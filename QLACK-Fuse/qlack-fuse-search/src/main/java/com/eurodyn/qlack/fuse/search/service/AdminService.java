@@ -128,7 +128,6 @@ public class AdminService {
    */
   public boolean deleteIndex(String indexName) {
     log.info(MessageFormat.format("Deleting index {0}", indexName));
-    //TODO check if by deleting an index, its alias get deleted
     return !canPerformOperation(indexName) || elasticsearchOperations
         .deleteIndex(indexName);
   }

@@ -13,8 +13,10 @@ import com.eurodyn.qlack.fuse.search.InitTestValues;
 import com.eurodyn.qlack.fuse.search.UnknownSearchDTO;
 import com.eurodyn.qlack.fuse.search.dto.SearchHitDTO;
 import com.eurodyn.qlack.fuse.search.dto.SearchResultDTO;
+import com.eurodyn.qlack.fuse.search.dto.queries.HighlightField;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryBoolean;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryExists;
+import com.eurodyn.qlack.fuse.search.dto.queries.QueryHighlight;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryMatch;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryMultiMatch;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryRange;
@@ -57,6 +59,7 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregatorFactories.Builder;
 import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,6 +72,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -438,6 +442,34 @@ public class SearchServiceTest {
     AggregationBuilder aggregationBuilder = aggregatorFactories.get(0);
 
     assertEquals("agg", aggregationBuilder.getName());
+  }
+
+  @Test
+  public void searchWithHightlightingTest() throws IOException {
+    QueryHighlight queryHighlight = new QueryHighlight()
+        .addField(new HighlightField()
+            .setForceSource(true)
+            .setField("fieldName")
+            .setType("unified")
+            .setFragmentSize(255)
+            .setNumberOfFragments(1))
+        .setHighlightQuery(queryBoolean)
+        .setPostTag("<b>")
+        .setPreTag("</b>");
+    queryTerm.setHighlight(queryHighlight);
+
+    assertNotNull(searchService.search(queryTerm));
+    verify(restHighLevelClient).search(searchRequestArgumentCaptor.capture(),
+        requestOptionsArgumentCaptor.capture());
+
+    HighlightBuilder highlighter = searchRequestArgumentCaptor.getValue().source().highlighter();
+    HighlightField highlightField = queryHighlight.getFields().get(0);
+
+    assertEquals(highlightField.getType(), highlighter.highlighterType());
+    assertEquals(highlightField.isForceSource(), highlighter.forceSource());
+    assertTrue(Arrays.asList(highlighter.preTags()).contains(queryHighlight.getPreTag()));
+    assertTrue(Arrays.asList(highlighter.postTags()).contains(queryHighlight.getPostTag()));
+    assertTrue(highlighter.highlightQuery() instanceof BoolQueryBuilder);
   }
 
 }
