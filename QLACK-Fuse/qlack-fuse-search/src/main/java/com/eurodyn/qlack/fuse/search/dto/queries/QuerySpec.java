@@ -72,6 +72,12 @@ public abstract class QuerySpec {
    */
   private int aggregateSize = 100;
 
+
+  /**
+   * The specs of the inner hits, only relevant for nested type of queries
+   */
+  private InnerHits innerHits;
+
   /**
    * Sets the indices against which the query is executed.
    *
@@ -214,6 +220,11 @@ public abstract class QuerySpec {
 
   public QuerySpec setHighlight(QueryHighlight highlight) {
     this.highlight = highlight;
+    return this;
+  }
+
+  public QuerySpec setInnerHits(InnerHits innerHits) {
+    this.innerHits = innerHits;
     return this;
   }
 }

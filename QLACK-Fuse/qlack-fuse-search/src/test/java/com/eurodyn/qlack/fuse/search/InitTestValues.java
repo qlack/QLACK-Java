@@ -1,10 +1,12 @@
 package com.eurodyn.qlack.fuse.search;
 
 import com.eurodyn.qlack.fuse.search.dto.IndexingDTO;
+import com.eurodyn.qlack.fuse.search.dto.queries.HighlightField;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryBoolean;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryBoolean.BooleanType;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryExists;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryExistsNested;
+import com.eurodyn.qlack.fuse.search.dto.queries.QueryHighlight;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryMatch;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryMultiMatch;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryRange;
@@ -22,9 +24,6 @@ import com.eurodyn.qlack.fuse.search.dto.queries.SimpleQueryString;
 import com.eurodyn.qlack.fuse.search.request.CreateIndexRequest;
 import com.eurodyn.qlack.fuse.search.request.ScrollRequest;
 import com.eurodyn.qlack.fuse.search.request.UpdateMappingRequest;
-import org.elasticsearch.common.bytes.BytesArray;
-import org.elasticsearch.common.bytes.BytesReference;
-import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
 
 import java.util.Arrays;
@@ -235,11 +234,18 @@ public class InitTestValues {
     return queryExistsNested;
   }
 
-  public SearchHit[] searchHits() {
-    BytesReference source = new BytesArray("{search source result}");
-    SearchHit[] searchHits = new SearchHit[1];
-    searchHits[0] = new SearchHit(1).sourceRef(source);
+  public QueryHighlight createQueryHighlight() {
+    QueryHighlight queryHighlight = new QueryHighlight();
+    queryHighlight.addField(new HighlightField()
+        .setForceSource(true)
+        .setField("fieldName")
+        .setType("unified")
+        .setFragmentSize(255)
+        .setNumberOfFragments(1));
+    queryHighlight.setHighlightQuery(createQueryBoolean());
+    queryHighlight.setPostTag("<b>");
+    queryHighlight.setPreTag("</b>");
 
-    return searchHits;
+    return queryHighlight;
   }
 }

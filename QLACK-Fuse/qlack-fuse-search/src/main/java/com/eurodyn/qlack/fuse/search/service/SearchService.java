@@ -1,7 +1,9 @@
 package com.eurodyn.qlack.fuse.search.service;
 
 import com.eurodyn.qlack.fuse.search.dto.SearchHitDTO;
+import com.eurodyn.qlack.fuse.search.dto.SearchHitsDTO;
 import com.eurodyn.qlack.fuse.search.dto.SearchResultDTO;
+import com.eurodyn.qlack.fuse.search.dto.queries.InnerHits;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryBoolean;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryExists;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryExistsNested;
@@ -34,8 +36,11 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchScrollRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.InnerHitBuilder;
+import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -57,6 +62,7 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 /**
@@ -107,8 +113,6 @@ public class SearchService {
     dto.getQuerySort().getSortMap().forEach(searchSourceBuilder::sort);
 
     QueryBuilder queryBuilder = buildQuery(dto);
-    //set the query
-    searchSourceBuilder.query(queryBuilder);
 
     List<String> docValueFields = getDocValueFields(dto);
     if (!docValueFields.isEmpty()) {
@@ -141,7 +145,17 @@ public class SearchService {
       if (dto.getHighlight() != null) {
         searchSourceBuilder.highlighter(buildHighlightQuery(dto.getHighlight()));
       }
+
+      //add inner hits spec
+      if (queryBuilder instanceof NestedQueryBuilder) {
+        ((NestedQueryBuilder) queryBuilder).innerHit(buildInnerHits(dto));
+      }
+
+      searchSourceBuilder.explain(dto.isExplain());
     }
+
+    //set the query
+    searchSourceBuilder.query(queryBuilder);
 
     //add search source to the request
     searchRequest.source(searchSourceBuilder);
@@ -409,6 +423,20 @@ public class SearchService {
 
   }
 
+  private InnerHitBuilder buildInnerHits(QuerySpec dto) {
+    InnerHitBuilder innerHitBuilder = new InnerHitBuilder();
+    InnerHits innerHits = dto.getInnerHits();
+    if (innerHits != null) {
+      innerHitBuilder.setSize(innerHits.getSize());
+      if (innerHits.getHighlight() != null) {
+        innerHitBuilder.setHighlightBuilder(buildHighlightQuery(innerHits.getHighlight()));
+      }
+      innerHitBuilder.setFetchSourceContext(new FetchSourceContext(true, Strings.EMPTY_ARRAY,
+          innerHits.getExcludes().toArray(new String[0])));
+    }
+    return innerHitBuilder;
+  }
+
   /**
    * Creates and returns a search result DTO based on the Elastic search response wrapper object
    * {@link SearchResponse)
@@ -481,11 +509,27 @@ public class SearchService {
     sh.setType(hit.getType());
     sh.setSource(hit.getSourceAsString());
     sh.setId(hit.getId());
-    if (hit.getInnerHits() != null) {
-      sh.setInnerHits(hit.getInnerHits().toString());
-    }
-    sh.setHighlight(hit.getHighlightFields().toString());
 
+    Map<String, SearchHits> innerHits = hit.getInnerHits();
+
+    if (innerHits != null) {
+      Map<String, SearchHitsDTO> innerHitsDTO = sh.getInnerHits();
+      innerHits.forEach((s, searchHits) -> {
+        SearchHitsDTO searchHitsDTO = new SearchHitsDTO();
+        searchHitsDTO.setMaxScore(searchHits.getMaxScore());
+        searchHitsDTO.setTotalHits(searchHits.getTotalHits());
+
+        List<SearchHitDTO> hitsDTO = new ArrayList<>();
+        for (SearchHit searchHitsHit : searchHits.getHits()) {
+          hitsDTO.add(map(searchHitsHit));
+        }
+
+        searchHitsDTO.setHitsDTO(hitsDTO);
+        innerHitsDTO.put(s, searchHitsDTO);
+      });
+    }
+
+    sh.setHighlight(hit.getHighlightFields().toString());
     return sh;
   }
 }

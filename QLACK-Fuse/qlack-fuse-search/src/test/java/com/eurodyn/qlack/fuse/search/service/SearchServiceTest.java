@@ -12,8 +12,10 @@ import static org.mockito.Mockito.when;
 import com.eurodyn.qlack.fuse.search.InitTestValues;
 import com.eurodyn.qlack.fuse.search.UnknownSearchDTO;
 import com.eurodyn.qlack.fuse.search.dto.SearchHitDTO;
+import com.eurodyn.qlack.fuse.search.dto.SearchHitsDTO;
 import com.eurodyn.qlack.fuse.search.dto.SearchResultDTO;
 import com.eurodyn.qlack.fuse.search.dto.queries.HighlightField;
+import com.eurodyn.qlack.fuse.search.dto.queries.InnerHits;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryBoolean;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryExists;
 import com.eurodyn.qlack.fuse.search.dto.queries.QueryHighlight;
@@ -55,6 +57,7 @@ import org.elasticsearch.index.query.SimpleQueryStringBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.index.query.TermsQueryBuilder;
 import org.elasticsearch.index.query.WildcardQueryBuilder;
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregatorFactories.Builder;
@@ -73,7 +76,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SearchServiceTest {
@@ -100,7 +105,10 @@ public class SearchServiceTest {
   private SearchResponse searchResponse;
   @Mock
   private SearchHits searchHits;
+  @Mock
+  private SearchHit searchHit;
 
+  private SearchHit[] hits;
   private InitTestValues initTestValues;
   private QueryExists queryExists;
   private QueryString queryString;
@@ -120,6 +128,7 @@ public class SearchServiceTest {
   private QueryStringSpecFieldNested queryStringSpecFieldNested;
   private SimpleQueryString simpleQueryString;
   private QuerySpec queryExistsNested;
+  private QueryHighlight queryHighlight;
 
   @Before
   public void init() throws IOException {
@@ -145,6 +154,10 @@ public class SearchServiceTest {
     simpleQueryString = initTestValues.createSimpleQueryString();
     queryExists = initTestValues.createQueryExists();
     queryExistsNested = initTestValues.createQueryExistsNested();
+    queryHighlight = initTestValues.createQueryHighlight();
+
+    hits = new SearchHit[1];
+    hits[0] = searchHit;
 
     ReflectionTestUtils.setField(searchService, "mapper", mappedObjectMapper);
 
@@ -153,7 +166,7 @@ public class SearchServiceTest {
         .thenReturn(searchResponse);
     when(searchResponse.getHits()).thenReturn(searchHits);
     when(searchResponse.getTook()).thenReturn(TimeValue.ZERO);
-    when(searchHits.getHits()).thenReturn(initTestValues.searchHits());
+    when(searchHits.getHits()).thenReturn(hits);
     when(mappedObjectMapper.writeValueAsString(any(SearchResponse.class))).thenReturn("mapped");
   }
 
@@ -446,16 +459,7 @@ public class SearchServiceTest {
 
   @Test
   public void searchWithHightlightingTest() throws IOException {
-    QueryHighlight queryHighlight = new QueryHighlight()
-        .addField(new HighlightField()
-            .setForceSource(true)
-            .setField("fieldName")
-            .setType("unified")
-            .setFragmentSize(255)
-            .setNumberOfFragments(1))
-        .setHighlightQuery(queryBoolean)
-        .setPostTag("<b>")
-        .setPreTag("</b>");
+
     queryTerm.setHighlight(queryHighlight);
 
     assertNotNull(searchService.search(queryTerm));
@@ -470,6 +474,32 @@ public class SearchServiceTest {
     assertTrue(Arrays.asList(highlighter.preTags()).contains(queryHighlight.getPreTag()));
     assertTrue(Arrays.asList(highlighter.postTags()).contains(queryHighlight.getPostTag()));
     assertTrue(highlighter.highlightQuery() instanceof BoolQueryBuilder);
+  }
+
+  @Test
+  public void innerHitsTest() {
+    SearchHits nestedSearchHits = mock(SearchHits.class);
+    SearchHit nestedSearchHit = mock(SearchHit.class);
+    SearchHit[] nestedSearchHitArray = new SearchHit[1];
+    nestedSearchHitArray[0] = nestedSearchHit;
+
+    queryTermNested.setInnerHits(
+        new InnerHits().setSize(10).setHighlight(queryHighlight)
+    );
+
+    Map<String, SearchHits> innerHits = new HashMap<>();
+    innerHits.put("nestedName", nestedSearchHits);
+
+    when(searchHit.getInnerHits()).thenReturn(innerHits);
+    when(nestedSearchHits.getHits()).thenReturn(nestedSearchHitArray);
+
+    SearchResultDTO search = searchService.search(queryTermNested);
+    SearchHitDTO searchHitDTO = search.getHits().get(0);
+    Map<String, SearchHitsDTO> innerHitsDTO = searchHitDTO.getInnerHits();
+
+    assertNotNull(search);
+    assertNotNull(innerHitsDTO);
+    assertEquals(innerHits.size(), innerHitsDTO.size());
   }
 
 }

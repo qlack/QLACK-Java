@@ -3,9 +3,11 @@ package com.eurodyn.qlack.fuse.search.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * Represents a specific hit within a set of hitList held by {@link
- * SearchResultDTO}
+ * Represents a specific hit within a set of hitList held by {@link SearchResultDTO}
  *
  * @author European Dynamics SA.
  */
@@ -24,7 +26,7 @@ public class SearchHitDTO {
   /**
    * the inner hitList for the nested Objects
    */
-  private String innerHits;
+  private Map<String, SearchHitsDTO> innerHits = new HashMap<>();
 
   /**
    * The score of this hit.
