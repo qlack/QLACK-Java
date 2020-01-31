@@ -25,6 +25,7 @@ public class UserSearchCriteria {
   private Collection<Byte> includeStatuses;
   private Collection<Byte> excludeStatuses;
   private String username;
+  private String usernameLike;
   private UserAttributeCriteria attributeCriteria;
   private Boolean superadmin;
   private Pageable pageable;
@@ -152,13 +153,24 @@ public class UserSearchCriteria {
     }
 
     /**
-     * Spacify a username for which to check
+     * Specify a username for which to check
+     *
+     * @param username the username of the user
+     * @return UserSearchCriteriaBuilder
+     */
+    public UserSearchCriteriaBuilder withUsername(String username) {
+      criteria.setUsername(username);
+      return this;
+    }
+
+    /**
+     * Specify a username for which to check with the operator like
      *
      * @param username the username of the user
      * @return UserSearchCriteriaBuilder
      */
     public UserSearchCriteriaBuilder withUsernameLike(String username) {
-      criteria.setUsername(username);
+      criteria.setUsernameLike(username);
       return this;
     }
 

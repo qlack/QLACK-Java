@@ -559,6 +559,10 @@ public class UserService {
       predicate = ((BooleanBuilder) predicate)
         .and(qUser.superadmin.eq(criteria.getSuperadmin()));
     }
+    if (criteria.getUsernameLike() != null){
+      predicate = ((BooleanBuilder) predicate)
+          .and(qUser.username.like(criteria.getUsernameLike()));
+    }
 
     return predicate;
   }
