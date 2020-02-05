@@ -16,6 +16,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Getter
 @Setter
 @MappedSuperclass
+@Deprecated
 public abstract class QlackBaseModel implements Serializable {
 
   /**
