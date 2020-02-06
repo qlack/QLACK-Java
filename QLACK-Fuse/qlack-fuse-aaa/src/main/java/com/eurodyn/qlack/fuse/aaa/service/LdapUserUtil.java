@@ -144,6 +144,9 @@ public class LdapUserUtil {
       }
 
       u = createUserFromLdapWithoutAttributes(ldapSearch(ctx, username));
+      if(attributesMap != null) {
+        createUserAttributesFromLdap(u, ldapSearch(ctx, username));
+      }
       ldapUnbind(ctx);
     } else {
       log.warn(
