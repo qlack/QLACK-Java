@@ -1,13 +1,5 @@
 package com.eurodyn.qlack.fuse.aaa.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.eurodyn.qlack.fuse.aaa.InitTestValues;
 import com.eurodyn.qlack.fuse.aaa.dto.UserGroupDTO;
 import com.eurodyn.qlack.fuse.aaa.exception.InvalidGroupHierarchyException;
@@ -17,14 +9,7 @@ import com.eurodyn.qlack.fuse.aaa.model.User;
 import com.eurodyn.qlack.fuse.aaa.model.UserGroup;
 import com.eurodyn.qlack.fuse.aaa.repository.UserGroupRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,10 +17,24 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author European Dynamics

@@ -1,13 +1,7 @@
 package com.eurodyn.qlack.fuse.aaa.mapper;
 
-import com.eurodyn.qlack.fuse.aaa.dto.UserDTO;
 import com.eurodyn.qlack.fuse.aaa.dto.UserGroupDTO;
 import com.eurodyn.qlack.fuse.aaa.model.UserGroup;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import com.eurodyn.qlack.fuse.aaa.service.UserGroupService;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,6 +9,10 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.data.domain.Page;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A Mapper Interface for UserGroup.

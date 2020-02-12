@@ -1,8 +1,6 @@
 package com.eurodyn.qlack.fuse.aaa.service;
 
 import com.eurodyn.qlack.fuse.aaa.criteria.UserGroupSearchCriteria;
-import com.eurodyn.qlack.fuse.aaa.criteria.UserSearchCriteria;
-import com.eurodyn.qlack.fuse.aaa.dto.UserDTO;
 import com.eurodyn.qlack.fuse.aaa.dto.UserGroupDTO;
 import com.eurodyn.qlack.fuse.aaa.exception.InvalidGroupHierarchyException;
 import com.eurodyn.qlack.fuse.aaa.mapper.UserGroupMapper;
@@ -13,19 +11,19 @@ import com.eurodyn.qlack.fuse.aaa.repository.UserGroupRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author European Dynamics SA
