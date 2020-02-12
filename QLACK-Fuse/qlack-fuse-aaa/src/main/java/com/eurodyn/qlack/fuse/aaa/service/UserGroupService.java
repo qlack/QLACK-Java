@@ -1,5 +1,8 @@
 package com.eurodyn.qlack.fuse.aaa.service;
 
+import com.eurodyn.qlack.fuse.aaa.criteria.UserGroupSearchCriteria;
+import com.eurodyn.qlack.fuse.aaa.criteria.UserSearchCriteria;
+import com.eurodyn.qlack.fuse.aaa.dto.UserDTO;
 import com.eurodyn.qlack.fuse.aaa.dto.UserGroupDTO;
 import com.eurodyn.qlack.fuse.aaa.exception.InvalidGroupHierarchyException;
 import com.eurodyn.qlack.fuse.aaa.mapper.UserGroupMapper;
@@ -8,6 +11,7 @@ import com.eurodyn.qlack.fuse.aaa.model.User;
 import com.eurodyn.qlack.fuse.aaa.model.UserGroup;
 import com.eurodyn.qlack.fuse.aaa.repository.UserGroupRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,6 +19,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -261,4 +268,50 @@ public class UserGroupService {
       .collect(Collectors.toSet());
     return users.stream().map(User::getUsername).collect(Collectors.toSet());
   }
+
+  /**
+   * Retrieves Groups
+   *
+   * @param criteria the criteria that is specified to search for a group
+   * @return a list of Groups
+   */
+  public Iterable<UserGroupDTO> findGroups(UserGroupSearchCriteria criteria) {
+    Predicate predicate = buildPredicate(criteria);
+    if (criteria.getPageable() != null) {
+
+      return findAll(predicate, criteria.getPageable());
+    } else {
+
+      return listGroups(predicate);
+    }
+  }
+
+  /**
+   * Finds all the groups based on predicate and pagination parameters.
+   *
+   * @param predicate the Boolean typed expressions to search for.
+   * @param pageable the pagination information.
+   * @return the responded DTO in page form, useful information for pagination and sorting.
+   */
+  public Page<UserGroupDTO> findAll(Predicate predicate, Pageable pageable) {
+    return userGroupMapper.map(userGroupRepository.findAll(predicate, pageable));
+  }
+
+  private Predicate buildPredicate(UserGroupSearchCriteria criteria) {
+    Predicate predicate = new BooleanBuilder();
+    if (criteria.getName() != null){
+      predicate = ((BooleanBuilder) predicate)
+          .and(qUserGroup.name.like(criteria.getName()));
+    }
+
+    return predicate;
+  }
+
+  private List<UserGroupDTO> listGroups(Predicate predicate) {
+
+    return userGroupRepository.findAll(predicate).stream()
+        .map(o -> userGroupMapper.mapToDTO(o, false))
+        .collect(Collectors.toList());
+  }
+
 }

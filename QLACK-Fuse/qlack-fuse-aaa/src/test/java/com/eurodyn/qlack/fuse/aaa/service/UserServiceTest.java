@@ -3,9 +3,11 @@ package com.eurodyn.qlack.fuse.aaa.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -17,6 +19,7 @@ import com.eurodyn.qlack.fuse.aaa.criteria.UserSearchCriteria;
 import com.eurodyn.qlack.fuse.aaa.dto.SessionDTO;
 import com.eurodyn.qlack.fuse.aaa.dto.UserAttributeDTO;
 import com.eurodyn.qlack.fuse.aaa.dto.UserDTO;
+import com.eurodyn.qlack.fuse.aaa.dto.UserGroupDTO;
 import com.eurodyn.qlack.fuse.aaa.mapper.SessionMapper;
 import com.eurodyn.qlack.fuse.aaa.mapper.UserAttributeMapper;
 import com.eurodyn.qlack.fuse.aaa.mapper.UserMapper;
@@ -43,6 +46,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -88,7 +93,9 @@ public class UserServiceTest {
   private User user;
   private UserDTO userDTO;
   private List<User> users;
+  private List<UserGroup> userGroups;
   private List<UserDTO> usersDTO;
+  private List<UserGroupDTO> userGroupDTOS;
   private List<UserAttributeDTO> userAttributeDTOList;
   private UserSearchCriteria.UserSearchCriteriaBuilder userSearchCriteriaBuilder;
   private UserSearchCriteria userSearchCriteria;
@@ -108,6 +115,8 @@ public class UserServiceTest {
     users = initTestValues.createUsers();
     usersDTO = initTestValues.createUsersDTO();
     userGroup = initTestValues.createUserGroup();
+    userGroupDTOS = initTestValues.createUserGroupsDTO();
+    userGroups = initTestValues.createUserGroups();
     userGroupNoChildren = initTestValues.createUserGroupNoChildren();
     userAttributeDTOList = initTestValues.createUserAttributesDTO(user.getId());
     userSearchCriteriaBuilder = UserSearchCriteria.UserSearchCriteriaBuilder
@@ -603,5 +612,35 @@ public class UserServiceTest {
       .thenReturn(userAttributeDTOList);
     userService.isAttributeValueUnique("name", user.getId());
     verify(userAttributeRepository, times(2)).findAll((Predicate) any());
+  }
+
+  @Test
+  public void addUserGroupsTest() {
+    Collection<String> userGroupList = new ArrayList<>();
+    for (UserGroupDTO userGroupDTO : userGroupDTOS){
+      userGroupList.add(userGroupDTO.getId());
+      when(userGroupRepository.fetchById(userGroupDTO.getId())).thenReturn(userGroup);
+    }
+    when(userRepository.fetchById(user.getId())).thenReturn(user);
+    when(userGroupRepository.findByName(userGroupDTOS.get(0).getName())).thenReturn(userGroup);
+    userService.addUserGroups(userGroupList, user.getId());
+    assertNotNull(userService.belongsToGroupByName(user.getId(), userGroupDTOS.get(0).getName(),
+        false));
+    verify(userRepository, times(2)).fetchById(anyString());
+  }
+
+  @Test
+  public void removeUserGroupsTest(){
+    when(userRepository.fetchById(any())).thenReturn(user);
+    Collection<String> userGroupList = new ArrayList<>();
+    for (UserGroup userGroup : userGroups){
+      userGroupList.add(userGroup.getId());
+      when(userGroupRepository.fetchById(any())).thenReturn(userGroup);
+    }
+    userService.addUserGroups(userGroupList, user.getId());
+
+    userService.removeUserGroups(userGroupList, user.getId());
+    assertTrue(CollectionUtils.isEmpty(user.getUserGroups()));
+    verify(userRepository, times(2)).fetchById(anyString());
   }
 }

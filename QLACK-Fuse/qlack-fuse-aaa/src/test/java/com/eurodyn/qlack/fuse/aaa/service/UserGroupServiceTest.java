@@ -17,6 +17,7 @@ import com.eurodyn.qlack.fuse.aaa.model.User;
 import com.eurodyn.qlack.fuse.aaa.model.UserGroup;
 import com.eurodyn.qlack.fuse.aaa.repository.UserGroupRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,8 +29,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 /**
@@ -41,6 +46,11 @@ public class UserGroupServiceTest {
 
   @InjectMocks
   public UserGroupService userGroupService;
+
+  @Mock
+  private Pageable pageable;
+  @Mock
+  private Predicate predicate;
 
   private UserGroupRepository userGroupRepository = mock(
     UserGroupRepository.class);
@@ -318,7 +328,14 @@ public class UserGroupServiceTest {
     Set<String> usernames = userGroupService.getGroupUsersNames(groupIds);
     assertTrue(usernames.contains(users.get(0).getUsername()));
     assertTrue(usernames.contains(users.get(1).getUsername()));
+  }
 
+  @Test
+  public void findGroupsTest(){
+    when(userGroupRepository.findAll(predicate, pageable)).thenReturn(
+        (new PageImpl<>(userGroups)));
+    userGroupService.findAll(predicate, pageable);
+    verify(userGroupRepository, times(1)).findAll(predicate, pageable);
   }
 
 }

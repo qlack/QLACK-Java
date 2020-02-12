@@ -43,6 +43,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import javax.print.DocFlavor;
+
 /**
  * A Service class that is used to define a number of crud methods and configure
  * the User model
@@ -633,6 +635,48 @@ public class UserService {
       } else {
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
       }
+    }
+  }
+
+  /**
+   * Adds a list of userGroups for a specific user.
+   *
+   * @param userGroupIds the list that contains all the user group Ids to be added.
+   * @param userId the user that userGroups will be added to.
+   */
+  public void addUserGroups(Collection<String> userGroupIds, String userId) {
+    addUserGroups(userGroupIds, userRepository.fetchById(userId));
+  }
+
+  private void addUserGroups(Collection<String> userGroupIds, User user) {
+    for (String userGroupId : userGroupIds) {
+      UserGroup userGroup = userGroupRepository.fetchById(userGroupId);
+      if (user.getUserGroups() == null) {
+        user.setUserGroups(new ArrayList<UserGroup>());
+      }
+      user.getUserGroups().add(userGroup);
+      if (userGroup.getUsers() == null) {
+        userGroup.setUsers(new ArrayList<User>());
+      }
+      userGroup.getUsers().add(user);
+    }
+  }
+
+  /**
+   * Removes the userGroups for a specific user.
+   *
+   * @param userGroupIds the list that contains all the user groups Ids to be removed.
+   * @param userId the user that userGroups will be removed from.
+   */
+  public void removeUserGroups(Collection<String> userGroupIds, String userId) {
+    removeUserGroups(userGroupIds, userRepository.fetchById(userId));
+  }
+
+  private void removeUserGroups(Collection<String> userGroupIds, User user) {
+    for (String userGroupId : userGroupIds) {
+      UserGroup userGroup = userGroupRepository.fetchById(userGroupId);
+      user.getUserGroups().remove(userGroup);
+      userGroup.getUsers().remove(user);
     }
   }
 }
