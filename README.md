@@ -7,7 +7,7 @@
     <a href="https://maven-badges.herokuapp.com/maven-central/com.eurodyn.qlack/qlack" alt="Maven Repo">
         <img src="https://maven-badges.herokuapp.com/maven-central/com.eurodyn.qlack/qlack/badge.svg" />
     </a>
-    <a href="http://qlack.github.io/QLACK-Website/" alt="Website">
+    <a href="https/qlack.com" alt="Website">
         <img src="https://img.shields.io/website-up-down-green-red/https/qlack.com" />
     </a>
 </p>
