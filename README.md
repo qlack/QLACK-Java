@@ -8,7 +8,7 @@
         <img src="https://maven-badges.herokuapp.com/maven-central/com.eurodyn.qlack/qlack/badge.svg" />
     </a>
     <a href="http://qlack.github.io/QLACK-Website/" alt="Website">
-        <img src="https://img.shields.io/website-up-down-green-red/http/qlack.github.io/QLACK-Website/" />
+        <img src="https://img.shields.io/website-up-down-green-red/https/qlack.com" />
     </a>
 </p>
 
