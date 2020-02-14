@@ -78,12 +78,11 @@
     <activiti.version>7.1.9</activiti.version>
     <apache.email.version>1.5</apache.email.version>
     <commons.codec.version>1.7</commons.codec.version>
-    <jacoco.version>0.8.4</jacoco.version>
+    <jacoco.version>0.8.5</jacoco.version>
     <enunciate.version>2.11.1</enunciate.version>
     <powermockito.version>2.0.2</powermockito.version>
+    <sonar.version>3.7.0.1746</sonar.version>
     <sonar.exclusions>**/generated-sources/**</sonar.exclusions>
-    <sonar.jacoco.reportPath>${project.build.directory}/jacoco.exec</sonar.jacoco.reportPath>
-    <sonar.jacoco.itReportPath>${project.build.directory}/jacoco-it.exec</sonar.jacoco.itReportPath>
     <sonar.coverage.exclusions>
       src/main/java/com/eurodyn/qlack/**/**/model/*,
       src/main/java/com/eurodyn/qlack/**/**/model/**/*,
@@ -245,6 +244,12 @@
               </goals>
             </execution>
           </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.sonarsource.scanner.maven</groupId>
+          <artifactId>sonar-maven-plugin</artifactId>
+          <version>${sonar.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
