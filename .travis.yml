@@ -15,6 +15,6 @@ script: mvn clean install sonar:sonar -Dsonar.projectKey=qlack_QLACK-Java
 notifications:
   email:
     recipients:
-      - qlack@eurodyn.com
+      secure: "Us/tQyr5YsvLaefE7oCos2UeZDPkrUMc0K6E+AyoSvjpme/DM7VgFCAHJwnDf1nJbeQoyfwuF3HfeU5Gaw2fFtztJ0ufsvTzsBgGOx1E6gdL9EWBjl6X+6yUyOxBYp6yvho8Eq/RFfvgPNFaWMXZwkfkFzL5pUkqE5SJqFanW5x5+6GmuybHGmJbW38YRi5I8t6MwaLjxufooIVmIijXazbjT9amu8Ehbkdy/UvVHWgzY0OuiGjoiAYCB6uTcyqf651eFksW82L3b8ac2gMwMDLL3aAEFeJVxDlKt2r1GX6A26nef9P/jJk8Ga0H5//5u5qwiwRvll6XjgEk52B19mltaOebWHFo8XjdUYIS1k4ZNoWubCHqgiGKD5FJiRYtgJ0s2hoSm9FwE9DWdDag6fu0t4bLkGvwCUVSzxu4i2RZDX45LarCTAiGIv9uKv5Ymzmnj7WfkpNm4ydaLFOzxrH0w4wDKnS14Y6W6exnioc56AnPsrQQp7IhP1nlkq7+3GiOW4fj83jxtr4wh/+qbiWvZxwf4o3yyLIbIXIaNwXOzrvfNXdw8XnOPUF/7J699O1Fc14U42p+OFn+q/iQom64pyy/JNirlICb/kAc702zyLRltFPnYFznpm9m1uV76z71yOjFk8cjwVfzjEJD+1yKIwsXCyDxlxhWwyzjYRU="
     on_success: change
     on_failure: change
