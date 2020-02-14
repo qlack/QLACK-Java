@@ -23,35 +23,35 @@ QLACK is an Open Source project under EUPL.
 ## Code Quality
 
 <p align="center">
-	<a href="https://sonarcloud.io/dashboard?id=com.eurodyn.qlack%3Aqlack">
-  		<img src="https://sonarcloud.io/api/project_badges/measure?project=com.eurodyn.qlack%3Aqlack&metric=security_rating" />
+	<a href="https://sonarcloud.io/dashboard?id=qlack_QLACK-Java">
+  		<img src="https://sonarcloud.io/api/project_badges/measure?project=qlack_QLACK-Java&metric=security_rating" />
 	</a>
-	<a href="https://sonarcloud.io/dashboard?id=com.eurodyn.qlack%3Aqlack">
-  		<img src="https://sonarcloud.io/api/project_badges/measure?project=com.eurodyn.qlack%3Aqlack&metric=reliability_rating" />
+	<a href="https://sonarcloud.io/dashboard?id=qlack_QLACK-Java">
+  		<img src="https://sonarcloud.io/api/project_badges/measure?project=qlack_QLACK-Java&metric=reliability_rating" />
 	</a>
-	<a href="https://sonarcloud.io/dashboard?id=com.eurodyn.qlack%3Aqlack">
-  		<img src="https://sonarcloud.io/api/project_badges/measure?project=com.eurodyn.qlack%3Aqlack&metric=sqale_rating" />
+	<a href="https://sonarcloud.io/dashboard?id=qlack_QLACK-Java">
+  		<img src="https://sonarcloud.io/api/project_badges/measure?project=qlack_QLACK-Java&metric=sqale_rating" />
 	</a>
-	<a href="https://sonarcloud.io/dashboard?id=com.eurodyn.qlack%3Aqlack">
-  		<img src="https://sonarcloud.io/api/project_badges/measure?project=com.eurodyn.qlack%3Aqlack&metric=sqale_index" />
+	<a href="https://sonarcloud.io/dashboard?id=qlack_QLACK-Java">
+  		<img src="https://sonarcloud.io/api/project_badges/measure?project=qlack_QLACK-Java&metric=sqale_index" />
 	</a>
-	<a href="https://sonarcloud.io/dashboard?id=com.eurodyn.qlack%3Aqlack">
-  		<img src="https://sonarcloud.io/api/project_badges/measure?project=com.eurodyn.qlack%3Aqlack&metric=ncloc" />
+	<a href="https://sonarcloud.io/dashboard?id=qlack_QLACK-Java">
+  		<img src="https://sonarcloud.io/api/project_badges/measure?project=qlack_QLACK-Java&metric=ncloc" />
 	</a>
-	<a href="https://sonarcloud.io/dashboard?id=com.eurodyn.qlack%3Aqlack">
-  		<img src="https://sonarcloud.io/api/project_badges/measure?project=com.eurodyn.qlack%3Aqlack&metric=coverage" />
+	<a href="https://sonarcloud.io/dashboard?id=qlack_QLACK-Java">
+  		<img src="https://sonarcloud.io/api/project_badges/measure?project=qlack_QLACK-Java&metric=coverage" />
 	</a>
-	<a href="https://sonarcloud.io/dashboard?id=com.eurodyn.qlack%3Aqlack">
-  		<img src="https://sonarcloud.io/api/project_badges/measure?project=com.eurodyn.qlack%3Aqlack&metric=duplicated_lines_density" />
+	<a href="https://sonarcloud.io/dashboard?id=qlack_QLACK-Java">
+  		<img src="https://sonarcloud.io/api/project_badges/measure?project=qlack_QLACK-Java&metric=duplicated_lines_density" />
 	</a>
-	<a href="https://sonarcloud.io/dashboard?id=com.eurodyn.qlack%3Aqlack">
-  		<img src="https://sonarcloud.io/api/project_badges/measure?project=com.eurodyn.qlack%3Aqlack&metric=code_smells" />
+	<a href="https://sonarcloud.io/dashboard?id=qlack_QLACK-Java">
+  		<img src="https://sonarcloud.io/api/project_badges/measure?project=qlack_QLACK-Java&metric=code_smells" />
 	</a>
-	<a href="https://sonarcloud.io/dashboard?id=com.eurodyn.qlack%3Aqlack">
-  		<img src="https://sonarcloud.io/api/project_badges/measure?project=com.eurodyn.qlack%3Aqlack&metric=vulnerabilities" />
+	<a href="https://sonarcloud.io/dashboard?id=qlack_QLACK-Java">
+  		<img src="https://sonarcloud.io/api/project_badges/measure?project=qlack_QLACK-Java&metric=vulnerabilities" />
 	</a>
-	<a href="https://sonarcloud.io/dashboard?id=com.eurodyn.qlack%3Aqlack">
-  		<img src="https://sonarcloud.io/api/project_badges/measure?project=com.eurodyn.qlack%3Aqlack&metric=bugs" />
+	<a href="https://sonarcloud.io/dashboard?id=qlack_QLACK-Java">
+  		<img src="https://sonarcloud.io/api/project_badges/measure?project=qlack_QLACK-Java&metric=bugs" />
 	</a>
 </p>
 
