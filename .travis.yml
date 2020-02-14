@@ -4,7 +4,13 @@ sudo: false
 
 jdk: openjdk8
 
-script: mvn clean install -Pcoverage sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=qlack -Dsonar.projectName=Qlack-Java -Dsonar.login=a794de41120844d9bdc7547a961faffc6769f2c7
+addons:
+  sonarcloud:
+    organization: "qlack"
+    token:
+      secure: "FhlKwaLfOc7dbJR8CDVmZ9rQku0gdNBlhquSgCsiqctkwjEDmHP9mpZRJ8pO4yjiSqjxjgBeVWqO87VXq80XpZagNYSFgrjoP2Alqt/GuZpxMeaYFsggbqgjzzccUvcV/OEjEy2bmM/c7dI2OqwEyfm8SdHqOX+eqwCN4i+4Ma2VMUhw/65m23YY0WgBKn71knuj+6povr9NrslEy+KGIKRkKd1zKHt+vDr9YiN58z8dpaZuNHgAarg7cSQRRvy5dELorpmunj71uFDnmUKktwNVu7ffTBidRt2Y1otKO+/i46+Wzo3qKVpBVA/c7GBskkHXs0Mmr+CHNN7baee52MTBkle2h7W9qMbLpPPoujCLJaU+IM1YGf2xwRNsz8ZUE36R0GJjZnXuJqqrQW151lvzOqahB9qQaFPWkyCTTWg+1j9o73orhjesHf7UhT0nhGJyWrdYLpxVfE/j2cCEeQdqaybxA/X25x+UqGQwOrAqrfwktjuAsSz5SwD/hvTOnJzJT+W5oDPBfFhqLMBo94hw4dJlfMSjHTlEqINZb4EjUoLyOaOLcr6Iy+2dmROIOwjZUt14WCrS+YGJuM3XPrbIxLjvT7F211uUJ+EkX1rWieTPdSs5BPznNnYBSe4vHIWuSZQJivQiTHvLj7vjTAjbsFAEtvBxwN7WwLOzsUg="
+
+script: mvn clean install sonar:sonar -Dsonar.projectKey=qlack_QLACK-Java
 
 notifications:
   email:
