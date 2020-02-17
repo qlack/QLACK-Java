@@ -20,4 +20,7 @@ public class CEval {
       return falseValue;
     }
   }
+  private CEval() {
+    throw new IllegalStateException("Utility class");
+  }
 }

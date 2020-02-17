@@ -23,11 +23,7 @@ public class AAAPermissionEvaluator implements PermissionEvaluator {
       || !(permission instanceof String)) {
       return false;
     }
-
-    String targetType = targetDomainObject.getClass().getSimpleName()
-      .toUpperCase();
-
-    return hasPrivilege(authentication, targetType, permission.toString());
+    return hasPrivilege(authentication, permission.toString());
   }
 
   @Override
@@ -39,11 +35,11 @@ public class AAAPermissionEvaluator implements PermissionEvaluator {
       return false;
     }
 
-    return hasPrivilege(authentication, targetType.toUpperCase(),
+    return hasPrivilege(authentication,
       permission.toString());
   }
 
-  private boolean hasPrivilege(Authentication auth, String targetType,
+  private boolean hasPrivilege(Authentication auth,
     String permission) {
     UserDetailsDTO user = (UserDetailsDTO) auth.getPrincipal();
 

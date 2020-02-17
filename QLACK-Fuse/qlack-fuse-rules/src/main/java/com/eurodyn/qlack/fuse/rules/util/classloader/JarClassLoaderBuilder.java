@@ -69,7 +69,7 @@ public class JarClassLoaderBuilder {
 
     return mapBackedClassLoader;
   }
-
+  @SuppressWarnings("squid:S1905")
   private MapBackedClassLoader getMapBackedClassLoader() {
 
     return AccessController

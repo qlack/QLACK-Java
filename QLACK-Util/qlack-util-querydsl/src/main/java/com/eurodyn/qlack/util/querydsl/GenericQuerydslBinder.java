@@ -18,6 +18,7 @@ import org.springframework.data.querydsl.binding.SingleValueBinding;
 public interface GenericQuerydslBinder<T extends EntityPath<?>> extends
   QuerydslBinderCustomizer<T> {
 
+  @SuppressWarnings("squid:S1905")
   default void addGenericBindings(QuerydslBindings bindings) {
     // Ignore-case for strings.
     bindings.bind(String.class)

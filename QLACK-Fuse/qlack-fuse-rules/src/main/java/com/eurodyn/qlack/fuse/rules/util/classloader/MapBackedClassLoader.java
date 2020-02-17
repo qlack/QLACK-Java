@@ -20,6 +20,7 @@ import java.util.logging.Logger;
  * <p>
  * This just extends Christina from single to multiple classes (map) ...
  */
+@SuppressWarnings("squid:S1905")
 public class MapBackedClassLoader extends ClassLoader {
 
   private static final Logger logger = Logger

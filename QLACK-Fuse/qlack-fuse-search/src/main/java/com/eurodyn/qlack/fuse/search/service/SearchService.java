@@ -294,7 +294,18 @@ public class SearchService {
           .to(((QueryRange) dto).getToValue())
           .includeLower(true)
           .includeUpper(true);
-    } else if (dto instanceof QueryString) {
+    } else return extendBuildQuery(dto);
+
+
+  }
+
+  /**
+   * This method extends the functionality of the buildQuery method in order to reduce its complexity
+   *
+   * @param dto the dto that contains the query specs.
+   */
+  private QueryBuilder extendBuildQuery(QuerySpec dto){
+    if (dto instanceof QueryString) {
       return QueryBuilders.queryStringQuery(((QueryString) dto).getQueryStringValue());
     } else if (dto instanceof QueryStringSpecField) {
       return buildQueryString(((QueryStringSpecField) dto).getValue(),
@@ -331,7 +342,6 @@ public class SearchService {
           .field(((SimpleQueryString) dto).getField())
           .defaultOperator(Operator.fromString(((SimpleQueryString) dto).getOperator()));
     }
-
     return QueryBuilders.matchAllQuery();
   }
 

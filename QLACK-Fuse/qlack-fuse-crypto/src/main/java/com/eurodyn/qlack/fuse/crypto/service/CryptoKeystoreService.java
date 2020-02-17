@@ -205,6 +205,7 @@ public class CryptoKeystoreService {
    * @param keyPassword The password of the key.
    * @param keyAlgorithm The algorithm with which the key was generated.
    */
+  @SuppressWarnings("squid:S00107")
   public byte[] saveSymmetricKey(@NotNull final byte[] keystore,
     final String keystoreType,
     final String keystoreProvider, @NotNull final String keystorePassword,
@@ -241,6 +242,7 @@ public class CryptoKeystoreService {
    * @param keyPassword The password of the key.
    * @param certificates The certificate chain for the key.
    */
+  @SuppressWarnings("squid:S00107")
   public byte[] savePrivateKey(@NotNull final byte[] keystore,
     final String keystoreType,
     final String keystoreProvider, final String keystorePassword,
