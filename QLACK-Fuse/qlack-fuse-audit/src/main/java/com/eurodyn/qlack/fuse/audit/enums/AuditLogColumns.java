@@ -8,7 +8,7 @@ package com.eurodyn.qlack.fuse.audit.enums;
 public enum AuditLogColumns {
   EVENT,
   SHORT_DESCRIPTION,
-  TRACE_DATA,
+  TRACE,
   REFERENCE_ID,
   LEVEL_ID,
   PRIN_SESSION_ID,
