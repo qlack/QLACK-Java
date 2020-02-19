@@ -10,11 +10,6 @@ import com.eurodyn.qlack.fuse.audit.repository.AuditRepository;
 import com.eurodyn.qlack.fuse.audit.util.AuditProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.types.Predicate;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +18,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
+
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Provides Audit CRUD and search functionality
@@ -256,16 +257,24 @@ public class AuditService {
    */
   public Page<AuditDTO> getAuditLogs(Pageable pageable, Predicate predicate) {
     log.trace(MessageFormat
-      .format("Searching for audits matching the expression: {0}", predicate));
+        .format("Searching for audits matching the expression: {0}", predicate));
     return auditMapper.toAuditDTO(auditRepository.findAll(predicate, pageable));
+  }
+
+  /**
+   * Counts existing audits.
+   *
+   * @return the number of existing audits.
+   */
+  public int countAuditLogs() {
+    return auditRepository.findAll().size();
   }
 
   /**
    * Searches distinct events for a specific reference id
    *
    * @param referenceId the reference id that each audit should have
-   * @return a list of EVENT names of audits, that have the specific reference
-   * id.
+   * @return a list of EVENT names of audits, that have the specific reference id.
    */
   public List<String> getDistinctEventsForReferenceId(String referenceId) {
     log.trace(MessageFormat
