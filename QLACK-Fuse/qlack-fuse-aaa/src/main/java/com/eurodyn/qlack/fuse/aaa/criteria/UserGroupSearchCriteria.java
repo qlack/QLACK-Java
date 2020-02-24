@@ -17,6 +17,7 @@ import java.util.Collection;
 public class UserGroupSearchCriteria {
 
   private String name;
+  private String nameLike;
   private String description;
   private Pageable pageable;
   private Collection<String> includeIds;
@@ -73,6 +74,17 @@ public class UserGroupSearchCriteria {
      */
     public UserGroupSearchCriteriaBuilder withName(String name) {
       criteria.setName(name);
+      return this;
+    }
+
+    /**
+     * Specify a name to check for, with the operator like
+     *
+     * @param nameLike the name of the group
+     * @return UserSearchCriteriaBuilder
+     */
+    public UserGroupSearchCriteriaBuilder withNameLike(String nameLike) {
+      criteria.setNameLike(nameLike);
       return this;
     }
 

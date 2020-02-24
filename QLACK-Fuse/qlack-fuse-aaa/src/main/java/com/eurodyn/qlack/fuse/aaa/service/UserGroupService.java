@@ -297,9 +297,21 @@ public class UserGroupService {
 
   private Predicate buildPredicate(UserGroupSearchCriteria criteria) {
     Predicate predicate = new BooleanBuilder();
-    if (criteria.getName() != null){
+    if (criteria.getNameLike() != null){
       predicate = ((BooleanBuilder) predicate)
-          .and(qUserGroup.name.like(criteria.getName()));
+          .and(qUserGroup.name.like(criteria.getNameLike()));
+    }
+    if (criteria.getName() != null) {
+      predicate = ((BooleanBuilder) predicate)
+          .and(qUserGroup.name.eq(criteria.getName()));
+    }
+    if (criteria.getIncludeIds() != null) {
+      predicate = ((BooleanBuilder) predicate)
+          .and(qUserGroup.id.in(criteria.getIncludeIds()));
+    }
+    if (criteria.getExcludeIds() != null) {
+      predicate = ((BooleanBuilder) predicate)
+          .and(qUserGroup.id.notIn(criteria.getExcludeIds()));
     }
 
     return predicate;
