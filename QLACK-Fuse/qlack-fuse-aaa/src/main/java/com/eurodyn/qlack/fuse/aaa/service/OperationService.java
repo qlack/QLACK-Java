@@ -517,6 +517,10 @@ public class OperationService {
       // parents until a result is found or until no other parent exists.
       retVal = isPermittedForGroup(userGroup.getParent().getId(), operationName,
         resourceObjectID);
+    } else {
+      //return false means that there is no userGroup specified so permission is denied to everyone.
+      //in other words: userGroup == null
+      retVal = false;
     }
 
     return retVal;
@@ -592,16 +596,17 @@ public class OperationService {
   }
 
   private Set<String> getUsersForOperation(String operationName,
-    String resourceObjectID, boolean checkUserGroups, boolean getAllowed) {
+    String resourceObjectID, boolean checkUserGroups, boolean getAllowed,
+      boolean removeSuperAdmin) {
     Set<String> allUsers = userRepository.getUserIds(false);
     // Superadmin users are allowed the operation by default
     Set<String> returnedUsers = new HashSet<>();
-    if (getAllowed) {
-      returnedUsers = userRepository.getUserIds(true);
-    } else {
+    if (!getAllowed || removeSuperAdmin) {
       for (String superadminId : userRepository.getUserIds(true)) {
         allUsers.remove(superadminId);
       }
+    } else {
+      returnedUsers = userRepository.getUserIds(true);
     }
 
     getUsersForOperationDynamic(operationName, allUsers, resourceObjectID,
@@ -704,26 +709,33 @@ public class OperationService {
 
   public Set<String> getAllowedUsersForOperation(String operationName,
     boolean checkUserGroups) {
-    return getUsersForOperation(operationName, null, checkUserGroups, true);
+    return getUsersForOperation(operationName, null, checkUserGroups, true, false);
   }
 
   public Set<String> getAllowedUsersForOperation(String operationName,
     String resourceObjectID,
     boolean checkUserGroups) {
     return getUsersForOperation(operationName, resourceObjectID,
-      checkUserGroups, true);
+      checkUserGroups, true, false);
   }
 
   public Set<String> getBlockedUsersForOperation(String operationName,
     boolean checkUserGroups) {
-    return getUsersForOperation(operationName, null, checkUserGroups, false);
+    return getUsersForOperation(operationName, null, checkUserGroups, false, false);
   }
 
   public Set<String> getBlockedUsersForOperation(String operationName,
     String resourceObjectID,
     boolean checkUserGroups) {
     return getUsersForOperation(operationName, resourceObjectID,
-      checkUserGroups, false);
+      checkUserGroups, false, false);
+  }
+
+  public Set<String> getAllowedUsersForOperationRemoveSuperAdmin(String operationName,
+      String resourceObjectID,
+      boolean checkUserGroups) {
+    return getUsersForOperation(operationName, resourceObjectID,
+        checkUserGroups, true, true);
   }
 
   private Set<String> getGroupsForOperation(String operationName,
