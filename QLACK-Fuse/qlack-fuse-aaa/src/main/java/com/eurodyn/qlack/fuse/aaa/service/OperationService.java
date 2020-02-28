@@ -497,7 +497,7 @@ public class OperationService {
     String resourceId =
       (resourceObjectID == null) ? null
         : resourceRepository.findByObjectId(resourceObjectID).getId();
-    Boolean retVal = null;
+    Boolean retVal = false;
     UserGroupHasOperation gho = (resourceId == null)
       ? userGroupHasOperationRepository
       .findByUserGroupIdAndOperationName(groupID, operationName)
@@ -517,10 +517,6 @@ public class OperationService {
       // parents until a result is found or until no other parent exists.
       retVal = isPermittedForGroup(userGroup.getParent().getId(), operationName,
         resourceObjectID);
-    } else {
-      //return false means that there is no userGroup specified so permission is denied to everyone.
-      //in other words: userGroup == null
-      retVal = false;
     }
 
     return retVal;

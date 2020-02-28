@@ -798,7 +798,7 @@ public class OperationServiceTest {
       .isPermittedForGroupByResource(userGroup.getId(), operation.getName(),
         resource.getName(),
         resource.getObjectId());
-    assertNull(permittedForGroupByResource);
+    assertFalse(permittedForGroupByResource);
 
     userGroup.setParent(null);
     permittedForGroupByResource = operationService
