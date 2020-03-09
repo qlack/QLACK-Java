@@ -28,6 +28,7 @@ public interface UserGroupHasOperationMapper extends
    */
   @Mapping(source = "userGroup", target = "userGroupDTO")
   @Mapping(source = "operation", target = "operationDTO")
+  @Mapping(source = "resource", target = "resourceDTO")
   UserGroupHasOperationDTO mapToDTO(
     UserGroupHasOperation userGroupHasOperation);
 }
