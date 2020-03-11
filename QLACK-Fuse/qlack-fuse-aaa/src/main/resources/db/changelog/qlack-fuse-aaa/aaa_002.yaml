@@ -2,6 +2,7 @@ databaseChangeLog:
   - changeSet:
       id: aaa_002
       author: European Dynamics SA
+      context: "!qlack-disabled"
       changes:
         - dropNotNullConstraint:
             columnDataType: varchar(60)

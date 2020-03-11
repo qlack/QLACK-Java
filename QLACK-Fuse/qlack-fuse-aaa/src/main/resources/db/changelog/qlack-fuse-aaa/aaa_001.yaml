@@ -2,6 +2,7 @@ databaseChangeLog:
   - changeSet:
       id: aaa_001
       author: European Dynamics SA
+      context: "!qlack-disabled"
       changes:
         - createTable:
             tableName: aaa_user

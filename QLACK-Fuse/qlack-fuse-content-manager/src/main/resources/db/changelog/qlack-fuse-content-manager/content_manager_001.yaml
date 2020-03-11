@@ -2,6 +2,7 @@ databaseChangeLog:
   - changeSet:
       id: content_manager_001
       author: European Dynamics SA
+      context: "!qlack-disabled"
       changes:
         - createTable:
             tableName: cm_node

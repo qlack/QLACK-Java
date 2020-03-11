@@ -2,6 +2,7 @@ databaseChangeLog:
   - changeSet:
       id: mailing_001
       author: European Dynamics SA
+      context: "!qlack-disabled"
       changes:
         - createTable:
             tableName: mai_email

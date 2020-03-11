@@ -2,6 +2,7 @@ databaseChangeLog:
   - changeSet:
       id: fileupload_1
       author: European Dynamics SA (qlack2-dev@eurodyn.com)
+      context: "!qlack-disabled"
       changes:
         - createTable:
             tableName: flu_file

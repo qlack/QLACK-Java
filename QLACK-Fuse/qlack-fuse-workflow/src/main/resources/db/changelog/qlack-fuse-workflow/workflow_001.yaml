@@ -2,6 +2,7 @@ databaseChangeLog:
   - changeSet:
       id: workflow_001
       author: European Dynamics SA
+      context: "!qlack-disabled"
       changes:
         - createTable:
             tableName: wor_process_file
