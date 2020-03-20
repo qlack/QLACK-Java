@@ -3,7 +3,7 @@ package com.eurodyn.qlack.fuse.security.service;
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.fuse.aaa.dto.UserDTO;
 import com.eurodyn.qlack.fuse.aaa.service.UserService;
-import com.eurodyn.qlack.fuse.security.cache.AAAUserCaching;
+import com.eurodyn.qlack.fuse.security.util.CachedUserUtil;
 import com.eurodyn.qlack.util.jwt.JWTUtil;
 import com.eurodyn.qlack.util.jwt.dto.JWTClaimsRequestDTO;
 import javax.servlet.http.HttpServletRequest;
@@ -23,14 +23,9 @@ import org.springframework.validation.annotation.Validated;
 @Transactional
 public class LogoutService {
 
-  @Autowired
   private UserService userService;
 
-  @Autowired
-  private AAAUserCaching userCaching;
-
-  @Autowired
-  private NonceCachingService nonceCachingService;
+  private CachedUserUtil cachedUserUtil;
 
   @Value("${qlack.fuse.security.jwt.secret:aqlacksecret}")
   private String jwtSecret;
@@ -41,10 +36,16 @@ public class LogoutService {
   @Value("${qlack.fuse.security.jwt.expiration:86400000}")
   private int jwtExpiration;
 
+  @Autowired
+  public LogoutService(UserService userService, CachedUserUtil cachedUserUtil) {
+    this.userService = userService;
+    this.cachedUserUtil = cachedUserUtil;
+  }
+
   public void performLogout(HttpServletRequest req) {
     String username = String.valueOf(JWTUtil
-      .getSubject(new JWTClaimsRequestDTO(JWTUtil.getRawToken(req), jwtSecret,
-        jwtExpiration)));
+        .getSubject(new JWTClaimsRequestDTO(JWTUtil.getRawToken(req), jwtSecret,
+            jwtExpiration)));
 
     UserDTO user = userService.getUserByName(username);
 
@@ -52,15 +53,11 @@ public class LogoutService {
       throw new QDoesNotExistException("User doesn't exist.");
     }
 
-    // Remove user from cache.
-    userCaching.getUserCache().removeUserFromCache(user.getUsername());
-
-    // Clear nonce cache if exists.
-    nonceCachingService.clear(user.getUsername());
-
     // Logout from session.
     if (user.getSessionId() != null) {
       userService.logout(user.getId(), user.getSessionId());
     }
+
+    cachedUserUtil.removeUserFromCache(username);
   }
 }

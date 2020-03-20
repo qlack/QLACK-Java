@@ -40,10 +40,11 @@ public BCryptPasswordEncoder passwordEncoder() {
 }
 ```
 
-### Updating users' passwords when caching is enabled
-When updating the password of a user by using the UserService.updateUser() method, the user must be also removed from the cache in order to avoid signing in with the old password.
+### Updating users' information when caching is enabled
+When updating a user's information (ex. password) by using the UserService.updateUser() method, the user must be also removed from the cache in order to avoid signing in with the old information.
 
-If the security is set up using the [qlack-fuse-security](https://github.com/qlack/QLACK-Java/tree/master/QLACK-Fuse/qlack-fuse-security) module, this action can be done by invoking the CachingUserDetailsService.removeUser(username) method, right after updating the password.
+If the security is set up using the [qlack-fuse-security](https://github.com/qlack/QLACK-Java/tree/master/QLACK-Fuse/qlack-fuse-security) module, this action can be done by invoking the CachedUserUtil.removeUserFromCache(username) method, right after updating the information.
+
 In other case, you will have to load the user cache mechanism of your implementation and remove the user from it.
 
 ### Example

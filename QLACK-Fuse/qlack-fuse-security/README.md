@@ -70,4 +70,5 @@ public Response login(@RequestBody UserDetailsDTO user, HttpServletResponse resp
 }
 ```
 
-
+### Logout
+In order to properly logout a user from the system, except from removing the JWT from your browser, you should also call the method perform logout of the LogoutService class, which saves the timestamp of the logout action in the database and also removes the user information from the cache.

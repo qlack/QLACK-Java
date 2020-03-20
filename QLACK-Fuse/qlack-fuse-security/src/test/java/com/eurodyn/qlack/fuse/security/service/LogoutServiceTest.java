@@ -11,6 +11,7 @@ import com.eurodyn.qlack.fuse.aaa.model.User;
 import com.eurodyn.qlack.fuse.aaa.service.UserService;
 import com.eurodyn.qlack.fuse.security.InitTestValues;
 import com.eurodyn.qlack.fuse.security.cache.AAAUserCaching;
+import com.eurodyn.qlack.fuse.security.util.CachedUserUtil;
 import com.eurodyn.qlack.util.jwt.JWTUtil;
 import com.eurodyn.qlack.util.jwt.dto.JWTGenerateRequestDTO;
 import org.junit.Before;
@@ -37,10 +38,7 @@ public class LogoutServiceTest {
   private AAAUserCaching userCaching;
 
   @Mock
-  private NonceCachingService nonceCachingService;
-
-  @Mock
-  private UserCache userCache;
+  private CachedUserUtil cachedUserUtil;
 
   private MockHttpServletRequest request;
   private InitTestValues initTestValues;
@@ -74,7 +72,6 @@ public class LogoutServiceTest {
   @Test
   public void performLogoutTest() {
     when(userService.getUserByName(user.getUsername())).thenReturn(userDTO);
-    when(userCaching.getUserCache()).thenReturn(userCache);
     logoutService.performLogout(request);
 
     verify(userService, times(1))
@@ -86,7 +83,6 @@ public class LogoutServiceTest {
     userDTO.setSessionId(null);
 
     when(userService.getUserByName(user.getUsername())).thenReturn(userDTO);
-    when(userCaching.getUserCache()).thenReturn(userCache);
     logoutService.performLogout(request);
 
     verify(userService, times(0)).logout(anyString(), anyString());
