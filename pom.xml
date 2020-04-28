@@ -81,6 +81,7 @@
     <jacoco.version>0.8.5</jacoco.version>
     <enunciate.version>2.11.1</enunciate.version>
     <powermockito.version>2.0.2</powermockito.version>
+    <dependency-check-maven.version>5.3.1</dependency-check-maven.version>
     <sonar.version>3.7.0.1746</sonar.version>
     <sonar.exclusions>**/generated-sources/**</sonar.exclusions>
     <sonar.coverage.exclusions>
@@ -250,6 +251,25 @@
           <groupId>org.sonarsource.scanner.maven</groupId>
           <artifactId>sonar-maven-plugin</artifactId>
           <version>${sonar.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.owasp</groupId>
+          <artifactId>dependency-check-maven</artifactId>
+          <version>${dependency-check-maven.version}</version>
+          <configuration>
+            <format>ALL</format>
+            <suppressionFiles>
+              <suppressionFile>qlack-owasp-suppression.xml</suppressionFile>
+            </suppressionFiles>
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>aggregate</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
       </plugins>
     </pluginManagement>
