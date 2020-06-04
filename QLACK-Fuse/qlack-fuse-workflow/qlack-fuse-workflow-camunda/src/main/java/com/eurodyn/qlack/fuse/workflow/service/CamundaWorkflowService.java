@@ -12,6 +12,7 @@ import org.camunda.bpm.engine.history.HistoricProcessInstance;
 import org.camunda.bpm.engine.impl.persistence.entity.ExecutionEntity;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
+import org.camunda.bpm.engine.runtime.VariableInstance;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,8 +73,13 @@ public class CamundaWorkflowService implements WorkflowService {
    */
   @Override
   public List<ProcessInstanceDTO> getProcessInstancesByProcessId(String processId) {
-    Function<ExecutionEntity, ProcessInstanceDTO> toDTO = ee ->
-        new ProcessInstanceDTO(ee.getId(), ee.isSuspended(), ee.getVariables());
+    Function<ProcessInstance, ProcessInstanceDTO> toDTO = ee -> {
+      Map<String, Object> variablesMap = runtimeService.createVariableInstanceQuery()
+          .processInstanceIdIn(ee.getProcessInstanceId()).list().stream()
+          .collect(Collectors.toMap(VariableInstance::getName, VariableInstance::getValue));
+
+      return new ProcessInstanceDTO(ee.getId(), ee.isSuspended(), variablesMap);
+    };
 
     List<ProcessInstance> processInstances = runtimeService
         .createProcessInstanceQuery()
@@ -81,7 +87,6 @@ public class CamundaWorkflowService implements WorkflowService {
         .list();
 
     return processInstances.stream()
-        .map(ExecutionEntity.class::cast)
         .map(toDTO)
         .collect(Collectors.toList());
   }

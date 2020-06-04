@@ -2,6 +2,9 @@ package com.eurodyn.qlack.fuse.workflow.service;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -17,6 +20,7 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -35,6 +39,7 @@ public class CamundaWorkflowTaskServiceTest {
   public void getTasksByProcessInstanceIdNonEmpty() {
     String processInstanceId = "processInstanceId";
     when(taskService.createTaskQuery()).thenReturn(taskQuery);
+    when(taskService.getVariables(anyString())).thenReturn(Collections.singletonMap("key", "value"));
     when(taskQuery.processInstanceId(processInstanceId)).thenReturn(taskQuery);
 
     List<Task> tasks = new ArrayList<>();
@@ -45,6 +50,7 @@ public class CamundaWorkflowTaskServiceTest {
     assertFalse(workflowTaskService.getTasksByProcessInstanceId(processInstanceId).isEmpty());
     verify(taskService, times(1)).createTaskQuery();
     verify(taskQuery, times(1)).processInstanceId(processInstanceId);
+    verify(taskService, times(1)).getVariables(anyString());
   }
 
   @Test
@@ -57,6 +63,7 @@ public class CamundaWorkflowTaskServiceTest {
     assertTrue(workflowTaskService.getTasksByProcessInstanceId(processInstanceId).isEmpty());
     verify(taskService, times(1)).createTaskQuery();
     verify(taskQuery, times(1)).processInstanceId(processInstanceId);
+    verify(taskService, never()).getVariables(anyString());
   }
 
   @Test

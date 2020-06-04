@@ -20,12 +20,10 @@ public class CamundaVariableService implements VariableService {
    */
   @Override
   public Object getVariableInstance(String processInstanceId, String variableKey) {
-//    return runtimeService.createVariableInstanceQuery()
-//        .processInstanceIdIn(processInstanceId)
-//        .variableName(variableKey)
-//        .singleResult();
-//    //OR
-    return runtimeService.getVariable(processInstanceId, variableKey);
+    return runtimeService.createVariableInstanceQuery()
+        .processInstanceIdIn(processInstanceId)
+        .variableName(variableKey)
+        .singleResult();
   }
 
   /**

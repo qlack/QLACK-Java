@@ -27,14 +27,14 @@ public class CamundaWorkflowTaskService implements WorkflowTaskService {
    */
   @Override
   public List<TaskDTO> getTasksByProcessInstanceId(String processInstanceId) {
-    Function<TaskEntity, TaskDTO> task2TaskDTO = te ->
-        new TaskDTO(te.getId(), te.getName(), te.getProcessInstanceId(), te.getVariablesTyped());
+    Function<Task, TaskDTO> task2TaskDTO = te ->
+        new TaskDTO(te.getId(), te.getName(), te.getProcessInstanceId(),
+            taskService.getVariables(te.getId()));
 
     List<Task> tasks =
         taskService.createTaskQuery().processInstanceId(processInstanceId).list();
 
     return tasks.stream()
-        .map(TaskEntity.class::cast)
         .map(task2TaskDTO)
         .collect(Collectors.toList());
   }

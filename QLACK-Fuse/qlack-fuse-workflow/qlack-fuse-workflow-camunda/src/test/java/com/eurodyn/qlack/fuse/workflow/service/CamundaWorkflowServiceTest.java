@@ -20,10 +20,13 @@ import org.camunda.bpm.engine.history.HistoricProcessInstanceQuery;
 import org.camunda.bpm.engine.impl.persistence.entity.ExecutionEntity;
 import org.camunda.bpm.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
 import org.camunda.bpm.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.camunda.bpm.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.camunda.bpm.engine.repository.ProcessDefinitionQuery;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstanceQuery;
-import org.camunda.bpm.engine.variable.impl.VariableMapImpl;
+import org.camunda.bpm.engine.runtime.VariableInstance;
+import org.camunda.bpm.engine.runtime.VariableInstanceQuery;
+import org.camunda.bpm.engine.variable.impl.value.PrimitiveTypeValueImpl.StringValueImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -50,12 +53,15 @@ public class CamundaWorkflowServiceTest {
   private EntityManager entityManager;
   @Mock
   private ProcessInitService processInitService;
+
   @Mock
   private ProcessInstanceQuery processInstanceQuery;
   @Mock
   private HistoricProcessInstanceQuery historicProcessInstanceQuery;
   @Mock
   private ProcessDefinitionQuery processDefinitionQuery;
+  @Mock
+  private VariableInstanceQuery variableInstanceQuery;
   @Mock
   private Query query;
 
@@ -101,15 +107,23 @@ public class CamundaWorkflowServiceTest {
   public void getProcessInstancesByProcessIdTest() {
     String processId = "processId";
 
-    //mocking this as there is no easy way to create and set variables to an Execution Entity
-    ExecutionEntity processInstance = mock(ExecutionEntity.class);
-    when(processInstance.getId()).thenReturn("123");
-    when(processInstance.isSuspended()).thenReturn(false);
-    VariableMapImpl variableMap = new VariableMapImpl(Collections.singletonMap("var1", this));
-    when(processInstance.getVariables()).thenReturn(variableMap);
+    ExecutionEntity processInstance = new ExecutionEntity();
+    processInstance.setId("123");
+    processInstance.setSuspensionState(1);
+    processInstance.setProcessInstanceId("processInstanceId");
+
+    //this is a hack as unable to simply initialise a VariableInstanceEntity with properties set
+    VariableInstance variableInstance = mock(VariableInstance.class);
+    when(variableInstance.getName()).thenReturn("varName");
+    when(variableInstance.getValue()).thenReturn("varValue");
+    List<VariableInstance> variableInstances = Collections.singletonList(variableInstance);
 
     List<ProcessInstance> processInstanceList = new ArrayList<>();
     processInstanceList.add(processInstance);
+
+    when(runtimeService.createVariableInstanceQuery()).thenReturn(variableInstanceQuery);
+    when(variableInstanceQuery.processInstanceIdIn(processInstance.getProcessInstanceId())).thenReturn(variableInstanceQuery);
+    when(variableInstanceQuery.list()).thenReturn(variableInstances);
 
     when(runtimeService.createProcessInstanceQuery()).thenReturn(processInstanceQuery);
     when(processInstanceQuery.processDefinitionKey(processId)).thenReturn(processInstanceQuery);
@@ -119,6 +133,9 @@ public class CamundaWorkflowServiceTest {
 
     assertFalse(actual.isEmpty());
 
+    verify(runtimeService, times(1)).createVariableInstanceQuery();
+    verify(variableInstanceQuery, times(1)).processInstanceIdIn(processInstance.getProcessInstanceId());
+    verify(variableInstanceQuery, times(1)).list();
     verify(runtimeService, times(1)).createProcessInstanceQuery();
     verify(processInstanceQuery, times(1)).processDefinitionKey(processId);
     verify(processInstanceQuery, times(1)).list();
