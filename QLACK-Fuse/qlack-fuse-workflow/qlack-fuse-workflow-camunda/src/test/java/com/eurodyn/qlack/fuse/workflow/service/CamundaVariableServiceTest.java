@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.impl.persistence.entity.VariableInstanceEntity;
-import org.camunda.bpm.engine.runtime.VariableInstance;
 import org.camunda.bpm.engine.runtime.VariableInstanceQuery;
 import org.junit.Test;
 import org.junit.runner.RunWith;

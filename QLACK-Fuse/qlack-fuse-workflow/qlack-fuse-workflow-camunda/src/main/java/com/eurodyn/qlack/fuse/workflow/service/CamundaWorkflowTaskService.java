@@ -3,7 +3,6 @@ package com.eurodyn.qlack.fuse.workflow.service;
 import com.eurodyn.qlack.fuse.workflow.dto.TaskDTO;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.TaskService;
-import org.camunda.bpm.engine.impl.persistence.entity.TaskEntity;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
