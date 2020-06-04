@@ -1,10 +1,12 @@
 package com.eurodyn.qlack.fuse.workflow.dto;
 
-import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+
+import java.util.Map;
 
 /**
  * This object class contains useful information about the workflow processes
@@ -12,6 +14,7 @@ import lombok.Setter;
  *
  * @author European Dynamics SA
  */
+@ToString
 @Getter
 @Setter
 @NoArgsConstructor

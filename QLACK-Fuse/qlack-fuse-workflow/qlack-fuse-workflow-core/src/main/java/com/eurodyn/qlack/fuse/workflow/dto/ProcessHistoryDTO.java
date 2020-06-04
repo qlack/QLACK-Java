@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * This object class contains useful information about the history of workflow
@@ -11,6 +12,7 @@ import lombok.Setter;
  *
  * @author European Dynamics SA
  */
+@ToString
 @Getter
 @Setter
 @NoArgsConstructor
