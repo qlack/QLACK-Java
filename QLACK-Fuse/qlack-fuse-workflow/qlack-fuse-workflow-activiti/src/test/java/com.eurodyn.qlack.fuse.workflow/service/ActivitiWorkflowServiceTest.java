@@ -9,10 +9,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -29,11 +25,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @RunWith(MockitoJUnitRunner.class)
-public class WorkflowServiceTest {
+public class ActivitiWorkflowServiceTest {
 
   @InjectMocks
-  private WorkflowService workflowService;
+  private ActivitiWorkflowService workflowService;
 
   @Mock
   private RuntimeService runtimeService;
@@ -64,7 +65,7 @@ public class WorkflowServiceTest {
 
   @Before
   public void init() {
-    workflowService = new WorkflowService(runtimeService, historyService,
+    workflowService = new ActivitiWorkflowService(runtimeService, historyService,
       entityManager,
       processInitService);
   }

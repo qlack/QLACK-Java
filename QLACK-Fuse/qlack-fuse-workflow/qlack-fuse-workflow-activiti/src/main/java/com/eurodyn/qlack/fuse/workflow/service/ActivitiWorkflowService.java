@@ -3,59 +3,40 @@ package com.eurodyn.qlack.fuse.workflow.service;
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.fuse.workflow.dto.ProcessHistoryDTO;
 import com.eurodyn.qlack.fuse.workflow.dto.ProcessInstanceDTO;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import lombok.RequiredArgsConstructor;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 /**
- * This service provides methods related to the processes and workflow of
- * Activiti.
- *
- * @author European Dynamics
+ * {@inheritDoc}
  */
 @Service
 @Transactional
-public class WorkflowService {
+@RequiredArgsConstructor
+public class ActivitiWorkflowService implements WorkflowService{
 
   private final RuntimeService runtimeService;
-
   private final HistoryService historyService;
-
   private final EntityManager entityManager;
-
   private final ProcessInitService processInitService;
 
   private static final String NOT_FOUND_EXCEPTION = "There is no instance process with id ";
 
-  @Autowired
-  public WorkflowService(RuntimeService runtimeService,
-    HistoryService historyService,
-    EntityManager entityManager, ProcessInitService processInitService) {
-    this.runtimeService = runtimeService;
-    this.historyService = historyService;
-    this.entityManager = entityManager;
-    this.processInitService = processInitService;
-  }
-
   /**
-   * Given the id of a process (as defined in the xml), a new workflow
-   * instance starts. If no process with the found id exists, an exception is
-   * thrown.
-   *
-   * @param processId the id of the process
-   * @param variables the variables of the process
-   * @return the id of the started workflow instance
+   * {@inheritDoc}
    */
+  @Override
   public String startWorkflowInstance(String processId,
     Map<String, Object> variables) {
     try {
@@ -69,12 +50,9 @@ public class WorkflowService {
   }
 
   /**
-   * Given the id of a suspended process instance, it resumes the process
-   * instance. If no instance is found or if the instance is already running,
-   * it throws an exception.
-   *
-   * @param processInstanceId the id of the suspended process instance
+   * {@inheritDoc}
    */
+  @Override
   public void resumeWorkflowInstance(String processInstanceId) {
     try {
       runtimeService.activateProcessInstanceById(processInstanceId);
@@ -84,12 +62,9 @@ public class WorkflowService {
   }
 
   /**
-   * Given the id of a started process instance, it suspends the found process
-   * instance. If no instance is found or if the instance is already
-   * suspended, it throws an exception.
-   *
-   * @param processInstanceId the id of the started process instance
+   * {@inheritDoc}
    */
+  @Override
   public void suspendWorkflowInstance(String processInstanceId) {
     try {
       runtimeService.suspendProcessInstanceById(processInstanceId);
@@ -99,12 +74,9 @@ public class WorkflowService {
   }
 
   /**
-   * Given the id of a started process instance, it deletes the found process
-   * instance. If no instance is found, it throws an exception.
-   *
-   * @param processInstanceId the id of the started process instance
-   * @param reasonOfDeletion the reason for deletion
+   * {@inheritDoc}
    */
+  @Override
   public void deleteWorkflowInstance(String processInstanceId,
     String reasonOfDeletion) {
     try {
@@ -115,11 +87,9 @@ public class WorkflowService {
   }
 
   /**
-   * Given the id of process, it returns all the active process instances.
-   *
-   * @param processId the id of the process
-   * @return a list containing the active process instances
+   * {@inheritDoc}
    */
+  @Override
   public List<ProcessInstanceDTO> getProcessInstancesByProcessId(
     String processId) {
     List<ProcessInstanceDTO> processInstances = new ArrayList<>();
@@ -128,7 +98,7 @@ public class WorkflowService {
       .createProcessInstanceQuery()
       .processDefinitionKey(processId)
       .includeProcessVariables().list();
-    foundProcessInstances.stream()
+    foundProcessInstances
       .forEach(i -> processInstances
         .add(new ProcessInstanceDTO(i.getId(), i.isSuspended(),
           i.getProcessVariables())));
@@ -137,13 +107,9 @@ public class WorkflowService {
   }
 
   /**
-   * Given the id of an existing process, it returns the history of this
-   * process and its data for each version. If no process is found, it returns
-   * an empty list.
-   *
-   * @param processId the id of the process
-   * @return a list containing all the history versions
+   * {@inheritDoc}
    */
+  @Override
   public List<ProcessHistoryDTO> getProcessHistory(String processId) {
     List<ProcessHistoryDTO> processHistory = new ArrayList<>();
 
@@ -151,7 +117,7 @@ public class WorkflowService {
       .createHistoricProcessInstanceQuery().processDefinitionKey(processId)
       .list();
 
-    foundProcessHistory.stream().forEach(
+    foundProcessHistory.forEach(
       h -> processHistory
         .add(new ProcessHistoryDTO(h.getDeploymentId(), h.getDeploymentId(),
           h.getProcessDefinitionVersion(), h.getDeleteReason(), h.getName(),
@@ -162,11 +128,9 @@ public class WorkflowService {
   }
 
   /**
-   * This method reads the .xml files located under the resources/processes
-   * folder and reads their content. If their content has already been
-   * persisted in the Activiti tables and no changes are found, nothing
-   * happens. In any other case, a new version of the process is created.
+   * {@inheritDoc}
    */
+  @Override
   public void updateProcessesFromResources() {
     processInitService.updateProcessesFromResources();
   }

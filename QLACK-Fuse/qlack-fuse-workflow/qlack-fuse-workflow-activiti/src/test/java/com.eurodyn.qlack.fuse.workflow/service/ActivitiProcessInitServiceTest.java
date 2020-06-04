@@ -10,8 +10,6 @@ import com.eurodyn.qlack.fuse.crypto.service.CryptoDigestService;
 import com.eurodyn.qlack.fuse.workflow.InitTestValues;
 import com.eurodyn.qlack.fuse.workflow.model.ProcessFile;
 import com.eurodyn.qlack.fuse.workflow.repository.ProcessFileRepository;
-import java.io.IOException;
-import java.io.InputStream;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.junit.Before;
@@ -27,12 +25,15 @@ import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringJUnit4ClassRunner.class)
-public class ProcessInitServiceTest {
+public class ActivitiProcessInitServiceTest {
 
   @InjectMocks
-  private ProcessInitService processInitService;
+  private ActivitiProcessInitService processInitService;
 
   @Mock
   private ProcessFileRepository processFileRepository;
@@ -57,7 +58,7 @@ public class ProcessInitServiceTest {
 
   @Before
   public void init() throws IOException {
-    processInitService = new ProcessInitService(processFileRepository,
+    processInitService = new ActivitiProcessInitService(processFileRepository,
       repositoryService, cryptoDigestService);
     resources = applicationContext.getResources("/processes/*.xml");
     initTestValues = new InitTestValues();

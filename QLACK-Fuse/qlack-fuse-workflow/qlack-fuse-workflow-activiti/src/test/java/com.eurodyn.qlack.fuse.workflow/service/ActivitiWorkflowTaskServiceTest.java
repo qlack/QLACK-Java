@@ -8,8 +8,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
-import java.util.ArrayList;
-import java.util.List;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
@@ -21,11 +19,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RunWith(MockitoJUnitRunner.class)
-public class WorkflowTaskServiceTest {
+public class ActivitiWorkflowTaskServiceTest {
 
   @InjectMocks
-  private WorkflowTaskService workflowTaskService;
+  private ActivitiWorkflowTaskService activitiWorkflowTaskService;
 
   @Mock
   private TaskService taskService;
@@ -38,7 +39,7 @@ public class WorkflowTaskServiceTest {
 
   @Before
   public void init() {
-    workflowTaskService = new WorkflowTaskService(taskService);
+    activitiWorkflowTaskService = new ActivitiWorkflowTaskService(taskService);
   }
 
   @Test
@@ -54,7 +55,7 @@ public class WorkflowTaskServiceTest {
     when(taskQuery.list()).thenReturn(tasks);
 
     assertFalse(
-      workflowTaskService.getTasksByProcessInstanceId(processInstanceId)
+      activitiWorkflowTaskService.getTasksByProcessInstanceId(processInstanceId)
         .isEmpty());
   }
 
@@ -67,14 +68,14 @@ public class WorkflowTaskServiceTest {
     when(taskQuery.list()).thenReturn(new ArrayList<>());
 
     assertTrue(
-      workflowTaskService.getTasksByProcessInstanceId(processInstanceId)
+      activitiWorkflowTaskService.getTasksByProcessInstanceId(processInstanceId)
         .isEmpty());
   }
 
   @Test
   public void completeTaskTask() {
     String taskId = "taskId";
-    workflowTaskService.completeTask(taskId);
+    activitiWorkflowTaskService.completeTask(taskId);
     verify(taskService, times(1)).complete(taskId);
   }
 
@@ -83,7 +84,7 @@ public class WorkflowTaskServiceTest {
     String taskId = "taskId";
     doThrow(new ActivitiObjectNotFoundException("ex")).when(taskService)
       .complete(taskId);
-    workflowTaskService.completeTask(taskId);
+    activitiWorkflowTaskService.completeTask(taskId);
     verify(taskService, times(1)).complete(taskId);
   }
 

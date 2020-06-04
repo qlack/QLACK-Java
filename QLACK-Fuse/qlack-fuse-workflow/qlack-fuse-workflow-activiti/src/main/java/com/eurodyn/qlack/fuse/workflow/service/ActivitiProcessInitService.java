@@ -3,10 +3,8 @@ package com.eurodyn.qlack.fuse.workflow.service;
 import com.eurodyn.qlack.fuse.crypto.service.CryptoDigestService;
 import com.eurodyn.qlack.fuse.workflow.model.ProcessFile;
 import com.eurodyn.qlack.fuse.workflow.repository.ProcessFileRepository;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.activiti.engine.RepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,18 +12,16 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.util.Arrays;
+
 /**
- * This service provides methods related to the initialization of the
- * processes.
- *
- * @author European Dynamics
+ * {@inheritDoc}
  */
+@Slf4j
 @Service
 @Transactional
-public class ProcessInitService {
-
-  private static final Logger LOGGER = Logger
-    .getLogger(ProcessInitService.class.getName());
+public class ActivitiProcessInitService implements ProcessInitService {
 
   private final ProcessFileRepository processFileRepository;
 
@@ -37,7 +33,7 @@ public class ProcessInitService {
   private Resource[] resources;
 
   @Autowired
-  public ProcessInitService(ProcessFileRepository processFileRepository,
+  public ActivitiProcessInitService(ProcessFileRepository processFileRepository,
     RepositoryService repositoryService,
     CryptoDigestService cryptoDigestService) {
     this.processFileRepository = processFileRepository;
@@ -54,11 +50,9 @@ public class ProcessInitService {
   }
 
   /**
-   * This method reads the .xml files located under the resources/processes
-   * folder and reads their content. If their content has already been
-   * persisted in the Activiti tables and no changes are found, nothing
-   * happens. In any other case, a new version of the process is created.
+   * {@inheritDoc}
    */
+  @Override
   public void updateProcessesFromResources() {
     Arrays.stream(resources).forEach(r -> {
       ProcessFile existingProcessFile = processFileRepository
@@ -80,7 +74,7 @@ public class ProcessInitService {
             .addClasspathResource("processes/" + r.getFilename()).deploy();
         }
       } catch (IOException e) {
-        LOGGER.severe(e.getMessage());
+        log.error(e.getMessage());
       }
     });
   }

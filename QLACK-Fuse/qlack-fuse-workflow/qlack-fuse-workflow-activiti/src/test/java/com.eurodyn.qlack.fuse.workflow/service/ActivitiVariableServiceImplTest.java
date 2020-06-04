@@ -16,10 +16,10 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class VariableServiceTest {
+public class ActivitiVariableServiceImplTest {
 
   @InjectMocks
-  private VariableService variableService;
+  private ActivitiVariableService variableService;
 
   @Mock
   private RuntimeService runtimeService;
@@ -30,7 +30,7 @@ public class VariableServiceTest {
 
   @Before
   public void init() {
-    variableService = new VariableService(runtimeService);
+    variableService = new ActivitiVariableService(runtimeService);
   }
 
   @Test
