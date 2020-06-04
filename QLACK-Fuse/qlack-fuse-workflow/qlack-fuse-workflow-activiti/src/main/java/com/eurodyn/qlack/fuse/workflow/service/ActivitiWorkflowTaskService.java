@@ -1,16 +1,15 @@
 package com.eurodyn.qlack.fuse.workflow.service;
 
-import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.fuse.workflow.dto.TaskDTO;
 import lombok.RequiredArgsConstructor;
-import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * {@inheritDoc}
@@ -18,7 +17,7 @@ import java.util.List;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class ActivitiWorkflowTaskService implements WorkflowTaskService{
+public class ActivitiWorkflowTaskService implements WorkflowTaskService {
 
   private final TaskService taskService;
 
@@ -27,16 +26,15 @@ public class ActivitiWorkflowTaskService implements WorkflowTaskService{
    */
   @Override
   public List<TaskDTO> getTasksByProcessInstanceId(String processInstanceId) {
-    List<TaskDTO> tasks = new ArrayList<>();
+    Function<Task, TaskDTO> task2TaskDTO = t ->
+        new TaskDTO(t.getId(), t.getName(), t.getProcessInstanceId(),
+            t.getProcessVariables());
 
     List<Task> foundTasks = taskService.createTaskQuery()
-      .processInstanceId(processInstanceId)
-      .includeProcessVariables().list();
-    foundTasks.forEach(t -> tasks.add(
-      new TaskDTO(t.getId(), t.getName(), t.getProcessInstanceId(),
-        t.getProcessVariables())));
+        .processInstanceId(processInstanceId)
+        .includeProcessVariables().list();
 
-    return tasks;
+    return foundTasks.stream().map(task2TaskDTO).collect(Collectors.toList());
   }
 
   /**
@@ -44,12 +42,7 @@ public class ActivitiWorkflowTaskService implements WorkflowTaskService{
    */
   @Override
   public void completeTask(String taskId) {
-    try {
-      taskService.complete(taskId);
-    } catch (ActivitiObjectNotFoundException e) {
-      throw new QDoesNotExistException(
-        "There is no active task with id " + taskId);
-    }
+    taskService.complete(taskId);
   }
 
 }

@@ -1,12 +1,10 @@
 package com.eurodyn.qlack.fuse.workflow.service;
 
-import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.fuse.workflow.dto.ProcessHistoryDTO;
 import com.eurodyn.qlack.fuse.workflow.dto.ProcessInstanceDTO;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import lombok.RequiredArgsConstructor;
-import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.history.HistoricProcessInstance;
@@ -24,29 +22,21 @@ import java.util.Map;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class ActivitiWorkflowService implements WorkflowService{
+public class ActivitiWorkflowService implements WorkflowService {
 
   private final RuntimeService runtimeService;
   private final HistoryService historyService;
   private final EntityManager entityManager;
   private final ProcessInitService processInitService;
 
-  private static final String NOT_FOUND_EXCEPTION = "There is no instance process with id ";
-
   /**
    * {@inheritDoc}
    */
   @Override
-  public String startWorkflowInstance(String processId,
-    Map<String, Object> variables) {
-    try {
-      ProcessInstance processInstance = runtimeService
+  public String startWorkflowInstance(String processId, Map<String, Object> variables) {
+    ProcessInstance processInstance = runtimeService
         .startProcessInstanceByKey(processId, variables);
-      return processInstance.getId();
-    } catch (ActivitiObjectNotFoundException e) {
-      throw new QDoesNotExistException(
-        "Process with id " + processId + " does not exist.");
-    }
+    return processInstance.getId();
   }
 
   /**
@@ -54,11 +44,7 @@ public class ActivitiWorkflowService implements WorkflowService{
    */
   @Override
   public void resumeWorkflowInstance(String processInstanceId) {
-    try {
-      runtimeService.activateProcessInstanceById(processInstanceId);
-    } catch (ActivitiObjectNotFoundException e) {
-      throw new QDoesNotExistException(NOT_FOUND_EXCEPTION + processInstanceId);
-    }
+    runtimeService.activateProcessInstanceById(processInstanceId);
   }
 
   /**
@@ -66,11 +52,7 @@ public class ActivitiWorkflowService implements WorkflowService{
    */
   @Override
   public void suspendWorkflowInstance(String processInstanceId) {
-    try {
-      runtimeService.suspendProcessInstanceById(processInstanceId);
-    } catch (ActivitiObjectNotFoundException e) {
-      throw new QDoesNotExistException(NOT_FOUND_EXCEPTION + processInstanceId);
-    }
+    runtimeService.suspendProcessInstanceById(processInstanceId);
   }
 
   /**
@@ -78,12 +60,8 @@ public class ActivitiWorkflowService implements WorkflowService{
    */
   @Override
   public void deleteWorkflowInstance(String processInstanceId,
-    String reasonOfDeletion) {
-    try {
-      runtimeService.deleteProcessInstance(processInstanceId, reasonOfDeletion);
-    } catch (ActivitiObjectNotFoundException e) {
-      throw new QDoesNotExistException(NOT_FOUND_EXCEPTION + processInstanceId);
-    }
+      String reasonOfDeletion) {
+    runtimeService.deleteProcessInstance(processInstanceId, reasonOfDeletion);
   }
 
   /**
@@ -91,17 +69,17 @@ public class ActivitiWorkflowService implements WorkflowService{
    */
   @Override
   public List<ProcessInstanceDTO> getProcessInstancesByProcessId(
-    String processId) {
+      String processId) {
     List<ProcessInstanceDTO> processInstances = new ArrayList<>();
 
     List<ProcessInstance> foundProcessInstances = runtimeService
-      .createProcessInstanceQuery()
-      .processDefinitionKey(processId)
-      .includeProcessVariables().list();
+        .createProcessInstanceQuery()
+        .processDefinitionKey(processId)
+        .includeProcessVariables().list();
     foundProcessInstances
-      .forEach(i -> processInstances
-        .add(new ProcessInstanceDTO(i.getId(), i.isSuspended(),
-          i.getProcessVariables())));
+        .forEach(i -> processInstances
+            .add(new ProcessInstanceDTO(i.getId(), i.isSuspended(),
+                i.getProcessVariables())));
 
     return processInstances;
   }
@@ -114,15 +92,15 @@ public class ActivitiWorkflowService implements WorkflowService{
     List<ProcessHistoryDTO> processHistory = new ArrayList<>();
 
     List<HistoricProcessInstance> foundProcessHistory = historyService
-      .createHistoricProcessInstanceQuery().processDefinitionKey(processId)
-      .list();
+        .createHistoricProcessInstanceQuery().processDefinitionKey(processId)
+        .list();
 
     foundProcessHistory.forEach(
-      h -> processHistory
-        .add(new ProcessHistoryDTO(h.getDeploymentId(), h.getDeploymentId(),
-          h.getProcessDefinitionVersion(), h.getDeleteReason(), h.getName(),
-          h.getDescription(),
-          getProcessData(h.getDeploymentId()))));
+        h -> processHistory
+            .add(new ProcessHistoryDTO(h.getDeploymentId(), h.getDeploymentId(),
+                h.getProcessDefinitionVersion(), h.getDeleteReason(), h.getName(),
+                h.getDescription(),
+                getProcessData(h.getDeploymentId()))));
 
     return processHistory;
   }
@@ -143,8 +121,8 @@ public class ActivitiWorkflowService implements WorkflowService{
    */
   private byte[] getProcessData(String deploymentId) {
     Query query = entityManager
-      .createNativeQuery(
-        "SELECT BYTES_ FROM act_ge_bytearray WHERE DEPLOYMENT_ID_ = ?");
+        .createNativeQuery(
+            "SELECT BYTES_ FROM act_ge_bytearray WHERE DEPLOYMENT_ID_ = ?");
     query.setParameter(1, deploymentId);
     return (byte[]) query.getSingleResult();
   }

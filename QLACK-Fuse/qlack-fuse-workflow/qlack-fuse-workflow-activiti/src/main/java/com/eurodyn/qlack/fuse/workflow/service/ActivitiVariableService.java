@@ -1,8 +1,6 @@
 package com.eurodyn.qlack.fuse.workflow.service;
 
-import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import lombok.RequiredArgsConstructor;
-import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RuntimeService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,12 +20,7 @@ public class ActivitiVariableService implements VariableService {
    */
   @Override
   public Object getVariableInstance(String processInstanceId, String variableKey) {
-    try {
-      return runtimeService.getVariableInstance(processInstanceId, variableKey);
-    } catch (ActivitiObjectNotFoundException e) {
-      throw new QDoesNotExistException(
-          "There is no instance process with id " + processInstanceId);
-    }
+    return runtimeService.getVariableInstance(processInstanceId, variableKey);
   }
 
   /**
@@ -36,12 +29,7 @@ public class ActivitiVariableService implements VariableService {
   @Override
   public void setVariableInstance(String processInstanceId, String variableKey,
       Object variableValue) {
-    try {
-      runtimeService.setVariableLocal(processInstanceId, variableKey, variableValue);
-    } catch (ActivitiObjectNotFoundException e) {
-      throw new QDoesNotExistException(
-          "There is no instance process with id " + processInstanceId);
-    }
+    runtimeService.setVariableLocal(processInstanceId, variableKey, variableValue);
   }
 
 }
