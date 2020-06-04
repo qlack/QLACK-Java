@@ -9,8 +9,7 @@ public interface VariableService {
 
   /**
    * Given the id of the process instance and the key of the variable, it
-   * returns the value of the variable. If the process instance is not found,
-   * then an exception is thrown. If the process instance does not have
+   * returns the value of the variable. If the process instance does not have
    * variable with the requested key, a null object is returned.
    *
    * @param processInstanceId the id of the process instance
@@ -21,8 +20,7 @@ public interface VariableService {
 
   /**
    * Given the id of the process instance, it updates the value of the
-   * variable based on the provided key and value. If the process instance is
-   * not found, then an exception is thrown. If the process instance does not
+   * variable based on the provided key and value. If the process instance does not
    * have variable with the requested key, nothing happens.
    *
    * @param processInstanceId the id of the process instance

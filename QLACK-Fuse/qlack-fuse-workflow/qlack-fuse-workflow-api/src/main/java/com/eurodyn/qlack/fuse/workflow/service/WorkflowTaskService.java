@@ -21,8 +21,7 @@ public interface WorkflowTaskService {
   List<TaskDTO> getTasksByProcessInstanceId(String processInstanceId);
 
   /**
-   * Given the id of a task, it completes the related task. If no task is
-   * found, an exception is thrown.
+   * Given the id of a task, it completes the related task.
    *
    * @param taskId the id of the task
    */

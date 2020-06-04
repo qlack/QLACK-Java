@@ -7,15 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This service provides API methods related to the processes and workflow..
+ * This service provides API methods related to the processes and workflow.
  *
  * @author European Dynamics
  */
 public interface WorkflowService {
 
   /**
-   * Given the id of a process (as defined in the xml), a new workflow instance starts. If no
-   * process with the found id exists, an exception is thrown.
+   * Given the id of a process (as defined in the bpmn file), a new workflow instance starts.
    *
    * @param processId the id of the process
    * @param variables the variables of the process
@@ -24,24 +23,21 @@ public interface WorkflowService {
   String startWorkflowInstance(String processId, Map<String, Object> variables);
 
   /**
-   * Given the id of a suspended process instance, it resumes the process instance. If no instance
-   * is found or if the instance is already running, it throws an exception.
+   * Given the id of a suspended process instance, it resumes the process instance.
    *
    * @param processInstanceId the id of the suspended process instance
    */
   void resumeWorkflowInstance(String processInstanceId);
 
   /**
-   * Given the id of a started process instance, it suspends the found process instance. If no
-   * instance is found or if the instance is already suspended, it throws an exception.
+   * Given the id of a started process instance, it suspends the found process instance.
    *
    * @param processInstanceId the id of the started process instance
    */
   void suspendWorkflowInstance(String processInstanceId);
 
   /**
-   * Given the id of a started process instance, it deletes the found process instance. If no
-   * instance is found, it throws an exception.
+   * Given the id of a started process instance, it deletes the found process instance.
    *
    * @param processInstanceId the id of the started process instance
    * @param reasonOfDeletion the reason for deletion
@@ -66,8 +62,8 @@ public interface WorkflowService {
   List<ProcessHistoryDTO> getProcessHistory(String processId);
 
   /**
-   * This method reads the .xml files located under the resources/processes folder and reads their
-   * content. If their content has already been persisted in the Activiti tables and no changes are
+   * This method reads the bpmn files located under the resources/processes folder and reads their
+   * content. If their content has already been persisted in the DB tables and no changes are
    * found, nothing happens. In any other case, a new version of the process is created.
    */
   void updateProcessesFromResources();
