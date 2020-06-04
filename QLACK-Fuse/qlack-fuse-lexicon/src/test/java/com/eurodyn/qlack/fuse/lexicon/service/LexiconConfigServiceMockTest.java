@@ -34,9 +34,6 @@ public class LexiconConfigServiceMockTest {
   private ApplicationRepository applicationRepository;
 
   @Mock
-  private ApplicationContext applicationContext;
-
-  @Mock
   private ClassLoader classLoader;
 
   @Mock
@@ -46,7 +43,7 @@ public class LexiconConfigServiceMockTest {
   public void init() {
     lexiconConfigService = new LexiconConfigService(groupService,
       languageService, keyService,
-      applicationRepository, applicationContext);
+      applicationRepository);
     ReflectionTestUtils
       .setField(lexiconConfigService, "classLoader", classLoader);
   }
@@ -70,7 +67,7 @@ public class LexiconConfigServiceMockTest {
   @Test(expected = LexiconYMLProcessingException.class)
   public void initNullYamlFilesTest() throws IOException {
     when(yamlFile.openStream()).thenThrow(new IOException());
-    lexiconConfigService.updateTranslations(yamlFile);
+    lexiconConfigService.updateTranslations(yamlFile, "qlack-lexicon-config.yaml");
   }
 
 }
