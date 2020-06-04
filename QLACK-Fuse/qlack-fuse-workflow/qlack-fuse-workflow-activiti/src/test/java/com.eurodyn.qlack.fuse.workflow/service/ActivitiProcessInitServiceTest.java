@@ -7,7 +7,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.eurodyn.qlack.fuse.crypto.service.CryptoDigestService;
-import com.eurodyn.qlack.fuse.workflow.InitTestValues;
 import com.eurodyn.qlack.fuse.workflow.model.ProcessFile;
 import com.eurodyn.qlack.fuse.workflow.repository.ProcessFileRepository;
 import org.activiti.engine.RepositoryService;
@@ -17,57 +16,35 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.core.io.Resource;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(SpringJUnit4ClassRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ActivitiProcessInitServiceTest {
 
   @InjectMocks
   private ActivitiProcessInitService processInitService;
-
   @Mock
   private ProcessFileRepository processFileRepository;
-
   @Mock
   private RepositoryService repositoryService;
-
   @Mock
   private CryptoDigestService cryptoDigestService;
-
-  @Autowired
-  private ApplicationContext applicationContext;
-
   @Mock
   private DeploymentBuilder deploymentBuilder;
-
   private Resource[] resources;
-
-  private InitTestValues initTestValues;
-
-  private ProcessFile processFile;
 
   @Before
   public void init() throws IOException {
-    processInitService = new ActivitiProcessInitService(processFileRepository,
-      repositoryService, cryptoDigestService);
-    resources = applicationContext.getResources("/processes/*.xml");
-    initTestValues = new InitTestValues();
-    processFile = initTestValues.generateProcessFile();
-
+    resources = new PathMatchingResourcePatternResolver().getResources("/processes/*.xml");
     ReflectionTestUtils.setField(processInitService, "resources", resources);
     when(repositoryService.createDeployment()).thenReturn(deploymentBuilder);
-    when(deploymentBuilder.addClasspathResource(anyString()))
-      .thenReturn(deploymentBuilder);
+    when(deploymentBuilder.addClasspathResource(anyString())).thenReturn(deploymentBuilder);
   }
 
   @Test
@@ -86,6 +63,7 @@ public class ActivitiProcessInitServiceTest {
 
   @Test
   public void initExistingProcessNullChecksumTest() {
+    ProcessFile processFile = new ProcessFile("someFilename", "someChecksum");
     for (Resource r : resources) {
       when(processFileRepository.findOneByFilename(r.getFilename()))
         .thenReturn(processFile);
@@ -100,6 +78,7 @@ public class ActivitiProcessInitServiceTest {
 
   @Test
   public void initExistingProcessSameChecksumTest() throws IOException {
+    ProcessFile processFile = new ProcessFile("someFilename", "same_checksum");
     String checksum = "same_checksum";
     processFile.setChecksum(checksum);
     when(cryptoDigestService.sha256(any(InputStream.class)))
@@ -117,6 +96,7 @@ public class ActivitiProcessInitServiceTest {
 
   @Test
   public void initIoExceptionTest() throws IOException {
+    ProcessFile processFile = new ProcessFile("someFilename", "someChecksum");
     for (Resource r : resources) {
       when(processFileRepository.findOneByFilename(r.getFilename()))
         .thenReturn(processFile);

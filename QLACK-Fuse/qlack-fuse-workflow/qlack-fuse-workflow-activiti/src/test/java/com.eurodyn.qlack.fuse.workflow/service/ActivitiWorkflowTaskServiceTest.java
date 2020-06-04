@@ -27,20 +27,12 @@ public class ActivitiWorkflowTaskServiceTest {
 
   @InjectMocks
   private ActivitiWorkflowTaskService activitiWorkflowTaskService;
-
   @Mock
   private TaskService taskService;
-
   @Mock
   private TaskQuery taskQuery;
-
   @Mock
   private Task task;
-
-  @Before
-  public void init() {
-    activitiWorkflowTaskService = new ActivitiWorkflowTaskService(taskService);
-  }
 
   @Test
   public void getTasksByProcessInstanceIdTest() {
@@ -75,15 +67,6 @@ public class ActivitiWorkflowTaskServiceTest {
   @Test
   public void completeTaskTask() {
     String taskId = "taskId";
-    activitiWorkflowTaskService.completeTask(taskId);
-    verify(taskService, times(1)).complete(taskId);
-  }
-
-  @Test(expected = QDoesNotExistException.class)
-  public void getTasksByProcessInstanceIdActivitiObjectNotFoundExceptionTest() {
-    String taskId = "taskId";
-    doThrow(new ActivitiObjectNotFoundException("ex")).when(taskService)
-      .complete(taskId);
     activitiWorkflowTaskService.completeTask(taskId);
     verify(taskService, times(1)).complete(taskId);
   }

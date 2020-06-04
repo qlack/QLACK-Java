@@ -11,7 +11,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 public class ActivitiConfigurationTest {
 
   @InjectMocks
-  private ActivitiConfiguration activitiConfiguration = new ActivitiConfiguration();
+  private ActivitiConfiguration activitiConfiguration;
 
   @Test
   public void processEngineConfigurationTest() {
