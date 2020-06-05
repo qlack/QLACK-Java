@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -28,7 +29,8 @@ public class CamundaWorkflowTaskService implements WorkflowTaskService {
   public List<TaskDTO> getTasksByProcessInstanceId(String processInstanceId) {
     Function<Task, TaskDTO> task2TaskDTO = te ->
         new TaskDTO(te.getId(), te.getName(), te.getProcessInstanceId(),
-            taskService.getVariables(te.getId()));
+            taskService.getVariables(te.getId()).entrySet().stream()
+                .collect(Collectors.toMap(Entry::getKey, Entry::getValue)));
 
     List<Task> tasks =
         taskService.createTaskQuery().processInstanceId(processInstanceId).list();

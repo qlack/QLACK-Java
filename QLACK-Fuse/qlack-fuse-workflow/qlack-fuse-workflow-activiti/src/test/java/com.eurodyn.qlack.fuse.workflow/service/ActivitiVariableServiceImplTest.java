@@ -1,10 +1,12 @@
 package com.eurodyn.qlack.fuse.workflow.service;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.activiti.engine.RuntimeService;
-import org.junit.Before;
+import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -25,9 +27,12 @@ public class ActivitiVariableServiceImplTest {
 
   @Test
   public void getVariableInstanceTest() {
+    VariableInstance vi = mock(VariableInstance.class);
+    when(runtimeService.getVariableInstance(processInstanceId, variableKey)).thenReturn(vi);
+
     variableService.getVariableInstance(processInstanceId, variableKey);
-    verify(runtimeService, times(1))
-      .getVariableInstance(processInstanceId, variableKey);
+
+    verify(runtimeService, times(1)).getVariableInstance(processInstanceId, variableKey);
   }
 
   @Test

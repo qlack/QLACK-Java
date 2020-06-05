@@ -1,5 +1,7 @@
 package com.eurodyn.qlack.fuse.workflow.service;
 
+import com.eurodyn.qlack.fuse.workflow.dto.VariableInstanceDTO;
+
 /**
  * This service provides API methods related to the task/process variables.
  *
@@ -16,7 +18,7 @@ public interface VariableService {
    * @param variableKey the key of the variable
    * @return the value of the variable
    */
-  Object getVariableInstance(String processInstanceId, String variableKey);
+  VariableInstanceDTO getVariableInstance(String processInstanceId, String variableKey);
 
   /**
    * Given the id of the process instance, it updates the value of the

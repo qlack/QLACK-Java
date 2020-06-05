@@ -1,11 +1,12 @@
 package com.eurodyn.qlack.fuse.workflow.service;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.camunda.bpm.engine.RuntimeService;
-import org.camunda.bpm.engine.impl.persistence.entity.VariableInstanceEntity;
+import org.camunda.bpm.engine.runtime.VariableInstance;
 import org.camunda.bpm.engine.runtime.VariableInstanceQuery;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,10 +29,12 @@ public class CamundaVariableServiceTest {
 
   @Test
   public void getVariableInstanceTest() {
+    VariableInstance vi = mock(VariableInstance.class);
+
     when(runtimeService.createVariableInstanceQuery()).thenReturn(variableInstanceQuery);
     when(variableInstanceQuery.processInstanceIdIn(processInstanceId)).thenReturn(variableInstanceQuery);
     when(variableInstanceQuery.variableName(variableKey)).thenReturn(variableInstanceQuery);
-    when(variableInstanceQuery.singleResult()).thenReturn(new VariableInstanceEntity());
+    when(variableInstanceQuery.singleResult()).thenReturn(vi);
 
     variableService.getVariableInstance(processInstanceId, variableKey);
 

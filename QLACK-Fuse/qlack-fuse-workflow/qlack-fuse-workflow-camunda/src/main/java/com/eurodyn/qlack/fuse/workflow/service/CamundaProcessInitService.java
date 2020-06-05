@@ -30,7 +30,7 @@ public class CamundaProcessInitService implements ProcessInitService {
 
   public static final String PROCESSES = "processes/";
 
-  @Value("classpath:processes/*.xml")
+  @Value("classpath:processes/*.bpmn")
   private Resource[] resources;
 
   /**

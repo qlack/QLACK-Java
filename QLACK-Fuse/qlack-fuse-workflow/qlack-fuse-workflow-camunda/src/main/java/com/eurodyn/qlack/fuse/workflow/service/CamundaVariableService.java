@@ -1,7 +1,9 @@
 package com.eurodyn.qlack.fuse.workflow.service;
 
+import com.eurodyn.qlack.fuse.workflow.dto.VariableInstanceDTO;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.RuntimeService;
+import org.camunda.bpm.engine.runtime.VariableInstance;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,11 +21,14 @@ public class CamundaVariableService implements VariableService {
    * {@inheritDoc}
    */
   @Override
-  public Object getVariableInstance(String processInstanceId, String variableKey) {
-    return runtimeService.createVariableInstanceQuery()
+  public VariableInstanceDTO getVariableInstance(String processInstanceId, String variableKey) {
+    VariableInstance vi = runtimeService.createVariableInstanceQuery()
         .processInstanceIdIn(processInstanceId)
         .variableName(variableKey)
         .singleResult();
+
+    return new VariableInstanceDTO(vi.getId(), vi.getName(), vi.getProcessInstanceId(),
+        vi.getExecutionId(), vi.getTaskId(), vi.getTypeName(), vi.getValue());
   }
 
   /**
