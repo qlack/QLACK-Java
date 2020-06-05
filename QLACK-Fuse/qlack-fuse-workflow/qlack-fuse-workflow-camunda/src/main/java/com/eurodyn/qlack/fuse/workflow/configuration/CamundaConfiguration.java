@@ -1,11 +1,11 @@
 package com.eurodyn.qlack.fuse.workflow.configuration;
 
 import javax.sql.DataSource;
+import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.ProcessEngineConfiguration;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.spring.ProcessEngineFactoryBean;
 import org.camunda.bpm.engine.spring.SpringProcessEngineConfiguration;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -16,13 +16,11 @@ import org.springframework.transaction.PlatformTransactionManager;
  * @author European Dynamics SA
  */
 @Configuration
+@RequiredArgsConstructor
 public class CamundaConfiguration {
 
-  @Autowired
-  private DataSource dataSource;
-
-  @Autowired
-  private PlatformTransactionManager transactionManager;
+  private final DataSource dataSource;
+  private final PlatformTransactionManager transactionManager;
 
   @Bean
   public SpringProcessEngineConfiguration processEngineConfiguration() {

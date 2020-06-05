@@ -1,11 +1,11 @@
 package com.eurodyn.qlack.fuse.workflow.configuration;
 
 import javax.sql.DataSource;
+import lombok.RequiredArgsConstructor;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
 import org.activiti.spring.ProcessEngineFactoryBean;
 import org.activiti.spring.SpringProcessEngineConfiguration;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -16,14 +16,11 @@ import org.springframework.transaction.PlatformTransactionManager;
  * @author European Dynamics SA
  */
 @Configuration
-@SuppressWarnings("squid:S3305")
+@RequiredArgsConstructor
 public class ActivitiConfiguration {
 
-  @Autowired
-  private DataSource dataSource;
-
-  @Autowired
-  private PlatformTransactionManager transactionManager;
+  private final DataSource dataSource;
+  private final PlatformTransactionManager transactionManager;
 
   @Bean
   public SpringProcessEngineConfiguration processEngineConfiguration() {
