@@ -122,7 +122,7 @@ public class ActivitiWorkflowService implements WorkflowService {
   private byte[] getProcessData(String deploymentId) {
     Query query = entityManager
         .createNativeQuery(
-            "SELECT BYTES_ FROM act_ge_bytearray WHERE DEPLOYMENT_ID_ = ?");
+            "SELECT BYTES_ FROM ACT_GE_BYTEARRAY WHERE DEPLOYMENT_ID_ = ?");
     query.setParameter(1, deploymentId);
     return (byte[]) query.getSingleResult();
   }
