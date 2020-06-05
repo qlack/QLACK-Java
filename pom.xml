@@ -76,6 +76,8 @@
     <drools.version>7.30.0.Final</drools.version>
     <commons-io.version>2.6</commons-io.version>
     <activiti.version>7.1.9</activiti.version>
+    <camunda-engine.version>7.13.0</camunda-engine.version>
+    <camunda.springboot.version>3.4.0</camunda.springboot.version>
     <apache.email.version>1.5</apache.email.version>
     <commons.codec.version>1.7</commons.codec.version>
     <jacoco.version>0.8.5</jacoco.version>
