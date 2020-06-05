@@ -1,6 +1,6 @@
 # mavenizr
 
-`mavenizr` is a tool that helps to minimize the time needed to install local jar dependencies on your local maven repository and use them directly in your maven project `pom` file. 
+`mavenizr` is a tool that helps to minimize the time needed to install local jar dependencies on your local maven repository and use them directly in your maven project `pom` file. It allows for quicker transition of legacy projects with local jar files dependencies to a cleaner maven solution. 
 
  ## Quick start 
 
@@ -15,7 +15,7 @@ mvn clean package
 After a successful build you can run the following, adjusting the options values to your project:
 
 ```cmd
-java -jar target/qlack-tools-mavenizr-1.0.jar --deps --exec --d=C:/my_maven_project/lib 						--c=src/main/resources/lib --g=com.eurodyn.my_maven_project 
+java -jar target/qlack-tools-mavenizr-1.0.jar --deps --exec --d=C:/my_maven_project/lib --c=src/main/resources/lib --g=com.eurodyn.my_maven_project 
 
 ```
 
@@ -31,7 +31,7 @@ Your project should be ready to build, using the installed
 
 ## How does it work?
 
-For each jar file in a directory defined by the `--d` parameter it generates a dependency and/or an execution node. The jar file name is used as `<artifactdId>`, whereas the `<version>`  is a hash of the actual file. Using the `--g` parameter the user defines the `<groupId>` that the output artifacts will be installed under. The `<execution>` configuration node constructs the path for the `<file>` property using the parameter `--c` and the jar file name.
+For each jar file in a directory defined by the `--d` parameter it generates a dependency and/or an execution node. The jar file name is used as `<artifactId>`, whereas the `<version>`  is a hash of the actual file. Using the `--g` parameter the user defines the `<groupId>` that the output artifacts will be installed under. The `<execution>` configuration node constructs the path for the `<file>` property using the parameter `--c` and the jar file name.
 
 In this way `mavenizr` creates a pair of `<dependency>` and `<execution>` definition nodes. The `maven-install-plugin` uses the execution definition to install the jar file to the local .m2 repository under the defined groupId, artifactId and version. The jar file should also be declared as a dependency in the `dependencies` section of the pom.xml file, so maven simply resolves the dependency.
 
