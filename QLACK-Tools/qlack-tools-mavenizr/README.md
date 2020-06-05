@@ -1,6 +1,6 @@
 # mavenizr
 
-`mavenizr` is a tool that helps to minimize the time needed to install local jar dependencies to your local maven repository and use them directly in your maven project `pom` file. 
+`mavenizr` is a tool that helps to minimize the time needed to install local jar dependencies on your local maven repository and use them directly in your maven project `pom` file. 
 
  ## Quick start 
 
@@ -95,7 +95,19 @@ For executions option `--exec` the output will be of the following form:
 
 ## Copying output to your projects' pom.xml
 
-The output of the dependencies execution options should be copied and pasted in the pom.xml dependencies section. 
+The output of the dependencies execution options should be copied and pasted in the pom.xml `<dependencies></dependencies>` section. 
+
+```xml
+<dependencies>
+    <dependency>
+        <artifactId>my_custom_jar_filename</artifactId>
+        <groupId>com.eurodyn.my_maven_project</groupId>
+        <version>2881c79c9d6ef01c58e62beea13e9d1ac8b8baa16f2fc198ad6e6776defdcdd3</version>
+    </dependency>
+<!-- Other dependencies... -->
+</dependencies>
+    
+```
 
 The output of the executions option should be copied in the `<executions></executions>` section of the `maven-install-plugin`. i.e.
 

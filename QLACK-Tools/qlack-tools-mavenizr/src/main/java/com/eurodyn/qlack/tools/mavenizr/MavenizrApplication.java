@@ -138,8 +138,8 @@ public class MavenizrApplication implements ApplicationRunner {
         log.info(" --g\t the default groupId for the created dependency/execution nodes (required)");
         log.info("___________________________________________________________");
         log.info("Execution options:");
-        log.info(" --deps\t generates and outputs dependency nodes");
-        log.info(" --exec\t generates and outputs execution nodes");
+        log.info(" --deps\t generates dependency nodes");
+        log.info(" --exec\t generates execution nodes");
         log.info(" --u\t usage information");
         log.info("___________________________________________________________");
     }
