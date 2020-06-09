@@ -1,15 +1,24 @@
 # QLACK Fuse - Rules
 
-This module uses the Drools library and provides rules configuration and execution methods.
+This module provides a unified and simple api for configuring and executing rules.
+It comes in two favors, the first one uses the Drools library while the second uses the Camunda DMN engine. 
 
 ## Integration
 
-### Add qlack-fuse-rules dependency to your pom.xml:
+### Add either of the below dependencies to your pom.xml:
 ```xml
     <dependency>
-        <groupId>com.eurodyn.qlack.fuse</groupId>
-        <artifactId>qlack-fuse-rules</artifactId>
-        <version>${qlack.version}</version>
+        <groupId>com.eurodyn.qlack.fuse.rules</groupId>
+        <artifactId>qlack-fuse-rules-camunda</artifactId>
+        <version>${project.parent.version}</version>
+    </dependency>
+```
+or
+```xml
+    <dependency>
+        <groupId>com.eurodyn.qlack.fuse.rules</groupId>
+        <artifactId>qlack-fuse-rules-drools</artifactId>
+        <version>${project.parent.version}</version>
     </dependency>
 ```
 

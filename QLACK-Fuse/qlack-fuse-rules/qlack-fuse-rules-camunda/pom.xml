@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>qlack-fuse-rules</artifactId>
+        <groupId>com.eurodyn.qlack.fuse.rules</groupId>
+        <version>3.2.9-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>qlack-fuse-rules-camunda</artifactId>
+
+    <dependencies>
+        <!-- QLACK dependencies -->
+        <dependency>
+            <groupId>com.eurodyn.qlack.fuse.rules</groupId>
+            <artifactId>qlack-fuse-rules-api</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <!-- Camunda DMN dependencies -->
+        <dependency>
+            <groupId>org.camunda.bpm.dmn</groupId>
+            <artifactId>camunda-engine-dmn</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>
