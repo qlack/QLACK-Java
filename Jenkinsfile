@@ -14,11 +14,6 @@ pipeline {
             steps {
                 sh 'mvn clean install'
             }
-            post {
-                always {
-                    junit 'target/surefire-reports/*.xml'
-                }
-            }
         }
         stage('Dependencies Check') {
             steps {
