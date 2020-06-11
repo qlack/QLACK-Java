@@ -96,6 +96,8 @@
       src/main/java/com/eurodyn/qlack/fuse/rules/util/classloader/*,
       src/main/java/com/eurodyn/qlack/util/clamav/util/*
     </sonar.coverage.exclusions>
+    <sonar.dependencyCheck.reportPath>target/dependency-check-report.xml</sonar.dependencyCheck.reportPath>
+    <sonar.dependencyCheck.htmlReportPath>target/dependency-check-report.html</sonar.dependencyCheck.htmlReportPath>
   </properties>
 
   <dependencyManagement>
