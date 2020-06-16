@@ -1,21 +1,21 @@
 package com.eurodyn.qlack.fuse.rules.service;
 
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
+import com.eurodyn.qlack.fuse.rules.component.CamundaComponent;
+import com.eurodyn.qlack.fuse.rules.dto.ExecutionResultsDTO;
 import com.eurodyn.qlack.fuse.rules.mapper.DmnModelMapper;
 import com.eurodyn.qlack.fuse.rules.model.DmnModel;
 import com.eurodyn.qlack.fuse.rules.repository.DmnModelRepository;
-import org.camunda.bpm.dmn.engine.DmnDecisionResult;
-import org.camunda.bpm.dmn.engine.DmnEngine;
-import org.camunda.bpm.dmn.engine.DmnEngineConfiguration;
-import org.camunda.bpm.engine.variable.VariableMap;
-import org.camunda.bpm.engine.variable.Variables;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -34,56 +34,64 @@ public class DmnModelServiceTest {
     private DmnModelRepository dmnModelRepository;
     @Mock
     private DmnModel dmnModel;
-    private DmnEngine dmnEngine;
-    private InputStream inputStream;
-    private VariableMap variables;
+
+    private static final String FILE_NAME = "camunda.xml";
+    List<Map<String, Object>> mapList = new ArrayList<>();
+    private List<byte[]> inputs;
 
     @Test
-    public void findDmnModelByIdTest() {
+    public void findByIdTest() {
         when(dmnModelRepository.fetchById(DECISION_ID)).thenReturn(dmnModel);
-        DmnModel model = dmnModelService.findDmnModelById(DECISION_ID);
+        DmnModel model = dmnModelService.findById(DECISION_ID);
 
         assertNotNull(model);
         verify(dmnModelRepository, times(1)).fetchById(DECISION_ID);
     }
 
     @Test(expected = QDoesNotExistException.class)
-    public void findDmnModelByIdNullTest() {
-        DmnModel model = dmnModelService.findDmnModelById(DECISION_ID);
+    public void findByIdNullTest() {
+        DmnModel model = dmnModelService.findById(DECISION_ID);
         assertNull(model);
     }
 
     @Test
-    public void getAllDmnModelsTest() {
-        dmnModelService.getAllDmnModels();
+    public void getAllTest() {
+        dmnModelService.getAll();
         verify(dmnModelRepository, times(1)).findAll();
     }
 
-    @Test
-    public void createDmnEngineTest() {
-        DmnEngine engine = dmnModelService.createDmnEngine();
-        assertNotNull(engine);
+    @Test(expected = UnsupportedOperationException.class)
+    public void executeRulesExceptionTest() {
+        List<byte[]> inputLibraries = new ArrayList<>();
+        List<String> inputRules = new ArrayList<>();
+        Map<String, byte[]> inputGlobals = new HashMap<>();
+        List<byte[]> facts = new ArrayList<>();
+
+        ExecutionResultsDTO executionResultsDTO =
+                dmnModelService.executeRules("", inputLibraries, inputRules, inputGlobals, facts, "");
+        assertNull(executionResultsDTO);
     }
 
     @Test
-    public void evaluateDecisionTest() {
+    public void executeRulesTest() {
         modelInstanceInit();
-        DmnDecisionResult result =
-                dmnModelService.evaluateDecision(inputStream, dmnEngine, variables);
+
+        List<Map<String, Object>> result =
+                dmnModelService.executeRules("src/test/resources/" + FILE_NAME, null, inputs, "decision");
         assertNotNull(result);
     }
 
     private void modelInstanceInit() {
-        DmnEngineConfiguration dmnEngineConfiguration =
-                DmnEngineConfiguration.createDefaultDmnEngineConfiguration();
-        dmnEngine = dmnEngineConfiguration.buildEngine();
+        Map<String, Object> map1 = new HashMap<>();
+        Map<String, Object> map2 = new HashMap<>();
+        map1.put("season", "Spring");
+        map1.put("guestCount", 4);
+        map2.put("season", "Fall");
+        map2.put("guestCount", 2);
+        mapList.add(map1);
+        mapList.add(map2);
 
-        String fileName = "dish-decision.dmn11.xml";
-        inputStream = this.getClass().getClassLoader().getResourceAsStream(fileName);
-
-        variables = Variables.createVariables()
-                .putValue("season", "Spring")
-                .putValue("guestCount", 14);
+        inputs = CamundaComponent.serializeMap(mapList);
     }
 
 }

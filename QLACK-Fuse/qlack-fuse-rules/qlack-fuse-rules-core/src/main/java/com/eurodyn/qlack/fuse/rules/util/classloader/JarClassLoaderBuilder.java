@@ -82,8 +82,7 @@ public class JarClassLoaderBuilder {
   }
 
   private ClassLoader getParentClassLoader() {
-    return org.drools.core.common.ProjectClassLoader.class
-      .getClassLoader();
+    return getClass().getClassLoader();
   }
 
   @SuppressWarnings("squid:S5042")

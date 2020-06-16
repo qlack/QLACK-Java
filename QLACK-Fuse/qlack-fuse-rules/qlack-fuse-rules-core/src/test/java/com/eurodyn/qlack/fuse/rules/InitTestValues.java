@@ -31,14 +31,6 @@ public class InitTestValues {
     return knowledgeBase;
   }
 
-  public KnowledgeBase createKnowledgeBaseWithCustomRules() {
-    knowledgeBase.setState(rulesUtil.serializeKnowledgeBase(createKieBase()));
-    knowledgeBase.setLibraries(createKnowledgeBaseLibraryList());
-    knowledgeBase.setRules(createCustomKnowledgeBaseRule());
-    knowledgeBase.setId("knowledgeBaseId");
-    return knowledgeBase;
-  }
-
   public KieBase createKieBase() {
     return rulesUtil.createKieBase(libraries, rules);
   }
@@ -95,18 +87,6 @@ public class InitTestValues {
   public List<KnowledgeBaseRule> createKnowledgeBaseRule() {
     List<KnowledgeBaseRule> knowledgeBaseRules = new ArrayList<>();
     for (String rule : rules) {
-      KnowledgeBaseRule knowledgeBaseRule = new KnowledgeBaseRule();
-      knowledgeBaseRule.setRule(rule);
-
-      knowledgeBaseRule.setBase(knowledgeBase);
-      knowledgeBaseRules.add(knowledgeBaseRule);
-    }
-    return knowledgeBaseRules;
-  }
-
-  public List<KnowledgeBaseRule> createCustomKnowledgeBaseRule() {
-    List<KnowledgeBaseRule> knowledgeBaseRules = new ArrayList<>();
-    for (String rule : createRulesAdd()) {
       KnowledgeBaseRule knowledgeBaseRule = new KnowledgeBaseRule();
       knowledgeBaseRule.setRule(rule);
 
