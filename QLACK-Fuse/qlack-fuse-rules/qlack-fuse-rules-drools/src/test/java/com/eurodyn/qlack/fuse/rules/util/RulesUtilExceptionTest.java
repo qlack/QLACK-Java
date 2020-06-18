@@ -33,7 +33,7 @@ public class RulesUtilExceptionTest {
   public void init() {
     rulesUtil = new RulesUtil();
     InitTestValues initTestValues = new InitTestValues();
-    bytes = initTestValues.createFacts();
+    bytes = initTestValues.createByteFacts();
     PowerMockito.mockStatic(DroolsStreamUtils.class);
   }
 

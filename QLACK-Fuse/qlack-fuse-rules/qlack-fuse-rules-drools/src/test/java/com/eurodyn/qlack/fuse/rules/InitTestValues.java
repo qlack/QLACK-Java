@@ -7,10 +7,7 @@ import com.eurodyn.qlack.fuse.rules.model.KnowledgeBaseRule;
 import com.eurodyn.qlack.fuse.rules.util.RulesUtil;
 import org.kie.api.KieBase;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class InitTestValues {
 
@@ -93,16 +90,10 @@ public class InitTestValues {
     return knowledgeBaseRules;
   }
 
-  public Map<String, byte[]> createInputGlobals() {
+  public Map<String, Object> createInputGlobals() {
     Map<String, Object> globals = new LinkedHashMap<>();
     globals.put("outPut", new byte[1024]);
-    Map<String, byte[]> outputGlobals = new LinkedHashMap<>();
-    for (Map.Entry<String, Object> object : globals.entrySet()) {
-      String id = object.getKey();
-      byte[] bytes = rulesComponent.serializeObject(object.getValue());
-      outputGlobals.put(id, bytes);
-    }
-    return outputGlobals;
+    return globals;
   }
 
   public KnowledgeBaseLibrary createKnowledgeBaseLibrary() {
@@ -112,7 +103,21 @@ public class InitTestValues {
     return knowledgeBaseLibrary;
   }
 
-  public List<byte[]> createFacts() {
+  public List<Map<String, Object>> createFacts() {
+    List<Map<String, Object>> facts = new ArrayList<>();
+    Map<String, Object> map1 = new HashMap<>();
+    Map<String, Object> map2 = new HashMap<>();
+
+    map1.put("first", "first fact object");
+    map2.put("second", "second fact object");
+
+    facts.add(map1);
+    facts.add(map2);
+
+    return facts;
+  }
+
+  public List<byte[]> createByteFacts() {
     List<byte[]> facts = new ArrayList<>();
     facts.add(rulesComponent.serializeObject("first fact object"));
     facts.add(rulesComponent.serializeObject("second fact object"));

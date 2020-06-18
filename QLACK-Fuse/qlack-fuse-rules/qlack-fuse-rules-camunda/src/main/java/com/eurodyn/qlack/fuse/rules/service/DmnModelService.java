@@ -1,7 +1,6 @@
 package com.eurodyn.qlack.fuse.rules.service;
 
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
-import com.eurodyn.qlack.fuse.rules.component.CamundaComponent;
 import com.eurodyn.qlack.fuse.rules.dto.DmnModelDTO;
 import com.eurodyn.qlack.fuse.rules.dto.ExecutionResultsDTO;
 import com.eurodyn.qlack.fuse.rules.exception.QRulesException;
@@ -77,11 +76,11 @@ public class DmnModelService implements RuleService<DmnModelDTO> {
      *
      * @param resourceId   the pathname of the DMN xml file
      * @param rules        the DMN xml file as a list of Strings
-     * @param inputs       the serialized map of inputs to be executed
+     * @param inputs       the map of inputs to be executed
      * @param toBeExecuted the decision Id of the DMN xml file that will be parsed
      * @return the result of the evaluation
      */
-    public List<Map<String, Object>> executeRules(String resourceId, List<String> rules, List<byte[]> inputs, String toBeExecuted) {
+    public List<Map<String, Object>> executeRules(String resourceId, List<String> rules, List<Map<String, Object>> inputs, String toBeExecuted) {
         log.info("Evaluating decision!");
 
         InputStream inputStream;
@@ -91,7 +90,7 @@ public class DmnModelService implements RuleService<DmnModelDTO> {
                 File initialFile = new File(resourceId);
                 inputStream = new FileInputStream(initialFile);
             } catch (FileNotFoundException e) {
-                log.warning(e.getMessage());
+                log.severe(e.getMessage());
                 throw new QRulesException("File not found! Please make sure the name and the path are correct.");
             }
         } else {
@@ -100,17 +99,13 @@ public class DmnModelService implements RuleService<DmnModelDTO> {
             inputStream = new ByteArrayInputStream(xmlString.getBytes());
         }
 
-
-        // deserialize the input bytes to a map
-        List<Map<String, Object>> mapList = CamundaComponent.deserialize(inputs);
-
         // create a result list to be returned
         List<Map<String, Object>> resultList = new ArrayList<>();
 
         // create the decision to be evaluated
         DmnDecision decision = dmnEngine.parseDecision(toBeExecuted, inputStream);
 
-        mapList.forEach(map -> {
+        inputs.forEach(map -> {
             // create variables
             VariableMap variables = Variables.createVariables();
 
@@ -136,8 +131,8 @@ public class DmnModelService implements RuleService<DmnModelDTO> {
      * method executeRules(String resourceId, String inputXml, byte[] inputs, String toBeExecuted)
      */
     public ExecutionResultsDTO executeRules(String resourceId, List<byte[]> inputLibraries,
-                                            List<String> rules, Map<String, byte[]> inputGlobals,
-                                            List<byte[]> inputs, String toBeExecuted) {
+                                            List<String> rules, Map<String, Object> inputGlobals,
+                                            List<Map<String, Object>> inputs, String toBeExecuted) {
         throw new UnsupportedOperationException("This method is not supported by the Camunda implementation!" +
                 " Please use the overloaded method.");
     }

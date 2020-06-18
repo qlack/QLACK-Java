@@ -141,8 +141,8 @@ public class KnowledgeBaseService implements RuleService<KnowledgeBaseDTO> {
      * @return the results of the execution
      */
     public ExecutionResultsDTO executeRules(String resourceId, List<byte[]> inputLibraries,
-                                            List<String> rules, Map<String, byte[]> inputGlobals,
-                                            List<byte[]> inputs, String toBeExecuted) {
+                                            List<String> rules, Map<String, Object> inputGlobals,
+                                            List<Map<String, Object>> inputs, String toBeExecuted) {
         return fireRules(resourceId, inputLibraries, rules, inputGlobals, inputs, toBeExecuted);
     }
 
@@ -159,18 +159,13 @@ public class KnowledgeBaseService implements RuleService<KnowledgeBaseDTO> {
      * @return the results of the execution
      */
     public ExecutionResultsDTO executeRules(String resourceId, List<String> rules,
-                                            List<byte[]> inputs, String toBeExecuted) {
+                                            List<Map<String, Object>> inputs, String toBeExecuted) {
         return fireRules(resourceId, null, rules, null, inputs, toBeExecuted);
     }
 
     private ExecutionResultsDTO getResults(Map<String, Object> globals, List<Object> facts) {
         //get global results
-        Map<String, byte[]> outputGlobals = new LinkedHashMap<>();
-        for (Map.Entry<String, Object> object : globals.entrySet()) {
-            String id = object.getKey();
-            byte[] bytes = rulesComponent.serializeObject(object.getValue());
-            outputGlobals.put(id, bytes);
-        }
+        Map<String, byte[]> outputGlobals = getSerializedGlobals(globals);
 
         //get facts results
         List<byte[]> outputFacts = new ArrayList<>();
@@ -183,8 +178,8 @@ public class KnowledgeBaseService implements RuleService<KnowledgeBaseDTO> {
     }
 
     private ExecutionResultsDTO fireRules(String resourceId, List<byte[]> inputLibraries,
-                                          List<String> inputRules, Map<String, byte[]> inputGlobals,
-                                          List<byte[]> inputs, String toBeExecuted) {
+                                          List<String> inputRules, Map<String, Object> inputGlobals,
+                                          List<Map<String, Object>> inputs, String toBeExecuted) {
         log.info("Creating Stateless Knowledge Session using the Knowledge Base with id " + resourceId);
 
         KieBase kieBase;
@@ -208,7 +203,8 @@ public class KnowledgeBaseService implements RuleService<KnowledgeBaseDTO> {
         //set globals
         Map<String, Object> globals = new LinkedHashMap<>();
         if (inputGlobals != null) {
-            for (Map.Entry<String, byte[]> inputGlobal : inputGlobals.entrySet()) {
+            Map<String, byte[]> serializedGlobals = getSerializedGlobals(inputGlobals);
+            for (Map.Entry<String, byte[]> inputGlobal : serializedGlobals.entrySet()) {
                 String id = inputGlobal.getKey();
                 Object object = rulesComponent
                         .deserializeObject(classLoader, inputGlobal.getValue());
@@ -221,11 +217,12 @@ public class KnowledgeBaseService implements RuleService<KnowledgeBaseDTO> {
         //set facts
         List<Object> facts = new ArrayList<>();
         try {
-            for (byte[] inputFact : inputs) {
-                Object object = rulesComponent
-                        .deserializeObject(classLoader, inputFact);
-                facts.add(object);
-            }
+            inputs.forEach(input -> {
+                for (Map.Entry<String, Object> inputFact : input.entrySet()) {
+                    Object object = inputFact.getValue();
+                    facts.add(object);
+                }
+            });
             facts.forEach(f -> commands.add(CommandFactory.newInsert(f)));
         } catch (NullPointerException e) {
             log.severe(
@@ -246,6 +243,16 @@ public class KnowledgeBaseService implements RuleService<KnowledgeBaseDTO> {
 
         //get global results
         return getResults(globals, facts);
+    }
+
+    private Map<String, byte[]> getSerializedGlobals(Map<String, Object> globals) {
+        Map<String, byte[]> serializedGlobals = new LinkedHashMap<>();
+        for (Map.Entry<String, Object> global : globals.entrySet()) {
+            String id = global.getKey();
+            byte[] value = rulesComponent.serializeObject(global.getValue());
+            serializedGlobals.put(id, value);
+        }
+        return serializedGlobals;
     }
 
 }

@@ -1,8 +1,8 @@
 package com.eurodyn.qlack.fuse.rules.service;
 
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
-import com.eurodyn.qlack.fuse.rules.component.CamundaComponent;
 import com.eurodyn.qlack.fuse.rules.dto.ExecutionResultsDTO;
+import com.eurodyn.qlack.fuse.rules.exception.QRulesException;
 import com.eurodyn.qlack.fuse.rules.mapper.DmnModelMapper;
 import com.eurodyn.qlack.fuse.rules.model.DmnModel;
 import com.eurodyn.qlack.fuse.rules.repository.DmnModelRepository;
@@ -12,10 +12,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -36,8 +41,7 @@ public class DmnModelServiceTest {
     private DmnModel dmnModel;
 
     private static final String FILE_NAME = "camunda.xml";
-    List<Map<String, Object>> mapList = new ArrayList<>();
-    private List<byte[]> inputs;
+    List<Map<String, Object>> inputs = new ArrayList<>();
 
     @Test
     public void findByIdTest() {
@@ -64,8 +68,8 @@ public class DmnModelServiceTest {
     public void executeRulesExceptionTest() {
         List<byte[]> inputLibraries = new ArrayList<>();
         List<String> inputRules = new ArrayList<>();
-        Map<String, byte[]> inputGlobals = new HashMap<>();
-        List<byte[]> facts = new ArrayList<>();
+        Map<String, Object> inputGlobals = new HashMap<>();
+        List<Map<String, Object>> facts = new ArrayList<>();
 
         ExecutionResultsDTO executionResultsDTO =
                 dmnModelService.executeRules("", inputLibraries, inputRules, inputGlobals, facts, "");
@@ -81,17 +85,54 @@ public class DmnModelServiceTest {
         assertNotNull(result);
     }
 
+    @Test(expected = QRulesException.class)
+    public void executeRulesFileNotFoundTest() {
+        modelInstanceInit();
+
+        List<Map<String, Object>> result =
+                dmnModelService.executeRules("src/" + "notExistingFile.txt", null, inputs, "decision");
+        assertNotNull(result);
+    }
+
+    @Test(expected = QRulesException.class)
+    public void executeRulesWrongInputsTest() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("Wrong key", "Wrong value");
+        inputs.add(map);
+
+        List<Map<String, Object>> result =
+                dmnModelService.executeRules("src/test/resources/" + FILE_NAME, null, inputs, "decision");
+        assertNotNull(result);
+    }
+
+
+    @Test
+    public void executeRulesWithStringArrayTest() {
+        modelInstanceInit();
+        List<String> rules = new ArrayList<>();
+        try (Stream<String> lines = Files.lines(Paths.get("src/test/resources/" + FILE_NAME))) {
+            rules = lines.collect(Collectors.toList());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        List<Map<String, Object>> result =
+                dmnModelService.executeRules(null, rules, inputs, "decision");
+        assertNotNull(result);
+    }
+
+
     private void modelInstanceInit() {
         Map<String, Object> map1 = new HashMap<>();
         Map<String, Object> map2 = new HashMap<>();
+
         map1.put("season", "Spring");
         map1.put("guestCount", 4);
         map2.put("season", "Fall");
         map2.put("guestCount", 2);
-        mapList.add(map1);
-        mapList.add(map2);
 
-        inputs = CamundaComponent.serializeMap(mapList);
+        inputs.add(map1);
+        inputs.add(map2);
     }
 
 }

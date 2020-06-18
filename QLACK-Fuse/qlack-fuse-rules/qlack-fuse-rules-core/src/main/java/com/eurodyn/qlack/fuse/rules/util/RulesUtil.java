@@ -77,7 +77,7 @@ public class RulesUtil {
     // add libraries to classloader
     JarClassLoaderBuilder classLoaderBuilder = new JarClassLoaderBuilder();
     if (libraries != null) {
-      libraries.stream().forEach(classLoaderBuilder::add);
+      libraries.forEach(classLoaderBuilder::add);
     }
     ClassLoader classLoader = classLoaderBuilder.buildClassLoader(null);
 
@@ -114,12 +114,11 @@ public class RulesUtil {
   /**
    * Deserializes a KieBase.
    *
-   * @param state the serialized KieBase
+   * @param state       the serialized KieBase
    * @param classLoader the ClassLoader of the KieBase
    * @return the KieBase
    */
-  public KieBase deserializeKnowledgeBase(byte[] state,
-    ClassLoader classLoader) {
+  public KieBase deserializeKnowledgeBase(byte[] state, ClassLoader classLoader) {
     try {
       return (KieBase) DroolsStreamUtils.streamIn(state, classLoader);
     } catch (IOException | ClassNotFoundException e) {

@@ -14,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -42,8 +41,8 @@ public class KnowledgeBaseServiceTest {
     private RulesComponent rulesComponent;
     private List<byte[]> inputLibraries;
     private List<String> inputRules;
-    private Map<String, byte[]> inputGlobals;
-    private List<byte[]> facts;
+    private Map<String, Object> inputGlobals;
+    private List<Map<String, Object>> facts;
 
     @Before
     public void init() {
@@ -137,9 +136,6 @@ public class KnowledgeBaseServiceTest {
 
     @Test
     public void executeRulesExceptionTest() {
-        byte[] bytes = new byte[0];
-        List<byte[]> list = new ArrayList<>();
-        list.add(bytes);
         ExecutionResultsDTO executionResultsDTO =
                 knowledgeBaseService.executeRules(null, inputRules, facts, RULE_NAME);
         assertNotNull(executionResultsDTO);

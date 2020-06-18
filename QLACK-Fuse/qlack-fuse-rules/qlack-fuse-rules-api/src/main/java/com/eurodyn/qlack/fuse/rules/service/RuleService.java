@@ -15,9 +15,9 @@ public interface RuleService<T> {
     List<T> getAll();
 
     Object executeRules(String resourceId, List<byte[]> inputLibraries,
-                        List<String> rules, Map<String, byte[]> inputGlobals,
-                        List<byte[]> inputs, String toBeExecuted);
+                        List<String> rules, Map<String, Object> inputGlobals,
+                        List<Map<String, Object>> inputs, String toBeExecuted);
 
     Object executeRules(String resourceId, List<String> rules,
-                        List<byte[]> inputs, String toBeExecuted);
+                        List<Map<String, Object>> inputs, String toBeExecuted);
 }
