@@ -98,6 +98,7 @@
     </sonar.coverage.exclusions>
     <sonar.dependencyCheck.reportPath>target/dependency-check-report.xml</sonar.dependencyCheck.reportPath>
     <sonar.dependencyCheck.htmlReportPath>target/dependency-check-report.html</sonar.dependencyCheck.htmlReportPath>
+    <commons.collections4.version>4.4</commons.collections4.version>
   </properties>
 
   <dependencyManagement>
@@ -136,6 +137,11 @@
         <groupId>commons-collections</groupId>
         <artifactId>commons-collections</artifactId>
         <version>${commons.collections.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-collections4</artifactId>
+        <version>${commons.collections4.version}</version>
       </dependency>
       <dependency>
         <groupId>javax.inject</groupId>

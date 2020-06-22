@@ -192,14 +192,21 @@ public class UserGroupService {
   private void addUsers(Collection<String> userIDs, UserGroup userGroup) {
     for (String userID : userIDs) {
       User user = userRepository.fetchById(userID);
+
       if (userGroup.getUsers() == null) {
         userGroup.setUsers(new ArrayList<User>());
       }
-      userGroup.getUsers().add(user);
+      if (!userGroup.getUsers().contains(user)) {
+        userGroup.getUsers().add(user);
+      }
+
       if (user.getUserGroups() == null) {
         user.setUserGroups(new ArrayList<UserGroup>());
       }
-      user.getUserGroups().add(userGroup);
+
+      if (!user.getUserGroups().contains(userGroup)) {
+        user.getUserGroups().add(userGroup);
+      }
     }
   }
 

@@ -6,12 +6,6 @@ import com.eurodyn.qlack.fuse.aaa.dto.OperationDTO;
 import com.eurodyn.qlack.fuse.aaa.dto.UserGroupDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import java.net.URL;
-import java.text.MessageFormat;
-import java.util.Enumeration;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -20,10 +14,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.io.IOException;
+import java.net.URL;
+import java.text.MessageFormat;
+import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
- * A Service class that is used to configure json
- *
- * @author European Dynamics SA
+ * A service to read a AAA configuration from JSON files.
  */
 @Service
 @Validated

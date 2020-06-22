@@ -1,113 +1,48 @@
 package com.eurodyn.qlack.fuse.aaa.util;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 /**
- * The associated Properties class for AAA.
- *
- * @author European Dynamics SA
+ * Runtime properties holder for AAA.
  */
+@Getter
+@Setter
 @Configuration
 @ConfigurationProperties(prefix = "qlack.fuse.aaa")
 @PropertySource("classpath:qlack.fuse.aaa.application.properties")
 public class AAAProperties {
 
-  /**
-   * the permissionPrioritisePositive
-   */
+  // Specifies whether a positive permission overrides negative ones.
   private boolean permissionPrioritisePositive;
-  /**
-   * the ldapEnabled
-   */
+
+  // Specifies if LDAP integrated is active or not.
   private boolean ldapEnabled;
-  /**
-   * the ldapUrl
-   */
+
+  // The URL of the LDAP server to use.
   private String ldapUrl;
-  /**
-   * the ldapBasedn
-   */
+
+  // The baseDN to be used when communicating with the LDAP. This is the basis under which queries
+  // and binding takes place.
   private String ldapBasedn;
-  /**
-   * ldapMappingUid
-   */
-  private String ldapMappingUid;
-  /**
-   * the ldapMappingGid
-   */
-  private String ldapMappingGid;
-  /**
-   * the ldapMappingAttrs
-   */
-  private String ldapMappingAttrs;
 
-  /**
-   * Checks whether the permission priorities is positive or not
-   *
-   * @return a {@link Boolean} value whether the permissionPrioritisePositive
-   * is true or not
-   */
-  public boolean isPermissionPrioritisePositive() {
-    return permissionPrioritisePositive;
-  }
+  // The LDAP attribute denoting the username of a user. This is the value that will be placed in
+  // AAA's User model as 'username'.
+  private String ldapAttrUsername;
 
-  public void setPermissionPrioritisePositive(
-    boolean permissionPrioritisePositive) {
-    this.permissionPrioritisePositive = permissionPrioritisePositive;
-  }
+  // The LDAP attribute denoting the group Id of a user. All groups identified in the LDAP will be
+  // linked to AAA groups (if they exist).
+  private String ldapAttrGroup;
 
-  /**
-   * Checks whether Ldap is enabled or not
-   *
-   * @return a {@link Boolean} value if ldap is enabled or not
-   */
-  public boolean isLdapEnabled() {
-    return ldapEnabled;
-  }
+  // The attribute to use when binding to the LDAP. This is to facilitate scenarios where the
+  // username you use in AAA does not match the bindDN of the LDAP (which may be
+  // using a different one). If this property is empty, ldapAttrUsername is used instead.
+  private String ldapBindWith;
 
-  public void setLdapEnabled(boolean ldapEnabled) {
-    this.ldapEnabled = ldapEnabled;
-  }
-
-  public String getLdapUrl() {
-    return ldapUrl;
-  }
-
-  public void setLdapUrl(String ldapUrl) {
-    this.ldapUrl = ldapUrl;
-  }
-
-  public String getLdapBasedn() {
-    return ldapBasedn;
-  }
-
-  public void setLdapBasedn(String ldapBasedn) {
-    this.ldapBasedn = ldapBasedn;
-  }
-
-  public String getLdapMappingUid() {
-    return ldapMappingUid;
-  }
-
-  public void setLdapMappingUid(String ldapMappingUid) {
-    this.ldapMappingUid = ldapMappingUid;
-  }
-
-  public String getLdapMappingGid() {
-    return ldapMappingGid;
-  }
-
-  public void setLdapMappingGid(String ldapMappingGid) {
-    this.ldapMappingGid = ldapMappingGid;
-  }
-
-  public String getLdapMappingAttrs() {
-    return ldapMappingAttrs;
-  }
-
-  public void setLdapMappingAttrs(String ldapMappingAttrs) {
-    this.ldapMappingAttrs = ldapMappingAttrs;
-  }
+  // A comma-separated list of attributes to include when creating a new user from LDAP. All other
+  // attributes will be excluded if this value is set.
+  private String ldapIncludeAttr = "";
 }

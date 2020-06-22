@@ -25,7 +25,6 @@
     <module>qlack-fuse-rules</module>
     <module>qlack-fuse-scheduler</module>
     <module>qlack-fuse-search</module>
-    <module>qlack-fuse-security</module>
     <module>qlack-fuse-settings</module>
     <module>qlack-fuse-workflow</module>
     <module>qlack-fuse-token-server</module>

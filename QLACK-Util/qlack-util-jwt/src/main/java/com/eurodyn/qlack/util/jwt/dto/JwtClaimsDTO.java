@@ -9,7 +9,7 @@ import java.util.Map;
  * whether the JWT was found to be valid, together with an error description in
  * case the token was invalid.
  */
-public class JWTClaimsResponseDTO {
+public class JwtClaimsDTO {
 
   // Indicates whether this JWT successfully passed verification or not.
   private boolean valid;

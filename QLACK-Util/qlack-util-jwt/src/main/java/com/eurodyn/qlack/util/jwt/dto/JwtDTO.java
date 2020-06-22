@@ -1,19 +1,18 @@
 package com.eurodyn.qlack.util.jwt.dto;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
- * A placeholder for a JWT.
+ * A placeholder for an encoded JWT.
  */
+@Getter
+@Setter
+@Builder
 public class JwtDTO {
 
-  // The JWT to include.
   private String jwt;
-
-  // A helper flag to indicate that 2FA is required.
-  private boolean requires2FA;
-
-  public JwtDTO(String jwt) {
-    this.jwt = jwt;
-  }
 
   public String getJwt() {
     return jwt;
@@ -23,11 +22,12 @@ public class JwtDTO {
     this.jwt = jwt;
   }
 
-  public boolean isRequires2FA() {
-    return requires2FA;
+  public JwtDTO() {
+
   }
 
-  public void setRequires2FA(boolean requires2FA) {
-    this.requires2FA = requires2FA;
+  public JwtDTO(String jwt) {
+    this.jwt = jwt;
   }
+
 }
