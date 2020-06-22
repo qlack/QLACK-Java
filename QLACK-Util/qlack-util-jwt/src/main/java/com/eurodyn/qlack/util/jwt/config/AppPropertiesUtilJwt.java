@@ -14,8 +14,8 @@ import org.springframework.context.annotation.Configuration;
 @NoArgsConstructor
 @ConfigurationProperties(prefix = "qlack.util.jwt")
 public class AppPropertiesUtilJwt {
-  // The secret to sign the JWT.
-  @Value("${qlack.util.jwt.secret:random.uuid}")
+  // The secret to sign the JWT. Make sure you override this property in your application.
+  @Value("${qlack.util.jwt.secret:qlack}")
   private String jwtSecret;
 
   // The number of minutes a JWT is valid for.

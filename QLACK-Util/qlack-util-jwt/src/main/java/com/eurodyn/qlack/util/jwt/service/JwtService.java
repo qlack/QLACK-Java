@@ -46,8 +46,7 @@ public class JwtService {
     final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
     // Set current time.
-    final long nowMillis = System.currentTimeMillis();
-    final Date now = new Date(nowMillis);
+    final Instant now = Instant.now();
 
     // Sign JWT with the ApiKey secret
     final byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(
@@ -57,8 +56,8 @@ public class JwtService {
     // Prepare JWT properties..
     final JwtBuilder builder = Jwts.builder()
         .setId(UUID.randomUUID().toString())
-        .setIssuedAt(now)
-        .setNotBefore(now)
+        .setIssuedAt(Date.from(now))
+        .setNotBefore(Date.from(now))
         .setSubject(request.getSubject())
         .setIssuer(appProperties.getJwtIssuer())
         .setExpiration(new Date(Instant.now().plus(appProperties.getJwtTtlMinutes(),
@@ -87,8 +86,8 @@ public class JwtService {
 
     try {
       jwtClaimsResponseDTO.setClaims(
-          Jwts.parser().setSigningKey(
-              Base64.encodeBase64(appProperties.getJwtSecret().getBytes()))
+          Jwts.parser()
+              .setSigningKey(appProperties.getJwtSecret().getBytes())
               .setAllowedClockSkewSeconds(appProperties.getJwtSkewAllowed())
               .parseClaimsJws(jwt).getBody());
       jwtClaimsResponseDTO.setValid(true);
