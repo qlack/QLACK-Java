@@ -13,6 +13,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.xml.bind.DatatypeConverter;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.security.Key;
 import java.time.Instant;
@@ -31,7 +32,6 @@ public class JwtService {
   public JwtService(AppPropertiesUtilJwt appProperties) {
     this.appProperties = appProperties;
   }
-
 
   /**
    * Generates a JWT encapsulating the requested paramaters including any number of custom claims.
@@ -67,6 +67,12 @@ public class JwtService {
     // Add additional claims if specified.
     if (!request.getClaims().keySet().isEmpty()) {
       builder.addClaims(request.getClaims());
+    }
+
+    // Populate authorities if they have been supplied. Authorities are collated in a
+    // comma-separated string.
+    if (!CollectionUtils.isEmpty(request.getAuthorities())) {
+      builder.claim(AppConstants.JWT_CLAIM_AUTHORITIES, String.join(",", request.getAuthorities()));
     }
 
     // Build the JWT and serialize it to a compact, URL-safe string.

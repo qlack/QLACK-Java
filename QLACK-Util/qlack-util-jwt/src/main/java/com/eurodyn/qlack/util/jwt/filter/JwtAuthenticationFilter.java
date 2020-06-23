@@ -1,7 +1,6 @@
 package com.eurodyn.qlack.util.jwt.filter;
 
-import static java.util.Collections.emptyList;
-
+import com.eurodyn.qlack.util.jwt.config.AppConstants;
 import com.eurodyn.qlack.util.jwt.dto.JwtClaimsDTO;
 import com.eurodyn.qlack.util.jwt.service.JwtService;
 import javax.servlet.FilterChain;
@@ -12,11 +11,17 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * An authentication filter to automatically extract a JWT from incoming requests and validate it.
@@ -33,17 +38,47 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
   }
 
   /**
-   * Extracts the filter from the HTTP requests.
+   * Extracts the authorities claim from a JWT.
    *
-   * @param request The request to extract JWT from.
+   * @param jwtClaimsDTO The JWT claims to extract authorities from.
+   * @return Returns the collection of authorities found or an empty collection.
+   */
+  private Collection<GrantedAuthority> getAuthorities(JwtClaimsDTO jwtClaimsDTO) {
+    List<GrantedAuthority> authorities = new ArrayList<>();
+
+    final Object authorityClaims = jwtClaimsDTO.getClaims().get(AppConstants.JWT_CLAIM_AUTHORITIES);
+    if (authorityClaims != null) {
+      Arrays.asList(((String) authorityClaims).split(",")).stream().forEach(
+          authority -> authorities.add(new SimpleGrantedAuthority(authority))
+      );
+    }
+
+    return authorities;
+  }
+
+  /**
+   * Extracts the JWT from the HTTP request.
+   *
+   * @param request The request to extract the JWT from.
+   * @return An {@link Authentication} object or null if the JWT could not be extracted and
+   * validated.
    */
   private Authentication getAuthentication(HttpServletRequest request) {
+    // Get JWT token.
     String jwtToken = JwtService.getRawToken(request);
-    final JwtClaimsDTO jwtClaimsResponseDTO = jwtService.getClaims(jwtToken);
-    if (jwtClaimsResponseDTO != null && StringUtils.isNotBlank(jwtClaimsResponseDTO.getSubject())) {
-      return new UsernamePasswordAuthenticationToken(
-          jwtClaimsResponseDTO.getSubject(), jwtToken,
-          emptyList());
+
+    // Get JWT claims and validate token.
+    final JwtClaimsDTO jwtClaimsDTO = jwtService.getClaims(jwtToken);
+
+    // Create the Authentication response.
+    if (jwtClaimsDTO != null && StringUtils.isNotBlank(jwtClaimsDTO.getSubject())) {
+      UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken;
+
+      // Populate authorities if available.
+      usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+          jwtClaimsDTO.getSubject(), jwtToken, getAuthorities(jwtClaimsDTO));
+
+      return usernamePasswordAuthenticationToken;
     } else {
       return null;
     }
@@ -53,9 +88,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
   public void doFilter(ServletRequest request, ServletResponse response,
       FilterChain filterChain)
   throws IOException, ServletException {
-    Authentication authentication = getAuthentication(
-        (HttpServletRequest) request);
-
+    Authentication authentication = getAuthentication((HttpServletRequest) request);
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
     filterChain.doFilter(request, response);

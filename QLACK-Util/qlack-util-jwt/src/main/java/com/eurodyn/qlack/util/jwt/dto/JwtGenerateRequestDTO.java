@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.Singular;
 
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -22,5 +22,10 @@ public class JwtGenerateRequestDTO {
 
   // Claims to be included in the JWT.
   @Singular
-  private Map<String, Object> claims = new HashMap<>();
+  private Map<String, Object> claims;
+
+  // A collection of authorities to be placed within JWT claims section. Authorities are placed
+  // under a custom claim name as per AppConstants.JWT_CLAIM_AUTHORITIES.
+  @Singular
+  private Collection<String> authorities;
 }
