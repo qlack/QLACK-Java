@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: rules_001
+      author: European Dynamics SA
+      context: "!qlack-disabled"
+      changes:
+        - createTable:
+            tableName: dmn_models
+            columns:
+              - column:
+                  name: id
+                  type: varchar(36)
+                  remarks: the auto-generated uuid of the entity
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: modelInstance
+                  type: longtext
+                  remarks: the model instance file
+                  constraints:
+                    nullable: false

@@ -73,7 +73,6 @@
     <querydsl.version>4.2.1</querydsl.version>
     <bouncycastle.version>1.60</bouncycastle.version>
     <jwt.version>0.9.1</jwt.version>
-    <drools.version>7.38.0.Final</drools.version>
     <commons-io.version>2.6</commons-io.version>
     <activiti.version>7.1.9</activiti.version>
     <apache.email.version>1.5</apache.email.version>
