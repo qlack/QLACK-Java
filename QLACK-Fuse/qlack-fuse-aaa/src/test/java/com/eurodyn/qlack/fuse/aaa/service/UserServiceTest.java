@@ -33,8 +33,19 @@ import com.eurodyn.qlack.fuse.aaa.repository.SessionRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserAttributeRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserGroupRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
-import com.eurodyn.qlack.fuse.aaa.util.LdapProperties;
+import com.eurodyn.qlack.fuse.aaa.util.AAAProperties;
 import com.querydsl.core.types.Predicate;
+import org.apache.commons.collections.CollectionUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -46,17 +57,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.data.domain.Sort;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest {
@@ -75,11 +75,11 @@ public class UserServiceTest {
   @Spy
   private UserGroup userGroupNoChildren;
   @Mock
-  private LdapUserUtil ldapUserUtil;
-  @Mock
-  private LdapProperties properties;
+  private LdapService ldapUserUtil;
   @Mock
   private UserGroupRepository userGroupRepository;
+  @Mock
+  private AAAProperties aaaProperties;
 
   private AccountingService accountingService = mock(AccountingService.class);
   private UserRepository userRepository = mock(UserRepository.class);
@@ -107,7 +107,7 @@ public class UserServiceTest {
     userService = new UserService(accountingService, ldapUserUtil,
       userRepository, userAttributeRepository,
       sessionRepository, userGroupRepository, userMapper,
-      sessionMapper, userAttributeMapper, passwordEncoder);
+      sessionMapper, userAttributeMapper, aaaProperties, passwordEncoder);
     qUser = new QUser("user");
     qSession = new QSession(("session"));
     user = initTestValues.createUser();
@@ -344,8 +344,7 @@ public class UserServiceTest {
   @Test
   public void testCanAuthenticateNullUser() {
     when(userRepository.findByUsername(user.getUsername())).thenReturn(null);
-    when(ldapUserUtil.getProperties()).thenReturn(properties);
-    when(ldapUserUtil.getProperties().isEnabled()).thenReturn(true);
+    when(aaaProperties.isLdapEnabled()).thenReturn(true);
     String userId = userService
       .canAuthenticate(user.getUsername(), user.getPassword());
     verify(userRepository, times(1)).findByUsername(user.getUsername());
@@ -365,8 +364,7 @@ public class UserServiceTest {
   @Test
   public void testCanAuthenticateLdap() {
     user.setExternal(true);
-    when(ldapUserUtil.getProperties()).thenReturn(properties);
-    when(ldapUserUtil.getProperties().isEnabled()).thenReturn(true);
+    when(aaaProperties.isLdapEnabled()).thenReturn(true);
     when(ldapUserUtil.canAuthenticate(any(), any())).thenReturn(user.getId());
     when(userRepository.findByUsername(user.getUsername())).thenReturn(user);
     String userId = userService

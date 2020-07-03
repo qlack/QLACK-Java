@@ -24,6 +24,7 @@ import com.eurodyn.qlack.fuse.aaa.repository.UserGroupHasOperationRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserGroupRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserHasOperationRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -870,7 +871,7 @@ public class OperationService {
       return allowedOperations;
     } else {
       // Check operations attributed to the user
-      for (UserHasOperation uho : user.getUserHasOperations()) {
+      for (UserHasOperation uho : ListUtils.emptyIfNull(user.getUserHasOperations())) {
         if (uho.getResource() == resource) {
           if (getOperationsForUserIsAllowed(user, resource, uho)) {
             allowedOperations.add(uho.getOperation().getName());

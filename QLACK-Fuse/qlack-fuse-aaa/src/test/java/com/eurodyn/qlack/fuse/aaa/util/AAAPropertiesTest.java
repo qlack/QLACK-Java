@@ -59,29 +59,21 @@ public class AAAPropertiesTest {
   }
 
   @Test
-  public void getLdapMappingUidTest() {
-    aaaProperties.setLdapMappingUid(null);
-    assertNull(aaaProperties.getLdapMappingUid());
+  public void getLdapAttrUsernameTest() {
+    aaaProperties.setLdapAttrUsername(null);
+    assertNull(aaaProperties.getLdapAttrUsername());
 
-    aaaProperties.setLdapMappingUid(ldapTest);
-    assertEquals(ldapTest, aaaProperties.getLdapMappingUid());
+    aaaProperties.setLdapAttrUsername(ldapTest);
+    assertEquals(ldapTest, aaaProperties.getLdapAttrUsername());
   }
 
   @Test
-  public void getLdapMappingGidTest() {
-    aaaProperties.setLdapMappingGid(null);
-    assertNull(aaaProperties.getLdapMappingGid());
+  public void getLdapAttrGroupTest() {
+    aaaProperties.setLdapAttrGroup(null);
+    assertNull(aaaProperties.getLdapAttrGroup());
 
-    aaaProperties.setLdapMappingGid(ldapTest);
-    assertEquals(ldapTest, aaaProperties.getLdapMappingGid());
+    aaaProperties.setLdapAttrGroup(ldapTest);
+    assertEquals(ldapTest, aaaProperties.getLdapAttrGroup());
   }
 
-  @Test
-  public void getLdapMappingAttrsTest() {
-    aaaProperties.setLdapMappingAttrs(null);
-    assertNull(aaaProperties.getLdapMappingAttrs());
-
-    aaaProperties.setLdapMappingAttrs(ldapTest);
-    assertEquals(ldapTest, aaaProperties.getLdapMappingAttrs());
-  }
 }

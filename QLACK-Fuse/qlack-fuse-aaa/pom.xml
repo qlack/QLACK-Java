@@ -3,7 +3,7 @@
   <parent>
     <artifactId>qlack-fuse</artifactId>
     <groupId>com.eurodyn.qlack.fuse</groupId>
-    <version>3.2.9-SNAPSHOT</version>
+    <version>3.4.1-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -81,6 +81,10 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-collections4</artifactId>
     </dependency>
   </dependencies>
 </project>

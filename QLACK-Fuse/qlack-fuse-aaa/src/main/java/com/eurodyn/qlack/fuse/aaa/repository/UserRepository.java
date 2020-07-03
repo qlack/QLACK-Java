@@ -2,9 +2,10 @@ package com.eurodyn.qlack.fuse.aaa.repository;
 
 import com.eurodyn.qlack.fuse.aaa.model.AAAModel;
 import com.eurodyn.qlack.fuse.aaa.model.User;
+import org.springframework.stereotype.Repository;
+
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.springframework.stereotype.Repository;
 
 /**
  * A Repository interface for User.It is used to define a number of abstract
@@ -29,6 +30,12 @@ public interface UserRepository extends AAARepository<User, String> {
    * @return a set of {@link User} object
    */
   Set<User> findBySuperadminTrue();
+
+  /**
+   * Finds all users where the 'external' attribute is true.
+   * @return Returns the list of users where the 'external' attribute is true.
+   */
+  Set<User> findByExternalTrue();
 
   /**
    * Finds a {@link User} object

@@ -4,7 +4,7 @@
 
   <groupId>com.eurodyn.qlack</groupId>
   <artifactId>qlack</artifactId>
-  <version>3.2.9-SNAPSHOT</version>
+  <version>3.4.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>QLACK-Java</name>
@@ -95,6 +95,9 @@
       src/main/java/com/eurodyn/qlack/fuse/rules/util/classloader/*,
       src/main/java/com/eurodyn/qlack/util/clamav/util/*
     </sonar.coverage.exclusions>
+    <sonar.dependencyCheck.reportPath>target/dependency-check-report.xml</sonar.dependencyCheck.reportPath>
+    <sonar.dependencyCheck.htmlReportPath>target/dependency-check-report.html</sonar.dependencyCheck.htmlReportPath>
+    <commons.collections4.version>4.4</commons.collections4.version>
   </properties>
 
   <dependencyManagement>
@@ -133,6 +136,11 @@
         <groupId>commons-collections</groupId>
         <artifactId>commons-collections</artifactId>
         <version>${commons.collections.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-collections4</artifactId>
+        <version>${commons.collections4.version}</version>
       </dependency>
       <dependency>
         <groupId>javax.inject</groupId>

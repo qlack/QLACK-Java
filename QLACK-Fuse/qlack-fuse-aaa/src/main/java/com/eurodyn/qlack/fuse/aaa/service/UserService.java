@@ -18,21 +18,12 @@ import com.eurodyn.qlack.fuse.aaa.repository.SessionRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserAttributeRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserGroupRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
+import com.eurodyn.qlack.fuse.aaa.util.AAAProperties;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import lombok.extern.java.Log;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
@@ -42,6 +33,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * A Service class that is used to define a number of crud methods and configure the User model
@@ -54,42 +53,34 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @Transactional
 public class UserService {
-
-  private static final Logger LOGGER = Logger
-      .getLogger(UserService.class.getName());
-
-  // Service REFs
-  private AccountingService accountingService;
-  private LdapUserUtil ldapUserUtil;
-  // Repositories
+  private final AccountingService accountingService;
+  private final LdapService ldapService;
   private final UserRepository userRepository;
   private final UserAttributeRepository userAttributeRepository;
   private final SessionRepository sessionRepository;
   private final UserGroupRepository userGroupRepository;
-  // Mappers
   private final UserMapper userMapper;
   private final SessionMapper sessionMapper;
   private final UserAttributeMapper userAttributeMapper;
-
-  //QueryDSL helpers
-  private QUser qUser = QUser.user;
-  private QUserAttribute qUserAttribute = QUserAttribute.userAttribute;
-  private QSession qSession = QSession.session;
+  private final QUser qUser = QUser.user;
+  private final QUserAttribute qUserAttribute = QUserAttribute.userAttribute;
+  private final QSession qSession = QSession.session;
+  private final AAAProperties aaaProperties;
 
   private final PasswordEncoder passwordEncoder;
 
   @SuppressWarnings("squid:S00107")
   public UserService(AccountingService accountingService,
-      LdapUserUtil ldapUserUtil,
+      LdapService ldapService,
       UserRepository userRepository,
       UserAttributeRepository userAttributeRepository,
       SessionRepository sessionRepository,
       UserGroupRepository userGroupRepository,
       UserMapper userMapper,
       SessionMapper sessionMapper, UserAttributeMapper userAttributeMapper,
-      PasswordEncoder passwordEncoder) {
+      AAAProperties aaaProperties, PasswordEncoder passwordEncoder) {
     this.accountingService = accountingService;
-    this.ldapUserUtil = ldapUserUtil;
+    this.ldapService = ldapService;
     this.userRepository = userRepository;
     this.userAttributeRepository = userAttributeRepository;
     this.sessionRepository = sessionRepository;
@@ -97,6 +88,7 @@ public class UserService {
     this.userMapper = userMapper;
     this.sessionMapper = sessionMapper;
     this.userAttributeMapper = userAttributeMapper;
+    this.aaaProperties = aaaProperties;
     this.passwordEncoder = passwordEncoder;
   }
 
@@ -249,6 +241,16 @@ public class UserService {
     return user.isExternal();
   }
 
+  /**
+   * Checks whether a user can be authenticated with the system or not. If LDAP is enabled, this
+   * method will try to authenticate the user against the LDAP server too (and create a local user
+   * in case authentication was successful).
+   *
+   * @param username The username of the user to authenticate.
+   * @param password The password of the user to authenticate.
+   * @return Returns the user Id of the authenticated user or null if the user could not be
+   * authenticated.
+   */
   public String canAuthenticate(final String username, String password) {
     String retVal = null;
 
@@ -260,7 +262,7 @@ public class UserService {
      * authenticated with LDAP, a new user will also be created/duplicated in AAA as an external
      * user.
      */
-    if (user != null && BooleanUtils.isFalse(user.isExternal())) {
+    if (user != null && !user.isExternal()) {
       if (StringUtils.isNotBlank(user.getSalt())) {
         password = user.getSalt() + password;
       }
@@ -268,8 +270,8 @@ public class UserService {
         retVal = user.getId();
       }
     } else {
-      if (ldapUserUtil.getProperties().isEnabled()) {
-        retVal = ldapUserUtil.canAuthenticate(username, password);
+      if (aaaProperties.isLdapEnabled()) {
+        retVal = ldapService.canAuthenticate(username, password);
       }
     }
 
@@ -295,7 +297,6 @@ public class UserService {
           accountingService.terminateSession(session.getId());
         }
       }
-
     }
 
     // Create a new session for the user.
@@ -642,7 +643,7 @@ public class UserService {
     }
 
     if (StringUtils.isBlank(dto.getPassword())) {
-      LOGGER.log(Level.WARNING, "Password is empty.");
+      log.warning("Password is empty.");
     } else {
       if (salt.isPresent()) {
         user.setSalt(salt.get());
