@@ -444,6 +444,23 @@ public class SchedulerServiceTest {
   }
 
   @Test
+  public void getPreviousFireForJobTest() throws SchedulerException {
+    trigger = initTestValues.createTrigger(testJobClass, cronExp5Min);
+    triggerKey = trigger.getKey();
+    when(scheduler.getTrigger(triggerKey)).thenReturn(trigger);
+    schedulerService.getPreviousFireForJob(testJobClass);
+    verify(scheduler, times(1)).getTrigger(triggerKey);
+  }
+
+  @Test(expected = QSchedulerException.class)
+  public void getPreviousFireForJobSchedulerExceptionTest()
+      throws SchedulerException {
+    when(scheduler.getTrigger(any(TriggerKey.class)))
+        .thenThrow(new SchedulerException());
+    schedulerService.getPreviousFireForJob(testJobClass);
+  }
+
+  @Test
   public void isJobExistingTest() throws SchedulerException {
     schedulerService.isJobExisting(testJobClass);
     verify(scheduler, times(1)).checkExists(jobKey);
