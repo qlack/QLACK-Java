@@ -19,6 +19,21 @@ This module is responsible for creating and scheduling custom application jobs b
 <include file="db/changelog/qlack-fuse-scheduler/qlack.fuse.scheduler.changelog.xml"/>
 ```
 
+### Define the JDBC properties for the Quartz tables at the application.properties file:
+```
+spring.quartz.job-store-type = jdbc
+spring.quartz.properties.org.quartz.threadPool.threadCount = 3
+spring.quartz.properties.org.quartz.scheduler.instanceId = AUTO
+spring.quartz.properties.org.quartz.jobStore.tablePrefix = sch_
+```
+
+### (optional) Define the Quartz clustering at the application.properties file:
+```
+spring.quartz.properties.org.quartz.jobStore.isClustered = true
+spring.quartz.properties.org.quartz.jobStore.clusterCheckinInterval = 10000
+spring.quartz.properties.org.quartz.jobStore.class = org.quartz.impl.jdbcjobstore.JobStoreTX
+```
+
 ### Add the packages in the Spring boot application main class declaration:
 
 ```java
