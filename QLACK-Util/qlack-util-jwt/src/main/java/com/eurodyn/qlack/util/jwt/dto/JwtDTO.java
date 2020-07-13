@@ -3,6 +3,7 @@ package com.eurodyn.qlack.util.jwt.dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * A placeholder for an encoded JWT.
@@ -10,6 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
+@ToString
 public class JwtDTO {
 
   private String jwt;
