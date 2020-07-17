@@ -68,7 +68,7 @@
     <apache.tika.version>1.12</apache.tika.version>
     <google.zxing.version>3.3.3</google.zxing.version>
     <sensesecure.version>0.6</sensesecure.version>
-    <squiggly-filter-jackson>1.3.17</squiggly-filter-jackson>
+    <squiggly-filter-jackson>1.3.18</squiggly-filter-jackson>
     <lombok.version>1.18.6</lombok.version>
     <querydsl.version>4.2.1</querydsl.version>
     <bouncycastle.version>1.60</bouncycastle.version>
