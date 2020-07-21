@@ -53,7 +53,7 @@ public class JwtService {
         Base64.encodeBase64String(appProperties.getJwtSecret().getBytes()));
     final Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 
-    // Prepare JWT properties..
+    // Prepare JWT properties.
     final JwtBuilder builder = Jwts.builder()
         .setId(UUID.randomUUID().toString())
         .setIssuedAt(Date.from(now))

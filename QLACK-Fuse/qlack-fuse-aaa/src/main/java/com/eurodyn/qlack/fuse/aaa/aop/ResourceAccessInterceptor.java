@@ -194,7 +194,6 @@ public class ResourceAccessInterceptor {
       authorizeUserDetailsDTO((UserDetailsDTO) principal, joinPoint,
         resourceAccess);
     } else {
-      log.severe("Contact the Qlack team.");
       throw new AccessDeniedException(
         "403 - Unauthorized Access. This user is not authorized for the specific operation.");
     }
