@@ -39,9 +39,8 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * Provides methods to access and communicate with an LDAP server. This class also provides a
- * generic querying mechanism for LDAP as well as the capability to create AAA users based on LDAP
- * users.
+ * Provides methods to access and communicate with an LDAP server. This class also provides a generic querying mechanism
+ * for LDAP as well as the capability to create AAA users based on LDAP users.
  */
 @Log
 @Getter
@@ -114,18 +113,14 @@ public class LdapService {
   }
 
   /**
-   * Checks whether a set of credentials can authenticate against the underlying LDAP server.
-   * Authentication takes place via an LDAP bind operation.
+   * Checks whether a set of credentials can authenticate against the underlying LDAP server. Authentication takes place
+   * via an LDAP bind operation.
    *
    * @param username The username to bind with.
    * @param password The password to bind with.
    */
   @SuppressWarnings("squid:S1149")
   private void authenticate(String username, String password) throws NamingException {
-    // Check for LDAP injection.
-    username = escapeLDAPSearchFilter(username);
-    password = escapeLDAPSearchFilter(password);
-
     // Prepare an LDAP context for the user details passed.
     Hashtable<String, String> env = new Hashtable<>();
     env.put(Context.INITIAL_CONTEXT_FACTORY, CTX_FACTORY);
@@ -135,13 +130,13 @@ public class LdapService {
           aaaProperties.getLdapAttrUsername() + "=" + username + "," + aaaProperties
               .getLdapBasedn());
     } else {
-      final Set<MultiValuedMap<String, Object>> users = search(
-          "(" + aaaProperties.getLdapAttrUsername() + "=" + username + ")");
+      final Set<MultiValuedMap<String, Object>> users = search(escapeLDAPSearchFilter(
+          "(" + aaaProperties.getLdapAttrUsername() + "=" + username + ")"));
       if (users.size() == 1) {
         env.put(Context.SECURITY_PRINCIPAL,
-            aaaProperties.getLdapBindWith() + "=" + users.iterator().next()
+            escapeLDAPSearchFilter(aaaProperties.getLdapBindWith() + "=" + users.iterator().next()
                 .get(aaaProperties.getLdapBindWith()).iterator().next() + "," + aaaProperties
-                .getLdapBasedn());
+                .getLdapBasedn()));
       } else {
         throw new QDoesNotExistException("2-step LDAP binding failed for user {0} as the "
             + "user could not be found in the LDAP under attribute {1}.", username,
@@ -155,12 +150,11 @@ public class LdapService {
   }
 
   /**
-   * Creates a AAA user using the LDAP user and attributes for the given username. This method
-   * requires an LDAP server allowing public querying. This method expects the user to already exist
-   * in LDAP (as it is used internally by canAuthenticate which already guarantees this).
+   * Creates a AAA user using the LDAP user and attributes for the given username. This method requires an LDAP server
+   * allowing public querying. This method expects the user to already exist in LDAP (as it is used internally by
+   * canAuthenticate which already guarantees this).
    *
-   * @param username The username of the user to create. This argument is matched against
-   * ldapAttrUsername in LDAP.
+   * @param username The username of the user to create. This argument is matched against ldapAttrUsername in LDAP.
    * @return Returns the AAA user Id of the created (or updated) user.
    */
   private String createUserFromLdap(String username) throws NamingException {
@@ -236,11 +230,10 @@ public class LdapService {
   }
 
   /**
-   * Check if the user can be authenticated with LDAP using 'simple' authentication (bind
-   * operation).
+   * Check if the user can be authenticated with LDAP using 'simple' authentication (bind operation).
    *
-   * @param username The LDAP username of the user. This will be matched against
-   * qlack.fuse.aaa.ldap_mapping_uid or qlack.fuse.aaa.ldap_bind_attr if set.
+   * @param username The LDAP username of the user. This will be matched against qlack.fuse.aaa.ldap_mapping_uid or
+   * qlack.fuse.aaa.ldap_bind_attr if set.
    * @param password The LDAP password of the user.
    * @return The AAA ID of the user if authenticated, null otherwise.
    */
@@ -263,15 +256,13 @@ public class LdapService {
 
 
   /**
-   * A generic LDAP search implementation. Make sure that your `searchfilter` is properly
-   * sanitised.
+   * A generic LDAP search implementation. Make sure that your `searchfilter` is properly sanitised.
    *
    * @param searchFilter The filter to search with (ex '(objectClass=*)')
-   * @return Returns a set of all entries matched the filter together with all their LDAP
-   * attributes.
+   * @return Returns a set of all entries matched the filter together with all their LDAP attributes.
    */
   public Set<MultiValuedMap<String, Object>> search(String searchFilter)
-  throws NamingException {
+      throws NamingException {
     DirContext ctx = null;
     Set<MultiValuedMap<String, Object>> users = new HashSet<>();
 
