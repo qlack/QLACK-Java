@@ -10,6 +10,7 @@ import com.eurodyn.qlack.fuse.lexicon.model.Group;
 import com.eurodyn.qlack.fuse.lexicon.model.Key;
 import com.eurodyn.qlack.fuse.lexicon.model.Language;
 import com.eurodyn.qlack.fuse.lexicon.model.Template;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,11 +27,15 @@ public class InitTestValues {
 
   public String templateContent = "<h1>Template example</h1><p>${data.value}</p>";
   public String nestedTemplateContent = "<html>"
-    + "<body>"
-    + "<title>Nested Template</title>"
-    + "<div>${template.content}</div>"
-    + "</body>"
-    + "</html>";
+      + "<body>"
+      + "<title>Nested Template</title>"
+      + "<div>${template.content}</div>"
+      + "</body>"
+      + "</html>";
+
+  public String templateContentWithNullValues = "<h1>Template example</h1><p>${unknown}</p><span>${}</span>";
+
+  public String nestedTemplateContent2 = "Hi ${username}";
   private Language englishLang;
   private Language portugueseLang;
   private Key attachment_desc;
@@ -129,7 +134,6 @@ public class InitTestValues {
     return groupsDTO;
   }
 
-
   public Key createKey() {
     Key key = new Key();
     key.setId("0f2f12f8-4902-4355-ae52-20ccf92db2f3");
@@ -147,9 +151,9 @@ public class InitTestValues {
 
     Map<String, String> translations = new HashMap<>();
     translations.put("777119b0-bda0-4e87-9d3b-08d80e9bb9e8",
-      "Add attachment description");
+        "Add attachment description");
     translations.put("71df58f1-be26-410a-94ca-cfc90ac955a4",
-      "Adicionar descrição do anexo");
+        "Adicionar descrição do anexo");
     keyDTO.setTranslations(translations);
 
     return keyDTO;
@@ -220,6 +224,15 @@ public class InitTestValues {
     return template;
   }
 
+  public Template createTemplateWithNullValues() {
+    Template template = new Template();
+    template.setId("1a390032-821e-4266-a6af-8df40075228e");
+    template.setName("Test template");
+    template.setLanguage(createEnglishLanguage());
+    template.setContent(templateContentWithNullValues);
+    return template;
+  }
+
   public TemplateDTO createTemplateDTO() {
     TemplateDTO templateDTO = new TemplateDTO();
     templateDTO.setId("1a390032-821e-4266-a6af-8df40075228e");
@@ -266,15 +279,15 @@ public class InitTestValues {
 
   public byte[] getLanguageByteArray() {
     Path resourceDirectory = Paths
-      .get("src/test/resources/eng_translations.xls");
+        .get("src/test/resources/eng_translations.xls");
 
     ClassLoader classLoader = getClass().getClassLoader();
     try {
       return Files.readAllBytes(resourceDirectory);
     } catch (IOException e) {
       throw new LanguageProcessingException(
-        "Error loading Excel file for language " + createEnglishLanguage()
-          .getId());
+          "Error loading Excel file for language " + createEnglishLanguage()
+              .getId());
     }
   }
 
