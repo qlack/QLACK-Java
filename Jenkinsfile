@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'mvn clean install'
+                sh 'mvn clean install -Pfull-build'
             }
         }
         stage('Dependencies Check') {

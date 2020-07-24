@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.eurodyn.qlack</groupId>
@@ -191,52 +192,62 @@
     </dependencies>
   </dependencyManagement>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+    </dependency>
+  </dependencies>
+
   <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven.compiler.version}</version>
+        <configuration>
+          <compilerArgs>
+            <!-- The -parameters argument is crucial for the correct function
+             of the authentication interceptor, due to heavy use of the Reflection API -->
+            <arg>-parameters</arg>
+          </compilerArgs>
+          <showDeprecation>true</showDeprecation>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+          <encoding>UTF-8</encoding>
+          <useIncrementalCompilation>false</useIncrementalCompilation>
+          <annotationProcessorPaths>
+            <annotationProcessorPath>
+              <groupId>org.mapstruct</groupId>
+              <artifactId>mapstruct-processor</artifactId>
+              <version>${mapstruct.version}</version>
+            </annotationProcessorPath>
+            <annotationProcessorPath>
+              <groupId>com.querydsl</groupId>
+              <artifactId>querydsl-jpa-codegen</artifactId>
+              <version>${querydsl.version}</version>
+            </annotationProcessorPath>
+            <annotationProcessorPath>
+              <groupId>com.querydsl</groupId>
+              <artifactId>querydsl-apt</artifactId>
+              <classifier>jpa</classifier>
+              <version>${querydsl.version}</version>
+            </annotationProcessorPath>
+            <annotationProcessorPath>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>${lombok.version}</version>
+            </annotationProcessorPath>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+    </plugins>
     <pluginManagement>
       <plugins>
-        <!-- Global configuration for the compiler -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>${maven.compiler.version}</version>
-          <configuration>
-            <compilerArgs>
-              <!-- The -parameters argument is crucial for the correct function
-               of the authentication interceptor, due to heavy use of the Reflection API -->
-              <arg>-parameters</arg>
-            </compilerArgs>
-            <showDeprecation>true</showDeprecation>
-            <source>${java.version}</source>
-            <target>${java.version}</target>
-            <encoding>UTF-8</encoding>
-            <useIncrementalCompilation>false</useIncrementalCompilation>
-            <annotationProcessorPaths>
-              <annotationProcessorPath>
-                <groupId>org.mapstruct</groupId>
-                <artifactId>mapstruct-processor</artifactId>
-                <version>${mapstruct.version}</version>
-              </annotationProcessorPath>
-              <annotationProcessorPath>
-                <groupId>com.querydsl</groupId>
-                <artifactId>querydsl-jpa-codegen</artifactId>
-                <version>${querydsl.version}</version>
-              </annotationProcessorPath>
-              <annotationProcessorPath>
-                <groupId>com.querydsl</groupId>
-                <artifactId>querydsl-apt</artifactId>
-                <classifier>jpa</classifier>
-                <version>${querydsl.version}</version>
-              </annotationProcessorPath>
-              <annotationProcessorPath>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
-              </annotationProcessorPath>
-            </annotationProcessorPaths>
-          </configuration>
-        </plugin>
-
-        <!-- JRebel -->
         <plugin>
           <groupId>org.zeroturnaround</groupId>
           <artifactId>jrebel-maven-plugin</artifactId>
@@ -254,13 +265,11 @@
             </execution>
           </executions>
         </plugin>
-
         <plugin>
           <groupId>org.sonarsource.scanner.maven</groupId>
           <artifactId>sonar-maven-plugin</artifactId>
           <version>${sonar.version}</version>
         </plugin>
-
         <plugin>
           <groupId>org.owasp</groupId>
           <artifactId>dependency-check-maven</artifactId>
@@ -281,126 +290,117 @@
         </plugin>
       </plugins>
     </pluginManagement>
-
-    <plugins>
-      <plugin>
-        <groupId>org.zeroturnaround</groupId>
-        <artifactId>jrebel-maven-plugin</artifactId>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>${maven.javadoc.plugin.version}</version>
-        <executions>
-          <execution>
-            <id>javadoc</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-          <!-- Exports JavaDocs to regular HTML files -->
-          <execution>
-            <id>javadoc-html</id>
-            <phase>package</phase>
-            <goals>
-              <goal>javadoc</goal>
-            </goals>
-          </execution>
-          <!-- Generates the JavaDoc coverage report -->
-          <execution>
-            <id>javadoc-coverage</id>
-            <phase>package</phase>
-            <goals>
-              <goal>javadoc</goal>
-            </goals>
-            <configuration>
-              <excludePackageNames>un.unece.uncefact.codelist.standard.unece.*</excludePackageNames>
-              <doclet>com.manoelcampos.javadoc.coverage.CoverageDoclet</doclet>
-              <docletArtifact>
-                <groupId>com.manoelcampos</groupId>
-                <artifactId>javadoc-coverage</artifactId>
-                <version>${javadoc-coverage.version}</version>
-              </docletArtifact>
-            </configuration>
-          </execution>
-        </executions>
-        <configuration>
-          <additionalDependencies>
-            <additionalDependency>
-              <groupId>javax.interceptor</groupId>
-              <artifactId>javax.interceptor-api</artifactId>
-              <version>1.2</version>
-            </additionalDependency>
-          </additionalDependencies>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>${jacoco.version}</version>
-        <executions>
-          <execution>
-            <id>before-unit-test-execution</id>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-            <configuration>
-              <destFile>${project.build.directory}/jacoco.exec</destFile>
-              <propertyName>argLine</propertyName>
-            </configuration>
-          </execution>
-          <execution>
-            <id>before-integration-test-execution</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-            <configuration>
-              <destFile>${project.build.directory}/jacoco-it.exec</destFile>
-              <propertyName>failsafe.jacoco.args</propertyName>
-            </configuration>
-          </execution>
-          <execution>
-            <id>report</id>
-            <phase>test</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-            <configuration>
-              <excludes>
-                <exclude>com/eurodyn/qlack/**/**/model/*</exclude>
-                <exclude>com/eurodyn/qlack/**/**/model/**/*</exclude>
-                <exclude>com/eurodyn/qlack/**/**/dto/*</exclude>
-                <exclude>com/eurodyn/qlack/**/**/dto/**/*</exclude>
-                <exclude>com/eurodyn/qlack/**/**/repository/*</exclude>
-                <exclude>com/eurodyn/qlack/**/**/enums/*</exclude>
-                <exclude>com/eurodyn/qlack/fuse/cm/util/JPAQueryUtil.class</exclude>
-                <exclude>com/eurodyn/qlack/fuse/cm/storage/FSStorage.class</exclude>
-                <exclude>com/eurodyn/qlack/fuse/rules/util/classloader/*</exclude>
-                <exclude>com/eurodyn/qlack/util/clamav/util/*</exclude>
-              </excludes>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
   </build>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-configuration-processor</artifactId>
-    </dependency>
-  </dependencies>
-
   <profiles>
+    <profile>
+      <id>full-build</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.zeroturnaround</groupId>
+            <artifactId>jrebel-maven-plugin</artifactId>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>${maven.javadoc.plugin.version}</version>
+            <executions>
+              <execution>
+                <id>javadoc</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+              <!-- Exports JavaDocs to regular HTML files -->
+              <execution>
+                <id>javadoc-html</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>javadoc</goal>
+                </goals>
+              </execution>
+              <!-- Generates the JavaDoc coverage report -->
+              <execution>
+                <id>javadoc-coverage</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>javadoc</goal>
+                </goals>
+                <configuration>
+                  <excludePackageNames>un.unece.uncefact.codelist.standard.unece.*</excludePackageNames>
+                  <doclet>com.manoelcampos.javadoc.coverage.CoverageDoclet</doclet>
+                  <docletArtifact>
+                    <groupId>com.manoelcampos</groupId>
+                    <artifactId>javadoc-coverage</artifactId>
+                    <version>${javadoc-coverage.version}</version>
+                  </docletArtifact>
+                </configuration>
+              </execution>
+            </executions>
+            <configuration>
+              <additionalDependencies>
+                <additionalDependency>
+                  <groupId>javax.interceptor</groupId>
+                  <artifactId>javax.interceptor-api</artifactId>
+                  <version>1.2</version>
+                </additionalDependency>
+              </additionalDependencies>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${jacoco.version}</version>
+            <executions>
+              <execution>
+                <id>before-unit-test-execution</id>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+                <configuration>
+                  <destFile>${project.build.directory}/jacoco.exec</destFile>
+                  <propertyName>argLine</propertyName>
+                </configuration>
+              </execution>
+              <execution>
+                <id>before-integration-test-execution</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+                <configuration>
+                  <destFile>${project.build.directory}/jacoco-it.exec</destFile>
+                  <propertyName>failsafe.jacoco.args</propertyName>
+                </configuration>
+              </execution>
+              <execution>
+                <id>report</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>report</goal>
+                </goals>
+                <configuration>
+                  <excludes>
+                    <exclude>com/eurodyn/qlack/**/**/model/*</exclude>
+                    <exclude>com/eurodyn/qlack/**/**/model/**/*</exclude>
+                    <exclude>com/eurodyn/qlack/**/**/dto/*</exclude>
+                    <exclude>com/eurodyn/qlack/**/**/dto/**/*</exclude>
+                    <exclude>com/eurodyn/qlack/**/**/repository/*</exclude>
+                    <exclude>com/eurodyn/qlack/**/**/enums/*</exclude>
+                    <exclude>com/eurodyn/qlack/fuse/cm/util/JPAQueryUtil.class</exclude>
+                    <exclude>com/eurodyn/qlack/fuse/cm/storage/FSStorage.class</exclude>
+                    <exclude>com/eurodyn/qlack/fuse/rules/util/classloader/*</exclude>
+                    <exclude>com/eurodyn/qlack/util/clamav/util/*</exclude>
+                  </excludes>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <!-- Prepare and release artifacts profile -->
     <profile>
       <id>release</id>
@@ -528,10 +528,13 @@
                 <configuration>
                   <target name="copy-apidocs">
                     <copy todir="${project.build.directory}/classes/static/documentation/">
-                      <fileset dir="${project.build.directory}/enunciate-documentation/apidocs/" />
+                      <fileset dir="${project.build.directory}/enunciate-documentation/apidocs/"/>
                     </copy>
-                    <copy file="${project.build.directory}/enunciate-documentation/swagger-ui/swagger-ui-index.html" tofile="${project.build.directory}/classes/static/documentation/ui/index.html" overwrite="true" />
-                    <copy file="${project.build.directory}/enunciate-documentation/swagger-ui/swagger-ui.js" tofile="${project.build.directory}/classes/static/documentation/ui/swagger-ui.js" overwrite="true" />
+                    <copy file="${project.build.directory}/enunciate-documentation/swagger-ui/swagger-ui-index.html"
+                      tofile="${project.build.directory}/classes/static/documentation/ui/index.html" overwrite="true"/>
+                    <copy file="${project.build.directory}/enunciate-documentation/swagger-ui/swagger-ui.js"
+                      tofile="${project.build.directory}/classes/static/documentation/ui/swagger-ui.js"
+                      overwrite="true"/>
                   </target>
                 </configuration>
               </execution>
