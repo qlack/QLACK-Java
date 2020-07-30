@@ -1,6 +1,7 @@
 package com.eurodyn.qlack.fuse.rules.mapper;
 
 import com.eurodyn.qlack.common.model.QlackBaseModel;
+
 import java.util.List;
 
 /**
