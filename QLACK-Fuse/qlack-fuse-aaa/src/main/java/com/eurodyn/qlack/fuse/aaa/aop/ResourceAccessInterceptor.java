@@ -4,16 +4,18 @@ import com.eurodyn.qlack.fuse.aaa.annotation.ResourceAccess;
 import com.eurodyn.qlack.fuse.aaa.annotation.ResourceId;
 import com.eurodyn.qlack.fuse.aaa.annotation.ResourceOperation;
 import com.eurodyn.qlack.fuse.aaa.dto.ResourceOperationDTO;
-import com.eurodyn.qlack.fuse.aaa.dto.UserDetailsDTO;
-import com.eurodyn.qlack.fuse.aaa.dto.UserGroupDTO;
-import com.eurodyn.qlack.fuse.aaa.dto.UserGroupHasOperationDTO;
-import com.eurodyn.qlack.fuse.aaa.dto.UserHasOperationDTO;
+import com.eurodyn.qlack.fuse.aaa.model.User;
+import com.eurodyn.qlack.fuse.aaa.model.UserGroup;
+import com.eurodyn.qlack.fuse.aaa.model.UserGroupHasOperation;
+import com.eurodyn.qlack.fuse.aaa.model.UserHasOperation;
+import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
 import lombok.extern.java.Log;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -29,11 +31,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * Authorizes requests by validating users' role, operation and resources
- * permissions against the provided access rules. The access rules are described
- * using {@link ResourceAccess}, {@link ResourceOperation} and {@link
- * ResourceId} on the REST endpoint the request is issued for or on the
- * corresponding DTO fields that represent a resourceId field
+ * Authorizes requests by validating users' role, operation and resources permissions against the provided access rules.
+ * The access rules are described using {@link ResourceAccess}, {@link ResourceOperation} and {@link ResourceId} on the
+ * REST endpoint the request is issued for or on the corresponding DTO fields that represent a resourceId field
  *
  * @author European Dynamics SA
  */
@@ -41,6 +41,13 @@ import java.util.stream.Collectors;
 @Component
 @Log
 public class ResourceAccessInterceptor {
+
+  private UserRepository userRepository;
+
+  @Autowired
+  public ResourceAccessInterceptor(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
 
   @Pointcut("execution(@com.eurodyn.qlack.fuse.aaa.annotation.ResourceAccess * *(..))")
   public void annotation() {
@@ -50,37 +57,32 @@ public class ResourceAccessInterceptor {
   /**
    * Retrieves User & Group operations from user principal
    *
-   * @param user a {@link UserDetailsDTO} object that holds user information
+   * @param user a {@link User} object that holds user information
    * @param operation the operation name to check permissions for
    * @return the operations and resources of the current user
    */
-  private List<ResourceOperationDTO> getResourceOperations(UserDetailsDTO user,
-    String operation) {
+  private List<ResourceOperationDTO> getResourceOperations(User user,
+      String operation) {
     List<ResourceOperationDTO> resourceOperations = new ArrayList<>();
 
-    List<UserHasOperationDTO> uho = user.getUserHasOperations();
-    List<UserGroupHasOperationDTO> gho = user.getUserGroupHasOperations();
+    List<UserHasOperation> uho = user.getUserHasOperations();
+    List<UserGroupHasOperation> gho = new ArrayList<>();
+    user.getUserGroups().forEach(userGroup -> gho.addAll(userGroup.getUserGroupHasOperations()));
 
-    for (UserHasOperationDTO userHasOperationDTO : uho) {
-      if (userHasOperationDTO.getOperation().getName().equals(operation)) {
-        ResourceOperationDTO roDTO = new ResourceOperationDTO();
-        roDTO.setOperation(operation);
-        roDTO.setResourceId(userHasOperationDTO.getResource() != null
-          && userHasOperationDTO.getResource().getObjectId() != null
-          ? userHasOperationDTO.getResource().getObjectId() : "");
-        resourceOperations.add(roDTO);
+    for (UserHasOperation userHasOperation : uho) {
+      if (userHasOperation.getOperation().getName().equals(operation)) {
+        resourceOperations.add(new ResourceOperationDTO(operation, userHasOperation.getResource() != null
+            && userHasOperation.getResource().getObjectId() != null
+            ? userHasOperation.getResource().getObjectId() : ""));
       }
     }
 
-    for (UserGroupHasOperationDTO userGroupHasOperationDTO : gho) {
-      if (userGroupHasOperationDTO.getOperationDTO().getName()
-        .equals(operation)) {
-        ResourceOperationDTO roDTO = new ResourceOperationDTO();
-        roDTO.setOperation(operation);
-        roDTO.setResourceId(userGroupHasOperationDTO.getResourceDTO() != null
-          && userGroupHasOperationDTO.getResourceDTO().getObjectId() != null
-          ? userGroupHasOperationDTO.getResourceDTO().getObjectId() : "");
-        resourceOperations.add(roDTO);
+    for (UserGroupHasOperation userGroupHasOperation : gho) {
+      if (userGroupHasOperation.getOperation().getName()
+          .equals(operation)) {
+        resourceOperations.add(new ResourceOperationDTO(operation, userGroupHasOperation.getResource() != null
+            && userGroupHasOperation.getResource().getObjectId() != null
+            ? userGroupHasOperation.getResource().getObjectId() : ""));
       }
     }
 
@@ -88,21 +90,20 @@ public class ResourceAccessInterceptor {
   }
 
   /**
-   * @param user a {@link UserDetailsDTO} object that holds user information
+   * @param user a {@link java.net.UnknownServiceException} object that holds user information
    * @param operation the operation name to check permissions for
-   * @param resourceId the value of either resourceIdField or
-   * resourceIdParameter
+   * @param resourceId the value of either resourceIdField or resourceIdParameter
    * @param joinPoint the annotations' joinPoint
    * @param searchInParams flag used for resource level access authorization
    */
-  private boolean userHasOperation(UserDetailsDTO user, String operation,
-    String resourceId,
-    JoinPoint joinPoint, boolean searchInParams)
-    throws IllegalAccessException {
+  private boolean userHasOperation(User user, String operation,
+      String resourceId,
+      JoinPoint joinPoint, boolean searchInParams)
+      throws IllegalAccessException {
 
     // Get the user and group operations on resources
     List<ResourceOperationDTO> resourceOperations = getResourceOperations(user,
-      operation);
+        operation);
 
     // If no operations for current user, the user is not authorized
     if (resourceOperations.isEmpty()) {
@@ -126,17 +127,17 @@ public class ResourceAccessInterceptor {
         if (parameterName.equals(resourceId)) {
           Object annotationResourceIdValue = joinPoint.getArgs()[index];
           Optional<ResourceOperationDTO> foundResourceOperation = resourceOperations
-            .stream()
-            .filter(ro -> ro.getResourceId()
-              .equals(String.valueOf(annotationResourceIdValue)))
-            .findAny();
+              .stream()
+              .filter(ro -> ro.getResourceId()
+                  .equals(String.valueOf(annotationResourceIdValue)))
+              .findAny();
           if (foundResourceOperation.isPresent()) {
             return true;
           }
         }
       } else if (userHasOperationIsFound(parameter, resourceId, joinPoint,
-        index,
-        resourceOperations)) {
+          index,
+          resourceOperations)) {
         return true;
       }
       index++;
@@ -146,10 +147,10 @@ public class ResourceAccessInterceptor {
 
   @SuppressWarnings("squid:S3011")
   private boolean userHasOperationIsFound(Parameter parameter,
-    String resourceId,
-    JoinPoint joinPoint, int index,
-    List<ResourceOperationDTO> resourceOperations)
-    throws IllegalAccessException {
+      String resourceId,
+      JoinPoint joinPoint, int index,
+      List<ResourceOperationDTO> resourceOperations)
+      throws IllegalAccessException {
     Field[] fields = parameter.getType().getDeclaredFields();
     for (Field field : fields) {
       field.setAccessible(true);
@@ -160,10 +161,10 @@ public class ResourceAccessInterceptor {
           continue;
         }
         Object annotationResourceIdValue = field
-          .get(joinPoint.getArgs()[index]);
+            .get(joinPoint.getArgs()[index]);
         for (ResourceOperationDTO roDTO : resourceOperations) {
           if (roDTO.getResourceId()
-            .equals(String.valueOf(annotationResourceIdValue))) {
+              .equals(String.valueOf(annotationResourceIdValue))) {
             return true;
           }
         }
@@ -179,28 +180,34 @@ public class ResourceAccessInterceptor {
    * @param joinPoint the annotations' joinPoint
    * @param resourceAccess The {@link ResourceAccess} object
    * @throws AccessDeniedException if authorization fails
-   * @throws IllegalAccessException if a class field cannot be accessed
-   * through Java Reflection API
+   * @throws IllegalAccessException if a class field cannot be accessed through Java Reflection API
    */
   @Before("annotation() && @annotation(resourceAccess)")
   public void authorize(JoinPoint joinPoint, ResourceAccess resourceAccess)
-    throws IllegalAccessException {
+      throws IllegalAccessException {
     Object principal = SecurityContextHolder.getContext().getAuthentication()
-      .getPrincipal();
+        .getPrincipal();
 
     //authorizeUserDetailsDTO method checks the fields of the com.eurodyn.qlack.fuse.aaa.dto.UserDetailsDTO
     //if your security implementation adds another type of object in the spring security principal, a custom implementation must be added
-    if (principal instanceof UserDetailsDTO) {
-      authorizeUserDetailsDTO((UserDetailsDTO) principal, joinPoint,
-        resourceAccess);
+    if (principal instanceof String) {
+      User user = userRepository.findByUsername((String) principal);
+      if (user != null) {
+        authorizeUserDetails(user, joinPoint,
+            resourceAccess);
+      } else {
+        throw new AccessDeniedException(
+            "403 - Unauthorized Access. This user is not authorized for the specific operation.");
+
+      }
     } else {
       throw new AccessDeniedException(
-        "403 - Unauthorized Access. This user is not authorized for the specific operation.");
+          "403 - Unauthorized Access. This user is not authorized for the specific operation.");
     }
   }
 
-  private void authorizeUserDetailsDTO(UserDetailsDTO user, JoinPoint joinPoint,
-    ResourceAccess resourceAccess) throws IllegalAccessException {
+  private void authorizeUserDetails(User user, JoinPoint joinPoint,
+      ResourceAccess resourceAccess) throws IllegalAccessException {
 
     boolean allowAccess;
 
@@ -208,13 +215,13 @@ public class ResourceAccessInterceptor {
     if (user.isSuperadmin()) {
       allowAccess = true;
     } else {
-      List<UserGroupDTO> groups = user.getUserGroups();
+      List<UserGroup> groups = user.getUserGroups();
       String[] roleAccess = resourceAccess.roleAccess();
 
       boolean authorizesOnRole = Arrays.stream(roleAccess).anyMatch(
-        new HashSet<>(
-          groups.stream().map(UserGroupDTO::getName)
-            .collect(Collectors.toList()))::contains);
+          new HashSet<>(
+              groups.stream().map(UserGroup::getName)
+                  .collect(Collectors.toList()))::contains);
 
       // If not authorized on role level, check specific operation permissions
       if (authorizesOnRole) {
@@ -222,27 +229,27 @@ public class ResourceAccessInterceptor {
       } else {
         allowAccess = false;
         log.info(
-          "The groups this user is assigned to are not authorized to access this resource.");
+            "The groups this user is assigned to are not authorized to access this resource.");
 
         ResourceOperation[] resourceOperations = resourceAccess.operations();
         for (ResourceOperation resourceOperation : resourceOperations) {
           String resourceId = (!resourceOperation.resourceIdField().isEmpty()
-            ? resourceOperation
-            .resourceIdField()
-            : resourceOperation.resourceIdParameter());
+              ? resourceOperation
+              .resourceIdField()
+              : resourceOperation.resourceIdParameter());
           boolean searchInParams = !resourceOperation.resourceIdParameter()
-            .isEmpty();
+              .isEmpty();
           allowAccess =
-            allowAccess || userHasOperation(user, resourceOperation.operation(),
-              resourceId,
-              joinPoint, searchInParams);
+              allowAccess || userHasOperation(user, resourceOperation.operation(),
+                  resourceId,
+                  joinPoint, searchInParams);
         }
       }
     }
 
     if (!allowAccess) {
       throw new AccessDeniedException(
-        "403 - Unauthorized Access. This user is not authorized for the specific operation.");
+          "403 - Unauthorized Access. This user is not authorized for the specific operation.");
     }
   }
 }
