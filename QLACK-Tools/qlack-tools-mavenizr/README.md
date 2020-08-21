@@ -15,19 +15,19 @@ mvn clean package
 After a successful build you can run the following, adjusting the options values to your project:
 
 ```cmd
-java -jar target/qlack-tools-mavenizr-1.0.jar --deps --exec --d=C:/my_maven_project/lib --c=src/main/resources/lib --g=com.eurodyn.my_maven_project 
+java -jar target/qlack-tools-mavenizr-1.0.jar --deps --exec --d=C:/my_maven_project/lib --c=lib --g=com.eurodyn.my_maven_project 
 
 ```
 
 or if you prefer maven you can also run:
 
 ```reStructuredText
-mvn spring-boot:run -Dspring-boot.run.arguments="--deps,--exec,--d=C:/my_maven_project/lib,--c=src/main/resources/lib,--g=com.eurodyn.my_maven_project"
+mvn spring-boot:run -Dspring-boot.run.arguments="--deps,--exec,--d=C:/my_maven_project/lib,--c=lib,--g=com.eurodyn.my_maven_project"
 ```
 
 Next, <u>copy the dependencies and executions output to your projects' pom.xml file</u>. For details see "Copying output to your projects' pom.xml" at the end of this file.
 
-Your project should be ready to build, using the installed
+Your project should be ready to build, using the installed jar dependencies.
 
 ## How does it work?
 
@@ -76,7 +76,7 @@ For executions option `--exec` the output will be of the following form:
     <execution>
             <configuration>
                 <artifactId>my_custom_jar_filename</artifactId>
-                <file>src/main/resources/lib/my_custom_jar_file.jar</file>
+                <file>lib/my_custom_jar_file.jar</file>
                 <groupId>com.eurodyn.my_maven_project</groupId>
                 <packaging>jar</packaging>
                 <version>2881c79c9d6ef01c58e62beea13e9d1ac8b8baa16f2fc198ad6e6776defdcdd3</version>
@@ -95,7 +95,72 @@ For executions option `--exec` the output will be of the following form:
 
 ## Copying output to your projects' pom.xml
 
-The output of the dependencies execution options should be copied and pasted in the pom.xml `<dependencies></dependencies>` section. 
+Assuming you have a module `mymodule-server` pom.xml where you need to include local jar files as dependencies, **you need to create in the same level (same parent) another module i.e. `mymodule-libs`.** This module will have the sole responsibility of installing the local jar files on your local m2 repository. Naturally `mymodule-libs` will include a `lib` folder containing all the jar files needed to be installed. 
+
+Your project should have the following tree structure:
+
+```txt
+- my_maven_project
+	|_ mymodule-libs
+		|_ lib
+			|_ my_custom_jar_file.jar
+		|_ pom.xml (where the output of --exec option is included)
+	|_ mymodule-server
+		|_ pom.xml (where the output of --deps option is included)
+```
+
+
+
+The pom.xml file of `mymodule-libs` module should include the maven-install-plugin and the defined `executions` which you can copy from the output of the `--exec` option and should look like the following example: 
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.eurodyn.qlack</groupId>
+        <artifactId>qlack-be-forms</artifactId>
+        <version>3.3.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>qlack-be-forms-libs</artifactId>
+
+    <packaging>pom</packaging>
+
+    <build>
+        <plugins>           
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>${maven-install-plugin.version}</version>
+                <!-- Here you should copy the output of the --executions option of the mavenizr tool -->
+                <!-- i.e. 
+			   <executions>
+                    <execution>
+                        <configuration>
+                            <artifactId>my_custom_jar_filename</artifactId>
+                            <file>lib/my_custom_jar_file.jar</file>
+                            <groupId>com.eurodyn.my_maven_project</groupId>
+                            <packaging>jar</packaging>
+                    <version>2881c79c9d6ef01c58e62beea13e9d1ac8b8baa16f2fc198ad6e6776defdcdd3</version>
+                        </configuration>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <id>my_custom_jar_filename</id>
+                        <phase>install</phase>
+                    </execution>
+                </executions> -->
+            </plugin>
+        </plugins>
+    </build>
+</project>
+```
+
+Then in the`mymodule-server` module pom.xml copy the output of the `--deps` (dependencies) option and paste it in the pom.xml `<dependencies></dependencies>` section like the example below: 
 
 ```xml
 <dependencies>
@@ -108,36 +173,3 @@ The output of the dependencies execution options should be copied and pasted in 
 </dependencies>
     
 ```
-
-The output of the executions option should be copied in the `<executions></executions>` section of the `maven-install-plugin`. i.e.
-
-```xml
-<build>
-    <plugins>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-install-plugin</artifactId>
-            <version>${maven-install-plugin.version}</version>
-            <executions>
-                <execution>
-                    <configuration>
-                        <artifactId>my_custom_jar_filename</artifactId>
-                        <file>src/main/resources/lib/my_custom_jar_file.jar</file>
-                        <groupId>com.eurodyn.my_maven_project</groupId>
-                        <packaging>jar</packaging>
-				<version>2881c79c9d6ef01c58e62beea13e9d1ac8b8baa16f2fc198ad6e6776defdcdd3</version>
-                    </configuration>
-                    <goals>
-                        <goal>install-file</goal>
-                    </goals>
-                    <id>my_custom_jar_filename</id>
-                    <phase>install</phase>
-                </execution>
-                <!-- Other executions... -->
-            </executions>
-        </plugin>
-    <!-- Other plugins... -->
-    </plugins>
-</build>
-```
-
