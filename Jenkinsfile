@@ -3,7 +3,6 @@ pipeline {
         docker {
             image 'imousmoutis/maven3-jdk8:1.0.1'
             args '-v /root/.m2:/root/.m2'
-            label 'jenkins-agent-1'
         }
     }
     options {
