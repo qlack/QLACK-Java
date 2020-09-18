@@ -8,14 +8,14 @@ import com.eurodyn.qlack.fuse.aaa.model.User;
 import com.eurodyn.qlack.fuse.aaa.model.UserGroup;
 import com.eurodyn.qlack.fuse.aaa.model.UserGroupHasOperation;
 import com.eurodyn.qlack.fuse.aaa.model.UserHasOperation;
-import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
+import com.eurodyn.qlack.fuse.aaa.service.OperationService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -40,14 +40,12 @@ import java.util.stream.Collectors;
 @Aspect
 @Component
 @Log
+@RequiredArgsConstructor
 public class ResourceAccessInterceptor {
 
-  private UserRepository userRepository;
+  private final ResourceAccessInterceptorService resourceAccessInterceptorService;
 
-  @Autowired
-  public ResourceAccessInterceptor(UserRepository userRepository) {
-    this.userRepository = userRepository;
-  }
+  private final OperationService operationService;
 
   @Pointcut("execution(@com.eurodyn.qlack.fuse.aaa.annotation.ResourceAccess * *(..))")
   public void annotation() {
@@ -191,22 +189,19 @@ public class ResourceAccessInterceptor {
     //authorizeUserDetailsDTO method checks the fields of the com.eurodyn.qlack.fuse.aaa.dto.UserDetailsDTO
     //if your security implementation adds another type of object in the spring security principal, a custom implementation must be added
     if (principal instanceof String) {
-      User user = userRepository.findByUsername((String) principal);
+      User user = resourceAccessInterceptorService.findUser((String) principal);
       if (user != null) {
-        authorizeUserDetails(user, joinPoint,
+        authorizeUser(user, joinPoint,
             resourceAccess);
       } else {
-        throw new AccessDeniedException(
-            "403 - Unauthorized Access. This user is not authorized for the specific operation.");
-
+        throwUnauthorizedException();
       }
     } else {
-      throw new AccessDeniedException(
-          "403 - Unauthorized Access. This user is not authorized for the specific operation.");
+      throwUnauthorizedException();
     }
   }
 
-  private void authorizeUserDetails(User user, JoinPoint joinPoint,
+  private void authorizeUser(User user, JoinPoint joinPoint,
       ResourceAccess resourceAccess) throws IllegalAccessException {
 
     boolean allowAccess;
@@ -248,8 +243,16 @@ public class ResourceAccessInterceptor {
     }
 
     if (!allowAccess) {
-      throw new AccessDeniedException(
-          "403 - Unauthorized Access. This user is not authorized for the specific operation.");
+      throwUnauthorizedException();
     }
+  }
+
+  /**
+   * This method throws the QLACK Unauthorized exception
+   */
+  private void throwUnauthorizedException() {
+    throw new AccessDeniedException(
+        "403 - Unauthorized Access. This user is not authorized for the specific operation.");
+
   }
 }
