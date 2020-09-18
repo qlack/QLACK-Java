@@ -260,6 +260,7 @@ public class LdapService {
    *
    * @param searchFilter The filter to search with (ex '(objectClass=*)')
    * @return Returns a set of all entries matched the filter together with all their LDAP attributes.
+   * @throws NamingException exception when users cannot be loaded
    */
   public Set<MultiValuedMap<String, Object>> search(String searchFilter)
       throws NamingException {
