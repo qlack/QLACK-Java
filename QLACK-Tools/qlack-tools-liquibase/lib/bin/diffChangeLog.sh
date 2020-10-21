@@ -6,7 +6,7 @@ echo Creating diff database
 ${DB}-create.sh
 
 echo Populating diff database with existing changelogs
-/opt/liquibase/liquibase \
+/opt/liquibase/liquibase "$@" \
 --driver=$DRIVER \
 --classpath=/opt/liquibase/lib/mariadb-java-client.jar:/opt/liquibase/lib/mysql-connector-java.jar \
 --url=jdbc:$DB://$DB_HOST:$DB_PORT/qlack_liquibase \
@@ -32,7 +32,7 @@ echo Writing diff log in: $DIFFLOG
 if [[ ! -z $EXCLUDE_OBJECTS ]]; then
   echo Exclude filter: $EXCLUDE_OBJECTS
 fi
-/opt/liquibase/liquibase \
+/opt/liquibase/liquibase "$@" \
 --driver=$DRIVER \
 --classpath=/opt/liquibase/lib/mariadb-java-client.jar:/opt/liquibase/lib/mysql-connector-java.jar \
 --url=jdbc:$DB://$DB_HOST:$DB_PORT/qlack_liquibase \
@@ -72,7 +72,7 @@ echo Dropping diff database
 ${DB}-drop.sh
 
 echo Marking changes as executed.
-/opt/liquibase/liquibase \
+/opt/liquibase/liquibase "$@" \
 --driver=$DRIVER \
 --classpath=/opt/liquibase/lib/mariadb-java-client.jar:/opt/liquibase/lib/mysql-connector-java.jar \
 --url=jdbc:$DB://$DB_HOST:$DB_PORT/$DB_SCHEMA \
