@@ -1,6 +1,6 @@
 # QLACK Fuse - Content Manager
 
-This module provides an easy to understand API around commonly used cryptoraphy-related functionality. Crypto module does not implement itself any cryptography algorithms as it reuses industry standard libraries for such functions. In Crypto module you can find helper method to create, maintain and use Symmetric Cryptography, Asymmetric Cryptography, Signatures generation and validation, Certificate Authority management, and Keystore management.
+The Content manager module allows you to organise and maintain a content repository. Content entries can be in any form, binary or text, and a rich API is provided to manage versions of your content, check in/check out, upload/download, etc. The repository can be configured to store your content either in database tables or in the filesystem.
 
 ## Integration
 
@@ -8,7 +8,7 @@ This module provides an easy to understand API around commonly used cryptoraphy-
 ```xml
     <dependency>
         <groupId>com.eurodyn.qlack.fuse</groupId>
-        <artifactId>qlack-fuse-crypto</artifactId>
+        <artifactId>qlack-fuse-content-manager</artifactId>
         <version>${qlack.version}</version>
     </dependency>
 ```
