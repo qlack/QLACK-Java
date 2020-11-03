@@ -8,7 +8,10 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import lombok.extern.java.Log;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,6 +31,7 @@ import java.util.List;
  * When authentication is successful, the filter also updates Spring's {@link
  * SecurityContextHolder}.
  */
+@Log
 @Component
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
@@ -88,9 +92,25 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
   public void doFilter(ServletRequest request, ServletResponse response,
       FilterChain filterChain)
   throws IOException, ServletException {
+    log.finest("Applying filter JwtAuthenticationFilter.");
     Authentication authentication = getAuthentication((HttpServletRequest) request);
-    SecurityContextHolder.getContext().setAuthentication(authentication);
+    if (authentication != null) {
+      SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
 
     filterChain.doFilter(request, response);
   }
+
+  /**
+   * Do not automatically register this filter.
+   *
+   * @param filter The filter to configure.
+   */
+  @Bean(name = "JwtAuthenticationFilterRegistrationBean")
+  public FilterRegistrationBean registration(JwtAuthenticationFilter filter) {
+    FilterRegistrationBean registration = new FilterRegistrationBean(filter);
+    registration.setEnabled(false);
+    return registration;
+  }
+
 }
