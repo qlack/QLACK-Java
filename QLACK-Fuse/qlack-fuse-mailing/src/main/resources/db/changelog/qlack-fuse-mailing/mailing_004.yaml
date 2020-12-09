@@ -1,0 +1,115 @@
+databaseChangeLog:
+  - changeSet:
+      id: mailing_004
+      author: European Dynamics SA
+      context: "!qlack-disabled"
+      changes:
+        # Comments for mai_attachment table
+        - sql:
+            sql: ALTER TABLE mai_attachment MODIFY COLUMN id varchar(36) NOT NULL COMMENT "The uuid of the email attachment"
+        - sql:
+            sql: ALTER TABLE mai_attachment MODIFY COLUMN email_id varchar(36) NOT NULL COMMENT "The uuid of the email that the attachment is attached to"
+        - sql:
+            sql: ALTER TABLE mai_attachment MODIFY COLUMN filename varchar(254) NOT NULL COMMENT "The name of the email attachment"
+        - sql:
+            sql: ALTER TABLE mai_attachment MODIFY COLUMN content_type varchar(254) NOT NULL COMMENT "The content type of the email attachment"
+        - sql:
+            sql: ALTER TABLE mai_attachment MODIFY COLUMN data longblob NOT NULL COMMENT "The content data of the email attachment"
+        - sql:
+            sql: ALTER TABLE mai_attachment MODIFY COLUMN attachment_size bigint COMMENT "The size of the content data of the email attachment"
+      # Comments for mai_contact table
+        - sql:
+            sql: ALTER TABLE mai_contact MODIFY COLUMN id varchar(36) NOT NULL COMMENT "The uuid of the email contact"
+        - sql:
+            sql: ALTER TABLE mai_contact MODIFY COLUMN user_id varchar(36) COMMENT "The user id of the email contact"
+        - sql:
+            sql: ALTER TABLE mai_contact MODIFY COLUMN email varchar(45) NOT NULL COMMENT "The email alias of the contact"
+        - sql:
+            sql: ALTER TABLE mai_contact MODIFY COLUMN first_name varchar(254) COMMENT "The first name of the email contact"
+        - sql:
+            sql: ALTER TABLE mai_contact MODIFY COLUMN last_name varchar(254) COMMENT "The last name of the email contact"
+        - sql:
+            sql: ALTER TABLE mai_contact MODIFY COLUMN locale varchar(5) COMMENT "The preferred language locale of the email contact"
+      # Comments for mai_distr_list_has_contact table
+        - sql:
+            sql: ALTER TABLE mai_distr_list_has_contact MODIFY COLUMN distribution_list_id varchar(36) NOT NULL COMMENT "The uuid of the email distribution list"
+        - sql:
+            sql: ALTER TABLE mai_distr_list_has_contact MODIFY COLUMN contact_id varchar(36) COMMENT "The uuid of the email contact"
+      # Comments for mai_distribution_list table
+        - sql:
+            sql: ALTER TABLE mai_distribution_list MODIFY COLUMN id varchar(36) NOT NULL COMMENT "The uuid of the email distribution list"
+        - sql:
+            sql: ALTER TABLE mai_distribution_list MODIFY COLUMN list_name varchar(45) NOT NULL COMMENT "The name of the email distribution list"
+        - sql:
+            sql: ALTER TABLE mai_distribution_list MODIFY COLUMN description varchar(45) COMMENT "The description of the email distribution list"
+        - sql:
+            sql: ALTER TABLE mai_distribution_list MODIFY COLUMN created_on bigint COMMENT "The date when the email distribution list was created"
+        - sql:
+            sql: ALTER TABLE mai_distribution_list MODIFY COLUMN created_by varchar(254) COMMENT "The id of the user who created the email distribution list"
+        # Comments for mai_email table
+        - sql:
+            sql: ALTER TABLE mai_email MODIFY COLUMN id varchar(36) NOT NULL COMMENT "The uuid of the email"
+        - sql:
+            sql: ALTER TABLE mai_email MODIFY COLUMN subject varchar(254) COMMENT "The subject of the email"
+        - sql:
+            sql: ALTER TABLE mai_email MODIFY COLUMN body mediumtext COMMENT "The body message of the email"
+        - sql:
+            sql: ALTER TABLE mai_email MODIFY COLUMN from_email varchar(255) COMMENT "The sender alias of the email"
+        - sql:
+            sql: ALTER TABLE mai_email MODIFY COLUMN to_emails varchar(1024) COMMENT "A list containing the aliases of email recipients"
+        - sql:
+            sql: ALTER TABLE mai_email MODIFY COLUMN cc_emails varchar(4000) COMMENT "A list containing the aliases of email recipients in Carbon Copy"
+        - sql:
+            sql: ALTER TABLE mai_email MODIFY COLUMN bcc_emails varchar(4000) COMMENT "A list containing the aliases of email recipients in Blind Carbon Copy"
+        - sql:
+            sql: ALTER TABLE mai_email MODIFY COLUMN status varchar(32) COMMENT "The status of the email delivery"
+        - sql:
+            sql: ALTER TABLE mai_email MODIFY COLUMN server_response varchar(1024) COMMENT "The response of the server regarding the email delivery"
+        - sql:
+            sql: ALTER TABLE mai_email MODIFY COLUMN email_type varchar(64) COMMENT "The type of the email"
+        - sql:
+            sql: ALTER TABLE mai_email MODIFY COLUMN date_sent bigint COMMENT "The date when the server sent the email"
+        - sql:
+            sql: ALTER TABLE mai_email MODIFY COLUMN server_response_date bigint COMMENT "The date when the server returned the delivery information"
+        - sql:
+            sql: ALTER TABLE mai_email MODIFY COLUMN added_on_date bigint NOT NULL COMMENT "The date when the email was added in the server"
+        - sql:
+            sql: ALTER TABLE mai_email MODIFY COLUMN reply_to_emails varchar(1024) COMMENT "A list containing the 'Reply to' aliases of the email"
+        - sql:
+            sql: ALTER TABLE mai_email MODIFY COLUMN tries tinyint NOT NULL COMMENT "An integer that indicates the amount of times the server tried to send the email"
+        - sql:
+            sql: ALTER TABLE mai_email MODIFY COLUMN charset varchar(20) COMMENT "The charset encoding of the email"
+        - sql:
+            sql: ALTER TABLE mai_email MODIFY COLUMN db_version bigint COMMENT "An integer that keeps track of the changes that have been applied"
+      # Comments for mai_internal_attachment table
+        - sql:
+            sql: ALTER TABLE mai_internal_attachment MODIFY COLUMN id varchar(36) NOT NULL COMMENT "The uuid of the internal email attachment"
+        - sql:
+            sql: ALTER TABLE mai_internal_attachment MODIFY COLUMN messages_id varchar(36) NOT NULL COMMENT "The uuid of the internal email that the attachment is attached to"
+        - sql:
+            sql: ALTER TABLE mai_internal_attachment MODIFY COLUMN filename varchar(254) COMMENT "The name of the internal email attachment"
+        - sql:
+            sql: ALTER TABLE mai_internal_attachment MODIFY COLUMN content_type varchar(254) COMMENT "The content type of the internal email attachment"
+        - sql:
+            sql: ALTER TABLE mai_internal_attachment MODIFY COLUMN data longblob COMMENT "The content data of the internal email attachment"
+        - sql:
+            sql: ALTER TABLE mai_internal_attachment MODIFY COLUMN format varchar(45) COMMENT "The data format of the internal email attachment"
+      # Comments for mai_internal_message table
+        - sql:
+            sql: ALTER TABLE mai_internal_message MODIFY COLUMN id varchar(36) NOT NULL COMMENT "The uuid of the internal message"
+        - sql:
+            sql: ALTER TABLE mai_internal_message MODIFY COLUMN message text NOT NULL COMMENT "The content body of the internal message"
+        - sql:
+            sql: ALTER TABLE mai_internal_message MODIFY COLUMN mail_from varchar(36) NOT NULL COMMENT "The sender of the internal message"
+        - sql:
+            sql: ALTER TABLE mai_internal_message MODIFY COLUMN mail_to varchar(36) NOT NULL COMMENT "The recipient of the internal message"
+        - sql:
+            sql: ALTER TABLE mai_internal_message MODIFY COLUMN date_sent bigint COMMENT "The date when the internal message was sent"
+        - sql:
+            sql: ALTER TABLE mai_internal_message MODIFY COLUMN date_received bigint COMMENT "The date when the internal message was received"
+        - sql:
+            sql: ALTER TABLE mai_internal_message MODIFY COLUMN status varchar(7) COMMENT "The status of the delivery of the internal message"
+        - sql:
+            sql: ALTER TABLE mai_internal_message MODIFY COLUMN subject varchar(100) NOT NULL COMMENT "The subject of the internal message"
+        - sql:
+            sql: ALTER TABLE mai_internal_message MODIFY COLUMN delete_type varchar(1) NOT NULL COMMENT "Defines when the internal message will be deleted by the system"

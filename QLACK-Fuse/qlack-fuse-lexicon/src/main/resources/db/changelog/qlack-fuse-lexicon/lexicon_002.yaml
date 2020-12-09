@@ -1,0 +1,70 @@
+databaseChangeLog:
+  - changeSet:
+      id: lexicon_002
+      author: European Dynamics SA
+      context: "!qlack-disabled"
+      changes:
+        # Comments for lex_application table
+        - sql:
+            sql: ALTER TABLE lex_application MODIFY COLUMN id varchar(36) NOT NULL COMMENT "The uuid of the executed lexicon file"
+        - sql:
+            sql: ALTER TABLE lex_application MODIFY COLUMN symbolic_name varchar(255) NOT NULL COMMENT "The unique name of the executed lexicon file"
+        - sql:
+            sql: ALTER TABLE lex_application MODIFY COLUMN checksum varchar(32) NOT NULL COMMENT "The checksum of the executed lexicon file"
+        - sql:
+            sql: ALTER TABLE lex_application MODIFY COLUMN executed_on bigint NOT NULL COMMENT "The latest date the lexicon file was executed"
+        - sql:
+            sql: ALTER TABLE lex_application MODIFY COLUMN dbversion bigint NOT NULL COMMENT "An integer that keeps track of the changes that have been applied"
+        # Comments for lex_data table
+        - sql:
+            sql: ALTER TABLE lex_data MODIFY COLUMN id varchar(36) NOT NULL COMMENT "The uuid of the lexicon data"
+        - sql:
+            sql: ALTER TABLE lex_data MODIFY COLUMN key_id varchar(36) NOT NULL COMMENT "The uuid of the lexicon key of the lexicon data"
+        - sql:
+            sql: ALTER TABLE lex_data MODIFY COLUMN value text NOT NULL COMMENT "The translated value of the lexicon data"
+        - sql:
+            sql: ALTER TABLE lex_data MODIFY COLUMN language_id varchar(36) NOT NULL COMMENT "The uuid of the lexicon language of the lexicon data"
+        - sql:
+            sql: ALTER TABLE lex_data MODIFY COLUMN last_updated_on bigint NOT NULL COMMENT "The latest date the lexicon data was updated"
+        - sql:
+            sql: ALTER TABLE lex_data MODIFY COLUMN dbversion bigint NOT NULL COMMENT "An integer that keeps track of the changes that have been applied"
+        # Comments for lex_group table
+        - sql:
+            sql: ALTER TABLE lex_group MODIFY COLUMN id varchar(36) NOT NULL COMMENT "The uuid of the lexicon group"
+        - sql:
+            sql: ALTER TABLE lex_group MODIFY COLUMN title varchar(255) NOT NULL COMMENT "The title of the lexicon group"
+        - sql:
+            sql: ALTER TABLE lex_group MODIFY COLUMN description varchar(1024) COMMENT "The description of the lexicon group"
+        - sql:
+            sql: ALTER TABLE lex_group MODIFY COLUMN dbversion bigint NOT NULL COMMENT "An integer that keeps track of the changes that have been applied"
+        # Comments for lex_key table
+        - sql:
+            sql: ALTER TABLE lex_key MODIFY COLUMN id varchar(36) NOT NULL COMMENT "The uuid of the lexicon key"
+        - sql:
+            sql: ALTER TABLE lex_key MODIFY COLUMN name varchar(255) NOT NULL COMMENT "The name of the lexicon key"
+        - sql:
+            sql: ALTER TABLE lex_key MODIFY COLUMN group_id varchar(36) COMMENT "The uuid of the lexicon group in which the lexicon key belongs to"
+        - sql:
+            sql: ALTER TABLE lex_key MODIFY COLUMN dbversion bigint NOT NULL COMMENT "An integer that keeps track of the changes that have been applied"
+        # Comments for lex_language table
+        - sql:
+            sql: ALTER TABLE lex_language MODIFY COLUMN id varchar(36) NOT NULL COMMENT "The uuid of the lexicon language"
+        - sql:
+            sql: ALTER TABLE lex_language MODIFY COLUMN name varchar(64) NOT NULL COMMENT "The name of the lexicon language"
+        - sql:
+            sql: ALTER TABLE lex_language MODIFY COLUMN locale varchar(5) NOT NULL COMMENT "The locale code of the lexicon language"
+        - sql:
+            sql: ALTER TABLE lex_language MODIFY COLUMN active boolean NOT NULL COMMENT "A boolean that defines if the language is active in the system or not"
+        - sql:
+            sql: ALTER TABLE lex_language MODIFY COLUMN dbversion bigint NOT NULL COMMENT "An integer that keeps track of the changes that have been applied"
+        # Comments for lex_template table
+        - sql:
+            sql: ALTER TABLE lex_template MODIFY COLUMN id varchar(36) NOT NULL COMMENT "The uuid of the lexicon template"
+        - sql:
+            sql: ALTER TABLE lex_template MODIFY COLUMN name varchar(255) NOT NULL COMMENT "The name of the lexicon template"
+        - sql:
+            sql: ALTER TABLE lex_template MODIFY COLUMN content text COMMENT "The content of the lexicon template"
+        - sql:
+            sql: ALTER TABLE lex_template MODIFY COLUMN language_id varchar(36) NOT NULL COMMENT "The uuid of the lexicon language of the lexicon template"
+        - sql:
+            sql: ALTER TABLE lex_template MODIFY COLUMN dbversion bigint NOT NULL COMMENT "An integer that keeps track of the changes that have been applied"
