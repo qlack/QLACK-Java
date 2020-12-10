@@ -1,7 +1,9 @@
 package com.eurodyn.qlack.util.jwt.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -12,24 +14,10 @@ import lombok.ToString;
 @Setter
 @Builder
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class JwtDTO {
 
   private String jwt;
-
-  public String getJwt() {
-    return jwt;
-  }
-
-  public void setJwt(String jwt) {
-    this.jwt = jwt;
-  }
-
-  public JwtDTO() {
-
-  }
-
-  public JwtDTO(String jwt) {
-    this.jwt = jwt;
-  }
 
 }
