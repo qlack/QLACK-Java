@@ -8,13 +8,6 @@ import com.eurodyn.qlack.fuse.imaging.exception.ImagingException;
 import com.eurodyn.qlack.fuse.imaging.util.ICCProfile;
 import com.eurodyn.qlack.fuse.imaging.util.ImagingUtil;
 import com.eurodyn.qlack.fuse.imaging.util.ResamplingAlgorithm;
-import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Collections;
 import javax.imageio.ImageIO;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,6 +16,14 @@ import org.mockito.InjectMocks;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Collections;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(ImageIO.class)

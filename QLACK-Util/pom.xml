@@ -5,7 +5,6 @@
     <groupId>com.eurodyn.qlack</groupId>
     <artifactId>qlack</artifactId>
     <version>3.4.7-SNAPSHOT</version>
-    <relativePath>../</relativePath>
   </parent>
 
   <groupId>com.eurodyn.qlack.util</groupId>
@@ -23,6 +22,7 @@
     <module>qlack-util-clam-av</module>
     <module>qlack-util-fileutils</module>
     <module>qlack-util-documentation</module>
+    <module>qlack-util-validation</module>
   </modules>
 
   <dependencies>

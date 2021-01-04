@@ -16,14 +16,6 @@ import com.eurodyn.qlack.fuse.lexicon.model.Language;
 import com.eurodyn.qlack.fuse.lexicon.repository.KeyRepository;
 import com.eurodyn.qlack.fuse.lexicon.repository.LanguageRepository;
 import com.eurodyn.qlack.fuse.lexicon.util.WorkbookUtil;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -37,6 +29,15 @@ import org.mockito.Mock;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({StringUtils.class, WorkbookUtil.class})
@@ -78,7 +79,7 @@ public class LanguageServiceMockTest {
   @Test
   public void uploadLanguageNullGroupsTest() throws IOException {
     PowerMockito.mockStatic(StringUtils.class);
-    when(StringUtils.isNotBlank(anyString())).thenReturn(false);
+    PowerMockito.when(StringUtils.isNotBlank(anyString())).thenAnswer((Boolean) -> false);
     List<Group> groups = initTestValues.createGroups();
     List<String> groupsIds = new ArrayList<>();
     for (Group group : groups) {
@@ -112,7 +113,7 @@ public class LanguageServiceMockTest {
   public void downloadLanguageIoExceptionTest() throws Exception {
     PowerMockito.mockStatic(WorkbookUtil.class);
     Workbook wb = PowerMockito.mock(HSSFWorkbook.class);
-    when(WorkbookUtil.createHssfWorkbook()).thenReturn((HSSFWorkbook) wb);
+    PowerMockito.when(WorkbookUtil.createHssfWorkbook()).thenAnswer((HSSFWorkbook) -> wb);
     doThrow(new IOException()).when(wb).write(any(OutputStream.class));
     when(languageRepository.fetchById(language.getId())).thenReturn(language);
     languageService.downloadLanguage(language.getId());
@@ -122,7 +123,7 @@ public class LanguageServiceMockTest {
   public void downloadLanguageCloseWorkbookIoExceptionTest() throws Exception {
     PowerMockito.mockStatic(WorkbookUtil.class);
     Workbook wb = PowerMockito.mock(HSSFWorkbook.class);
-    when(WorkbookUtil.createHssfWorkbook()).thenReturn((HSSFWorkbook) wb);
+    PowerMockito.when(WorkbookUtil.createHssfWorkbook()).thenAnswer((HSSFWorkbook) -> wb);
     doThrow(new IOException()).when(wb).close();
     when(languageRepository.fetchById(language.getId())).thenReturn(language);
     assertNotNull(languageService.downloadLanguage(language.getId()));

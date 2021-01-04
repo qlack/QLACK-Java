@@ -20,7 +20,7 @@ public class RestTemplateProvider {
   @Bean
   public RestTemplate build() {
       return restTemplateBuilder
-        .errorHandler(new RestResponseErrorHandler())
+        .errorHandler(new RestTemplateResponseErrorHandler())
         .build();
   }
 }

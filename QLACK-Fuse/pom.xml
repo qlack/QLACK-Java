@@ -5,7 +5,6 @@
     <groupId>com.eurodyn.qlack</groupId>
     <artifactId>qlack</artifactId>
     <version>3.4.7-SNAPSHOT</version>
-    <relativePath>../</relativePath>
   </parent>
 
   <groupId>com.eurodyn.qlack.fuse</groupId>
@@ -24,7 +23,6 @@
     <module>qlack-fuse-mailing</module>
     <module>qlack-fuse-rules</module>
     <module>qlack-fuse-scheduler</module>
-    <module>qlack-fuse-search</module>
     <module>qlack-fuse-settings</module>
     <module>qlack-fuse-workflow</module>
     <module>qlack-fuse-token-server</module>

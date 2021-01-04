@@ -24,4 +24,8 @@ public @interface ExceptionWrapper {
 
   // A flag to indicate whether the original exception captured should be logged or not.
   boolean logOriginalException() default true;
+
+  // Whether to ignore validation exceptions (and therefore allow them to propagate) such as
+  // MethodArgumentNotValidException and ConstraintViolationException.
+  boolean ignoreValidationExceptions() default false;
 }
