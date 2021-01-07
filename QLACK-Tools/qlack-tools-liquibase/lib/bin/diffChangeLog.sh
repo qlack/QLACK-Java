@@ -60,8 +60,6 @@ else
   echo "Found $CHANGESETS changes."
 fi
 
-exit 255
-
 set -e
 # --changeSetAuthor seems to be ignored, so manually changing this.
 echo "Modifying author to: $AUTHOR"
