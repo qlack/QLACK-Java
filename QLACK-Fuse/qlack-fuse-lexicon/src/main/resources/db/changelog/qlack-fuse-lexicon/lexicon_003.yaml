@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: lexicon_003
+      author: European Dynamics SA
+      context: "!qlack-disabled"
+      changes:
+        # Indexes
+        - createIndex:
+            indexName: IDX_key_name_id
+            tableName: lex_key
+            columns:
+            - column:
+                name: name
+            - column:
+                name: id
+            unique: true
+        - createIndex:
+            indexName: IDX_data_lang_key
+            tableName: lex_data
+            columns:
+            - column:
+                name: key_id
+            - column:
+                name: language_id
+            unique: true

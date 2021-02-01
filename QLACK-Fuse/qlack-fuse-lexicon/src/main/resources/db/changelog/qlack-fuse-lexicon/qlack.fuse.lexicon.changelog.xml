@@ -8,5 +8,6 @@
 
   <include file="db/changelog/qlack-fuse-lexicon/lexicon_001.yaml"/>
   <include file="db/changelog/qlack-fuse-lexicon/lexicon_002.yaml"/>
+  <include file="db/changelog/qlack-fuse-lexicon/lexicon_003.yaml"/>
 
 </databaseChangeLog>
