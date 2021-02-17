@@ -64,7 +64,7 @@
     <commons.collections.version>3.2.2</commons.collections.version>
     <javax.inject.version>1</javax.inject.version>
     <beanshell.version>2.0b6</beanshell.version>
-    <apache.poi.version>4.0.1</apache.poi.version>
+    <apache.poi.version>5.0.0</apache.poi.version>
     <jackson.datatype.version>2.9.8</jackson.datatype.version>
     <apache.tika.version>1.12</apache.tika.version>
     <google.zxing.version>3.3.3</google.zxing.version>
