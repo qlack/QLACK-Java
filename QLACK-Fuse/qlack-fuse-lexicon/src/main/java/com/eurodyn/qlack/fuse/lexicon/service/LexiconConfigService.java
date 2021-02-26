@@ -41,15 +41,15 @@ import java.util.logging.Level;
 public class LexiconConfigService {
 
   //Holds groupId + key pairs of translations with forceDelete
-  private static List<Map<String, String>> deletedGroupKeys = new ArrayList<>();
-  private static List<Map<String, String>> skippedGroupKeys = new ArrayList<>();
+  private static final List<Map<String, String>> deletedGroupKeys = new ArrayList<>();
+  private static final List<Map<String, String>> skippedGroupKeys = new ArrayList<>();
   // Service references.
-  private GroupService groupService;
-  private LanguageService languageService;
-  private KeyService keyService;
-  private ApplicationRepository applicationRepository;
+  private final GroupService groupService;
+  private final LanguageService languageService;
+  private final KeyService keyService;
+  private final ApplicationRepository applicationRepository;
 
-  private ClassLoader classLoader;
+  private final ClassLoader classLoader;
 
   private static final String FORCE_UPDATE = "forceUpdate";
 
@@ -93,7 +93,7 @@ public class LexiconConfigService {
   public void updateTranslations(URL yamlUrl, String symbolicName) {
 
     try {
-      log.info("Processing yaml with QLACK lexicon configuration");
+      log.finest("Processing yaml with QLACK lexicon configuration");
 
       String checksum = DigestUtils.md5Hex(yamlUrl.openStream());
 
@@ -113,7 +113,6 @@ public class LexiconConfigService {
       Yaml yaml = new Yaml(
           new CustomClassLoaderConstructor(getClass().getClassLoader()));
 
-      @SuppressWarnings("unchecked")
       Map<String, Object> contents = yaml.load(yamlUrl.openStream());
 
       updateTranslationsGroups(contents);
@@ -141,7 +140,7 @@ public class LexiconConfigService {
     List<Map<String, Object>> groups = (List<Map<String, Object>>) contents
         .get("groups");
     if (groups != null) {
-      log.info("Processing configuration of lexicon groups");
+      log.finest("Processing configuration of lexicon groups");
       for (Map<String, Object> group : groups) {
         String groupName = (String) group.get("name");
         String groupDescription = (String) group.get("description");
@@ -174,7 +173,7 @@ public class LexiconConfigService {
     List<Map<String, Object>> languages = (List<Map<String, Object>>) contents
         .get("languages");
     if (languages != null) {
-      log.info("Processing configuration of lexicon languages");
+      log.finest("Processing configuration of lexicon languages");
       for (Map<String, Object> language : languages) {
         String languageName = (String) language.get("name");
         String locale = (String) language.get("locale");
@@ -208,7 +207,7 @@ public class LexiconConfigService {
     List<Map<String, Object>> translationContents = (List<Map<String, Object>>) contents
         .get("translations");
     if (translationContents != null) {
-      log.info("Processing configuration of lexicon translations");
+      log.finest("Processing configuration of lexicon translations");
       for (Map<String, Object> translationContent : translationContents) {
         @SuppressWarnings("unchecked")
         List<String> excludedGroupName = (List<String>) translationContent
@@ -247,7 +246,7 @@ public class LexiconConfigService {
   private void updateKeys(List<Map<String, Object>> translations,
       String groupId,
       String languageId) {
-    log.info(MessageFormat
+    log.finest(MessageFormat
         .format(
             "Updating translations of group with id {0} for language with id {1}",
             groupId,

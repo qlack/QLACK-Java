@@ -10,16 +10,6 @@ import com.eurodyn.qlack.fuse.lexicon.model.Language;
 import com.eurodyn.qlack.fuse.lexicon.repository.KeyRepository;
 import com.eurodyn.qlack.fuse.lexicon.repository.LanguageRepository;
 import com.eurodyn.qlack.fuse.lexicon.util.WorkbookUtil;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.regex.Pattern;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.CreationHelper;
@@ -31,6 +21,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.regex.Pattern;
 
 /**
  * A LanguageService class that is used to implement crud operations in database
@@ -54,10 +55,9 @@ public class LanguageService {
   private final KeyRepository keyRepository;
   private final LanguageRepository languageRepository;
 
-  private KeyService keyService;
-  private GroupService groupService;
-
-  private LanguageMapper languageMapper;
+  private final KeyService keyService;
+  private final GroupService groupService;
+  private final LanguageMapper languageMapper;
 
   @Autowired
   public LanguageService(KeyService keyService, GroupService groupService,
@@ -77,7 +77,7 @@ public class LanguageService {
    * @return the uuid of the created language
    */
   public String createLanguage(LanguageDTO language) {
-    log.info(MessageFormat.format("Creating language: {0}", language));
+    log.finest(MessageFormat.format("Creating language: {0}", language));
     Language entity = languageMapper.mapToEntity(language);
     languageRepository.save(entity);
     return entity.getId();
@@ -90,7 +90,7 @@ public class LanguageService {
    * @return the uuid of the created language
    */
   public String createLanguageIfNotExists(LanguageDTO language) {
-    log.info(MessageFormat.format("Creating language: {0}", language));
+    log.finest(MessageFormat.format("Creating language: {0}", language));
     if (languageRepository.findByLocale(language.getLocale()) == null) {
       return createLanguage(language);
     } else {
@@ -110,7 +110,7 @@ public class LanguageService {
    * @return the uuid of the created language
    */
   public String createLanguage(LanguageDTO language, String translationPrefix) {
-    log.info(MessageFormat
+    log.finest(MessageFormat
       .format("Creating language: {0} and adding prefix : {1} to translations",
         language,
         translationPrefix));
@@ -140,7 +140,7 @@ public class LanguageService {
    */
   public String createLanguage(LanguageDTO language, String sourceLanguageId,
     String translationPrefix) {
-    log.info(MessageFormat.format(
+    log.finest(MessageFormat.format(
       "Creating language: {0} and adding prefix : {1} to translations of language with id {2}: ",
       language, translationPrefix, sourceLanguageId));
     Language entity = languageMapper.mapToEntity(language);
@@ -167,7 +167,7 @@ public class LanguageService {
    * @param language a dto containing all needed data to update a language
    */
   public void updateLanguage(LanguageDTO language) {
-    log.info(MessageFormat.format("Updating language : {0}", language));
+    log.finest(MessageFormat.format("Updating language : {0}", language));
     Language entity = languageRepository.fetchById(language.getId());
     entity.setName(language.getName());
     entity.setLocale(language.getLocale());
@@ -179,7 +179,7 @@ public class LanguageService {
    * @param languageId the id of the language to delete
    */
   public void deleteLanguage(String languageId) {
-    log.info(MessageFormat.format("Deleting language with id {0}", languageId));
+    log.finest(MessageFormat.format("Deleting language with id {0}", languageId));
     languageRepository.deleteById(languageId);
   }
 
@@ -189,7 +189,7 @@ public class LanguageService {
    * @param languageId the id of the language to activate
    */
   public void activateLanguage(String languageId) {
-    log.info(
+    log.finest(
       MessageFormat.format("Activating language with id {0}", languageId));
     Language language = languageRepository.fetchById(languageId);
     language.setActive(true);
@@ -212,7 +212,7 @@ public class LanguageService {
    * @return a dto containing the language that matches the specific id
    */
   public LanguageDTO getLanguage(String languageId) {
-    log.info(MessageFormat.format("Fetching language with id {0}", languageId));
+    log.finest(MessageFormat.format("Fetching language with id {0}", languageId));
     return languageMapper.mapToDTO(languageRepository.fetchById(languageId));
   }
 
@@ -223,7 +223,7 @@ public class LanguageService {
    * @return a dto containing the language that matches the specific locale
    */
   public LanguageDTO getLanguageByLocale(String locale) {
-    log.info(MessageFormat.format("Fetching language with locale {0}", locale));
+    log.finest(MessageFormat.format("Fetching language with locale {0}", locale));
     return getLanguageByLocale(locale, false);
   }
 
@@ -240,7 +240,7 @@ public class LanguageService {
   public LanguageDTO getLanguageByLocale(String locale, boolean fallback) {
     String fallbackMsg =
       "Fallback will " + (fallback ? "be attempted." : "not be attempted.");
-    log.info(MessageFormat.format("Fetching language with locale {0}. ", locale)
+    log.finest(MessageFormat.format("Fetching language with locale {0}. ", locale)
       + fallbackMsg);
     Language language = languageRepository.findByLocale(locale);
     if (fallback && language == null) {
@@ -261,7 +261,7 @@ public class LanguageService {
   public List<LanguageDTO> getLanguages(boolean includeInactive) {
     String languageMsg =
       includeInactive ? "languages" : "only active languages";
-    log.info("Fetching all " + languageMsg);
+    log.finest("Fetching all " + languageMsg);
     List<Language> languages =
       includeInactive ? languageRepository.findAllByOrderByNameAsc()
         : languageRepository.findByActiveTrueOrderByNameAsc();
@@ -281,7 +281,7 @@ public class LanguageService {
    * @return the locale name to use
    */
   public String getEffectiveLanguage(String locale, String defaultLocale) {
-    log.info(
+    log.finest(
       MessageFormat.format("Searching for language with locale: {0} ", locale));
     Language language = languageRepository.findByLocale(locale);
     if ((language != null) && (language.isActive())) {
@@ -291,7 +291,7 @@ public class LanguageService {
     int index = StringUtils.indexOfAny(locale, "_-");
     if (index > 0) {
       String reducedLocale = locale.substring(0, index);
-      log.info(MessageFormat
+      log.finest(MessageFormat
         .format(
           "No language has been found. Re-attempting search with locale: {0}",
           reducedLocale));
@@ -301,7 +301,7 @@ public class LanguageService {
       }
     }
 
-    log.info(MessageFormat
+    log.finest(MessageFormat
       .format(
         "No language has been found. Re-attempting search with default locale: {0}",
         defaultLocale));
@@ -322,7 +322,7 @@ public class LanguageService {
    * language's translations.
    */
   public byte[] downloadLanguage(String languageId) {
-    log.info(
+    log.finest(
       MessageFormat.format("Downloading language with id: {0}", languageId));
 
     // Check that the language exists and get its translations

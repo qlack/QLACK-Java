@@ -57,7 +57,7 @@ public class TemplateService {
    * @return the id of the persisted template
    */
   public String createTemplate(TemplateDTO template) {
-    log.info(MessageFormat.format("Creating template {0}", template));
+    log.finest(MessageFormat.format("Creating template {0}", template));
     Template entity = new Template();
     saveEntity(template, entity);
     return entity.getId();
@@ -69,7 +69,7 @@ public class TemplateService {
    * @param template a DTO containing the updated data of the persisted template
    */
   public void updateTemplate(TemplateDTO template) {
-    log.info(MessageFormat.format("Updating template {0}", template));
+    log.finest(MessageFormat.format("Updating template {0}", template));
     Template entity = templateRepository.fetchById(template.getId());
     saveEntity(template, entity);
   }
@@ -87,7 +87,7 @@ public class TemplateService {
    * @param templateId the id of the template to delete
    */
   public void deleteTemplate(String templateId) {
-    log.info(MessageFormat.format("Deleting template with id {0}", templateId));
+    log.finest(MessageFormat.format("Deleting template with id {0}", templateId));
     templateRepository.deleteById(templateId);
   }
 
@@ -98,7 +98,7 @@ public class TemplateService {
    * @return the template matching the given id
    */
   public TemplateDTO getTemplate(String templateId) {
-    log.info(MessageFormat.format("Fetching template with id {0}", templateId));
+    log.finest(MessageFormat.format("Fetching template with id {0}", templateId));
     return templateMapper.mapToDTO(
         templateRepository.findById(templateId)
             .orElseThrow(QDoesNotExistException::new));
@@ -111,7 +111,7 @@ public class TemplateService {
    * @return a map containing pairs of languageId/templateContent of the template matching the given name
    */
   public Map<String, String> getTemplateContentByName(String templateName) {
-    log.info(MessageFormat
+    log.finest(MessageFormat
         .format("Fetching contents of template with name {0}", templateName));
     List<Template> templates = templateRepository.findByName(templateName);
 
@@ -134,7 +134,7 @@ public class TemplateService {
    */
   public String getTemplateContentByName(String templateName,
       String languageId) {
-    log.info(MessageFormat
+    log.finest(MessageFormat
         .format("Fetching template with name {0} and language {1}", templateName,
             languageId));
     Template template = templateRepository
@@ -154,7 +154,7 @@ public class TemplateService {
    */
   public String processTemplateByName(String templateName, String languageId,
       Map<String, Object> templateData, boolean forceEmptyChecks) {
-    log.info(MessageFormat
+    log.finest(MessageFormat
         .format("Processing template with name {0} and language {1}",
             templateName, languageId));
     Template template = templateRepository
@@ -174,7 +174,7 @@ public class TemplateService {
    */
   public String processTemplateByNameAndLocale(String templateName, String locale, Map<String, Object> templateData,
       boolean forceEmptyChecks) {
-    log.info(MessageFormat
+    log.finest(MessageFormat
         .format("Fetching template with name {0} and locale {1}", templateName,
             locale));
     Template template = templateRepository
@@ -193,7 +193,7 @@ public class TemplateService {
    */
   public String processTemplate(String templateBody,
       Map<String, Object> templateData, boolean forceEmptyChecks) {
-    log.info("Processing non persisted template");
+    log.finest("Processing non persisted template");
     Template template = new Template();
     template.setContent(templateBody);
     template.setName(UUID.randomUUID().toString());
@@ -212,7 +212,7 @@ public class TemplateService {
   @Deprecated
   public String processTemplateByName(String templateName, String languageId,
       Map<String, Object> templateData) {
-    log.info(MessageFormat
+    log.finest(MessageFormat
         .format("Processing template with name {0} and language {1}",
             templateName, languageId));
     Template template = templateRepository
@@ -231,7 +231,7 @@ public class TemplateService {
    */
   @Deprecated
   public String processTemplateByNameAndLocale(String templateName, String locale, Map<String, Object> templateData) {
-    log.info(MessageFormat
+    log.finest(MessageFormat
         .format("Fetching template with name {0} and locale {1}", templateName,
             locale));
     Template template = templateRepository
@@ -250,7 +250,7 @@ public class TemplateService {
   @Deprecated
   public String processTemplate(String templateBody,
       Map<String, Object> templateData) {
-    log.info("Processing non persisted template");
+    log.finest("Processing non persisted template");
     Template template = new Template();
     template.setContent(templateBody);
     template.setName(UUID.randomUUID().toString());

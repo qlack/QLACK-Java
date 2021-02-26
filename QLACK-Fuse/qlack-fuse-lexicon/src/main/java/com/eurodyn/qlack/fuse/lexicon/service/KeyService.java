@@ -18,6 +18,14 @@ import com.eurodyn.qlack.fuse.lexicon.repository.KeyRepository;
 import com.eurodyn.qlack.fuse.lexicon.repository.LanguageRepository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
+import javax.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+
 import java.text.MessageFormat;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -32,13 +40,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
-import javax.transaction.Transactional;
-import lombok.AllArgsConstructor;
-import lombok.extern.java.Log;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
-import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
 /**
  * A Service class for Key that contains the implementations of crud methods .
@@ -59,7 +60,7 @@ public class KeyService {
   // Entities for queries
   QData qData = QData.data;
   QKey qKey = QKey.key;
-  private KeyMapper keyMapper;
+  private final KeyMapper keyMapper;
 
   @Autowired
   public KeyService(KeyRepository keyRepository,
@@ -86,7 +87,7 @@ public class KeyService {
    */
   public String createKey(KeyDTO key, boolean createDefaultTranslations) {
 
-    log.info(MessageFormat.format("Creating key: {0}", key));
+    log.finest(MessageFormat.format("Creating key: {0}", key));
 
     // Create the new key.
     Key entity = new Key();
@@ -114,7 +115,7 @@ public class KeyService {
     keyRepository.save(entity);
 
     if (createDefaultTranslations) {
-      log.info(
+      log.finest(
         MessageFormat
           .format("Creating default translations for key with id: {0}",
             key.getId()));
@@ -127,7 +128,7 @@ public class KeyService {
         updateTranslation(entity.getId(), language.getId(), translation);
       }
     } else if (key.getTranslations() != null) {
-      log.info(MessageFormat
+      log.finest(MessageFormat
         .format("Updating translations for key with id: {0}", key.getId()));
       for (String languageId : key.getTranslations().keySet()) {
         updateTranslation(entity.getId(), languageId,
@@ -148,7 +149,7 @@ public class KeyService {
    */
   public List<String> createKeys(List<KeyDTO> keys,
     boolean createDefaultTranslations) {
-    log.info(MessageFormat.format("Creating keys : {0}", keys));
+    log.finest(MessageFormat.format("Creating keys : {0}", keys));
     List<String> ids = new ArrayList<>();
     for (KeyDTO key : keys) {
       ids.add(createKey(key, createDefaultTranslations));
@@ -162,7 +163,7 @@ public class KeyService {
    * @param keyId the id of the key to be deleted
    */
   public void deleteKey(String keyId) {
-    log.info(MessageFormat.format("Deleting key with id: {0}", keyId));
+    log.finest(MessageFormat.format("Deleting key with id: {0}", keyId));
     keyRepository.deleteById(keyId);
   }
 
@@ -172,7 +173,7 @@ public class KeyService {
    * @param keyIds a collection of Key ids to delete
    */
   public void deleteKeys(Collection<String> keyIds) {
-    log.info(MessageFormat.format("Deleting keys: {0}", keyIds));
+    log.finest(MessageFormat.format("Deleting keys: {0}", keyIds));
     for (String keyId : keyIds) {
       deleteKey(keyId);
     }
@@ -184,7 +185,7 @@ public class KeyService {
    * @param groupId the id of the group
    */
   public void deleteKeysByGroupId(String groupId) {
-    log.info(MessageFormat
+    log.finest(MessageFormat
       .format("Deleting all keys from group with id: {0}", groupId));
     Predicate predicate = qKey.group.id.eq(groupId);
     keyRepository.deleteAll(keyRepository.findAll(predicate));
@@ -197,7 +198,7 @@ public class KeyService {
    * @param newName the new name of the Key
    */
   public void renameKey(String keyId, String newName) {
-    log.info(
+    log.finest(
       MessageFormat.format("Renaming key with id: {0} to {1}", keyId, newName));
     Key key = keyRepository.fetchById(keyId);
     key.setName(newName);
@@ -210,7 +211,7 @@ public class KeyService {
    * @param newGroupId the id of the destination group
    */
   public void moveKey(String keyId, String newGroupId) {
-    log.info(
+    log.finest(
       MessageFormat
         .format("Moving key with id: {0} to group with id: {1}", keyId,
           newGroupId));
@@ -225,7 +226,7 @@ public class KeyService {
    * @param newGroupId the id of group which will inherit the keys
    */
   public void moveKeys(Collection<String> keyIds, String newGroupId) {
-    log.info(MessageFormat
+    log.finest(MessageFormat
       .format("Moving keys with ids: {0} to group with id: {1}", keyIds,
         newGroupId));
     for (String keyId : keyIds) {
@@ -243,7 +244,7 @@ public class KeyService {
    * @return the persisted Key
    */
   public KeyDTO getKeyById(String keyId, boolean includeTranslations) {
-    log.info(MessageFormat.format("Fetching key with id: {0}", keyId));
+    log.finest(MessageFormat.format("Fetching key with id: {0}", keyId));
     Key key = keyRepository.fetchById(keyId);
     return getKey(key, includeTranslations);
   }
@@ -260,7 +261,7 @@ public class KeyService {
    */
   public KeyDTO getKeyByName(String keyName, String groupId,
     boolean includeTranslations) {
-    log.info(MessageFormat
+    log.finest(MessageFormat
       .format("Fetching key with name: {0} and in group with id : {1}", keyName,
         groupId));
     Key key = keyRepository.findByNameAndGroupId(keyName, groupId);
@@ -281,19 +282,10 @@ public class KeyService {
    */
   public List<KeyDTO> findKeys(KeySearchCriteria criteria,
     boolean includeTranslations) {
-    log.info(MessageFormat
+    log.finest(MessageFormat
       .format("Fetching all keys matching the criteria: {0}", criteria));
 
-    Predicate predicate = new BooleanBuilder();
-
-    if (criteria.getKeyName() != null) {
-      predicate = ((BooleanBuilder) predicate)
-        .and(qKey.name.eq(criteria.getKeyName()));
-    }
-    if (criteria.getGroupId() != null) {
-      predicate = ((BooleanBuilder) predicate)
-        .and(qKey.group.id.eq(criteria.getGroupId()));
-    }
+    Predicate predicate = populateNameGroupPredicate(criteria);
 
     List<KeyDTO> dtos = new ArrayList<>();
     keyRepository.findAll(predicate, criteria.getPageable())
@@ -309,22 +301,26 @@ public class KeyService {
    * criteria
    */
   public Long findTotalKeys(KeySearchCriteria criteria) {
-    log.info(MessageFormat
+    log.finest(MessageFormat
       .format("Fetching the total number of keys matching the criteria: {0}",
         criteria));
 
-    Predicate predicate = new BooleanBuilder();
-
-    if (criteria.getKeyName() != null) {
-      predicate = ((BooleanBuilder) predicate)
-        .and(qKey.name.eq(criteria.getKeyName()));
-    }
-    if (criteria.getGroupId() != null) {
-      predicate = ((BooleanBuilder) predicate)
-        .and(qKey.group.id.eq(criteria.getGroupId()));
-    }
+    Predicate predicate = populateNameGroupPredicate(criteria);
 
     return keyRepository.count(predicate);
+  }
+
+  private Predicate populateNameGroupPredicate(KeySearchCriteria criteria) {
+    BooleanBuilder predicate = new BooleanBuilder();
+
+    if (criteria.getKeyName() != null) {
+      predicate = predicate.and(qKey.name.eq(criteria.getKeyName()));
+    }
+
+    if (criteria.getGroupId() != null) {
+      predicate = predicate.and(qKey.group.id.eq(criteria.getGroupId()));
+    }
+    return predicate;
   }
 
   private void update(Data data) {
@@ -340,7 +336,7 @@ public class KeyService {
    * @param value the updated value of the translation
    */
   public void updateTranslation(String keyId, String languageId, String value) {
-    log.info(MessageFormat
+    log.finest(MessageFormat
       .format("Updating translation for key: {0} and language: {1}", keyId,
         languageId));
     Data data = dataRepository.findByKeyIdAndLanguageId(keyId, languageId);
@@ -358,7 +354,7 @@ public class KeyService {
    */
   public void updateTranslationByLocale(String keyId, String locale,
     String value) {
-    log.info(
+    log.finest(
       MessageFormat
         .format("Updating translation for key: {0} and locale: {1}", keyId,
           locale));
@@ -439,7 +435,7 @@ public class KeyService {
   public void updateTranslationsByGroupId(Map<String, String> keys,
     String groupId,
     String languageId) {
-    log.info(MessageFormat
+    log.finest(MessageFormat
       .format("Updating translations: {0} of group {1} and language {2}", keys,
         groupId,
         languageId));
@@ -458,7 +454,7 @@ public class KeyService {
    */
   public void updateTranslationsForKey(String keyId,
     Map<String, String> translations) {
-    log.info(MessageFormat
+    log.finest(MessageFormat
       .format("Updating key {0} with translations {1}", keyId, translations));
     for (Map.Entry<String, String> entry : translations.entrySet()) {
       updateTranslation(keyId, entry.getKey(), entry.getValue());
@@ -474,7 +470,7 @@ public class KeyService {
    */
   public void updateTranslationsForKeyByLocale(String keyId,
     Map<String, String> translations) {
-    log.info(MessageFormat
+    log.finest(MessageFormat
       .format("Updating key {0} with translations: {1}", keyId, translations));
     for (Map.Entry<String, String> entry : translations.entrySet()) {
       updateTranslationByLocale(keyId, entry.getKey(), entry.getValue());
@@ -490,7 +486,7 @@ public class KeyService {
    */
   public void updateTranslationsForLanguage(String languageId,
     Map<String, String> translations) {
-    log.info(MessageFormat
+    log.finest(MessageFormat
       .format("Updating language {0} with translations: {1}", languageId,
         translations));
     for (Map.Entry<String, String> entry : translations.entrySet()) {
@@ -509,7 +505,7 @@ public class KeyService {
   public void updateTranslationsForLanguageByKeyName(String languageId,
     String groupId,
     Map<String, String> translations) {
-    log.info(MessageFormat
+    log.finest(MessageFormat
       .format("Updating language {0} with translations {1} of group {2} ",
         languageId,
         translations, groupId));
@@ -527,7 +523,7 @@ public class KeyService {
    * @return the translation of given key in the given locale
    */
   public String getTranslation(String keyName, String locale) {
-    log.info(
+    log.finest(
       MessageFormat
         .format("Fetching translation of key {0} for locale {1}", keyName,
           locale));
@@ -544,7 +540,7 @@ public class KeyService {
    */
   public Map<String, String> getTranslationsForKeyName(String keyName,
     String groupId) {
-    log.info(
+    log.finest(
       MessageFormat
         .format("Fetching translations of key {0} in group {1}", keyName,
           groupId));
@@ -566,7 +562,7 @@ public class KeyService {
    */
   public String getTranslationForKeyGroupLocale(String keyName,
     String groupName, String locale) {
-    log.info(MessageFormat
+    log.finest(MessageFormat
       .format("Fetching translation of key {0} in group {1} and locale {2}",
         keyName, groupName, locale));
     Predicate predicate = qData.key.name.eq(keyName)
@@ -590,7 +586,7 @@ public class KeyService {
    * given locale
    */
   public Map<String, String> getTranslationsForLocale(String locale) {
-    log.info(
+    log.finest(
       MessageFormat.format("Fetching all translations for locale {0}", locale));
     Language language = languageRepository.findByLocale(locale);
     return getTranslations(language.getData());
@@ -606,7 +602,7 @@ public class KeyService {
    */
   public Map<String, String> getTranslationsForGroupAndLocale(String groupId,
     String locale) {
-    log.info(MessageFormat
+    log.finest(MessageFormat
       .format("Fetching all translations of group {0} for locale {1}", groupId,
         locale));
     List<Data> dataList = dataRepository
@@ -632,7 +628,7 @@ public class KeyService {
    */
   public Map<String, String> getTranslationsForGroupNameAndLocale(
     String groupName, String locale) {
-    log.info(MessageFormat
+    log.finest(MessageFormat
       .format("Fetching all translations of group {0} for locale {1}",
         groupName, locale));
     Predicate predicate = (qData.key.group.title.eq(groupName))
@@ -652,7 +648,7 @@ public class KeyService {
   public Map<String, String> getTranslationsForGroupNameAndLocaleSorted(
     String groupName,
     String locale, SortType sortType) {
-    log.info(MessageFormat.format(
+    log.finest(MessageFormat.format(
       "Fetching sorted translations of group {0} and locale {1}. Translation order is {2}.",
       groupName, locale, sortType.toString().toLowerCase()));
     SortedSet<TranslationKV> sortedSet = getSortedTranslationSetForGroupNameAndLocale(
@@ -697,7 +693,7 @@ public class KeyService {
   public List<String> getKeysSortedByTranslation(String groupName,
     String locale,
     SortType sortType) {
-    log.info(MessageFormat
+    log.finest(MessageFormat
       .format(
         "Fetching sorted keys of group {0} and locale {1}. Translation order is {2}.",
         groupName, locale, sortType.toString().toLowerCase()));
