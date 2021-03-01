@@ -13,18 +13,18 @@ import com.eurodyn.qlack.fuse.lexicon.repository.GroupRepository;
 import com.eurodyn.qlack.fuse.lexicon.repository.LanguageRepository;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.JPAExpressions;
-import java.text.MessageFormat;
-import java.time.Instant;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+
+import java.text.MessageFormat;
+import java.time.Instant;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A Service class for Group . It is used to implement the crud operations
@@ -42,9 +42,9 @@ public class GroupService {
   private final DataRepository dataRepository;
   private final GroupMapper groupMapper;
 
-  private QGroup qGroup = QGroup.group;
-  private QData qData = QData.data;
-  private QLanguage qLanguage = QLanguage.language;
+  private static final QGroup qGroup = QGroup.group;
+  private static final QData qData = QData.data;
+  private static final QLanguage qLanguage = QLanguage.language;
 
   @Autowired
   public GroupService(GroupRepository groupRepository, GroupMapper groupMapper,
@@ -63,7 +63,7 @@ public class GroupService {
    * @return the id of the group
    */
   public String createGroup(GroupDTO group) {
-    log.info(MessageFormat.format("Creating group {0}: ", group));
+    log.finest(MessageFormat.format("Creating group {0}: ", group));
 
     Group entity = groupMapper.mapToEntity(group);
     groupRepository.save(entity);
@@ -77,7 +77,7 @@ public class GroupService {
    * group
    */
   public void updateGroup(GroupDTO group) {
-    log.info(MessageFormat.format("Updating group {0}: ", group));
+    log.finest(MessageFormat.format("Updating group {0}: ", group));
     Group entity = groupRepository.fetchById(group.getId());
     entity.setTitle(group.getTitle());
     entity.setDescription(group.getDescription());
@@ -90,7 +90,7 @@ public class GroupService {
    * @param groupID the id of the group to delete
    */
   public void deleteGroup(String groupID) {
-    log.info(MessageFormat.format("Deleting group with id: {0}", groupID));
+    log.finest(MessageFormat.format("Deleting group with id: {0}", groupID));
     groupRepository.deleteById(groupID);
   }
 
@@ -101,7 +101,7 @@ public class GroupService {
    * @return a DTO containing the group that matches the specific id
    */
   public GroupDTO getGroup(String groupID) {
-    log.info(MessageFormat.format("Fetching group with id: {0}", groupID));
+    log.finest(MessageFormat.format("Fetching group with id: {0}", groupID));
     return groupMapper.mapToDTO(groupRepository.fetchById(groupID));
   }
 
@@ -123,7 +123,7 @@ public class GroupService {
    * @return a list containing all persisted groups
    */
   public List<Group> findAll() {
-    log.info("Fetching all groups");
+    log.finest("Fetching all groups");
     return groupRepository.findAll();
   }
 
@@ -134,7 +134,7 @@ public class GroupService {
    * @return a DTO containing the group that matches the specific title
    */
   public Group findByTitle(String title) {
-    log.info(MessageFormat.format("Fetching group with title: {0}", title));
+    log.finest(MessageFormat.format("Fetching group with title: {0}", title));
     return groupRepository.findByTitle(title);
   }
 
@@ -145,10 +145,9 @@ public class GroupService {
    * @return a set of DTO containing all included groups
    */
   public Set<GroupDTO> getRemainingGroups(List<String> excludedGroupNames) {
-    log.info("Fetching all included groups");
+    log.finest("Fetching all included groups");
     Predicate predicate = qGroup.title.notIn(excludedGroupNames);
-    return groupMapper.mapToDTO(groupRepository.findAll(predicate)).stream()
-      .collect(Collectors.toSet());
+    return new HashSet<>(groupMapper.mapToDTO(groupRepository.findAll(predicate)));
   }
 
   /**
@@ -157,7 +156,7 @@ public class GroupService {
    * @return a set of DTO containing all groups
    */
   public Set<GroupDTO> getGroups() {
-    log.info("Fetching all groups");
+    log.finest("Fetching all groups");
     return new HashSet<>(groupMapper.mapToDTO(groupRepository.findAll()));
   }
 
@@ -169,7 +168,7 @@ public class GroupService {
    * @param languageID the id of the language
    */
   public void deleteLanguageTranslations(String groupID, String languageID) {
-    log.info(MessageFormat
+    log.finest(MessageFormat
       .format(
         "Deleting all translation from group with id {0} for language with id {1}",
         groupID, languageID));
@@ -185,7 +184,7 @@ public class GroupService {
    */
   public void deleteLanguageTranslationsByLocale(String groupID,
     String locale) {
-    log.info(MessageFormat
+    log.finest(MessageFormat
       .format("Deleting all translation from group with id {0} for locale {1}",
         groupID, locale));
     List<Data> dataList = dataRepository
@@ -205,7 +204,7 @@ public class GroupService {
    * date is 'now'
    */
   public long getLastUpdateDateForLocale(String groupID, String locale) {
-    log.info(MessageFormat
+    log.finest(MessageFormat
       .format(
         "Getting the last update date of all keys from group with id {0} for locale {1}",
         groupID, locale));

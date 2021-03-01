@@ -33,7 +33,7 @@ public class KeySearchCriteria {
    */
   public static class KeySearchCriteriaBuilder {
 
-    private KeySearchCriteria criteria;
+    private final KeySearchCriteria criteria;
     private Pageable pageable;
 
     private KeySearchCriteriaBuilder() {

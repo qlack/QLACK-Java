@@ -22,7 +22,7 @@ public enum LanguagesEnum {
   /**
    * the language name
    */
-  private String languageName;
+  private final String languageName;
 
   /**
    * Constructor
