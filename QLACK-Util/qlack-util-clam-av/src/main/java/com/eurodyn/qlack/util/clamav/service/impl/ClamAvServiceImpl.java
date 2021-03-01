@@ -1,9 +1,5 @@
 package com.eurodyn.qlack.util.clamav.service.impl;
 
-/**
- * @author European Dynamics
- */
-
 import com.eurodyn.qlack.util.av.api.dto.VirusScanDTO;
 import com.eurodyn.qlack.util.av.api.exception.VirusScanException;
 import com.eurodyn.qlack.util.av.api.service.AvService;
@@ -11,15 +7,16 @@ import com.eurodyn.qlack.util.clamav.util.ClamAvProperties;
 import com.eurodyn.qlack.util.clamav.util.ClamAvUtil;
 import io.sensesecure.clamav4j.ClamAV;
 import io.sensesecure.clamav4j.ClamAVException;
+import lombok.extern.java.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Objects;
 import java.util.logging.Level;
-import lombok.extern.java.Log;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * Provides Anti-virus file scanning functionality.
@@ -30,7 +27,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ClamAvServiceImpl implements AvService {
 
-  private ClamAvProperties properties;
+  private final ClamAvProperties properties;
 
   @Autowired
   public ClamAvServiceImpl(ClamAvProperties properties) {
@@ -74,7 +71,6 @@ public class ClamAvServiceImpl implements AvService {
       throw new VirusScanException("Could not check file for virus");
     }
 
-    log.log(Level.INFO, "No threats were found.");
     vsDTO.setVirusFree(scanResult.equals("OK"));
     vsDTO.setVirusScanDescription(scanResult);
 
@@ -90,7 +86,7 @@ public class ClamAvServiceImpl implements AvService {
    */
   public boolean hostIsAvailable(String clamAvHost, int clamAvPort) {
     log.log(Level.INFO, "Checking for AntiVirus server availability..");
-    try (Socket s = ClamAvUtil.getSocketInstance(clamAvHost, clamAvPort)) {
+    try (Socket ignored = ClamAvUtil.getSocketInstance(clamAvHost, clamAvPort)) {
       log.log(Level.INFO, "AntiVirus server is up and running.");
       return true;
     } catch (IOException ex) {
