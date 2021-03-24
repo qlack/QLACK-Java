@@ -41,7 +41,7 @@
     <dependency>
       <artifactId>tika-parsers</artifactId>
       <groupId>org.apache.tika</groupId>
-      <version>1.17</version>
+      <version>${apache.tika.version}</version>
     </dependency>
 
     <dependency>
