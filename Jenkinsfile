@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'imousmoutis/maven3-jdk8:1.0.1'
-            args '-v /root/.m2:/root/.m2'
+            args '-v /root/.m2/Qlack-Java:/root/.m2'
         }
     }
     options {
@@ -47,11 +47,11 @@ pipeline {
             }
         }
     }
-    post {
+    /*post {
         changed {
             emailext subject: '$DEFAULT_SUBJECT',
                 body: '$DEFAULT_CONTENT',
                 to: 'qlack@eurodyn.com'
         }
-    }
+    }*/
 }
