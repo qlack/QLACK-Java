@@ -333,54 +333,6 @@
             <artifactId>jrebel-maven-plugin</artifactId>
           </plugin>
           <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>${maven.javadoc.plugin.version}</version>
-            <executions>
-              <execution>
-                <id>javadoc</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-              <!-- Exports JavaDocs to regular HTML files -->
-              <execution>
-                <id>javadoc-html</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>javadoc</goal>
-                </goals>
-              </execution>
-              <!-- Generates the JavaDoc coverage report -->
-              <execution>
-                <id>javadoc-coverage</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>javadoc</goal>
-                </goals>
-                <configuration>
-                  <excludePackageNames>un.unece.uncefact.codelist.standard.unece.*</excludePackageNames>
-                  <doclet>com.manoelcampos.javadoc.coverage.CoverageDoclet</doclet>
-                  <docletArtifact>
-                    <groupId>com.manoelcampos</groupId>
-                    <artifactId>javadoc-coverage</artifactId>
-                    <version>${javadoc-coverage.version}</version>
-                  </docletArtifact>
-                </configuration>
-              </execution>
-            </executions>
-            <configuration>
-              <additionalDependencies>
-                <additionalDependency>
-                  <groupId>javax.interceptor</groupId>
-                  <artifactId>javax.interceptor-api</artifactId>
-                  <version>1.2</version>
-                </additionalDependency>
-              </additionalDependencies>
-            </configuration>
-          </plugin>
-          <plugin>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
             <version>${jacoco.version}</version>
