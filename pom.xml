@@ -79,7 +79,7 @@
     <activiti.version>7.1.9</activiti.version>
     <apache.email.version>1.5</apache.email.version>
     <commons.codec.version>1.7</commons.codec.version>
-    <jacoco.version>0.8.5</jacoco.version>
+    <jacoco.version>0.8.6</jacoco.version>
     <enunciate.version>2.11.1</enunciate.version>
     <powermockito.version>2.0.9</powermockito.version>
     <dependency-check-maven.version>5.3.1</dependency-check-maven.version>
