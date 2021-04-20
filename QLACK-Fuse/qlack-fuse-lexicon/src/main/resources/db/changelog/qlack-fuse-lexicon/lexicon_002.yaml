@@ -2,7 +2,12 @@ databaseChangeLog:
   - changeSet:
       id: lexicon_002
       author: European Dynamics SA
-      context: "!qlack-comments-disabled"
+      preConditions:
+        - onFail: CONTINUE
+        - not:
+            - dbms:
+                type: h2
+      validCheckSum: "6fcafab119663fc47b6874f5a171ee39"
       changes:
         # Comments for lex_application table
         - sql:

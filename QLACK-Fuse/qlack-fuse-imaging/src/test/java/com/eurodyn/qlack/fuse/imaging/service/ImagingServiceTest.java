@@ -115,7 +115,7 @@ public class ImagingServiceTest {
     assertNotEquals(createByteImage().length, result.length);
   }
 
-  @Test(expected = ImagingException.class)
+  @Test
   public void convertToTIFFDstColorspaceTest() throws IOException {
     imagingService.convertToTIFF(createByteImage(), ICCProfile.CoatedFOGRA27,
       TIFFCompression.JPEG);

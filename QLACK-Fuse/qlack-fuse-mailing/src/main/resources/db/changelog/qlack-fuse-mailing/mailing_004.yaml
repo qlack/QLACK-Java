@@ -2,7 +2,12 @@ databaseChangeLog:
   - changeSet:
       id: mailing_004
       author: European Dynamics SA
-      context: "!qlack-comments-disabled"
+      preConditions:
+        - onFail: CONTINUE
+        - not:
+            - dbms:
+                type: h2
+      validCheckSum: "231ef046fa315e127307330f849219b7"
       changes:
         # Comments for mai_attachment table
         - sql:

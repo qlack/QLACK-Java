@@ -31,7 +31,6 @@
     <developerConnection>scm:git:git@github.com:qlack/QLACK-Java.git
     </developerConnection>
     <url>https://github.com/qlack/QLACK-Java</url>
-    <tag>3.0.0</tag>
   </scm>
   <distributionManagement>
     <snapshotRepository>
@@ -70,7 +69,8 @@
     <google.zxing.version>3.3.3</google.zxing.version>
     <sensesecure.version>0.6</sensesecure.version>
     <squiggly-filter-jackson>1.3.18</squiggly-filter-jackson>
-    <lombok.version>1.18.6</lombok.version>
+    <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
+    <lombok.version>1.18.20</lombok.version>
     <querydsl.version>4.2.1</querydsl.version>
     <bouncycastle.version>1.67</bouncycastle.version>
     <jwt.version>0.9.1</jwt.version>
@@ -250,18 +250,31 @@
               <version>${querydsl.version}</version>
             </annotationProcessorPath>
             <annotationProcessorPath>
-              <groupId>com.querydsl</groupId>
-              <artifactId>querydsl-apt</artifactId>
-              <classifier>jpa</classifier>
-              <version>${querydsl.version}</version>
-            </annotationProcessorPath>
-            <annotationProcessorPath>
               <groupId>org.projectlombok</groupId>
               <artifactId>lombok</artifactId>
               <version>${lombok.version}</version>
             </annotationProcessorPath>
+            <annotationProcessorPath>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok-mapstruct-binding </artifactId>
+              <version>${lombok-mapstruct-binding.version}</version>
+            </annotationProcessorPath>
+            <!-- QueryDSL - Compatibility with JDK >= 9 -->
+            <path>
+              <groupId>com.querydsl</groupId>
+              <artifactId>querydsl-apt</artifactId>
+              <version>${querydsl.version}</version>
+              <classifier>jpa</classifier>
+            </path>
+            <path>
+              <groupId>jakarta.annotation</groupId>
+              <artifactId>jakarta.annotation-api</artifactId>
+              <version>1.3.5</version>
+            </path>
+            <!-- /QueryDSL - Compatibility with JDK >= 9 -->
           </annotationProcessorPaths>
         </configuration>
+
       </plugin>
     </plugins>
     <pluginManagement>

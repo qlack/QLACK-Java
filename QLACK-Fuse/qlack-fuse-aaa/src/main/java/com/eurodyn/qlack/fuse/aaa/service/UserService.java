@@ -22,6 +22,14 @@ import com.eurodyn.qlack.fuse.aaa.util.AAAProperties;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.validation.constraints.NotNull;
 import lombok.extern.java.Log;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -34,14 +42,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 /**
  * A Service class that is used to define a number of crud methods and configure the User model
  *
@@ -53,6 +53,7 @@ import java.util.stream.Collectors;
 @Validated
 @Transactional
 public class UserService {
+
   private final AccountingService accountingService;
   private final LdapService ldapService;
   private final UserRepository userRepository;
@@ -66,7 +67,6 @@ public class UserService {
   private final QUserAttribute qUserAttribute = QUserAttribute.userAttribute;
   private final QSession qSession = QSession.session;
   private final AAAProperties aaaProperties;
-
   private final PasswordEncoder passwordEncoder;
 
   @SuppressWarnings("squid:S00107")
@@ -98,7 +98,7 @@ public class UserService {
    * qlack-fuse-crypto's generateSecureRandom.
    *
    * @param salt the salt
-   * @param dto The DTO with the user details to create.
+   * @param dto  The DTO with the user details to create.
    * @return a user id
    */
   public String createUser(UserDTO dto, Optional<String> salt) {
@@ -117,8 +117,8 @@ public class UserService {
   /**
    * Updates a user in AAA.
    *
-   * @param dto the {@link UserDTO}
-   * @param updatePassword updatePassword value checks if password needs to be updated
+   * @param dto             the {@link UserDTO}
+   * @param updatePassword  updatePassword value checks if password needs to be updated
    * @param createIfMissing the createIfMissing
    */
   public void updateUser(UserDTO dto, boolean updatePassword,
@@ -281,8 +281,8 @@ public class UserService {
   /**
    * Login a {@link UserDTO}
    *
-   * @param userID the userId
-   * @param applicationSessionID the applicationSessionID
+   * @param userID                 the userId
+   * @param applicationSessionID   the applicationSessionID
    * @param terminateOtherSessions the terminateOtherSessions
    * @return the {@link UserDTO}
    */
@@ -316,7 +316,7 @@ public class UserService {
   /**
    * Logout the user
    *
-   * @param userID the userID
+   * @param userID               the userID
    * @param applicationSessionID the applicationSessionID
    */
   public void logout(String userID, String applicationSessionID) {
@@ -366,8 +366,8 @@ public class UserService {
   /**
    * Check if user's group children belongs to any group name
    *
-   * @param userID the id of User
-   * @param groupName the group name
+   * @param userID          the id of User
+   * @param groupName       the group name
    * @param includeChildren whether include children or not
    * @return a {@link Boolean} value whether belongs to or not
    */
@@ -392,7 +392,7 @@ public class UserService {
   /**
    * Updates attributes
    *
-   * @param attributes the attributes
+   * @param attributes      the attributes
    * @param createIfMissing the createIfMissing check value
    */
   public void updateAttributes(Collection<UserAttributeDTO> attributes,
@@ -405,7 +405,7 @@ public class UserService {
   /**
    * Updates user's attribute
    *
-   * @param attributeDTO the UserAttributeDTO
+   * @param attributeDTO    the UserAttributeDTO
    * @param createIfMissing the createIfMissing
    */
   public void updateAttribute(UserAttributeDTO attributeDTO,
@@ -428,7 +428,7 @@ public class UserService {
   /**
    * Maps a DTO to existing Entity
    *
-   * @param attribute the user's attribute
+   * @param attribute    the user's attribute
    * @param attributeDTO the UserAttributeDTO
    */
   private void mapAttribute(UserAttribute attribute,
@@ -442,7 +442,7 @@ public class UserService {
   /**
    * Deletes user's attribute
    *
-   * @param userID the userId
+   * @param userID        the userId
    * @param attributeName the attributeName
    */
   public void deleteAttribute(String userID, String attributeName) {
@@ -456,7 +456,7 @@ public class UserService {
   /**
    * Retrieves the {@link UserAttributeDTO}
    *
-   * @param userID the userId
+   * @param userID        the userId
    * @param attributeName the attributeName
    * @return the {@link UserAttributeDTO} dto
    */
@@ -476,8 +476,8 @@ public class UserService {
   /**
    * Retrieves the user ids for attribute
    *
-   * @param userIDs the userIds
-   * @param attributeName the attributeName
+   * @param userIDs        the userIds
+   * @param attributeName  the attributeName
    * @param attributeValue the attributeValue
    * @return the user ids
    */
@@ -498,7 +498,7 @@ public class UserService {
   /**
    * Retrieves the user ids for specific attribute
    *
-   * @param attributeName the attributeName
+   * @param attributeName  the attributeName
    * @param attributeValue the attributeValue
    * @return the user ids
    */
@@ -604,7 +604,7 @@ public class UserService {
    * Checks the uniqueness of an attribute value
    *
    * @param attributeName the attributeName
-   * @param userID the userId
+   * @param userID        the userId
    * @return {@link Boolean} value whether the attribute value is unique or not
    */
   public boolean isAttributeValueUnique(String attributeName, String userID) {
@@ -633,22 +633,17 @@ public class UserService {
   /**
    * Sets user's password
    *
-   * @param dto the {@link UserDTO}
+   * @param dto  the {@link UserDTO}
    * @param user the {@link User}
    * @param salt the salt
    */
-  private void setUserPassword(UserDTO dto, User user, Optional<String> salt) {
-    if (dto == null || user == null) {
-      return;
-    }
-
+  private void setUserPassword(@NotNull UserDTO dto, @NotNull User user, Optional<String> salt) {
     if (StringUtils.isBlank(dto.getPassword())) {
       log.warning("Password is empty.");
     } else {
       if (salt.isPresent()) {
         user.setSalt(salt.get());
-        user
-            .setPassword(passwordEncoder.encode(salt.get() + dto.getPassword()));
+        user.setPassword(passwordEncoder.encode(salt.get() + dto.getPassword()));
       } else {
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
       }
@@ -659,7 +654,7 @@ public class UserService {
    * Adds a list of userGroups for a specific user.
    *
    * @param userGroupIds the list that contains all the user group Ids to be added.
-   * @param userId the user that userGroups will be added to.
+   * @param userId       the user that userGroups will be added to.
    */
   public void addUserGroups(Collection<String> userGroupIds, String userId) {
     addUserGroups(userGroupIds, userRepository.fetchById(userId));
@@ -683,7 +678,7 @@ public class UserService {
    * Removes the userGroups for a specific user.
    *
    * @param userGroupIds the list that contains all the user groups Ids to be removed.
-   * @param userId the user that userGroups will be removed from.
+   * @param userId       the user that userGroups will be removed from.
    */
   public void removeUserGroups(Collection<String> userGroupIds, String userId) {
     removeUserGroups(userGroupIds, userRepository.fetchById(userId));

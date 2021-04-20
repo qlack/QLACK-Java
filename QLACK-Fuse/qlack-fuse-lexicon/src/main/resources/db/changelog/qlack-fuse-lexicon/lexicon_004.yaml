@@ -1,0 +1,74 @@
+databaseChangeLog:
+  - changeSet:
+      id: lexicon_004
+      author: European Dynamics SA
+      preConditions:
+        - onFail: CONTINUE
+        - and:
+            - dbms:
+                type: h2
+      changes:
+        # Comments for lex_application table
+        - sql:
+            sql: COMMENT ON COLUMN lex_application.id IS 'The uuid of the executed lexicon file'
+        - sql:
+            sql: COMMENT ON COLUMN lex_application.symbolic_name IS 'The unique name of the executed lexicon file'
+        - sql:
+            sql: COMMENT ON COLUMN lex_application.checksum IS 'The checksum of the executed lexicon file'
+        - sql:
+            sql: COMMENT ON COLUMN lex_application.executed_on IS 'The latest date the lexicon file was executed'
+        - sql:
+            sql: COMMENT ON COLUMN lex_application.dbversion IS 'An integer that keeps track of the changes that have been applied'
+        # Comments for lex_data table
+        - sql:
+            sql: COMMENT ON COLUMN lex_data.id IS 'The uuid of the lexicon data'
+        - sql:
+            sql: COMMENT ON COLUMN lex_data.key_id IS 'The uuid of the lexicon key of the lexicon data'
+        - sql:
+            sql: COMMENT ON COLUMN lex_data.value IS 'The translated value of the lexicon data'
+        - sql:
+            sql: COMMENT ON COLUMN lex_data.language_id IS 'The uuid of the lexicon language of the lexicon data'
+        - sql:
+            sql: COMMENT ON COLUMN lex_data.last_updated_on IS 'The latest date the lexicon data was updated'
+        - sql:
+            sql: COMMENT ON COLUMN lex_data.dbversion IS 'An integer that keeps track of the changes that have been applied'
+        # Comments for lex_group table
+        - sql:
+            sql: COMMENT ON COLUMN lex_group.id IS 'The uuid of the lexicon group'
+        - sql:
+            sql: COMMENT ON COLUMN lex_group.title IS 'The title of the lexicon group'
+        - sql:
+            sql: COMMENT ON COLUMN lex_group.description IS 'The description of the lexicon group'
+        - sql:
+            sql: COMMENT ON COLUMN lex_group.dbversion IS 'An integer that keeps track of the changes that have been applied'
+        # Comments for lex_key table
+        - sql:
+            sql: COMMENT ON COLUMN lex_key.id IS 'The uuid of the lexicon key'
+        - sql:
+            sql: COMMENT ON COLUMN lex_key.name IS 'The name of the lexicon key'
+        - sql:
+            sql: COMMENT ON COLUMN lex_key.group_id IS 'The uuid of the lexicon group in which the lexicon key belongs to'
+        - sql:
+            sql: COMMENT ON COLUMN lex_key.dbversion IS 'An integer that keeps track of the changes that have been applied'
+        # Comments for lex_language table
+        - sql:
+            sql: COMMENT ON COLUMN lex_language.id IS 'The uuid of the lexicon language'
+        - sql:
+            sql: COMMENT ON COLUMN lex_language.name IS 'The name of the lexicon language'
+        - sql:
+            sql: COMMENT ON COLUMN lex_language.locale IS 'The locale code of the lexicon language'
+        - sql:
+            sql: COMMENT ON COLUMN lex_language.active IS 'A boolean that defines if the language is active in the system or not'
+        - sql:
+            sql: COMMENT ON COLUMN lex_language.dbversion IS 'An integer that keeps track of the changes that have been applied'
+        # Comments for lex_template table
+        - sql:
+            sql: COMMENT ON COLUMN lex_template.id IS 'The uuid of the lexicon template'
+        - sql:
+            sql: COMMENT ON COLUMN lex_template.name IS 'The name of the lexicon template'
+        - sql:
+            sql: COMMENT ON COLUMN lex_template.content IS 'The content of the lexicon template'
+        - sql:
+            sql: COMMENT ON COLUMN lex_template.language_id IS 'The uuid of the lexicon language of the lexicon template'
+        - sql:
+            sql: COMMENT ON COLUMN lex_template.dbversion IS 'An integer that keeps track of the changes that have been applied'

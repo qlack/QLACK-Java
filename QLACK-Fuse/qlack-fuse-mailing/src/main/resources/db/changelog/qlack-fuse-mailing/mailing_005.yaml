@@ -1,0 +1,119 @@
+databaseChangeLog:
+  - changeSet:
+      id: mailing_005
+      author: European Dynamics SA
+      preConditions:
+        - onFail: CONTINUE
+        - and:
+            - dbms:
+                type: h2
+      changes:
+        # Comments for mai_attachment table
+        - sql:
+            sql: COMMENT ON COLUMN mai_attachment.id IS 'The uuid of the email attachment'
+        - sql:
+            sql: COMMENT ON COLUMN mai_attachment.email_id IS 'The uuid of the email that the attachment is attached to'
+        - sql:
+            sql: COMMENT ON COLUMN mai_attachment.filename IS 'The name of the email attachment'
+        - sql:
+            sql: COMMENT ON COLUMN mai_attachment.content_type IS 'The content type of the email attachment'
+        - sql:
+            sql: COMMENT ON COLUMN mai_attachment.data IS 'The content data of the email attachment'
+        - sql:
+            sql: COMMENT ON COLUMN mai_attachment.attachment_size IS 'The size of the content data of the email attachment'
+      # Comments for mai_contact table
+        - sql:
+            sql: COMMENT ON COLUMN mai_contact.id IS 'The uuid of the email contact'
+        - sql:
+            sql: COMMENT ON COLUMN mai_contact.user_id IS 'The user id of the email contact'
+        - sql:
+            sql: COMMENT ON COLUMN mai_contact.email IS 'The email alias of the contact'
+        - sql:
+            sql: COMMENT ON COLUMN mai_contact.first_name IS 'The first name of the email contact'
+        - sql:
+            sql: COMMENT ON COLUMN mai_contact.last_name IS 'The last name of the email contact'
+        - sql:
+            sql: COMMENT ON COLUMN mai_contact.locale IS 'The preferred language locale of the email contact'
+      # Comments for mai_distr_list_has_contact table
+        - sql:
+            sql: COMMENT ON COLUMN mai_distr_list_has_contact.distribution_list_id IS 'The uuid of the email distribution list'
+        - sql:
+            sql: COMMENT ON COLUMN mai_distr_list_has_contact.contact_id IS 'The uuid of the email contact'
+      # Comments for mai_distribution_list table
+        - sql:
+            sql: COMMENT ON COLUMN mai_distribution_list.id IS 'The uuid of the email distribution list'
+        - sql:
+            sql: COMMENT ON COLUMN mai_distribution_list.list_name IS 'The name of the email distribution list'
+        - sql:
+            sql: COMMENT ON COLUMN mai_distribution_list.description IS 'The description of the email distribution list'
+        - sql:
+            sql: COMMENT ON COLUMN mai_distribution_list.created_on IS 'The date when the email distribution list was created'
+        - sql:
+            sql: COMMENT ON COLUMN mai_distribution_list.created_by IS 'The id of the user who created the email distribution list'
+        # Comments for mai_email table
+        - sql:
+            sql: COMMENT ON COLUMN mai_email.id IS 'The uuid of the email'
+        - sql:
+            sql: COMMENT ON COLUMN mai_email.subject IS 'The subject of the email'
+        - sql:
+            sql: COMMENT ON COLUMN mai_email.body IS 'The body message of the email'
+        - sql:
+            sql: COMMENT ON COLUMN mai_email.from_email IS 'The sender alias of the email'
+        - sql:
+            sql: COMMENT ON COLUMN mai_email.to_emails IS 'A list containing the aliases of email recipients'
+        - sql:
+            sql: COMMENT ON COLUMN mai_email.cc_emails IS 'A list containing the aliases of email recipients in Carbon Copy'
+        - sql:
+            sql: COMMENT ON COLUMN mai_email.bcc_emails IS 'A list containing the aliases of email recipients in Blind Carbon Copy'
+        - sql:
+            sql: COMMENT ON COLUMN mai_email.status IS 'The status of the email delivery'
+        - sql:
+            sql: COMMENT ON COLUMN mai_email.server_response IS 'The response of the server regarding the email delivery'
+        - sql:
+            sql: COMMENT ON COLUMN mai_email.email_type IS 'The type of the email'
+        - sql:
+            sql: COMMENT ON COLUMN mai_email.date_sent IS 'The date when the server sent the email'
+        - sql:
+            sql: COMMENT ON COLUMN mai_email.server_response_date IS 'The date when the server returned the delivery information'
+        - sql:
+            sql: COMMENT ON COLUMN mai_email.added_on_date IS 'The date when the email was added in the server'
+        - sql:
+            sql: COMMENT ON COLUMN mai_email.reply_to_emails IS 'A list containing the Reply to aliases of the email'
+        - sql:
+            sql: COMMENT ON COLUMN mai_email.tries IS 'An integer that indicates the amount of times the server tried to send the email'
+        - sql:
+            sql: COMMENT ON COLUMN mai_email.charset IS 'The charset encoding of the email'
+        - sql:
+            sql: COMMENT ON COLUMN mai_email.db_version IS 'An integer that keeps track of the changes that have been applied'
+      # Comments for mai_internal_attachment table
+        - sql:
+            sql: COMMENT ON COLUMN mai_internal_attachment.id IS 'The uuid of the internal email attachment'
+        - sql:
+            sql: COMMENT ON COLUMN mai_internal_attachment.messages_id IS 'The uuid of the internal email that the attachment is attached to'
+        - sql:
+            sql: COMMENT ON COLUMN mai_internal_attachment.filename IS 'The name of the internal email attachment'
+        - sql:
+            sql: COMMENT ON COLUMN mai_internal_attachment.content_type IS 'The content type of the internal email attachment'
+        - sql:
+            sql: COMMENT ON COLUMN mai_internal_attachment.data IS 'The content data of the internal email attachment'
+        - sql:
+            sql: COMMENT ON COLUMN mai_internal_attachment.format IS 'The data format of the internal email attachment'
+      # Comments for mai_internal_message table
+        - sql:
+            sql: COMMENT ON COLUMN mai_internal_message.id IS 'The uuid of the internal message'
+        - sql:
+            sql: COMMENT ON COLUMN mai_internal_message.message IS 'The content body of the internal message'
+        - sql:
+            sql: COMMENT ON COLUMN mai_internal_message.mail_from IS 'The sender of the internal message'
+        - sql:
+            sql: COMMENT ON COLUMN mai_internal_message.mail_to IS 'The recipient of the internal message'
+        - sql:
+            sql: COMMENT ON COLUMN mai_internal_message.date_sent IS 'The date when the internal message was sent'
+        - sql:
+            sql: COMMENT ON COLUMN mai_internal_message.date_received IS 'The date when the internal message was received'
+        - sql:
+            sql: COMMENT ON COLUMN mai_internal_message.status IS 'The status of the delivery of the internal message'
+        - sql:
+            sql: COMMENT ON COLUMN mai_internal_message.subject IS 'The subject of the internal message'
+        - sql:
+            sql: COMMENT ON COLUMN mai_internal_message.delete_type IS 'Defines when the internal message will be deleted by the system'

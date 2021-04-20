@@ -39,8 +39,8 @@
     </dependency>
 
     <dependency>
-      <artifactId>tika-parsers</artifactId>
       <groupId>org.apache.tika</groupId>
+      <artifactId>tika-parsers</artifactId>
       <version>${apache.tika.version}</version>
     </dependency>
 
