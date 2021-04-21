@@ -10,7 +10,7 @@
   <artifactId>qlack-fuse-acv</artifactId>
 
   <properties>
-    <javers.version>5.3.4</javers.version>
+    <javers.version>5.15.0</javers.version>
   </properties>
 
   <dependencies>

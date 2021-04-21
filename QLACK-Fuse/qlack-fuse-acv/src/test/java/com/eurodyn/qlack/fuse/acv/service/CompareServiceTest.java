@@ -7,8 +7,11 @@ import static org.mockito.Mockito.when;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import org.javers.core.Javers;
 import org.javers.core.diff.Diff;
+import org.javers.core.diff.changetype.PropertyChangeMetadata;
+import org.javers.core.diff.changetype.PropertyChangeType;
 import org.javers.core.diff.changetype.ValueChange;
 import org.javers.core.metamodel.object.GlobalId;
 import org.junit.Before;
@@ -119,8 +122,12 @@ public class CompareServiceTest {
 
   @Test
   public void convertToChangeDTOTest() {
-    ValueChange valueChange = new ValueChange(globalId, "property", object1,
-      object2);
+//    ValueChange valueChange = new ValueChange(globalId, "property", object1,
+//      object2);
+    // PropertyChangeMetadata metadata, Object leftValue, Object rightValue
+    PropertyChangeMetadata metadata = new PropertyChangeMetadata(globalId, "property", Optional.empty(),
+        PropertyChangeType.PROPERTY_VALUE_CHANGED);
+    ValueChange valueChange = new ValueChange(metadata, object1, object2);
     assertNotNull(compareService.convertToChangeDTO(valueChange));
   }
 
