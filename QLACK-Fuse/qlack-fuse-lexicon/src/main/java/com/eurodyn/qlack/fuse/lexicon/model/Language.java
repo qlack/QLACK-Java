@@ -2,6 +2,8 @@ package com.eurodyn.qlack.fuse.lexicon.model;
 
 import com.eurodyn.qlack.common.model.QlackBaseModel;
 import java.util.List;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -36,10 +38,12 @@ public class Language extends QlackBaseModel {
   /**
    * the language name
    */
+  @NotNull
   private String name;
   /**
    * the locale identifies the language code
    */
+  @NotNull
   private String locale;
   /**
    * the active status
