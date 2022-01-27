@@ -32,7 +32,7 @@ pipeline {
                 sh '''
                     cat > payload.json <<__HERE__
                     {
-                        "project": "19fa197a-eccc-4d1a-9811-93afda4679ee",
+                        "project": "8cc5ec7d-5c51-455e-a374-7f52da56f0b4",
                         "bom": "$(cat target/bom.xml |base64 -w 0 -)"
                     }
                     __HERE__
