@@ -3,6 +3,7 @@ package com.eurodyn.qlack.fuse.crypto.dto;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.time.Instant;
+import java.util.List;
 import java.util.Locale;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -34,6 +35,8 @@ public class CertificateSignDTO {
   private Locale locale;
   @NotNull
   private String subjectCN;
+  // A list of SANs that will be added to the certificate as a Subject Alternative Names of type DNS.
+  private List<String> sans;
   @NotNull
   private String signatureAlgorithm;
 
