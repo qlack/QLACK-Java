@@ -16,6 +16,7 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.asn1.x500.X500Name;
@@ -144,11 +145,12 @@ public class CryptoCAService {
     }
 
     // Add SANs.
-    if (!certificateSignDTO.getSans().isEmpty()) {
-      GeneralNames subjectAltNames = new GeneralNames(certificateSignDTO.getSans().stream()
-          .map(String::trim)
-          .map(s -> new GeneralName(GeneralName.dNSName, s))
-          .toArray(GeneralName[]::new));
+    if (StringUtils.isNotEmpty(certificateSignDTO.getSan())) {
+      GeneralNames subjectAltNames = new GeneralNames(
+          Arrays.stream(certificateSignDTO.getSan().split(","))
+              .map(String::trim)
+              .map(s -> new GeneralName(GeneralName.dNSName, s))
+              .toArray(GeneralName[]::new));
       certGenerator.addExtension(Extension.subjectAlternativeName, false, subjectAltNames);
     }
 
