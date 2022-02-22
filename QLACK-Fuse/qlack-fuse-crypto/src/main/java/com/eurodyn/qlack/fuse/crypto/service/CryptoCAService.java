@@ -18,6 +18,8 @@ import java.security.spec.InvalidKeySpecException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.BasicConstraints;
@@ -46,10 +48,16 @@ public class CryptoCAService {
   private static final String CN = "CN";
   private static final String CERTIFICATE = "CERTIFICATE";
   private final CryptoAsymmetricService cryptoAsymmetricService;
+  private final String IPV4_PATTERN = "^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\\.(?!$)|$)){4}$";
+  private final Pattern ipv4Pattern = Pattern.compile(IPV4_PATTERN);
 
-  public CryptoCAService(
-      CryptoAsymmetricService cryptoAsymmetricService) {
+  public CryptoCAService(CryptoAsymmetricService cryptoAsymmetricService) {
     this.cryptoAsymmetricService = cryptoAsymmetricService;
+  }
+
+  private boolean isValidIPV4Address(final String email) {
+    Matcher matcher = ipv4Pattern.matcher(email);
+    return matcher.matches();
   }
 
   /**
@@ -68,9 +76,8 @@ public class CryptoCAService {
   throws NoSuchAlgorithmException, InvalidKeySpecException, OperatorCreationException, IOException,
          NoSuchProviderException {
     // Create a keypair for this CA.
-    final KeyPair keyPair =
-        cryptoAsymmetricService
-            .createKeyPair(createCADTO.getCreateKeyPairRequestDTO());
+    final KeyPair keyPair = cryptoAsymmetricService.createKeyPair(
+        createCADTO.getCreateKeyPairRequestDTO());
 
     // Prepare signing.
     CertificateSignDTO certificateSignDTO = new CertificateSignDTO();
@@ -79,18 +86,16 @@ public class CryptoCAService {
     certificateSignDTO.setLocale(createCADTO.getLocale());
     certificateSignDTO.setPublicKey(keyPair.getPublic());
     certificateSignDTO.setPrivateKey(keyPair.getPrivate());
-    certificateSignDTO
-        .setSignatureAlgorithm(createCADTO.getSignatureAlgorithm());
+    certificateSignDTO.setSignatureAlgorithm(createCADTO.getSignatureAlgorithm());
     certificateSignDTO.setSubjectCN(createCADTO.getSubjectCN());
     certificateSignDTO.setCa(true);
 
     // Choose which private key to use. If no parent key is found then this is a self-signed certificate and the
     // private key created for the keypair will be used.
-    if (StringUtils.isNotEmpty(createCADTO.getIssuerCN()) && StringUtils
-        .isNotEmpty(createCADTO.getIssuerPrivateKey())) {
-      certificateSignDTO
-          .setIssuerPrivateKey(cryptoAsymmetricService.pemToPrivateKey(
-              createCADTO.getIssuerPrivateKey(),
+    if (StringUtils.isNotEmpty(createCADTO.getIssuerCN()) && StringUtils.isNotEmpty(
+        createCADTO.getIssuerPrivateKey())) {
+      certificateSignDTO.setIssuerPrivateKey(
+          cryptoAsymmetricService.pemToPrivateKey(createCADTO.getIssuerPrivateKey(),
               createCADTO.getIssuerPrivateKeyAlgorithm()));
       certificateSignDTO.setIssuerCN(createCADTO.getIssuerCN());
     } else {
@@ -98,8 +103,7 @@ public class CryptoCAService {
       certificateSignDTO.setIssuerCN(createCADTO.getSubjectCN());
     }
 
-    final X509CertificateHolder certHolder = generateCertificate(
-        certificateSignDTO);
+    final X509CertificateHolder certHolder = generateCertificate(certificateSignDTO);
 
     // Prepare reply.
     final CPPPemHolderDTO cppPemKey = new CPPPemHolderDTO();
@@ -121,8 +125,7 @@ public class CryptoCAService {
    *                                   certificate
    */
   @SuppressWarnings({"squid:S2274", "squid:S2142"})
-  public X509CertificateHolder generateCertificate(
-      final CertificateSignDTO certificateSignDTO)
+  public X509CertificateHolder generateCertificate(final CertificateSignDTO certificateSignDTO)
   throws OperatorCreationException, CertIOException {
 
     // Create a generator for the certificate including all certificate details.
@@ -130,47 +133,43 @@ public class CryptoCAService {
     // Synchronize this part, so that no two certificates can be created with the same timestamp.
 
     synchronized (this) {
-      certGenerator = new X509v3CertificateBuilder(
-          new X500Name(
-              CN + "=" + StringUtils.defaultIfBlank(certificateSignDTO.getIssuerCN(),
-                  certificateSignDTO.getSubjectCN())),
-          certificateSignDTO.isCa() ? BigInteger.ONE
-              : BigInteger.valueOf(Instant.now().toEpochMilli()),
+      certGenerator = new X509v3CertificateBuilder(new X500Name(
+          CN + "=" + StringUtils.defaultIfBlank(certificateSignDTO.getIssuerCN(),
+              certificateSignDTO.getSubjectCN())), certificateSignDTO.isCa() ? BigInteger.ONE
+          : BigInteger.valueOf(Instant.now().toEpochMilli()),
           new Date(certificateSignDTO.getValidForm().toEpochMilli()),
-          new Date(certificateSignDTO.getValidTo().toEpochMilli()),
-          certificateSignDTO.getLocale(),
+          new Date(certificateSignDTO.getValidTo().toEpochMilli()), certificateSignDTO.getLocale(),
           new X500Name(CN + "=" + certificateSignDTO.getSubjectCN()),
-          SubjectPublicKeyInfo.getInstance(certificateSignDTO.getPublicKey().getEncoded())
-      );
+          SubjectPublicKeyInfo.getInstance(certificateSignDTO.getPublicKey().getEncoded()));
     }
 
     // Add SANs.
     if (StringUtils.isNotEmpty(certificateSignDTO.getSan())) {
       GeneralNames subjectAltNames = new GeneralNames(
-          Arrays.stream(certificateSignDTO.getSan().split(","))
-              .map(String::trim)
-              .map(s -> new GeneralName(GeneralName.dNSName, s))
-              .toArray(GeneralName[]::new));
+          Arrays.stream(certificateSignDTO.getSan().split(",")).map(String::trim).map(s -> {
+            if (isValidIPV4Address(s)) {
+              return new GeneralName(GeneralName.iPAddress, s);
+            } else {
+              return new GeneralName(GeneralName.dNSName, s);
+            }
+          }).toArray(GeneralName[]::new));
       certGenerator.addExtension(Extension.subjectAlternativeName, false, subjectAltNames);
     }
 
     // Check if this is a CA certificate and in that case add the necessary key extensions.
     if (certificateSignDTO.isCa()) {
-      certGenerator.addExtension(Extension.basicConstraints, true,
-          new BasicConstraints(true));
-      certGenerator
-          .addExtension(Extension.keyUsage, true,
-              new KeyUsage(KeyUsage.cRLSign | KeyUsage.keyCertSign));
+      certGenerator.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
+      certGenerator.addExtension(Extension.keyUsage, true,
+          new KeyUsage(KeyUsage.cRLSign | KeyUsage.keyCertSign));
     } else {
-      certGenerator.addExtension(Extension.basicConstraints, true,
-          new BasicConstraints(false));
+      certGenerator.addExtension(Extension.basicConstraints, true, new BasicConstraints(false));
     }
 
     // Generate the certificate.
     final X509CertificateHolder certHolder;
     certHolder = certGenerator.build(
-        new JcaContentSignerBuilder(certificateSignDTO.getSignatureAlgorithm())
-            .build(certificateSignDTO.getIssuerPrivateKey()));
+        new JcaContentSignerBuilder(certificateSignDTO.getSignatureAlgorithm()).build(
+            certificateSignDTO.getIssuerPrivateKey()));
 
     return certHolder;
   }
@@ -182,12 +181,10 @@ public class CryptoCAService {
    * @return the generated PEM
    * @throws IOException thrown when something unexpected happens
    */
-  public String certificateToPEM(final X509CertificateHolder certificateHolder)
-  throws IOException {
+  public String certificateToPEM(final X509CertificateHolder certificateHolder) throws IOException {
     try (StringWriter pemStrWriter = new StringWriter()) {
       try (PemWriter writer = new PemWriter(pemStrWriter)) {
-        writer.writeObject(
-            new PemObject(CERTIFICATE, certificateHolder.getEncoded()));
+        writer.writeObject(new PemObject(CERTIFICATE, certificateHolder.getEncoded()));
         writer.flush();
         return pemStrWriter.toString();
       }
@@ -202,12 +199,10 @@ public class CryptoCAService {
    * @throws CertificateException thrown when something unexpected happens while generating the
    *                              certificate
    */
-  public X509Certificate pemToCertificate(final String cert)
-  throws CertificateException {
+  public X509Certificate pemToCertificate(final String cert) throws CertificateException {
     CertificateFactory fact = CertificateFactory.getInstance("X.509");
 
-    return (X509Certificate) fact
-        .generateCertificate(new ByteArrayInputStream(cert.getBytes(
-            StandardCharsets.UTF_8)));
+    return (X509Certificate) fact.generateCertificate(
+        new ByteArrayInputStream(cert.getBytes(StandardCharsets.UTF_8)));
   }
 }
