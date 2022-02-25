@@ -3,11 +3,15 @@ package com.eurodyn.qlack.util.jwt.filter;
 import com.eurodyn.qlack.util.jwt.config.AppConstants;
 import com.eurodyn.qlack.util.jwt.dto.JwtClaimsDTO;
 import com.eurodyn.qlack.util.jwt.service.JwtService;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -18,13 +22,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.filter.GenericFilterBean;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
  * An authentication filter to automatically extract a JWT from incoming requests and validate it.
@@ -33,7 +31,7 @@ import java.util.List;
  */
 @Log
 @Component
-public class JwtAuthenticationFilter extends GenericFilterBean {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private final JwtService jwtService;
 
@@ -89,9 +87,9 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
   }
 
   @Override
-  public void doFilter(ServletRequest request, ServletResponse response,
-      FilterChain filterChain)
-  throws IOException, ServletException {
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+      FilterChain filterChain) throws ServletException, IOException {
+    System.out.println("QLKACK!!!!!!!");
     log.finest("Applying filter JwtAuthenticationFilter.");
     Authentication authentication = getAuthentication((HttpServletRequest) request);
     if (authentication != null) {
