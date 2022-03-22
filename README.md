@@ -14,42 +14,6 @@ Using QLACK you can accelerate your Spring Boot-based development as a considera
 
 QLACK is an Open Source project under EUPL.
 
-## Code Quality
-
-<p align="center">
-	<a href="https://sonarcloud.io/dashboard?id=qlack_QLACK-Java">
-  		<img src="https://sonarcloud.io/api/project_badges/measure?project=qlack_QLACK-Java&metric=security_rating" />
-	</a>
-	<a href="https://sonarcloud.io/dashboard?id=qlack_QLACK-Java">
-  		<img src="https://sonarcloud.io/api/project_badges/measure?project=qlack_QLACK-Java&metric=reliability_rating" />
-	</a>
-	<a href="https://sonarcloud.io/dashboard?id=qlack_QLACK-Java">
-  		<img src="https://sonarcloud.io/api/project_badges/measure?project=qlack_QLACK-Java&metric=sqale_rating" />
-	</a>
-	<a href="https://sonarcloud.io/dashboard?id=qlack_QLACK-Java">
-  		<img src="https://sonarcloud.io/api/project_badges/measure?project=qlack_QLACK-Java&metric=sqale_index" />
-	</a>
-	<a href="https://sonarcloud.io/dashboard?id=qlack_QLACK-Java">
-  		<img src="https://sonarcloud.io/api/project_badges/measure?project=qlack_QLACK-Java&metric=ncloc" />
-	</a>
-	<a href="https://sonarcloud.io/dashboard?id=qlack_QLACK-Java">
-  		<img src="https://sonarcloud.io/api/project_badges/measure?project=qlack_QLACK-Java&metric=coverage" />
-	</a>
-	<a href="https://sonarcloud.io/dashboard?id=qlack_QLACK-Java">
-  		<img src="https://sonarcloud.io/api/project_badges/measure?project=qlack_QLACK-Java&metric=duplicated_lines_density" />
-	</a>
-	<a href="https://sonarcloud.io/dashboard?id=qlack_QLACK-Java">
-  		<img src="https://sonarcloud.io/api/project_badges/measure?project=qlack_QLACK-Java&metric=code_smells" />
-	</a>
-	<a href="https://sonarcloud.io/dashboard?id=qlack_QLACK-Java">
-  		<img src="https://sonarcloud.io/api/project_badges/measure?project=qlack_QLACK-Java&metric=vulnerabilities" />
-	</a>
-	<a href="https://sonarcloud.io/dashboard?id=qlack_QLACK-Java">
-  		<img src="https://sonarcloud.io/api/project_badges/measure?project=qlack_QLACK-Java&metric=bugs" />
-	</a>
-</p>
-
-
 ## Contributors
 
 <p align="center">
