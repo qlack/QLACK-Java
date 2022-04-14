@@ -14,6 +14,8 @@ Using QLACK you can accelerate your Spring Boot-based development as a considera
 
 QLACK is an Open Source project under EUPL.
 
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/qlack/QLACK-Java)
+
 ## Contributors
 
 <p align="center">
