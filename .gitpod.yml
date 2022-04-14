@@ -7,3 +7,5 @@ vscode:
   extensions:
     - vscjava.vscode-java-pack
     - GabrielBB.vscode-lombok
+    - vivaxy.vscode-conventional-commits
+    - redhat.vscode-xml
