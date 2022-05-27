@@ -409,9 +409,8 @@
                   <goal>sign</goal>
                 </goals>
                 <configuration>
-                  <keyname>info@eurodyn.com</keyname>
-                  <passphraseServerId>gpg.passphrase.qlack
-                  </passphraseServerId>
+                  <keyname>devops-d2@eurodyn.com</keyname>
+                  <passphraseServerId>gpg.passphrase.qlack</passphraseServerId>
                 </configuration>
               </execution>
             </executions>
