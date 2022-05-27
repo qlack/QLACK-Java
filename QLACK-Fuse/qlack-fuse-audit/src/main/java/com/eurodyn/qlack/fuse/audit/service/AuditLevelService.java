@@ -88,7 +88,6 @@ public class AuditLevelService {
     log.info(MessageFormat.format("Updating Audit level ''{0}'',", level));
     AuditLevel lev = mapper.mapToEntity(level);
     auditLevelRepository.save(lev);
-    clearAuditLevelCache();
   }
 
   /**
@@ -101,14 +100,6 @@ public class AuditLevelService {
     log.info(MessageFormat
       .format("Searching Audit level by name ''{0}''.", levelName));
     return mapper.mapToDTO(auditLevelRepository.findByName(levelName));
-  }
-
-  /**
-   * Clears the cache of the Audit level
-   */
-  public void clearAuditLevelCache() {
-    log.info("Clearing Audit level cache");
-    AuditLevel.clearCache();
   }
 
   /**

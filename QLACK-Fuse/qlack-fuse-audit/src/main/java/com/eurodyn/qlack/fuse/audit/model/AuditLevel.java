@@ -22,12 +22,6 @@ import lombok.Setter;
 public class AuditLevel extends QlackBaseModel {
 
   /**
-   * the cache of the Audit level
-   */
-  private static Cache<String, String> cache = CacheBuilder.newBuilder()
-    .build();
-
-  /**
    * the name of the Audit level
    */
   private String name;
@@ -52,12 +46,5 @@ public class AuditLevel extends QlackBaseModel {
 
   public AuditLevel() {
     setId(java.util.UUID.randomUUID().toString());
-  }
-
-  /**
-   * Invalidate cache
-   */
-  public static void clearCache() {
-    cache.invalidateAll();
   }
 }
