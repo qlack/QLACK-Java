@@ -4,7 +4,7 @@
 
   <groupId>com.eurodyn.qlack</groupId>
   <artifactId>qlack</artifactId>
-  <version>3.5.9</version>
+  <version>3.5.10-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>QLACK-Java</name>
@@ -31,7 +31,7 @@
     <developerConnection>scm:git:git@github.com:qlack/QLACK-Java.git
     </developerConnection>
     <url>https://github.com/qlack/QLACK-Java</url>
-    <tag>3.5.9</tag>
+    <tag>HEAD</tag>
   </scm>
   <distributionManagement>
     <snapshotRepository>
