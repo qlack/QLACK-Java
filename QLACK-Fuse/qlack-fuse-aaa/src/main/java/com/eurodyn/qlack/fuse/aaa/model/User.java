@@ -89,7 +89,7 @@ public class User extends AAAModel {
   /**
    * bi-directional many-to-one association to UserAttribute
    **/
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "user", cascade = CascadeType.MERGE, orphanRemoval = true)
   private List<UserAttribute> userAttributes;
 
   /**
