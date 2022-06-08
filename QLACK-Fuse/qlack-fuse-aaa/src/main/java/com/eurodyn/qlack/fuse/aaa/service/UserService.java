@@ -140,6 +140,39 @@ public class UserService {
   }
 
   /**
+   * This method is similar to {@link #updateUser(UserDTO, boolean, boolean)},
+   * but deletes attributes if it's not present in UserDTO
+   *
+   * @param dto             the {@link UserDTO}
+   * @param updatePassword  updatePassword value checks if password needs to be updated
+   * @param createIfMissing the createIfMissing
+   */
+  public void updateUserAndAttributes(UserDTO dto, boolean updatePassword,
+                         boolean createIfMissing) {
+    User user = userRepository.fetchById(dto.getId());
+    userMapper.mapToExistingEntity(dto, user);
+
+    if (updatePassword) {
+      Optional<String> salt =
+              user.getSalt() != null ? Optional.of(user.getSalt()) :
+                      Optional.empty();
+      setUserPassword(dto, user, salt);
+    }
+
+    //need remove
+    if(dto.getUserAttributes().size() < user.getUserAttributes().size()){
+      //REVIEW: set java language 11 and use isEmpty()
+      user.getUserAttributes().removeIf(userAttribute -> !dto.getAttribute(userAttribute.getName()).isPresent());
+    }
+
+    if (CollectionUtils.isNotEmpty(dto.getUserAttributes())) {
+      for (UserAttributeDTO attribute : dto.getUserAttributes()) {
+        updateAttribute(attribute, createIfMissing);
+      }
+    }
+  }
+
+  /**
    * Deletes user by its id
    *
    * @param userID the userId
