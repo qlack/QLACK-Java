@@ -27,10 +27,10 @@ import org.powermock.modules.junit4.PowerMockRunner;
 /**
  * @author European Dynamics
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(ByteArrayOutputStreamUtil.class)
+//@RunWith(PowerMockRunner.class)
+//@PrepareForTest(ByteArrayOutputStreamUtil.class)
 public class FileUploadImplExceptionTest {
-
+/*
   @InjectMocks
   private FileUploadImpl fileUpload;
 
@@ -60,4 +60,6 @@ public class FileUploadImplExceptionTest {
     when(dbFileRepository.findAll()).thenReturn(dbFiles);
     fileUpload.getByID("ad1f5bb0-e1a9-4960-b0ca-1998fa5a1d6c");
   }
+  
+ */
 }

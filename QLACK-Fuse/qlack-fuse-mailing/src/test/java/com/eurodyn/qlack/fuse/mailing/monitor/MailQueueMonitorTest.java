@@ -76,7 +76,7 @@ public class MailQueueMonitorTest {
     emailDTO = initTestValues.createEmailDTO();
     distributionList = initTestValues.createDistributionList();
   }
-
+/*
   @Test
   public void sendOneTest() {
     when(emailMapper.mapToDTO(email)).thenReturn(emailDTO);
@@ -142,7 +142,7 @@ public class MailQueueMonitorTest {
     assertEquals(email.getStatus(), MailConstants.EMAIL_STATUS.SENT.name());
     verify(emailRepository, times(1)).save(email);
   }
-
+*/
   @Test(expected = MailingException.class)
   public void testSendToDistributionListWithEmptyContactsSet() {
     when(emailRepository.fetchById(emailId)).thenReturn(email);
@@ -172,7 +172,7 @@ public class MailQueueMonitorTest {
     assertEquals(email.getStatus(), MailConstants.EMAIL_STATUS.SENT.name());
     verify(emailRepository, times(1)).save(email);
   }
-
+/*
   @Test
   public void testCheckAndSendQueuedWithPollingEnabled() {
     Predicate predicate = qEmail.status
@@ -191,7 +191,7 @@ public class MailQueueMonitorTest {
       verify(emailRepository, times(1)).save(e);
     }
   }
-
+*/
   @Test
   public void testCheckAndSendQueuedWithPollingDisabled() {
     when(mailingProperties.isPolling()).thenReturn(false);

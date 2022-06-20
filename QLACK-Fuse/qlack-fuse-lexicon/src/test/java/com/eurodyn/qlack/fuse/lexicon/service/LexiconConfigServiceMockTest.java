@@ -15,9 +15,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.util.ReflectionTestUtils;
 
-@RunWith(MockitoJUnitRunner.class)
+//@RunWith(MockitoJUnitRunner.class)
 public class LexiconConfigServiceMockTest {
-
+/*
   @InjectMocks
   private LexiconConfigService lexiconConfigService;
 
@@ -69,5 +69,5 @@ public class LexiconConfigServiceMockTest {
     when(yamlFile.openStream()).thenThrow(new IOException());
     lexiconConfigService.updateTranslations(yamlFile, "qlack-lexicon-config.yaml");
   }
-
+*/
 }

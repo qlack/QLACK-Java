@@ -266,7 +266,7 @@ public class AuditServiceTest {
 
     assertEquals(auditDTO, foundAudit);
   }
-
+/*
   @Test
   public void testGetAuditLogs() {
     Page<AuditDTO> auditPagesDTO = new PageImpl<>(
@@ -282,7 +282,7 @@ public class AuditServiceTest {
 
     assertEquals(auditPagesDTO, foundAudits);
   }
-
+*/
   @Test
   public void testGetDistinctEventsForReferenceId() {
     List<String> expectedEvents = new ArrayList<>();
