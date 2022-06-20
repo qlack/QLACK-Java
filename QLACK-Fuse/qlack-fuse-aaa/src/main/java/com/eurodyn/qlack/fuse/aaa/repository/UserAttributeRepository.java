@@ -1,9 +1,15 @@
 package com.eurodyn.qlack.fuse.aaa.repository;
 
+import com.eurodyn.qlack.fuse.aaa.model.QUserAttribute;
 import com.eurodyn.qlack.fuse.aaa.model.UserAttribute;
+import com.querydsl.jpa.impl.JPAQuery;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * A repository interface for UserAttribute.It is used to define a number of
@@ -13,7 +19,7 @@ import java.util.Collection;
  */
 @Repository
 public interface UserAttributeRepository extends
-  AAARepository<UserAttribute, String> {
+  AAARepository<UserAttribute, String> , QuerydslPredicateExecutor<UserAttribute>, UserAttributeRepositoryExt {
 
   /**
    * A method that retrieves the relative {@link UserAttribute} object
@@ -25,4 +31,31 @@ public interface UserAttributeRepository extends
   UserAttribute findByUserIdAndName(String userId, String name);
 
   Collection<UserAttribute> findAllByUserIdInAndName(Collection<String> userIds, String name);
+
+}
+
+interface UserAttributeRepositoryExt {
+
+  /**
+   *
+   * @param attributeName name of attribute to be search
+   * @return List with unique values (data field) from attribute filtered by name.
+   */
+  List<String> findDistinctDataByName(String attributeName);
+}
+
+class UserAttributeRepositoryImpl implements UserAttributeRepositoryExt{
+  @PersistenceContext
+  private EntityManager em;
+  private static final QUserAttribute userAttribute =QUserAttribute.userAttribute;
+
+  @Override
+  public List<String> findDistinctDataByName(String attributeName) {
+    return new JPAQuery<UserAttribute>(em)
+            .select(userAttribute.data)
+            .from(userAttribute)
+            .where(userAttribute.name.eq(attributeName))
+            .distinct()
+            .fetch();
+  }
 }
