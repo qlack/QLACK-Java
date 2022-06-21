@@ -691,4 +691,14 @@ public class UserService {
       userGroup.getUsers().remove(user);
     }
   }
+
+  /**
+   * A method that retrieves all distinct values in data field from attribute filtered by name
+   *
+   * @param attributeName the name of attribute to search by
+   * @return List with unique values (data field) from attribute filtered by name.
+   */
+  public List<String> findDistinctDataAttributesByName(String attributeName){
+    return userAttributeRepository.findDistinctDataByName(attributeName);
+  }
 }

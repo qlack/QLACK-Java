@@ -641,4 +641,11 @@ public class UserServiceTest {
     assertTrue(CollectionUtils.isEmpty(user.getUserGroups()));
     verify(userRepository, times(2)).fetchById(anyString());
   }
+
+  @Test
+  public void findDistinctDataAttributesByNameTest(){
+    when(userAttributeRepository.findDistinctDataByName(any())).thenReturn(Arrays.asList("attr1", "attr2"));
+    List<String> result = userService.findDistinctDataAttributesByName("attributeName");
+    assertEquals(2, result.size());
+  }
 }
