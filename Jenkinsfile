@@ -63,11 +63,11 @@ pipeline {
             }
         }
     }
-    /*post {
+    post {
         changed {
             emailext subject: '$DEFAULT_SUBJECT',
                 body: '$DEFAULT_CONTENT',
                 to: 'qlack@eurodyn.com'
         }
-    }*/
+    }
 }
