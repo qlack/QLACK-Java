@@ -223,14 +223,14 @@ public class LexiconConfigService {
           Set<GroupDTO> newGroups = groupService
               .getRemainingGroups(excludedGroupName);
           for (GroupDTO group : newGroups) {
-            updateKeys(translations, group.getId(), languageId);
+            updateKeys(translations, group.getId(), languageId, locale);
           }
         } else { // Process group
           String groupName = (String) translationContent.get("group");
           String groupId =
               groupName != null ? groupService.getGroupByTitle(groupName).getId()
                   : null;
-          updateKeys(translations, groupId, languageId);
+          updateKeys(translations, groupId, languageId, locale);
         }
       }
     }
@@ -244,8 +244,7 @@ public class LexiconConfigService {
    * @param languageId the id of the translation language
    */
   private void updateKeys(List<Map<String, Object>> translations,
-      String groupId,
-      String languageId) {
+      String groupId, String languageId, String locale) {
     log.finest(MessageFormat
         .format(
             "Updating translations of group with id {0} for language with id {1}",
@@ -291,8 +290,8 @@ public class LexiconConfigService {
       // adding a new language) and therefore it should be
       // updated. Otherwise only update the key if the forceUpdate
       // flag is set to true.
-      else if ((keyDTO.getTranslations().get(languageId) == null)
-          || (keyDTO.getTranslations().get(languageId).equals(translationKey))
+      else if ((keyDTO.getTranslations().get(locale) == null)
+          || (keyDTO.getTranslations().get(locale).equals(translationKey))
           || ((translation.get(FORCE_UPDATE) != null)
           && (Boolean.TRUE.equals(translation.get(FORCE_UPDATE))))) {
         keyService
