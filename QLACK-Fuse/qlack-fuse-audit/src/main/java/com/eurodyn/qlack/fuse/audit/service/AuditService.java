@@ -10,20 +10,18 @@ import com.eurodyn.qlack.fuse.audit.repository.AuditRepository;
 import com.eurodyn.qlack.fuse.audit.util.AuditProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.types.Predicate;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
-
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Provides Audit CRUD and search functionality
@@ -137,10 +135,8 @@ public class AuditService {
    * @param referenceId the reference id of the audit
    * @return the id of the created audit
    */
-  public String audit(String level, String event, String groupName,
-    String description,
-    String sessionID, Object traceData,
-    String referenceId) {
+  public String audit(String level, String event, String groupName, String description,
+      String sessionID, Object traceData, String referenceId) {
     AuditDTO dto = new AuditDTO(level, event, groupName, description,
       sessionID);
     if (referenceId != null) {
@@ -148,7 +144,7 @@ public class AuditService {
         .format("Adding audit with referenceId: {0} ", referenceId));
       dto.setReferenceId(referenceId);
     }
-    if (auditProperties.isTraceData() && !StringUtils.isEmpty(traceData)) {
+    if (auditProperties.isTraceData() && traceData != null) {
       dto.setTrace(new AuditTraceDTO(createTraceDataStr(traceData)));
     }
     return audit(dto);
