@@ -69,7 +69,7 @@ package com.eurodyn.qlack.test.cmd.services.scheduler.job;
 import com.eurodyn.qlack.test.cmd.model.Employee;
 import com.eurodyn.qlack.test.cmd.repository.EmployeeRepository;
 import java.util.List;
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;

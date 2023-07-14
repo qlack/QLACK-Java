@@ -1,5 +1,12 @@
 package com.eurodyn.qlack.util.validation;
 
+import jakarta.validation.ConstraintViolationException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.StringUtils;
@@ -11,16 +18,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 /**
  * A Controller advice that converts {@link MethodArgumentNotValidException} and {@link
- * javax.validation.ConstraintViolationException} validation exceptions into a common structure
+ * jakarta.validation.ConstraintViolationException} validation exceptions into a common structure
  * using {@link QValidationError}.
  */
 @Log
@@ -65,15 +65,15 @@ public class QValidationExceptionControllerAdvisor {
   }
 
   /**
-   * A handler for {@link javax.validation.ConstraintViolationException} validation exceptions.
+   * A handler for {@link ConstraintViolationException} validation exceptions.
    *
    * @param ex The validation exception.
    * @return Returns a list of {@link QValidationError} having extracted all underlying validation
    * errors and messages.
    */
-  @ExceptionHandler(javax.validation.ConstraintViolationException.class)
+  @ExceptionHandler(ConstraintViolationException.class)
   public ResponseEntity<Object> handleConstraintViolationException(
-      javax.validation.ConstraintViolationException ex) {
+      ConstraintViolationException ex) {
     final String HIBERNATE_ERROR_PREFIX = "{org.hibernate.validator.constraints.";
     final String HIBERNATE_ERROR_SUFFIX = ".message}";
 

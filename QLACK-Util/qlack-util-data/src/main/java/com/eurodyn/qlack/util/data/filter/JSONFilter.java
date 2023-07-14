@@ -2,8 +2,8 @@ package com.eurodyn.qlack.util.data.filter;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.bohnman.squiggly.Squiggly;
-import com.github.bohnman.squiggly.util.SquigglyUtils;
+import dev.nicklasw.squiggly.Squiggly;
+import dev.nicklasw.squiggly.util.SquigglyUtils;
 
 /**
  * A helper class providing methods to filter JSON objects. (see

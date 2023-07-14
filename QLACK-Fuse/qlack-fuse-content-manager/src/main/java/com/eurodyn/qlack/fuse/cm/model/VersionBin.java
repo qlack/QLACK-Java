@@ -1,11 +1,11 @@
 package com.eurodyn.qlack.fuse.cm.model;
 
 import com.eurodyn.qlack.common.model.QlackBaseModel;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 public class VersionBin extends QlackBaseModel {
 
-  @javax.persistence.Version
+  @jakarta.persistence.Version
   private long dbversion;
 
   @ManyToOne

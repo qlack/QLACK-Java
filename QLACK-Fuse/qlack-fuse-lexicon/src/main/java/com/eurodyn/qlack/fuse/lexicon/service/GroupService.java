@@ -112,8 +112,7 @@ public class GroupService {
    * @return a DTO containing the group that matches the specific title
    */
   public GroupDTO getGroupByTitle(String groupTitle) {
-    log
-      .info(MessageFormat.format("Fetching group with title: {0}", groupTitle));
+    log.fine(MessageFormat.format("Fetching group with title: {0}", groupTitle));
     return groupMapper.mapToDTO(findByTitle(groupTitle));
   }
 
@@ -159,7 +158,6 @@ public class GroupService {
     log.finest("Fetching all groups");
     return new HashSet<>(groupMapper.mapToDTO(groupRepository.findAll()));
   }
-
 
   /**
    * Deletes all translations of a given group for given language.
@@ -221,5 +219,4 @@ public class GroupService {
       return Instant.now().toEpochMilli();
     }
   }
-
 }

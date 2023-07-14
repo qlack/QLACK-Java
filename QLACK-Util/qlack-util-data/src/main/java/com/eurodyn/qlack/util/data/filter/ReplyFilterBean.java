@@ -2,10 +2,10 @@ package com.eurodyn.qlack.util.data.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.github.bohnman.squiggly.context.provider.SimpleSquigglyContextProvider;
-import com.github.bohnman.squiggly.filter.SquigglyPropertyFilter;
-import com.github.bohnman.squiggly.filter.SquigglyPropertyFilterMixin;
-import com.github.bohnman.squiggly.parser.SquigglyParser;
+import dev.nicklasw.squiggly.context.provider.SimpleSquigglyContextProvider;
+import dev.nicklasw.squiggly.filter.SquigglyPropertyFilter;
+import dev.nicklasw.squiggly.filter.SquigglyPropertyFilterMixin;
+import dev.nicklasw.squiggly.parser.SquigglyParser;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

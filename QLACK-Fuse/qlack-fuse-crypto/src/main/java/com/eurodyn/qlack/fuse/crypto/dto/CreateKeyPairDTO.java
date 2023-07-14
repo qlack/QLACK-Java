@@ -1,7 +1,7 @@
 package com.eurodyn.qlack.fuse.crypto.dto;
 
 import java.util.logging.Logger;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

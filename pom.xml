@@ -4,11 +4,11 @@
 
   <groupId>com.eurodyn.qlack</groupId>
   <artifactId>qlack</artifactId>
-  <version>3.5.12-SNAPSHOT</version>
+  <version>3.6.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>QLACK-Java</name>
-  <description>QLACK project (Java modules)</description>
+  <description>QLACK is an ecosystem of software development libraries and utilities, targeting Java and Angular developers.</description>
   <url>https://github.com/qlack/QLACK-Java</url>
   <licenses>
     <license>
@@ -47,43 +47,51 @@
   </modules>
 
   <properties>
+    <!-- Project -->
+    <java.version>17</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.version>1.8</java.version>
-    <maven.compiler.version>3.7.0</maven.compiler.version>
-    <maven.source.plugin.version>3.0.1</maven.source.plugin.version>
-    <maven.gpg.plugin.version>1.6</maven.gpg.plugin.version>
-    <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
-    <maven.javadoc.plugin.version>2.10.4</maven.javadoc.plugin.version>
-    <maven.antrun.plugin.version>1.8</maven.antrun.plugin.version>
-    <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
-    <javadoc-coverage.version>1.1.1</javadoc-coverage.version>
     <additionalparam>-Xdoclint:none</additionalparam>
-    <spring.boot.version>2.4.1</spring.boot.version>
-    <jrebel.version>1.1.8</jrebel.version>
-    <mapstruct.version>1.3.0.Final</mapstruct.version>
-    <commons.collections.version>3.2.2</commons.collections.version>
-    <javax.inject.version>1</javax.inject.version>
-    <beanshell.version>2.0b6</beanshell.version>
-    <apache.poi.version>5.0.0</apache.poi.version>
-    <jackson.datatype.version>2.9.8</jackson.datatype.version>
-    <apache.tika.version>1.25</apache.tika.version>
-    <google.zxing.version>3.3.3</google.zxing.version>
-    <sensesecure.version>0.6</sensesecure.version>
-    <squiggly-filter-jackson>1.3.18</squiggly-filter-jackson>
-    <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
-    <lombok.version>1.18.22</lombok.version>
-    <querydsl.version>4.2.1</querydsl.version>
-    <bouncycastle.version>1.67</bouncycastle.version>
-    <jwt.version>0.9.1</jwt.version>
-    <guava.version>30.1.1-jre</guava.version>
-    <commons-io.version>2.6</commons-io.version>
+
+    <!-- Maven -->
+    <maven.javadoc.plugin.version>3.5.0</maven.javadoc.plugin.version>
+    <maven.antrun.plugin.version>3.1.0</maven.antrun.plugin.version>
+    <maven.compiler.version>3.11.0</maven.compiler.version>
+    <maven.gpg.plugin.version>3.1.0</maven.gpg.plugin.version>
+    <maven.javadoc.plugin.version>3.5.0</maven.javadoc.plugin.version>
+    <maven.release.plugin.version>3.0.1</maven.release.plugin.version>
+    <maven.source.plugin.version>3.3.0</maven.source.plugin.version>
+    <maven.enunciate.plugin.version>2.15.1</maven.enunciate.plugin.version>
+    <maven.jrebel.plugin.version>1.2.0</maven.jrebel.plugin.version>
+
+    <!-- Third-party -->
     <activiti.version>7.1.9</activiti.version>
-    <apache.email.version>1.5</apache.email.version>
-    <commons.codec.version>1.7</commons.codec.version>
-    <jacoco.version>0.8.6</jacoco.version>
-    <enunciate.version>2.11.1</enunciate.version>
-    <powermockito.version>2.0.9</powermockito.version>
+    <commons-email.version>1.5</commons-email.version>
+    <apache.poi.version>5.2.3</apache.poi.version>
+    <apache.tika.version>2.8.0</apache.tika.version>
+    <beanshell.version>2.0b6</beanshell.version>
+    <bouncycastle.version>1.75</bouncycastle.version>
+    <commons-io.version>2.13.0</commons-io.version>
+    <commons.codec.version>1.16.0</commons.codec.version>
+    <commons.collections.version>3.2.2</commons.collections.version>
+    <commons.collections4.version>4.4</commons.collections4.version>
+    <google.zxing.version>3.5.1</google.zxing.version>
+    <guava.version>32.1.1-jre</guava.version>
+    <jackson.datatype.jsr310.version>2.15.2</jackson.datatype.jsr310.version>
+    <jacoco.version>0.8.10</jacoco.version>
+    <javadoc-coverage.version>1.1.1</javadoc-coverage.version>
+    <javax.inject.version>1</javax.inject.version>
     <javax.interceptor-api.version>1.2</javax.interceptor-api.version>
+    <jwt.version>0.9.1</jwt.version>
+    <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
+    <lombok.version>1.18.28</lombok.version>
+    <mapstruct.version>1.5.5.Final</mapstruct.version>
+    <powermockito.version>2.0.9</powermockito.version>
+    <sensesecure.version>0.6</sensesecure.version>
+    <spring-boot.version>3.1.1</spring-boot.version>
+    <squiggly-filter-jackson.version>1.3.18</squiggly-filter-jackson.version>
+    <query-dsl.version>5.0.0</query-dsl.version>
+
+    <!-- SonarQube -->
     <sonar.version>3.7.0.1746</sonar.version>
     <sonar.exclusions>**/generated-sources/**</sonar.exclusions>
     <sonar.coverage.exclusions>
@@ -98,7 +106,8 @@
       src/main/java/com/eurodyn/qlack/fuse/rules/util/classloader/*,
       src/main/java/com/eurodyn/qlack/util/clamav/util/*
     </sonar.coverage.exclusions>
-    <commons.collections4.version>4.4</commons.collections4.version>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
   </properties>
 
   <dependencyManagement>
@@ -107,7 +116,7 @@
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
-        <version>${spring.boot.version}</version>
+        <version>${spring-boot.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -120,18 +129,6 @@
       <dependency>
         <groupId>com.eurodyn.qlack.util</groupId>
         <artifactId>qlack-util-querydsl</artifactId>
-      </dependency>
-
-      <!-- Other dependencies -->
-      <dependency>
-        <groupId>org.mapstruct</groupId>
-        <artifactId>mapstruct-processor</artifactId>
-        <version>${mapstruct.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.mapstruct</groupId>
-        <artifactId>mapstruct</artifactId>
-        <version>${mapstruct.version}</version>
       </dependency>
       <dependency>
         <groupId>commons-collections</groupId>
@@ -151,23 +148,17 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-email</artifactId>
-        <version>${apache.email.version}</version>
+        <version>${commons-email.version}</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.datatype</groupId>
         <artifactId>jackson-datatype-jsr310</artifactId>
-        <version>${jackson.datatype.version}</version>
+        <version>${jackson.datatype.jsr310.version}</version>
       </dependency>
       <dependency>
         <groupId>io.sensesecure</groupId>
         <artifactId>clamav4j</artifactId>
         <version>${sensesecure.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok</artifactId>
-        <version>${lombok.version}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
@@ -215,7 +206,46 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-configuration-processor</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.querydsl</groupId>
+      <artifactId>querydsl-apt</artifactId>
+      <classifier>jakarta</classifier>
+      <version>${query-dsl.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.querydsl</groupId>
+      <artifactId>querydsl-jpa</artifactId>
+      <classifier>jakarta</classifier>
+      <version>${query-dsl.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mapstruct</groupId>
+      <artifactId>mapstruct</artifactId>
+      <version>${mapstruct.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mapstruct</groupId>
+      <artifactId>mapstruct-processor</artifactId>
+      <version>${mapstruct.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>${lombok.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok-mapstruct-binding</artifactId>
+      <version>${lombok-mapstruct-binding.version}</version>
     </dependency>
   </dependencies>
 
@@ -232,45 +262,6 @@
             <arg>-parameters</arg>
           </compilerArgs>
           <showDeprecation>true</showDeprecation>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
-          <encoding>UTF-8</encoding>
-          <useIncrementalCompilation>false</useIncrementalCompilation>
-          <annotationProcessorPaths>
-            <annotationProcessorPath>
-              <groupId>org.mapstruct</groupId>
-              <artifactId>mapstruct-processor</artifactId>
-              <version>${mapstruct.version}</version>
-            </annotationProcessorPath>
-            <annotationProcessorPath>
-              <groupId>com.querydsl</groupId>
-              <artifactId>querydsl-jpa-codegen</artifactId>
-              <version>${querydsl.version}</version>
-            </annotationProcessorPath>
-            <annotationProcessorPath>
-              <groupId>org.projectlombok</groupId>
-              <artifactId>lombok</artifactId>
-              <version>${lombok.version}</version>
-            </annotationProcessorPath>
-            <annotationProcessorPath>
-              <groupId>org.projectlombok</groupId>
-              <artifactId>lombok-mapstruct-binding </artifactId>
-              <version>${lombok-mapstruct-binding.version}</version>
-            </annotationProcessorPath>
-            <!-- QueryDSL - Compatibility with JDK >= 9 -->
-            <path>
-              <groupId>com.querydsl</groupId>
-              <artifactId>querydsl-apt</artifactId>
-              <version>${querydsl.version}</version>
-              <classifier>jpa</classifier>
-            </path>
-            <path>
-              <groupId>jakarta.annotation</groupId>
-              <artifactId>jakarta.annotation-api</artifactId>
-              <version>1.3.5</version>
-            </path>
-            <!-- /QueryDSL - Compatibility with JDK >= 9 -->
-          </annotationProcessorPaths>
         </configuration>
       </plugin>
     </plugins>
@@ -279,7 +270,7 @@
         <plugin>
           <groupId>org.zeroturnaround</groupId>
           <artifactId>jrebel-maven-plugin</artifactId>
-          <version>${jrebel.version}</version>
+          <version>${maven.jrebel.plugin.version}</version>
           <configuration>
             <alwaysGenerate>true</alwaysGenerate>
           </configuration>
@@ -384,7 +375,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
-            <version>${maven-javadoc-plugin.version}</version>
+            <version>${maven.javadoc.plugin.version}</version>
             <executions>
               <execution>
                 <id>attach-javadocs</id>
@@ -446,7 +437,7 @@
           <plugin>
             <groupId>com.webcohesion.enunciate</groupId>
             <artifactId>enunciate-maven-plugin</artifactId>
-            <version>${enunciate.version}</version>
+            <version>${maven.enunciate.plugin.version}</version>
             <configuration>
               <configFile>src/main/resources/enunciate/enunciate.xml</configFile>
               <docsDir>${project.build.directory}/enunciate-documentation</docsDir>

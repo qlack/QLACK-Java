@@ -1,6 +1,7 @@
 # QLACK Util - QueryDSL
 
-This module provides annotation-based checks for empty QueryDSL predicates. When using QueryDSL for your REST endpoints this utility component makes sure that empty predicates do not produce an error.
+This module provides annotation-based checks for empty QueryDSL predicates. When using QueryDSL for 
+your REST endpoints this utility component makes sure that empty predicates do not produce an error.
 
 ## Integration
 
@@ -13,4 +14,12 @@ This module provides annotation-based checks for empty QueryDSL predicates. When
     </dependency>
 ```
 
-### Use the _EmptyPredicateCheck_ annotation for SQL queries
+### Use the @EmptyPredicateCheck annotation for SQL queries
+For example:
+```java
+@EmptyPredicateCheck
+public ResponseEntity<Page<UserGroupDTO>> findAll(@QuerydslPredicate(root = UserGroup.class) Predicate predicate,
+Pageable pageable) {
+return userGroupManagementService.findAll(predicate, pageable);
+}
+```

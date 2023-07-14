@@ -6,7 +6,7 @@ import com.eurodyn.qlack.fuse.workflow.repository.ProcessFileRepository;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.logging.Logger;
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import org.activiti.engine.RepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

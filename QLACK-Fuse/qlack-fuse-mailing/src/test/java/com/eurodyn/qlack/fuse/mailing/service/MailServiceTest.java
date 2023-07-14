@@ -21,7 +21,7 @@ import com.eurodyn.qlack.fuse.mailing.validators.EmailValidator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.validation.ValidationException;
+import jakarta.validation.ValidationException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

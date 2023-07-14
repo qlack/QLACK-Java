@@ -6,7 +6,7 @@ import com.eurodyn.qlack.fuse.cm.model.QNodeAttribute;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 /**
  * A Util class for the DocumentService class operations.

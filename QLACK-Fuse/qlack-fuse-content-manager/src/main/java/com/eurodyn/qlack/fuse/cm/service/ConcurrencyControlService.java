@@ -14,7 +14,7 @@ import com.eurodyn.qlack.fuse.cm.model.NodeAttribute;
 import com.eurodyn.qlack.fuse.cm.repository.NodeRepository;
 import com.eurodyn.qlack.fuse.cm.util.CMConstants;
 import java.util.Calendar;
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;

@@ -5,7 +5,7 @@ import com.eurodyn.qlack.fuse.audit.mapper.AuditMapper;
 import com.eurodyn.qlack.fuse.audit.repository.AuditLevelRepository;
 import com.eurodyn.qlack.fuse.audit.repository.AuditRepository;
 import com.eurodyn.qlack.fuse.audit.util.AuditProperties;
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import lombok.extern.java.Log;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;

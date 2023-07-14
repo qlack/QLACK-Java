@@ -3,7 +3,7 @@
   <parent>
     <artifactId>qlack-fuse</artifactId>
     <groupId>com.eurodyn.qlack.fuse</groupId>
-    <version>3.5.12-SNAPSHOT</version>
+    <version>3.6.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -25,20 +25,6 @@
 
     <!-- Third-party dependencies -->
     <dependency>
-      <groupId>com.querydsl</groupId>
-      <artifactId>querydsl-jpa</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.querydsl</groupId>
-      <artifactId>querydsl-core</artifactId>
-      <exclusions>
-        <exclusion>
-          <artifactId>guava</artifactId>
-          <groupId>com.google.guava</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
     </dependency>
@@ -46,18 +32,10 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
     </dependency>
-    <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.mapstruct</groupId>
-      <artifactId>mapstruct</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>javax.inject</groupId>-->
+<!--      <artifactId>javax.inject</artifactId>-->
+<!--    </dependency>-->
 
     <!--Activiti dependencies -->
     <dependency>

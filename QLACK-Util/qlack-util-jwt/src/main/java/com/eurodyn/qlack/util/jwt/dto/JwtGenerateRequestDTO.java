@@ -1,6 +1,6 @@
 package com.eurodyn.qlack.util.jwt.dto;
 
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

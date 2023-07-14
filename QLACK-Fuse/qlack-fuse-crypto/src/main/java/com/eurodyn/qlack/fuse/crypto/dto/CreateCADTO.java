@@ -3,7 +3,7 @@ package com.eurodyn.qlack.fuse.crypto.dto;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.util.Locale;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

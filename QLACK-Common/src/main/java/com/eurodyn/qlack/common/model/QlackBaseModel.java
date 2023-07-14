@@ -1,15 +1,15 @@
 package com.eurodyn.qlack.common.model;
 
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
 import java.io.Serializable;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 /**
- * Superclass that contains common fields for the Qlack entities.
+ * Superclass that contains common fields for QLACK entities.
  *
  * @author European Dynamics SA
  */

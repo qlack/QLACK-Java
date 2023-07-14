@@ -1,9 +1,9 @@
 package com.eurodyn.qlack.util.data.filter;
 
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.github.bohnman.squiggly.context.provider.SimpleSquigglyContextProvider;
-import com.github.bohnman.squiggly.filter.SquigglyPropertyFilter;
-import com.github.bohnman.squiggly.parser.SquigglyParser;
+import dev.nicklasw.squiggly.context.provider.SimpleSquigglyContextProvider;
+import dev.nicklasw.squiggly.filter.SquigglyPropertyFilter;
+import dev.nicklasw.squiggly.parser.SquigglyParser;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJacksonValue;

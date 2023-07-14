@@ -6,7 +6,7 @@ import com.eurodyn.qlack.fuse.lexicon.dto.LanguageDTO;
 import com.eurodyn.qlack.fuse.lexicon.exception.LexiconYMLProcessingException;
 import com.eurodyn.qlack.fuse.lexicon.model.Application;
 import com.eurodyn.qlack.fuse.lexicon.repository.ApplicationRepository;
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.java.Log;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;

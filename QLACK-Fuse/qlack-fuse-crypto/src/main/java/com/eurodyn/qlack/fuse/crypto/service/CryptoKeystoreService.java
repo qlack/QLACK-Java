@@ -20,7 +20,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Set;
 import java.util.logging.Level;
 import javax.crypto.spec.SecretKeySpec;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.cert.X509CertificateHolder;

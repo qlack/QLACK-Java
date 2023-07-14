@@ -8,7 +8,7 @@ import com.eurodyn.qlack.fuse.audit.model.AuditLevel;
 import com.eurodyn.qlack.fuse.audit.repository.AuditLevelRepository;
 import java.text.MessageFormat;
 import java.util.List;
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;

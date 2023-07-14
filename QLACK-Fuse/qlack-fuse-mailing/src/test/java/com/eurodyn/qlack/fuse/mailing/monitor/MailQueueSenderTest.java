@@ -14,7 +14,7 @@ import com.eurodyn.qlack.fuse.mailing.exception.MailingException;
 import com.eurodyn.qlack.fuse.mailing.util.MailingProperties;
 import java.util.Collections;
 import java.util.Map;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMessage;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

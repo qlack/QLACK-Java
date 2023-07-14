@@ -18,7 +18,7 @@ import com.eurodyn.qlack.fuse.lexicon.repository.KeyRepository;
 import com.eurodyn.qlack.fuse.lexicon.repository.LanguageRepository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -3,7 +3,7 @@
   <parent>
     <groupId>com.eurodyn.qlack.util</groupId>
     <artifactId>qlack-util</artifactId>
-    <version>3.5.12-SNAPSHOT</version>
+    <version>3.6.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -15,12 +15,6 @@
       <groupId>com.eurodyn.qlack.common</groupId>
       <artifactId>qlack-common</artifactId>
       <version>${project.version}</version>
-      <exclusions>
-        <exclusion>
-          <artifactId>querydsl-core</artifactId>
-          <groupId>com.querydsl</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <!-- Spring dependencies -->
@@ -39,19 +33,9 @@
 
     <!-- Third-party dependencies -->
     <dependency>
-      <groupId>com.github.bohnman</groupId>
+      <groupId>dev.nicklasw</groupId>
       <artifactId>squiggly-filter-jackson</artifactId>
-      <version>${squiggly-filter-jackson}</version>
-      <exclusions>
-        <exclusion>
-          <artifactId>guava</artifactId>
-          <groupId>com.google.guava</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>commons-beanutils</artifactId>
-          <groupId>commons-beanutils</groupId>
-        </exclusion>
-      </exclusions>
+      <version>2.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.aspectj</groupId>
