@@ -50,7 +50,7 @@
             <id>attach-sources</id>
             <phase>package</phase>
             <goals>
-              <goal>jar-no-fork</goal>
+              <goal>jar</goal>
             </goals>
           </execution>
         </executions>
