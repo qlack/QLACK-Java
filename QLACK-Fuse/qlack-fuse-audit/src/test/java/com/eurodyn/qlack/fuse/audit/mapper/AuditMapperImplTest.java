@@ -130,7 +130,7 @@ public class AuditMapperImplTest {
 
     audit.setLevelId(null);
     auditDTO = auditMapper.mapToDTO(audit);
-    assertEquals(auditDTO.getLevel(), audit.getLevelId());
+    assertNull(auditDTO.getLevel());
   }
 
   @Test

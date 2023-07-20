@@ -21,7 +21,7 @@ public class RestTemplateResponseErrorHandler extends DefaultResponseErrorHandle
   private static final Logger LOGGER = Logger
     .getLogger(RestTemplateResponseErrorHandler.class.getName());
 
-  public static int truncateLimit = 1024;
+  public static final int TRUNCATE_LIMIT = 1024;
 
   @Override
   public void handleError(URI url, HttpMethod method, ClientHttpResponse response)
@@ -34,7 +34,7 @@ public class RestTemplateResponseErrorHandler extends DefaultResponseErrorHandle
 
     if (response.getBody() != null) {
       body = IOUtils.toString(response.getBody(), StandardCharsets.UTF_8);
-      StringUtils.abbreviate(body, truncateLimit);
+      StringUtils.abbreviate(body, TRUNCATE_LIMIT);
     }
 
     // Log an exception for this error.

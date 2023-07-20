@@ -1,12 +1,12 @@
 package com.eurodyn.qlack.util.hibernate.dialect;
 
-import org.hibernate.dialect.MariaDB103Dialect;
+import org.hibernate.dialect.MariaDBDialect;
 
 /**
  * A dialect for MariaDB 10.3+ creating tables in UTF-8.
  */
 @SuppressWarnings("squid:MaximumInheritanceDepth")
-public class MariaDB103UTF8Dialect extends MariaDB103Dialect {
+public class MariaDB103UTF8Dialect extends MariaDBDialect {
 
   @Override
   public String getTableTypeString() {

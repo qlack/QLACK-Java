@@ -129,7 +129,7 @@ public class InitTestValues {
     distributionList.setName("Qlack Test Distribution List");
     distributionList.setDescription("Distribution list for Qlack users");
     distributionList.setCreatedBy(" ");
-    distributionList.setCreatedOn(new Long("2121545432165"));
+    distributionList.setCreatedOn(2121545432165L);
     distributionList.setContacts(createContacts());
 
     return distributionList;
@@ -141,7 +141,7 @@ public class InitTestValues {
     distributionList.setName("Qlack Test Distribution List");
     distributionList.setDescription("Distribution list for Qlack users");
     distributionList.setCreatedBy(" ");
-    distributionList.setCreatedOn(new Long("2121545432165"));
+    distributionList.setCreatedOn(2121545432165L);
     distributionList.setContacts(createContactsDTO());
 
     return distributionList;
@@ -170,15 +170,16 @@ public class InitTestValues {
     email.setCcEmails("test3@eurodyn.com, test4@eurodyn.com");
     email.setBccEmails("test5@eurodyn.com, test6@eurodyn.com");
     email.setReplyToEmails("test@eurodyn.com, test2@eurodyn.com");
-    email.setAddedOnDate(new Long("2121545432165"));
+    email.setAddedOnDate(2121545432165L);
     email.setAttachments(createAttachments());
     email.setBody("This a test body");
     email.setEmailType(EMAIL_TYPE.HTML.name());
     email.setSubject("This is a test subject");
-    email.setTries(new Byte("1"));
+    email.setTries((byte) 1);
     email.setStatus(EMAIL_STATUS.QUEUED.name());
     email.setServerResponse("204");
-    email.setServerResponseDate(new Long("2121545432165"));
+    email.setServerResponseDate(2121545432165L);
+    email.setDateSent(2121545432165L);
 
     return email;
   }
@@ -200,7 +201,7 @@ public class InitTestValues {
     emailDTO.setCcEmails(ccEmails);
     emailDTO.setBccEmails(bccEmails);
     emailDTO.setReplyToEmails(replyToEmails);
-    emailDTO.setDateSent(new Long("2121545432165"));
+    emailDTO.setDateSent(2121545432165L);
     emailDTO.setAttachments(createAttachmentsDTO());
     emailDTO.setBody("This a test body");
     emailDTO.setEmailType(EMAIL_TYPE.HTML);
@@ -296,8 +297,8 @@ public class InitTestValues {
     internalMessage.setMailFrom("test@eurodyn.com");
     internalMessage.setMailTo("test2@eurodyn.com");
     internalMessage.setAttachments(createInternalAttachments());
-    internalMessage.setDateReceived(new Long("2121545432165"));
-    internalMessage.setDateSent(new Long("2121545432165"));
+    internalMessage.setDateReceived(2121545432165L);
+    internalMessage.setDateSent(2121545432165L);
     internalMessage.setDeleteType("I");
 
     return internalMessage;
@@ -312,8 +313,8 @@ public class InitTestValues {
     internalMessage.setMailFrom("test@eurodyn.com");
     internalMessage.setMailTo("test2@eurodyn.com");
     internalMessage.setAttachments(createInternalAttachmentsWithMessages());
-    internalMessage.setDateReceived(new Long("2121545432165"));
-    internalMessage.setDateSent(new Long("2121545432165"));
+    internalMessage.setDateReceived(2121545432165L);
+    internalMessage.setDateSent(2121545432165L);
     internalMessage.setDeleteType("I");
 
     return internalMessage;
@@ -328,8 +329,8 @@ public class InitTestValues {
     internalMessageDTO.setMailFrom("test@eurodyn.com");
     internalMessageDTO.setMailTo("test2@eurodyn.com");
     internalMessageDTO.setAttachments(createInternalAttachmentsDTO());
-    internalMessageDTO.setDateReceived(new Long("2121545432165"));
-    internalMessageDTO.setDateSent(new Long("2121545432165"));
+    internalMessageDTO.setDateReceived(2121545432165L);
+    internalMessageDTO.setDateSent(2121545432165L);
     internalMessageDTO.setDeleteType("I");
 
     return internalMessageDTO;

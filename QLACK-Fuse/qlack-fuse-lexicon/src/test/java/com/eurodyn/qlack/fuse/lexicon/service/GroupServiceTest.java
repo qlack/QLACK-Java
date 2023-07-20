@@ -1,7 +1,7 @@
 package com.eurodyn.qlack.fuse.lexicon.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -215,8 +215,8 @@ public class GroupServiceTest {
     when(
       dataRepository.findAll(predicate, Sort.by("lastUpdatedOn").descending()))
       .thenReturn(new ArrayList<>());
-    assertNotNull(groupService
-      .getLastUpdateDateForLocale(group.getId(), language.getLocale()));
+    assertTrue(groupService
+      .getLastUpdateDateForLocale(group.getId(), language.getLocale()) > 0);
   }
 
 }

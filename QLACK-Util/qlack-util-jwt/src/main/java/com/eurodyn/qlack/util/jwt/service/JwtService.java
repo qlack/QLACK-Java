@@ -41,6 +41,7 @@ public class JwtService {
    * href="https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-25#section-7">JWT Compact
    * Serialization</a>
    */
+  @SuppressWarnings("squid:S5659")
   public String generateJwt(JwtGenerateRequestDTO request) {
     // The JWT signature algorithm to be used to sign the token.
     final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;

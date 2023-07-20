@@ -3,7 +3,6 @@ package com.eurodyn.qlack.fuse.aaa.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,17 +34,6 @@ import com.eurodyn.qlack.fuse.aaa.repository.UserGroupRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
 import com.eurodyn.qlack.fuse.aaa.util.AAAProperties;
 import com.querydsl.core.types.Predicate;
-import org.apache.commons.collections.CollectionUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.data.domain.Sort;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -57,6 +45,16 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import org.apache.commons.collections.CollectionUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest {
@@ -622,7 +620,7 @@ public class UserServiceTest {
     when(userRepository.fetchById(user.getId())).thenReturn(user);
     when(userGroupRepository.findByName(userGroupDTOS.get(0).getName())).thenReturn(userGroup);
     userService.addUserGroups(userGroupList, user.getId());
-    assertNotNull(userService.belongsToGroupByName(user.getId(), userGroupDTOS.get(0).getName(),
+    assertTrue(userService.belongsToGroupByName(user.getId(), userGroupDTOS.get(0).getName(),
         false));
     verify(userRepository, times(2)).fetchById(anyString());
   }
