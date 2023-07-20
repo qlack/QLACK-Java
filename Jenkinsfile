@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'eddevopsd2/maven-java-npm-docker:mvn3.8.5-jdk17-node16.19.0'
+            image 'eddevopsd2/maven-java-npm-docker:mvn3.8.5-jdk17-npm8.5.0-docker'
             args '-v /root/.m2/Qlack-Java:/root/.m2'
         }
     }
