@@ -9,17 +9,17 @@ pipeline {
                 namespace: jenkins
               spec:
                 affinity:
-                    podAntiAffinity:
-                        preferredDuringSchedulingIgnoredDuringExecution:
-                        - weight: 50
-                        podAffinityTerm:
-                            labelSelector:
-                            matchExpressions:
-                            - key: jenkins/jenkins-jenkins-agent
-                                operator: In
-                                values:
-                                - "true"
-                            topologyKey: kubernetes.io/hostname
+                        podAntiAffinity:
+                          preferredDuringSchedulingIgnoredDuringExecution:
+                          - weight: 50
+                            podAffinityTerm:
+                              labelSelector:
+                                matchExpressions:
+                                - key: jenkins/jenkins-jenkins-agent
+                                  operator: In
+                                  values:
+                                  - "true"
+                              topologyKey: kubernetes.io/hostname
                 securityContext:
                     runAsUser: 0
                     runAsGroup: 0
