@@ -8,12 +8,24 @@ pipeline {
                 name: qlack-java
                 namespace: jenkins
               spec:
+                affinity:
+                    podAntiAffinity:
+                        preferredDuringSchedulingIgnoredDuringExecution:
+                        - weight: 50
+                        podAffinityTerm:
+                            labelSelector:
+                            matchExpressions:
+                            - key: jenkins/jenkins-jenkins-agent
+                                operator: In
+                                values:
+                                - "true"
+                            topologyKey: kubernetes.io/hostname
                 securityContext:
                     runAsUser: 0
                     runAsGroup: 0
                 containers:
                 - name: qlack-java-builder
-                  image: eddevopsd2/maven-java-npm-docker:mvn3.8.5-jdk8-11-15-17-npm6.14.4-docker
+                  image: eddevopsd2/maven-java-npm-docker:mvn3.8.5-jdk17-npm8.5.0-docker
                   volumeMounts:
                   - name: maven
                     mountPath: /root/.m2/
@@ -38,43 +50,18 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10'))
     }
     stages {
-        stage('Build jdk8') {
+        stage('Build') {
             steps {
                 container (name: 'qlack-java-builder'){
-                    sh 'update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java'
                     sh 'mvn clean install -Pfull-build'
                 }
             }
-        }
-        stage('Build jdk11') {
-            steps {
-                container (name: 'qlack-java-builder'){
-                    sh 'update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java'
-                    sh 'mvn clean install -Pfull-build'
-                }
-            }
-        }
-        stage('Build jdk15') {
-            steps {
-                container (name: 'qlack-java-builder'){
-                    sh 'update-alternatives --set java /usr/lib/jvm/jdk-15.0.2/bin/java'
-                    sh 'mvn clean install -Pfull-build'
-                }
-            }
-        }
-        stage('Build jdk17') {
-            steps {
-                container (name: 'qlack-java-builder'){
-                    sh 'update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java'
-                    sh 'mvn clean install -Pfull-build'
-                }
-            }
-        }                        
+        }                      
         stage('Sonar Analysis') {
             steps {
                 container (name: 'qlack-java-builder'){
                     withSonarQubeEnv('sonar'){
-                        sh 'mvn sonar:sonar -Dsonar.projectName=Qlack-Java -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_GLOBAL_KEY}'
+                        sh 'mvn sonar:sonar -Dsonar.projectName=Qlack-Java -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.token=${SONAR_GLOBAL_KEY} -Dsonar.working.directory="/tmp"'
                     }
                 }
             }
