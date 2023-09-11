@@ -9,6 +9,9 @@
 
   <artifactId>qlack-fuse-aaa</artifactId>
 
+
+
+
   <dependencies>
     <!-- QLACK dependencies -->
     <dependency>
@@ -30,6 +33,10 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-saml2-service-provider</artifactId>
     </dependency>
 
     <!-- Third-party dependencies -->
@@ -67,4 +74,13 @@
       <artifactId>commons-collections4</artifactId>
     </dependency>
   </dependencies>
+
+  <repositories>
+    <repository>
+      <id>shibboleth_repository</id>
+      <name>Shibboleth Maven Repository</name>
+      <url>https://build.shibboleth.net/nexus/content/repositories/releases/</url>
+    </repository>
+  </repositories>
+
 </project>

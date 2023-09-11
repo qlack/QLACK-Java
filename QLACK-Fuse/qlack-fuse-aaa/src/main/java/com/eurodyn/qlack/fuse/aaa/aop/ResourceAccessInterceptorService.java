@@ -25,4 +25,8 @@ class ResourceAccessInterceptorService {
   public User findUser(String id) {
     return userRepository.fetchById(id);
   }
+
+  public User findByUsername(String username) {
+    return userRepository.findByUsername(username);
+  }
 }

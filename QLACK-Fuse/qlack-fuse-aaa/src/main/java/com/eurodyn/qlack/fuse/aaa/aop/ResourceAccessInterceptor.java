@@ -18,6 +18,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.saml2.provider.service.authentication.DefaultSaml2AuthenticatedPrincipal;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
@@ -182,23 +183,31 @@ public class ResourceAccessInterceptor {
    */
   @Before("annotation() && @annotation(resourceAccess)")
   public void authorize(JoinPoint joinPoint, ResourceAccess resourceAccess)
-      throws IllegalAccessException {
-    Object principal = SecurityContextHolder.getContext().getAuthentication()
-        .getPrincipal();
+          throws IllegalAccessException {
+      Object principal = SecurityContextHolder.getContext().getAuthentication()
+              .getPrincipal();
 
-    //authorizeUserDetailsDTO method checks the fields of the com.eurodyn.qlack.fuse.aaa.dto.UserDetailsDTO
-    //if your security implementation adds another type of object in the spring security principal, a custom implementation must be added
-    if (principal instanceof String) {
-      User user = resourceAccessInterceptorService.findUser((String) principal);
-      if (user != null) {
-        authorizeUser(user, joinPoint,
-            resourceAccess);
+      //authorizeUserDetailsDTO method checks the fields of the com.eurodyn.qlack.fuse.aaa.dto.UserDetailsDTO
+      //if your security implementation adds another type of object in the spring security principal, a custom implementation must be added
+      if (principal instanceof String) {
+          User user = resourceAccessInterceptorService.findUser((String) principal);
+          if (user != null) {
+              authorizeUser(user, joinPoint,
+                      resourceAccess);
+          } else if (principal instanceof DefaultSaml2AuthenticatedPrincipal) {
+              user = resourceAccessInterceptorService.findByUsername((String)((DefaultSaml2AuthenticatedPrincipal) principal).getName());
+              if (user != null) {
+                  authorizeUser(user, joinPoint,
+                          resourceAccess);
+              } else {
+                  throwUnauthorizedException();
+              }
+          } else {
+              throwUnauthorizedException();
+          }
       } else {
-        throwUnauthorizedException();
+          throwUnauthorizedException();
       }
-    } else {
-      throwUnauthorizedException();
-    }
   }
 
   private void authorizeUser(User user, JoinPoint joinPoint,
