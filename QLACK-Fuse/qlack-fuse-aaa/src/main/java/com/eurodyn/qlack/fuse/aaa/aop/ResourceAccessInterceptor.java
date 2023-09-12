@@ -189,25 +189,25 @@ public class ResourceAccessInterceptor {
 
       //authorizeUserDetailsDTO method checks the fields of the com.eurodyn.qlack.fuse.aaa.dto.UserDetailsDTO
       //if your security implementation adds another type of object in the spring security principal, a custom implementation must be added
-      if (principal instanceof String) {
-          User user = resourceAccessInterceptorService.findUser((String) principal);
-          if (user != null) {
-              authorizeUser(user, joinPoint,
-                      resourceAccess);
-          } else if (principal instanceof DefaultSaml2AuthenticatedPrincipal) {
-              user = resourceAccessInterceptorService.findByUsername((String)((DefaultSaml2AuthenticatedPrincipal) principal).getName());
-              if (user != null) {
-                  authorizeUser(user, joinPoint,
-                          resourceAccess);
-              } else {
-                  throwUnauthorizedException();
-              }
-          } else {
-              throwUnauthorizedException();
-          }
+    if (principal instanceof String) {
+      User user = resourceAccessInterceptorService.findUser((String) principal);
+      if (user != null) {
+        authorizeUser(user, joinPoint,
+                resourceAccess);
       } else {
-          throwUnauthorizedException();
+        throwUnauthorizedException();
       }
+    } else if (principal instanceof DefaultSaml2AuthenticatedPrincipal) {
+      User user = resourceAccessInterceptorService.findByUsername((String)((DefaultSaml2AuthenticatedPrincipal) principal).getName());
+      if (user != null) {
+        authorizeUser(user, joinPoint,
+                resourceAccess);
+      } else {
+        throwUnauthorizedException();
+      }
+    }else {
+      throwUnauthorizedException();
+    }
   }
 
   private void authorizeUser(User user, JoinPoint joinPoint,
