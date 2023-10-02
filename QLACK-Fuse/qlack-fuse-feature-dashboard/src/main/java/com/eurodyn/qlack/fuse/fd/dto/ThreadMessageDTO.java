@@ -19,15 +19,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ThreadMessageDTO implements Serializable {
+public class ThreadMessageDTO extends FeatureDashboardBaseDTO {
 
   @Serial
   private static final long serialVersionUID = 58806752120029887L;
 
-  /**
-   * The Thread id
-   */
-  private String id;
   /**
    * The title refers the section that mapping is taking place
    */
@@ -95,7 +91,7 @@ public class ThreadMessageDTO implements Serializable {
   @Override
   public String toString() {
     return "ThreadMessageDTO{" +
-        "id='" + id + '\'' +
+        "id='" + getId() + '\'' +
         ", title='" + title + '\'' +
         ", author='" + author + '\'' +
         ", createdOn=" + createdOn +

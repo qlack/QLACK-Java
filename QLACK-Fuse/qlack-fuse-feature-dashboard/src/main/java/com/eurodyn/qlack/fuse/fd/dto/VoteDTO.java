@@ -9,12 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class VoteDTO implements Serializable {
-
-  /**
-   * The Vote id
-   */
-  private String id;
+public class VoteDTO  extends FeatureDashboardBaseDTO {
 
   /**
    * The id of the person who voted.
@@ -40,7 +35,7 @@ public class VoteDTO implements Serializable {
   @Override
   public String toString() {
     return "VoteDTO{" +
-        "id='" + id + '\'' +
+        "id='" +  getId() + '\'' +
         "voterId='" + voterId + '\'' +
         ", threadId='" + threadId + '\'' +
         ", reaction=" + reaction +
