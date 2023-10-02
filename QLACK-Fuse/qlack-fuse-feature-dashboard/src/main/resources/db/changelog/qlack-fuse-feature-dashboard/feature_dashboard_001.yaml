@@ -1,0 +1,97 @@
+databaseChangeLog:
+  - changeSet:
+      id: feature_dashboard_001
+      author: European Dynamics SA
+      changes:
+        - createTable:
+            tableName: fd_thread_message
+            columns:
+              - column:
+                  name: id
+                  type: varchar(255)
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: dbversion
+                  type: bigint
+              - column:
+                  name: title
+                  type: varchar(255)
+              - column:
+                  name: author
+                  type: varchar(255)
+              - column:
+                  name: created_on
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_update
+                  type: timestamp
+              - column:
+                  name: body
+                  type: text
+              - column:
+                  name: attributes_mask
+                  type: varchar(16)
+              - column:
+                  name: ownership_mask
+                  type: varchar(32)
+              - column:
+                  name: status
+                  type: varchar(255)
+              - column:
+                  name: status_comment
+                  type: varchar(2000)
+              - column:
+                  name: parent_thread_id
+                  type: varchar(255)
+            primaryKey:
+              - columnNames:
+                  - id
+            foreignKeyConstraints:
+                    baseTableName: fd_thread_message
+                    baseColumnNames: parent_thread_id
+                    referencedTableName: fd_thread_message
+                    referencedColumnNames: id
+                    constraintName: fk_thread_message_parent
+
+  - changeSet:
+      id: create-vote-table
+      author: European Dynamics SA
+      changes:
+        - createTable:
+            tableName: fd_vote
+            columns:
+              - column:
+                  name: id
+                  type: varchar(255)
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: dbversion
+                  type: bigint
+              - column:
+                  name: voter_id
+                  type: varchar(255)
+              - column:
+                  name: created_on
+                  type: timestamp
+              - column:
+                  name: thread
+                  type: varchar(255)
+              - column:
+                  name: reaction
+                  type: varchar(255)
+            primaryKey:
+              - columnNames:
+                  - id
+            foreignKeyConstraints:
+              - foreignKeyConstraint:
+                  baseTableName: fd_vote
+                  referencedTableName: fd_thread_message
+                  name: fk_vote_thread
+                  references:
+                    - reference:
+                        column: thread
+                        foreignColumnName: id
