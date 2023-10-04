@@ -1,6 +1,10 @@
 package com.eurodyn.qlack.fuse.fd.service.interfaces;
 
 
+import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 /**
  * An interface describing the basic functionality of app services
@@ -52,5 +56,24 @@ public interface ServiceBase<E, D> {
      * @param id the ID of the resource to be deleted
      */
     void delete(String id);
+
+
+
+    /**
+     * Utility method that takes a {@code List} and the paging requirements, and returns them paged
+     *
+     * @param page the page requested
+     * @param size the size of the page
+     * @param content the total content
+     * @return a {@code Page} containing the results
+     */
+    default  <T> Page<T> getPage(int page, int size, List<T> content) {
+
+        PageRequest pageable = PageRequest.of(page, size);
+        long start = Math.min(Math.max(pageable.getOffset(), 0), content.size());
+        long end = Math.min((start + pageable.getPageSize()), content.size());
+        return new PageImpl<>(content.subList(Math.toIntExact(start), Math.toIntExact(end)),
+            pageable, content.size());
+    }
 
 }

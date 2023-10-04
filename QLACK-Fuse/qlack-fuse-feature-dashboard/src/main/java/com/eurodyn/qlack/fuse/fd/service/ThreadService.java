@@ -288,4 +288,15 @@ public class ThreadService implements ServiceBase<ThreadMessage, ThreadMessageDT
     return childMessages;
   }
 
+  /**
+   * Retrieves all the body texts of a Thread Pageable.
+   */
+  public Page<String> getThreadMessagesPaged(String id, Pageable pageable) {
+    var rootMessage = findRoot(findResource(id));
+    List<ThreadMessage> messages = new ArrayList<>();
+    messages.add(rootMessage);
+    messages.addAll(findChildrenThreads(rootMessage));
+    return getPage(pageable.getPageNumber(), pageable.getPageSize(),
+        messages.stream().map(ThreadMessage::getBody).toList());
+  }
 }
