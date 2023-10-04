@@ -148,6 +148,44 @@ public class ThreadService implements ServiceBase<ThreadMessage, ThreadMessageDT
   }
 
   /**
+   * @param id the ID of the resource to be Soft deleted
+   * @param deleteChildren whether the children shall be soft deleted or not.
+   */
+  public void deleteMessage(String id, boolean deleteChildren) {
+    log.finest(MessageFormat.format("Soft Deleting  of Thread message {0}", id));
+    setThreadStatus(id, deleteChildren, ThreadStatus.DELETED);
+  }
+
+
+  /**
+   * Changes the Status of a Thread and or of a Thread message tree.
+   *
+   * @param threadMessageId threadMessage id
+   * @param alsoChildren weather the status of given's id children
+   * @param status the new status.
+   */
+  public void setThreadStatus(String threadMessageId, boolean alsoChildren, ThreadStatus status) {
+    ThreadMessage threadMessage = findResource(threadMessageId);
+    log.finest(MessageFormat.format("Changing Thread message {0} to status {1}", threadMessageId,
+        status.getName()));
+    threadMessage.setStatus(status);
+    repository.save(threadMessage);
+    if (alsoChildren) {
+      List<ThreadMessage> childThreadMessages = findChildrenThreads(threadMessage);
+      childThreadMessages.forEach(
+          childMessage -> {
+            log.finest(MessageFormat.format("Changing Thread message {0} to status {1}",
+                childMessage.getId(),
+                status.getName()));
+            childMessage.setStatus(status);
+          }
+      );
+      repository.saveAll(childThreadMessages);
+    }
+  }
+
+
+  /**
    * Finds all available ThreadMessageDTO
    */
   public List<ThreadMessageDTO> findAll() {
@@ -172,6 +210,14 @@ public class ThreadService implements ServiceBase<ThreadMessage, ThreadMessageDT
    * Finds the Page of ThreadMessageDTOs based on predicate
    */
   public Page<ThreadMessageDTO> findAll(Predicate predicate, Pageable pageable) {
+    return mapper.map(repository.findAll(predicate, pageable));
+  }
+
+  /**
+   * Finds the Page of NON soft deleted ThreadMessageDTOs based
+   */
+  public Page<ThreadMessageDTO> findAllActive(Pageable pageable) {
+    Predicate predicate = Q_THREAD_MESSAGE.status.ne(ThreadStatus.DELETED);
     return mapper.map(repository.findAll(predicate, pageable));
   }
 
