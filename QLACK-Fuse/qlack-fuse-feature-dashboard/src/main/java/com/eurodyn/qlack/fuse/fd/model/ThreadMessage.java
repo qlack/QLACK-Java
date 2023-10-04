@@ -110,7 +110,7 @@ public class ThreadMessage extends QlackBaseModel {
   /**
    * Collection of child ThreadMessage instances
    */
-  @OneToMany(mappedBy = "parentThreadMessage", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "parentThreadMessage", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
   private List<ThreadMessage> childThreadMessages;
 
 

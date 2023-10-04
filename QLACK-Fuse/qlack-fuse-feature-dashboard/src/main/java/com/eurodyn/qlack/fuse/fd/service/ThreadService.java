@@ -138,10 +138,12 @@ public class ThreadService implements ServiceBase<ThreadMessage, ThreadMessageDT
   }
 
   /**
-   * @param id the ID of the resource to be deleted
+   * @param id the ID of the resource to be deleted. Hence the tree hierarchy all children of
+   * message will deleted as well.
    */
   @Override
   public void delete(String id) {
+    log.finest(MessageFormat.format("Deleting Thread message {0}", id));
     repository.deleteById(id);
   }
 
