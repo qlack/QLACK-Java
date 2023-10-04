@@ -15,11 +15,17 @@ public enum ThreadStatus {
   DRAFT("draft"),
   ACTIVE("active"),
   INACTIVE("inactive"),
-  UNPUBLISHED("unpublished"),
+  ARCHIVED("archived"),
   PUBLISHED("published"),
+  UNPUBLISHED("unpublished"),
   APPROVED("approved"),
   DELETED("deleted"),
   REQUESTED("requested"),
+  READ("read"),
+  UNREAD("Unread"),
+  HIDDEN("hidden"),
+  SCHEDULED("Scheduled"),
+  SPAM("spam"),
   REJECTED("rejected");
 
 
