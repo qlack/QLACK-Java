@@ -82,21 +82,43 @@ public class ThreadService implements ServiceBase<ThreadMessage, ThreadMessageDT
   /**
    * Ownership Mask setter
    */
-  public ThreadMessageDTO setOwnershipMask(String id, String pattern) {
-    ThreadMessage tm = findResource(id);
+  public ThreadMessageDTO setOwnershipMask(String threadId, String pattern) {
+    ThreadMessage tm = findResource(threadId);
     tm.setOwnershipMask(pattern);
     return mapper.mapToDTO(repository.save(tm));
+  }
+
+  /**
+   * Ownership Mask getter
+   */
+  public String getOwnershipMask(String threadId) {
+    return queryFactory.selectFrom(Q_THREAD_MESSAGE)
+        .select(Q_THREAD_MESSAGE.ownershipMask)
+        .where(Q_THREAD_MESSAGE.id.eq(threadId))
+        .fetchOne();
   }
 
 
   /**
    * Attribute Mask setter
    */
-  public ThreadMessageDTO setAttributesMask(String id, String pattern) {
-    ThreadMessage tm = findResource(id);
+  public ThreadMessageDTO setAttributesMask(String threadId, String pattern) {
+    ThreadMessage tm = findResource(threadId);
     tm.setAttributesMask(pattern);
     return mapper.mapToDTO(repository.save(tm));
   }
+
+
+  /**
+   * Attribute Mask getter
+   */
+  public String getAttributesMask(String threadId) {
+    return queryFactory.selectFrom(Q_THREAD_MESSAGE)
+        .select(Q_THREAD_MESSAGE.attributesMask)
+        .where(Q_THREAD_MESSAGE.id.eq(threadId))
+        .fetchOne();
+  }
+
 
   /**
    * @param id the ID of the ThreadMessage to be searched
