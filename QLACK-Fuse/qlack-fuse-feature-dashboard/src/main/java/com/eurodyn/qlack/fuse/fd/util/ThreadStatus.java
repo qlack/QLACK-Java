@@ -19,6 +19,7 @@ public enum ThreadStatus {
   PUBLISHED("published"),
   APPROVED("approved"),
   DELETED("deleted"),
+  REQUESTED("requested"),
   REJECTED("rejected");
 
 
