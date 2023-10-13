@@ -59,7 +59,7 @@ public class ThreadService implements ServiceBase<ThreadMessage, ThreadMessageDT
 
   /**
    * @param dto the DTO to be mapped to the created entity
-   * @return upated ThreadMessageDTO
+   * @return updated ThreadMessageDTO
    */
   @Override
   public ThreadMessageDTO create(ThreadMessageDTO dto) {
@@ -346,5 +346,24 @@ public class ThreadService implements ServiceBase<ThreadMessage, ThreadMessageDT
     messages.addAll(findChildrenThreads(rootMessage));
     return getPage(pageable.getPageNumber(), pageable.getPageSize(),
         messages.stream().map(ThreadMessage::getBody).toList());
+  }
+
+  /**
+   * Adds a simple text comment on a thread.
+   * @param threadId the root thread id.
+   * @param commentText the new comment.
+   * @param author the author of the comment.
+   * @return the new ThreadMessage dto
+   */
+  public ThreadMessageDTO addComment(String threadId, String commentText, String author) {
+    ThreadMessageDTO comment = new ThreadMessageDTO();
+    ThreadMessageDTO parentThread = findById(threadId);
+    comment.setAuthor(author);
+    comment.setCreatedOn(Instant.now());
+    comment.setBody(commentText);
+    comment.setParentThread(parentThread);
+    comment.setLastUpdate(Instant.now());
+    repository.updateModificationTime(parentThread.getId());
+    return create(comment);
   }
 }

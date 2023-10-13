@@ -5,6 +5,9 @@ import com.eurodyn.qlack.fuse.fd.model.ThreadMessage;
 import com.querydsl.core.types.Predicate;
 import java.util.List;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
@@ -35,5 +38,11 @@ public interface ThreadMessageRepository extends QlackBaseRepository<ThreadMessa
    */
   @NonNull
   List<ThreadMessage> findAll(@NonNull Predicate predicate, @NonNull Sort sort);
+
+  @Modifying
+  @Query("UPDATE ThreadMessage t " +
+      "SET t.lastUpdate = cast(current_timestamp as instant), t.dbversion = t.dbversion + 1 " +
+      "WHERE t.id = :id")
+  void updateModificationTime(@Param("id") String id);
 
 }
