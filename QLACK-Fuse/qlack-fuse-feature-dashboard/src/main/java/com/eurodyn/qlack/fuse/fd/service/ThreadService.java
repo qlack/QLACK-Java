@@ -321,9 +321,9 @@ public class ThreadService implements ServiceBase<ThreadMessage, ThreadMessageDT
   }
 
   /**
-   * Finds child messages
+   * Finds child messages for a given parent
    */
-  private List<ThreadMessage> findChildrenThreads(ThreadMessage parent) {
+  public List<ThreadMessage> findChildrenThreads(ThreadMessage parent) {
     Predicate isChild = Q_THREAD_MESSAGE.parentThreadMessage.eq(parent);
     List<ThreadMessage> childMessages = queryFactory.selectFrom(Q_THREAD_MESSAGE).where(isChild)
         .orderBy(Q_THREAD_MESSAGE.createdOn.desc()).fetch();
