@@ -509,9 +509,9 @@ public class DocumentService {
       int i = 0;
 
       for (Map.Entry<String, String> entry : attributes.entrySet()) {
-        i++;
         query.setParameter("attr_" + i, entry.getKey());
         query.setParameter("value_" + i, entry.getValue());
+        i++;
       }
     }
 
