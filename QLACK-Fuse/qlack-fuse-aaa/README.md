@@ -2,10 +2,9 @@
 
 This module provides custom Authentication, Authorization and Accounting operations. Authorization
 (access control) which is carried out by an AspectJ class that works as an interceptor. This class
-intercepts every call on an endpoint or a business method annotated by the @ResourceAccess annotation
-and authorizes the request by matching permissions described by @ResourceOperation annotation with
-user/group/resource permissions provided by the authenticated user principal. @ResourceAccess can be
-described by multiple @ResourceOperation annotations.
+intercepts every call on an endpoint or a business method annotated by the @ResourceAccess or 
+@OperationAccess annotation and authorizes the request by matching permissions with
+user/group/resource permissions provided by the authenticated user principal.
 
 ## Integration
 
@@ -22,6 +21,7 @@ described by multiple @ResourceOperation annotations.
 ```
 <include file="db/changelog/qlack-fuse-aaa/qlack.fuse.aaa.changelog.xml"/>
 ```
+
 
 ### Add the packages in the Spring boot application main class declaration:
 #### Inject a password encoder bean.
@@ -45,10 +45,13 @@ public BCryptPasswordEncoder passwordEncoder() {
 
 
 ### Securing endpoints
-To secure an endpoint use @ResourceAccess annotation. The @ResourceAccess describes access to
-resources at a role level (roleAccess property) or at an operation and/or unique resource level
+To secure an endpoint use @OperationAccess or @ResourceAccess annotation.
+The @OperationAccess describes access to resources at a role level (roleAccess property) 
+or at an operation (operations property), that does not require further check for resource.
+The @ResourceAccess describes access to resources at an operation and unique resource level
 (operations property).
 
+@OperationAccess
 To describe access at a role level, the roleAccess property is used. The roleAcess is an array
 containing the names of the roles allowed to access this endpoint. For example, the following code
 gives access to users who have the role "Administrator". Access to more than one roles can be
@@ -56,7 +59,7 @@ described separated by comma.
 
 ### Example 1
 ```java
-import com.eurodyn.qlack.fuse.aaa.annotation.ResourceAccess;
+import com.eurodyn.qlack.fuse.aaa.annotation.OperationAccess;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 // ..
@@ -67,42 +70,69 @@ private UserService userService;
 
 @ResponseBody
 @RequestMapping(method = RequestMethod.GET, value="/app/users/admin")
-@ResourceAccess(roleAccess = {"Administrator"})
+@OperationAccess(roleAccess = {"Administrator"})
 public UserDTO getAdmin() {
     return userService.getUserByName("admin");
 }
+
 ```
 
-@ResourceOperation is used to describe access at an operation/unique resource level.
-@ResourceOperation holds a pair of operation - resourceId properties which declare the operation
-name and perhaps the resource (object), a user must have permissions for. If the user has such
-permissions, the request is authorized.
-
-The @ResourceOperation has the following properties:
-
-* operation: the name of the allowed operation. This operation should already exist in the database
-
-* resourceIdParameter (Optional): the name of the parameter which represents the resourceId (GET, DELETE scenarios)
-
-* resourceIdField (Optional): the name of the DTO field which represents the resourceId (POST, PUT scenarios)
-
-When the resourceIdField property is used, the referenced field in the DTO should always be annotated
-with the @ResourceId annotation and reference the field name as its value.
+To describe access at an operation level, withour link on resource, the operations property is used. 
+The operations is an array containing the names of the operations allowed to access this endpoint.
+For example, the following code gives access to users who have the operation "VIEW_USERS". 
+Access to more than one operations can be described separated by comma.
 
 ### Example 2
 ```java
+import com.eurodyn.qlack.fuse.aaa.annotation.OperationAccess;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+// ..
+
+@Autowired
+private UserService userService;
+// ..
+
+@ResponseBody
+@RequestMapping(method = RequestMethod.GET, value="/app/users/admin")
+@OperationAccess(operations = {"VIEW_USERS"})
+public List<UserDTO> getUsers() {
+    return userService.findAll();
+}
+
+```
+
+@ResourceAccess is used to describe access at an operation with unique resource level.
+The operations property is filled as in the previous example. In addition, a property must be annotated
+with @ResourceId and contain the corresponding's objectId value, in order for the user to be authenticated.
+The property can either be part of the method's parameters, or a field inside the method's object.
+
+### Example 3
+```java
+import com.eurodyn.qlack.fuse.aaa.annotation.OperationAccess;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+// ..
+
+@Autowired
+private UserService userService;
+// ..
+@GetMapping(path = "user", produces = MediaType.APPLICATION_JSON_VALUE)
+@ResourceAccess(operations = { "VIEW_USER" })
+public UserDTO findUser(@RequestParam(name = "id", required = false) @ResourceId String id) {
+        return userService.findById(id);
+        }
+
+```
+
+### Example 4
+```java
 import com.eurodyn.qlack.fuse.aaa.annotation.ResourceAccess;
-import com.eurodyn.qlack.fuse.aaa.annotation.ResourceOperation;
 import org.springframework.web.bind.annotation.RequestBody;
 // ..
 
 RequestMapping(method = RequestMethod.PUT, value="/app/docs")
-@ResourceAccess(
-    operations = {
-            @ResourceOperation(operation = "UPDATE_PERMISSION", 
-            resourceIdField = "id")
-    }
- )
+@ResourceAccess(operations = { "UPDATE_PERMISSION" })
 public void updateDocument(@RequestBody DocumentDTO document) {
     // ..
 }
@@ -112,7 +142,7 @@ import com.eurodyn.qlack.fuse.aaa.annotation.ResourceId;
 
 public class DocumentDTO {
 
-    @ResourceId("id")
+    @ResourceId
     private String id;
     // ..
 }

@@ -10,9 +10,8 @@ import java.lang.annotation.Target;
  *
  * @author European Dynamics
  */
-@Target(ElementType.FIELD)
+@Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ResourceId {
 
-  String value() default "";
 }

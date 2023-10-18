@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * Describes access rules for a REST endpoint  on a role level: through
- * roleAccess on an operation/resource level: through {@link ResourceOperation}
+ * roleAccess on an operation/resource level
  * annotation
  *
  * @author European Dynamics SA
@@ -16,7 +16,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ResourceAccess {
 
-  String[] roleAccess() default {};
-
-  ResourceOperation[] operations() default {};
+  String[] operations() default {};
 }
