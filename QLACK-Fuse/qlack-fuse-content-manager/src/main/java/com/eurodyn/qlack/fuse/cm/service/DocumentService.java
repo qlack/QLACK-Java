@@ -39,6 +39,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import static java.util.Objects.isNull;
+
 /**
  * @author European Dynamics
  */
@@ -500,10 +502,17 @@ public class DocumentService {
       }
     }
 
-    sbQuery.append(" WHERE n.parent.id = :parentId ORDER BY n.createdOn ASC");
 
-    Query query = em.createQuery(sbQuery.toString());
-    query.setParameter("parentId", parentId);
+    Query query = null;
+
+    if(isNull(parentId)){
+      sbQuery.append(" WHERE n.parent.id IS NULL ORDER BY n.createdOn ASC");
+      query = em.createQuery(sbQuery.toString());
+    }else{
+      sbQuery.append(" WHERE n.parent.id = :parentId ORDER BY n.createdOn ASC");
+      query = em.createQuery(sbQuery.toString());
+      query.setParameter("parentId", parentId);
+    }
 
     if (attributes != null) {
       int i = 0;
