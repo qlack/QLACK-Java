@@ -43,5 +43,11 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
     </dependency>
+      <dependency>
+          <groupId>com.eurodyn.qlack.fuse</groupId>
+          <artifactId>qlack-fuse-content-manager</artifactId>
+          <version>3.5.11</version>
+          <scope>test</scope>
+      </dependency>
   </dependencies>
 </project>

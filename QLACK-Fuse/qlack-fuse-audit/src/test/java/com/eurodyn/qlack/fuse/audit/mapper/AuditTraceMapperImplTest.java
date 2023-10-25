@@ -1,19 +1,18 @@
 package com.eurodyn.qlack.fuse.audit.mapper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.eurodyn.qlack.fuse.audit.InitTestValues;
 import com.eurodyn.qlack.fuse.audit.dto.AuditTraceDTO;
 import com.eurodyn.qlack.fuse.audit.model.AuditTrace;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AuditTraceMapperImplTest {
 
   @InjectMocks
@@ -30,7 +29,7 @@ public class AuditTraceMapperImplTest {
 
   private InitTestValues initTestValues;
 
-  @Before
+  @BeforeEach
   public void init() {
     initTestValues = new InitTestValues();
     auditTrace = initTestValues.createAuditTrace();
@@ -44,7 +43,7 @@ public class AuditTraceMapperImplTest {
   @Test
   public void mapToDTONullTest() {
     auditTraceDTO = auditTraceMapper.mapToDTO((AuditTrace) null);
-    assertEquals(null, auditTraceDTO);
+    assertNull(auditTraceDTO);
   }
 
   @Test
@@ -57,7 +56,7 @@ public class AuditTraceMapperImplTest {
   @Test
   public void mapToDTOListNullTest() {
     auditTraceDTOs = auditTraceMapper.mapToDTO((List<AuditTrace>) null);
-    assertEquals(null, auditTraceDTOs);
+    assertNull(auditTraceDTOs);
 
   }
 
@@ -70,20 +69,20 @@ public class AuditTraceMapperImplTest {
   @Test
   public void mapToEntityNullTest() {
     auditTrace = auditTraceMapper.mapToEntity((AuditTraceDTO) null);
-    assertEquals(null, auditTrace);
+    assertNull(auditTrace);
   }
 
   @Test
   public void mapToEntityListNullTest() {
     auditTraceDTOs = null;
     auditTraces = auditTraceMapper.mapToEntity(auditTraceDTOs);
-    assertEquals(null, auditTraces);
+    assertNull(auditTraces);
   }
 
   @Test
   public void mapToEntityDTONullTest() {
     auditTrace = auditTraceMapper.mapToEntity((AuditTraceDTO) null);
-    assertEquals(null, auditTrace);
+    assertNull(auditTrace);
 
   }
 
@@ -97,7 +96,7 @@ public class AuditTraceMapperImplTest {
   public void mapToExistingEntityTest() {
     auditTraceMapper.mapToExistingEntity(auditTraceDTO, auditTrace);
     auditTraceDTO.setTraceData(null);
-    assertEquals(null, auditTraceDTO.getTraceData());
+    assertNull(auditTraceDTO.getTraceData());
   }
 
   @Test
@@ -121,7 +120,7 @@ public class AuditTraceMapperImplTest {
     AuditTraceDTO auditTraceDTO = initTestValues.createAuditTraceDTO();
     auditTraceDTO.setTraceData(null);
     auditTraceMapper.mapToExistingEntity(null, auditTrace);
-    assertEquals(null, auditTraceDTO.getTraceData());
+    assertNull(auditTraceDTO.getTraceData());
   }
 
 }

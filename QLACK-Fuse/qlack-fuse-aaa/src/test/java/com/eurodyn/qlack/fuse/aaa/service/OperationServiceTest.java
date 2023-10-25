@@ -1,9 +1,7 @@
 package com.eurodyn.qlack.fuse.aaa.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -35,36 +33,36 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * @author European Dynamics
  */
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class OperationServiceTest {
 
   @InjectMocks
   OperationService operationService;
 
-  private OperationRepository operationRepository = mock(
+  final private OperationRepository operationRepository = mock(
     OperationRepository.class);
-  private UserHasOperationRepository userHasOperationRepository = mock(
+  final private UserHasOperationRepository userHasOperationRepository = mock(
     UserHasOperationRepository.class);
-  private UserRepository userRepository = mock(UserRepository.class);
-  private ResourceRepository resourceRepository = mock(
+  final private UserRepository userRepository = mock(UserRepository.class);
+  final private ResourceRepository resourceRepository = mock(
     ResourceRepository.class);
-  private OpTemplateRepository opTemplateRepository = mock(
+  final private OpTemplateRepository opTemplateRepository = mock(
     OpTemplateRepository.class);
-  private UserGroupHasOperationRepository userGroupHasOperationRepository = mock(
+  final private UserGroupHasOperationRepository userGroupHasOperationRepository = mock(
     UserGroupHasOperationRepository.class);
-  private UserGroupRepository userGroupRepository = mock(
+  final private UserGroupRepository userGroupRepository = mock(
     UserGroupRepository.class);
   @Mock
   private Interpreter i;
@@ -108,7 +106,7 @@ public class OperationServiceTest {
     "retVal = (userId != null && groupdId != null && resourceID != null)";
 
 
-  @Before
+  @BeforeEach
   public void init() {
     operationService = new OperationService(operationRepository,
       userHasOperationRepository,
@@ -136,7 +134,7 @@ public class OperationServiceTest {
 
     superadmins = initTestValues.createUsers();
     superadminsID = new HashSet<>();
-    superadmins.stream()
+    superadmins
       .forEach(superadmin -> superadminsID.add(superadmin.getId()));
 
     users = new ArrayList<>();
@@ -153,7 +151,7 @@ public class OperationServiceTest {
     users.add(blockedUser);
 
     usersID = new HashSet<>();
-    users.stream().forEach(u -> usersID.add(u.getId()));
+    users.forEach(u -> usersID.add(u.getId()));
 
     userHasOperations = initTestValues.createUserHasOperations();
 
@@ -291,7 +289,7 @@ public class OperationServiceTest {
 
   @Test
   public void testAddOperationsToUserFromTemplateIdWithResource() {
-    opTemplate.getOpTemplateHasOperations().stream()
+    opTemplate.getOpTemplateHasOperations()
       .forEach(
         opTemplateHasOperation -> opTemplateHasOperation.setResource(resource));
     when(userRepository.fetchById(user.getId())).thenReturn(user);
@@ -309,7 +307,7 @@ public class OperationServiceTest {
 
   @Test
   public void testAddOperationsToUserFromTemplateNameWithResource() {
-    opTemplate.getOpTemplateHasOperations().stream()
+    opTemplate.getOpTemplateHasOperations()
       .forEach(
         opTemplateHasOperation -> opTemplateHasOperation.setResource(resource));
     when(userRepository.fetchById(user.getId())).thenReturn(user);
@@ -404,7 +402,7 @@ public class OperationServiceTest {
 
   @Test
   public void testAddOperationsToGroupFromTemplateIdWithResource() {
-    opTemplate.getOpTemplateHasOperations().stream()
+    opTemplate.getOpTemplateHasOperations()
       .forEach(
         opTemplateHasOperation -> opTemplateHasOperation.setResource(resource));
     when(opTemplateRepository.fetchById(opTemplate.getId()))
@@ -424,7 +422,7 @@ public class OperationServiceTest {
 
   @Test
   public void testAddOperationsToGroupFromTemplateNameWithResource() {
-    opTemplate.getOpTemplateHasOperations().stream()
+    opTemplate.getOpTemplateHasOperations()
       .forEach(
         opTemplateHasOperation -> opTemplateHasOperation.setResource(resource));
     when(opTemplateRepository.findByName(opTemplate.getName()))
@@ -597,8 +595,9 @@ public class OperationServiceTest {
     assertTrue(permitted);
   }
 
-  @Test(expected = DynamicOperationException.class)
+  @Test
   public void testIsPermittedForUserWithDynamicOperationException() {
+    assertThrows(DynamicOperationException.class, () -> {
     String dynamicCode = "retVal = (userId ";
     user.setSuperadmin(false);
     operation.setDynamic(true);
@@ -612,6 +611,7 @@ public class OperationServiceTest {
     Boolean permitted = operationService
       .isPermitted(user.getId(), operation.getName());
     assertTrue(permitted);
+    });
   }
 
 
@@ -948,9 +948,9 @@ public class OperationServiceTest {
   @Test
   public void testGetUsersForOperationWithDynamicCodeByOperationName() {
     String dynamicCode = "retVal = userID != \"1857ae6e-ee0b-41c6-b905-8d5cdfab87c1\"";
-    userHasOperations.stream()
+    userHasOperations
       .forEach(uho -> uho.getOperation().setDynamic(true));
-    userHasOperations.stream()
+    userHasOperations
       .forEach(uho -> uho.getOperation().setDynamicCode(dynamicCode));
 
     when(userRepository.getUserIds(false)).thenReturn(usersID);
@@ -965,9 +965,9 @@ public class OperationServiceTest {
 
   @Test
   public void testGetUsersForOperationWithDynamicCodeByOperationNameDynamicResultNull() {
-    userHasOperations.stream()
+    userHasOperations
       .forEach(uho -> uho.getOperation().setDynamic(true));
-    userHasOperations.stream()
+    userHasOperations
       .forEach(uho -> uho.getOperation().setDynamicCode(dynamicCode));
 
     when(userRepository.getUserIds(false)).thenReturn(usersID);
@@ -1236,8 +1236,9 @@ public class OperationServiceTest {
     verify(resourceRepository, times(1)).findByObjectId(any());
   }
 
-  @Test(expected = DynamicOperationException.class)
+  @Test
   public void testGetPermittedOperationsForUserEx() {
+    assertThrows(DynamicOperationException.class, () -> {
     user.setSuperadmin(false);
     user.getUserHasOperations().forEach(uho -> uho.setResource(resource));
     when(userRepository.fetchById(user.getId())).thenReturn(user);
@@ -1252,6 +1253,7 @@ public class OperationServiceTest {
 
     verify(userRepository, times(1)).fetchById(any());
     verify(resourceRepository, times(1)).findByObjectId(any());
+    });
   }
 
   @Test

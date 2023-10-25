@@ -10,14 +10,14 @@ import com.eurodyn.qlack.fuse.aaa.model.UserGroup;
 import com.eurodyn.qlack.fuse.aaa.repository.UserGroupRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
 import com.querydsl.core.types.Predicate;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.data.domain.PageImpl;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
@@ -28,8 +28,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -40,7 +39,7 @@ import static org.mockito.Mockito.when;
  * @author European Dynamics
  */
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class UserGroupServiceTest {
 
   @InjectMocks
@@ -51,9 +50,9 @@ public class UserGroupServiceTest {
   @Mock
   private Predicate predicate;
 
-  private UserGroupRepository userGroupRepository = mock(
+  final private UserGroupRepository userGroupRepository = mock(
     UserGroupRepository.class);
-  private UserRepository userRepository = mock(UserRepository.class);
+  final private UserRepository userRepository = mock(UserRepository.class);
 
   @Spy
   private UserGroupMapper userGroupMapper;
@@ -67,7 +66,7 @@ public class UserGroupServiceTest {
   private User user;
   private List<User> users;
 
-  @Before
+  @BeforeEach
   public void init() {
     userGroupService = new UserGroupService(userGroupRepository, userRepository,
       userGroupMapper);
@@ -137,13 +136,15 @@ public class UserGroupServiceTest {
     assertEquals(userGroup.getParent(), newParent);
   }
 
-  @Test(expected = InvalidGroupHierarchyException.class)
+  @Test
   public void testMoveGroupException() {
+    Assertions.assertThrows(InvalidGroupHierarchyException.class, () -> {
     when(userGroupRepository.fetchById(userGroup.getId()))
       .thenReturn(userGroup);
     when(userGroupRepository.fetchById(userGroup.getId()))
       .thenReturn(userGroup);
     userGroupService.moveGroup(userGroup.getId(), userGroup.getId());
+    });
   }
 
   @Test
@@ -173,7 +174,7 @@ public class UserGroupServiceTest {
   @Test
   public void testGetGroupsById() {
     Collection<String> groupsId = new ArrayList<>();
-    userGroups.stream().forEach(ug -> groupsId.add(ug.getId()));
+    userGroups.forEach(ug -> groupsId.add(ug.getId()));
 
     when(userGroupRepository
       .findAll(qUserGroup.id.in(groupsId), Sort.by("name").ascending()))
@@ -193,7 +194,7 @@ public class UserGroupServiceTest {
   @Test
   public void testGetGroupByNames() {
     List<String> groupsId = new ArrayList<>();
-    userGroups.stream().forEach(ug -> groupsId.add(ug.getId()));
+    userGroups.forEach(ug -> groupsId.add(ug.getId()));
 
     userGroupService.getGroupByNames(groupsId, true);
     verify(userGroupRepository, times(1)).findAll((Predicate) any());
@@ -323,7 +324,7 @@ public class UserGroupServiceTest {
     Set<String> groupIds = userGroups.stream().map(g -> g.getId())
       .collect(Collectors.toSet());
     when(userGroupRepository.findByIdIn(groupIds)).thenReturn(userGroups);
-    userGroups.stream().forEach(g -> g.setUsers(users));
+    userGroups.forEach(g -> g.setUsers(users));
     Set<String> usernames = userGroupService.getGroupUsersNames(groupIds);
     assertTrue(usernames.contains(users.get(0).getUsername()));
     assertTrue(usernames.contains(users.get(1).getUsername()));

@@ -1,8 +1,6 @@
 package com.eurodyn.qlack.fuse.mailing.mapper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
+import static org.junit.jupiter.api.Assertions.*;
 import com.eurodyn.qlack.fuse.mailing.InitTestValues;
 import com.eurodyn.qlack.fuse.mailing.dto.InternalAttachmentDTO;
 import com.eurodyn.qlack.fuse.mailing.dto.InternalMessageDTO;
@@ -10,13 +8,13 @@ import com.eurodyn.qlack.fuse.mailing.model.InternalAttachment;
 import com.eurodyn.qlack.fuse.mailing.model.InternalMessage;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class InternalMessageMapperTest {
 
   @InjectMocks
@@ -24,7 +22,7 @@ public class InternalMessageMapperTest {
 
   private InitTestValues initTestValues;
 
-  @Before
+  @BeforeEach
   public void init() {
     initTestValues = new InitTestValues();
   }
@@ -40,12 +38,11 @@ public class InternalMessageMapperTest {
 
   @Test
   public void mapToDTONullTest() {
-    assertEquals(null, internalMessageMapper.mapToDTO((InternalMessage) null));
-
+    assertNull(internalMessageMapper.mapToDTO((InternalMessage) null));
     List<InternalMessageDTO> internalMessageDTOS = internalMessageMapper
       .mapToDTO(
         (List<InternalMessage>) null);
-    assertEquals(null, internalMessageDTOS);
+    assertNull(internalMessageDTOS);
   }
 
   @Test
@@ -70,12 +67,11 @@ public class InternalMessageMapperTest {
 
   @Test
   public void mapToEntityNullTest() {
-    assertEquals(null,
-      internalMessageMapper.mapToEntity((InternalMessageDTO) null));
+    assertNull(internalMessageMapper.mapToEntity((InternalMessageDTO) null));
 
     InternalMessage internalMessage = internalMessageMapper
       .mapToEntity((InternalMessageDTO) null);
-    assertEquals(null, internalMessage);
+    assertNull(internalMessage);
   }
 
 
@@ -91,11 +87,10 @@ public class InternalMessageMapperTest {
 
   @Test
   public void mapToEntityListNullTest() {
-    assertEquals(null,
-      internalMessageMapper.mapToEntity((List<InternalMessageDTO>) null));
+    assertNull(internalMessageMapper.mapToEntity((List<InternalMessageDTO>) null));
     List<InternalMessage> internalMessages = internalMessageMapper
       .mapToEntity((List<InternalMessageDTO>) null);
-    assertEquals(null, internalMessages);
+    assertNull(internalMessages);
 
   }
 

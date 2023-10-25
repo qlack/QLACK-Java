@@ -10,11 +10,11 @@ import lombok.extern.java.Log;
 import org.camunda.bpm.model.dmn.Dmn;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.commons.utils.IoUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -23,10 +23,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 @Log
 public class DmnModelServiceTest {
 
@@ -61,10 +62,12 @@ public class DmnModelServiceTest {
         verify(dmnModelRepository, times(1)).save(any(DmnModel.class));
     }
 
-    @Test(expected = QRulesException.class)
+    @Test
     public void createDmnModelFileNotFoundTest() {
-        String dmnModelId = dmnModelService.createDmnModel("src/" + "notExistingFile.txt");
-        assertNull(dmnModelId);
+        assertThrows(QRulesException.class, () -> {
+            String dmnModelId = dmnModelService.createDmnModel("src/" + "notExistingFile.txt");
+            assertNull(dmnModelId);
+        });
     }
 
     @Test
@@ -91,11 +94,13 @@ public class DmnModelServiceTest {
         verify(dmnModelRepository, times(1)).deleteById(id);
     }
 
-    @Test(expected = QRulesException.class)
+    @Test
     public void deleteModelIdNonExistTest() {
-        String id = UUID.randomUUID().toString();
-        dmnModelService.deleteDmnModel(id);
-        verify(dmnModelRepository, times(1)).deleteById(id);
+        assertThrows(QRulesException.class, () -> {
+            String id = UUID.randomUUID().toString();
+            dmnModelService.deleteDmnModel(id);
+            verify(dmnModelRepository, times(1)).deleteById(id);
+        });
     }
 
     @Test
@@ -112,10 +117,12 @@ public class DmnModelServiceTest {
         verify(dmnModelRepository, times(1)).fetchById(DECISION_ID);
     }
 
-    @Test(expected = QDoesNotExistException.class)
+    @Test
     public void findByIdNullTest() {
-        DmnModelDTO modelDTO = dmnModelService.findById(DECISION_ID);
-        assertNull(modelDTO);
+        assertThrows(QDoesNotExistException.class, () -> {
+            DmnModelDTO modelDTO = dmnModelService.findById(DECISION_ID);
+            assertNull(modelDTO);
+        });
     }
 
     @Test
@@ -133,24 +140,28 @@ public class DmnModelServiceTest {
         assertNotNull(result);
     }
 
-    @Test(expected = QRulesException.class)
+    @Test
     public void executeRulesFileNotFoundTest() {
-        modelInstanceInit();
+        assertThrows(QRulesException.class, () -> {
+            modelInstanceInit();
 
-        List<Map<String, Object>> result =
-                dmnModelService.executeRules("src/" + "notExistingFile.txt", inputs, TO_BE_EXECUTED);
-        assertNotNull(result);
+            List<Map<String, Object>> result =
+                    dmnModelService.executeRules("src/" + "notExistingFile.txt", inputs, TO_BE_EXECUTED);
+            assertNotNull(result);
+        });
     }
 
-    @Test(expected = QRulesException.class)
+    @Test
     public void executeRulesWrongInputsTest() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("Wrong key", "Wrong value");
-        inputs.add(map);
+        assertThrows(QRulesException.class, () -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("Wrong key", "Wrong value");
+            inputs.add(map);
 
-        List<Map<String, Object>> result =
-                dmnModelService.executeRules(FILE_PATHNAME, inputs, TO_BE_EXECUTED);
-        assertNotNull(result);
+            List<Map<String, Object>> result =
+                    dmnModelService.executeRules(FILE_PATHNAME, inputs, TO_BE_EXECUTED);
+            assertNotNull(result);
+        });
     }
 
 

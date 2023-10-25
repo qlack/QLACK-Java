@@ -1,6 +1,6 @@
 package com.eurodyn.qlack.fuse.lexicon.mapper;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.eurodyn.qlack.fuse.lexicon.InitTestValues;
 import com.eurodyn.qlack.fuse.lexicon.dto.KeyDTO;
@@ -10,13 +10,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class KeyMapperTest {
 
   @InjectMocks
@@ -24,7 +24,7 @@ public class KeyMapperTest {
 
   private InitTestValues initTestValues;
 
-  @Before
+  @BeforeEach
   public void init() {
     initTestValues = new InitTestValues();
   }
@@ -49,11 +49,11 @@ public class KeyMapperTest {
 
   @Test
   public void mapToDTONullTest() {
-    assertEquals(null, keyMapper.mapToDTO((Key) null));
+    assertNull(keyMapper.mapToDTO((Key) null));
 
     List<KeyDTO> keyDTOS = keyMapper.mapToDTO(
       (List<Key>) null);
-    assertEquals(null, keyDTOS);
+    assertNull(keyDTOS);
   }
 
   @Test
@@ -76,11 +76,11 @@ public class KeyMapperTest {
 
   @Test
   public void mapToEntityNullTest() {
-    assertEquals(null, keyMapper.mapToEntity((KeyDTO) null));
+    assertNull(keyMapper.mapToEntity((KeyDTO) null));
 
     List<Key> keys = keyMapper.mapToEntity(
       (List<KeyDTO>) null);
-    assertEquals(null, keys);
+    assertNull(keys);
   }
 
   @Test
@@ -94,7 +94,7 @@ public class KeyMapperTest {
 
   @Test
   public void mapToDTOIncludeTranslationsNullTest() {
-    assertEquals(null, keyMapper.mapToDTO(null, true));
+    assertNull(keyMapper.mapToDTO(null, true));
   }
 
   @Test

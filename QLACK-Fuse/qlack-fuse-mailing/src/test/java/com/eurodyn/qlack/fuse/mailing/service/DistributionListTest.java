@@ -1,8 +1,6 @@
 package com.eurodyn.qlack.fuse.mailing.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -18,25 +16,25 @@ import com.eurodyn.qlack.fuse.mailing.model.DistributionList;
 import com.eurodyn.qlack.fuse.mailing.repository.ContactRepository;
 import com.eurodyn.qlack.fuse.mailing.repository.DistributionListRepository;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * @author European Dynamics
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DistributionListTest {
 
   @InjectMocks
   private DistributionListService distributionListService;
 
-  private DistributionListRepository distributionListRepository = mock(
+  final private DistributionListRepository distributionListRepository = mock(
     DistributionListRepository.class);
-  private ContactRepository contactRepository = mock(ContactRepository.class);
+  final private ContactRepository contactRepository = mock(ContactRepository.class);
 
   @Spy
   private DistributionListMapper distributionListMapper;
@@ -56,7 +54,7 @@ public class DistributionListTest {
   private final String distributionListName = "Qlack Test Distribution List";
   private final String contactId = "0f9a2472-cde0-44a6-ba3d-8e609929043d";
 
-  @Before
+  @BeforeEach
   public void init() {
     distributionListService = new DistributionListService(
       distributionListRepository,

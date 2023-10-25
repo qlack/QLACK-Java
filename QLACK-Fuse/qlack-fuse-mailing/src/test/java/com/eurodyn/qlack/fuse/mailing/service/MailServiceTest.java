@@ -1,6 +1,7 @@
 package com.eurodyn.qlack.fuse.mailing.service;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -22,18 +23,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import jakarta.validation.ValidationException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * @author European Dynamics
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class MailServiceTest {
 
   @InjectMocks
@@ -42,10 +43,10 @@ public class MailServiceTest {
   @Mock
   private MailQueueMonitor mailQueueMonitor;
 
-  private EmailRepository emailRepository = mock(EmailRepository.class);
-  private AttachmentRepository attachmentRepository = mock(
+  final private EmailRepository emailRepository = mock(EmailRepository.class);
+  final private AttachmentRepository attachmentRepository = mock(
     AttachmentRepository.class);
-  private EmailValidator emailValidator = new EmailValidator();
+  final private EmailValidator emailValidator = new EmailValidator();
 
   @Spy
   private EmailMapper emailMapper;
@@ -66,10 +67,10 @@ public class MailServiceTest {
   private final String distributionListId = "0f9a2472-cde0-44a6-ba3d-8e609929043d";
 
   private final long emailDate = 2121545432165L;
-  private MailConstants.EMAIL_STATUS[] statuses = {
+  final private MailConstants.EMAIL_STATUS[] statuses = {
     MailConstants.EMAIL_STATUS.QUEUED};
 
-  @Before
+  @BeforeEach
   public void init() {
     mailService = new MailService(mailQueueMonitor, emailMapper,
       emailRepository,
@@ -199,13 +200,14 @@ public class MailServiceTest {
       .sendToDistributionList(emailId, distributionListId);
   }
 
-  @Test(expected = ValidationException.class)
+  @Test
   public void sendWithoutRecipients() {
-
-    emailDTO.setToEmails(new ArrayList<>());
-    emailDTO.setCcEmails(new ArrayList<>());
-    emailDTO.setBccEmails(new ArrayList<>());
-    mailService.queueEmail(emailDTO);
+    assertThrows(ValidationException.class, () -> {
+      emailDTO.setToEmails(new ArrayList<>());
+      emailDTO.setCcEmails(new ArrayList<>());
+      emailDTO.setBccEmails(new ArrayList<>());
+      mailService.queueEmail(emailDTO);
+    });
   }
 
 }

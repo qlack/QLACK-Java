@@ -1,26 +1,27 @@
 package com.eurodyn.qlack.fuse.aaa.mapper;
 
-import static junit.framework.TestCase.assertNotNull;
 
 import com.eurodyn.qlack.fuse.aaa.InitTestValues;
 import com.eurodyn.qlack.fuse.aaa.dto.BaseDTO;
 import com.eurodyn.qlack.fuse.aaa.model.AAAModel;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author European Dynamics
  */
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AAAMapperTest {
 
-  private AAAMapper aaaMapper = new AAAMapper() {
+  final private AAAMapper aaaMapper = new AAAMapper() {
     @Override
     public BaseDTO mapToDTO(AAAModel entity) {
       return null;
@@ -53,7 +54,7 @@ public class AAAMapperTest {
 
   private InitTestValues initTestValues;
 
-  @Before
+  @BeforeEach
   public void init() {
     initTestValues = new InitTestValues();
   }

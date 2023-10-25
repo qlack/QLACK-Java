@@ -1,55 +1,37 @@
 package com.eurodyn.qlack.fuse.cm.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
-
 import com.eurodyn.qlack.fuse.cm.InitTestValues;
 import com.eurodyn.qlack.fuse.cm.dto.NodeDTO;
 import com.eurodyn.qlack.fuse.cm.exception.QIOException;
 import com.eurodyn.qlack.fuse.cm.mapper.NodeMapper;
 import com.eurodyn.qlack.fuse.cm.model.Node;
 import com.eurodyn.qlack.fuse.cm.repository.NodeRepository;
+
 import com.eurodyn.qlack.fuse.cm.util.JPAQueryUtil;
 import com.eurodyn.qlack.fuse.cm.util.StreamsUtil;
 import com.querydsl.core.QueryResults;
-import com.querydsl.core.types.CollectionExpression;
-import com.querydsl.core.types.EntityPath;
-import com.querydsl.core.types.Path;
-import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.ZipOutputStream;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-//@RunWith(PowerMockRunner.class)
-//@PrepareForTest({JPAQueryUtil.class, QueryResults.class, StreamsUtil.class})
-public class DocumentServiceEMTest {
+import java.io.IOException;
+import java.util.*;
+import java.util.zip.ZipOutputStream;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+public class DocumentServiceEMTest {
+//
 //  @InjectMocks
 //  private DocumentService documentService;
 //
@@ -80,21 +62,42 @@ public class DocumentServiceEMTest {
 //  @Mock
 //  private ZipOutputStream zipOutputStream;
 //
-//  @Before
+//    private MockedStatic<StreamsUtil> mockedStatic;
+//
+//    private MockedStatic<JPAQueryUtil> mockedStatic2;
+//
+//    private MockedStatic<QueryResults> mockedStatic3;
+//    private MockedConstruction<JPAQueryFactory> mockedJqf;
+//
+//  @BeforeEach
 //  public void init() throws Exception {
 //    documentService = new DocumentService(concurrencyControlService,
 //      versionService, nodeRepository,
 //      nodeMapper);
+//
+//
+//
 //    ReflectionTestUtils.setField(documentService, "em", em);
 //
-//    whenNew(JPAQueryFactory.class).withArguments(em)
-//      .thenReturn(jpaQueryFactory);
-//    when(jpaQueryFactory.selectFrom(any(EntityPath.class)))
-//      .thenReturn(jpaQuery);
-//    when(jpaQuery.innerJoin(any(CollectionExpression.class), any(Path.class)))
-//      .thenReturn(jpaQuery);
-//    when(jpaQuery.where((Predicate) any())).thenReturn(jpaQuery);
+//      mockedStatic = mockStatic(StreamsUtil.class);
+//      mockedStatic2 = mockStatic(JPAQueryUtil.class);
+//      mockedStatic3 = mockStatic(QueryResults.class);
+//
+//      mockedJqf = Mockito.mockConstruction(JPAQueryFactory.class,
+//              (mock, context) -> {
+//                  when(mock).thenReturn(jpaQueryFactory);
+//              });
+//
 //  }
+//
+//    @AfterEach
+//    public void close() {
+//
+//      mockedStatic.close();
+//      mockedStatic2.close();
+//      mockedStatic3.close();
+//      mockedJqf.close();
+//    }
 //
 //  @Test
 //  public void getNodeByAttributesTest() {
@@ -122,22 +125,40 @@ public class DocumentServiceEMTest {
 //
 //  @Test
 //  public void isFileNameUniqueTest() {
-//    assertTrue(documentService.isFileNameUnique("name", "parentNodeId"));
+//    String name = "uniqueName";
+//    String parentNodeID = "parentNodeID";
+//
+//    when(JPAQueryUtil.createJpaQueryForName(em, name, parentNodeID)).thenReturn(jpaQuery);
+//    when(jpaQuery.fetchCount()).thenReturn(0L);
+//
+//    boolean isUnique = documentService.isFileNameUnique(name, parentNodeID);
+//
+//    assertTrue(isUnique, "Expected true when file name is unique");
 //  }
 //
 //  @Test
 //  public void isFileNameUniqueFalseTest() {
-//    when(jpaQuery.fetchCount()).thenReturn(10L);
-//    assertFalse(documentService.isFileNameUnique("name", "parentNodeId"));
-//  }
+//    String name = "notUniqueName";
+//    String parentNodeID = "parentNodeID";
 //
+//    when(JPAQueryUtil.createJpaQueryForName(em, name, parentNodeID)).thenReturn(jpaQuery);
+//    when(jpaQuery.fetchCount()).thenReturn(10L);
+//
+//    boolean isUnique = documentService.isFileNameUnique(name, parentNodeID);
+//
+//    assertFalse(isUnique, "Expected false when file name is not unique");
+//  }
+///*
 //  @Test
 //  public void duplicateFileNamesInDirectoryTest() {
-//    when(jpaQuery.fetchResults()).thenReturn(QueryResults.emptyResults());
+//    QueryResults<Node> queryResults = QueryResults.emptyResults();
+//    when(jpaQuery.fetchResults()).thenReturn(queryResults);
 //    List<String> namesList = new ArrayList<>();
 //    assertEquals(namesList,
 //      documentService
 //        .duplicateFileNamesInDirectory(Arrays.asList("one", "two"), "parent"));
+//
+//
 //  }
 //
 //  @Test
@@ -161,20 +182,21 @@ public class DocumentServiceEMTest {
 //      documentService
 //        .duplicateFileNamesInDirectory(Arrays.asList("one", "two"), "parent"));
 //  }
-//
-//  @Test(expected = QIOException.class)
+//*/
+//  @Test
 //  public void getFolderAsZipNoChildrenException() throws IOException {
-//    PowerMockito.mockStatic(StreamsUtil.class);
 //    InitTestValues initTestValues = new InitTestValues();
 //    Node node = initTestValues.createNode(null);
 //    NodeDTO nodeDTO = initTestValues.createNodeDTO(null);
 //
 //    node.setChildren(new ArrayList<>());
-//    when(nodeRepository.fetchById(nodeDTO.getId())).thenReturn(node);
+//    assertThrows(QIOException.class, () -> {
+//        when(nodeRepository.fetchById(nodeDTO.getId())).thenReturn(node);
 //
-//    when(StreamsUtil.createZipOutputStream(any())).thenReturn(zipOutputStream);
-//    doThrow(new IOException()).when(zipOutputStream).close();
-//    documentService.getFolderAsZip(nodeDTO.getId(), true, true);
+//        when(StreamsUtil.createZipOutputStream(any())).thenReturn(zipOutputStream);
+//        doThrow(new IOException()).when(zipOutputStream).close();
+//        documentService.getFolderAsZip(nodeDTO.getId(), true, true);
+//    });
 //  }
 
 

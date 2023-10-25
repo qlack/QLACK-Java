@@ -1,19 +1,19 @@
 package com.eurodyn.qlack.fuse.settings.mapper;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.eurodyn.qlack.fuse.settings.InitTestValues;
 import com.eurodyn.qlack.fuse.settings.dto.GroupDTO;
 import com.eurodyn.qlack.fuse.settings.dto.SettingDTO;
 import com.eurodyn.qlack.fuse.settings.model.Setting;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SettingMapperImplTest {
 
   @InjectMocks
@@ -34,7 +34,7 @@ public class SettingMapperImplTest {
   private List<GroupDTO> groupDTOS;
 
 
-  @Before
+  @BeforeEach
   public void init() {
     initTestValues = new InitTestValues();
     setting = initTestValues.createSetting();
@@ -54,7 +54,7 @@ public class SettingMapperImplTest {
   @Test
   public void mapToDTOListNullTest() {
     settingDTOS = settingMapper.map((List<Setting>) null);
-    assertEquals(null, settingDTOS);
+    assertNull(settingDTOS);
   }
 
   @Test
@@ -67,7 +67,7 @@ public class SettingMapperImplTest {
   @Test
   public void mapDTOToSettingNullTest() {
     settingDTO = settingMapper.map((Setting) null);
-    assertEquals(null, settingDTO);
+    assertNull(settingDTO);
   }
 
   @Test
@@ -79,7 +79,7 @@ public class SettingMapperImplTest {
   @Test
   public void mapToGroupDTONullTest() {
     groupDTO = settingMapper.mapToGroupDTO((Setting) null);
-    assertEquals(null, groupDTO);
+    assertNull(groupDTO);
   }
 
   @Test
@@ -91,7 +91,7 @@ public class SettingMapperImplTest {
   @Test
   public void mapListToGroupDTONullTest() {
     groupDTOS = settingMapper.mapToGroupDTO((List<Setting>) null);
-    assertEquals(null, groupDTOS);
+    assertNull(groupDTOS);
   }
 
   @Test
@@ -103,14 +103,14 @@ public class SettingMapperImplTest {
   @Test
   public void mapToEntityNullTest() {
     setting = settingMapper.mapToEntity(null);
-    assertEquals(null, setting);
+    assertNull(setting);
   }
 
   @Test
   public void testSettingDTOToSettingPasswordNotNull() {
     Setting setting = initTestValues.createSetting();
     setting.setPassword(null);
-    assertEquals(false, settingMapper.map(setting).isPassword());
+    assertFalse(settingMapper.map(setting).isPassword());
   }
 
 }

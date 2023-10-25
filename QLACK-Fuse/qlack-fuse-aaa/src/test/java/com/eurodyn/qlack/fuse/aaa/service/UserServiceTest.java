@@ -1,10 +1,6 @@
 package com.eurodyn.qlack.fuse.aaa.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -46,17 +42,17 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import org.apache.commons.collections.CollectionUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
 
   @InjectMocks
@@ -79,12 +75,12 @@ public class UserServiceTest {
   @Mock
   private AAAProperties aaaProperties;
 
-  private AccountingService accountingService = mock(AccountingService.class);
-  private UserRepository userRepository = mock(UserRepository.class);
-  private UserAttributeRepository userAttributeRepository = mock(
+  final private AccountingService accountingService = mock(AccountingService.class);
+  final private UserRepository userRepository = mock(UserRepository.class);
+  final private UserAttributeRepository userAttributeRepository = mock(
     UserAttributeRepository.class);
-  private SessionRepository sessionRepository = mock(SessionRepository.class);
-  private PasswordEncoder passwordEncoder = mock(PasswordEncoder.class);
+  final private SessionRepository sessionRepository = mock(SessionRepository.class);
+  final private PasswordEncoder passwordEncoder = mock(PasswordEncoder.class);
   private InitTestValues initTestValues;
   private QUser qUser;
   private QSession qSession;
@@ -99,7 +95,7 @@ public class UserServiceTest {
   private UserSearchCriteria userSearchCriteria;
 
 
-  @Before
+  @BeforeEach
   public void init() {
     initTestValues = new InitTestValues();
     userService = new UserService(accountingService, ldapUserUtil,

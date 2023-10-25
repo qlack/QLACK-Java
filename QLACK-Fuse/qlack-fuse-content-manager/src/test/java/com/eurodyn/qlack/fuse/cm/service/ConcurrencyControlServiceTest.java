@@ -1,8 +1,7 @@
 package com.eurodyn.qlack.fuse.cm.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -27,19 +26,19 @@ import com.eurodyn.qlack.fuse.cm.util.CMConstants;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * @author European Dynamics
  */
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ConcurrencyControlServiceTest {
 
   @InjectMocks
@@ -64,7 +63,7 @@ public class ConcurrencyControlServiceTest {
   private ArrayList<Node> allNodes;
   private String LOCK_TOKEN;
 
-  @Before
+  @BeforeEach
   public void init() {
     concurrencyControlService = new ConcurrencyControlService(nodeMapper,
       nodeRepository);
@@ -100,20 +99,24 @@ public class ConcurrencyControlServiceTest {
 
   }
 
-  @Test(expected = QNodeLockException.class)
+  @Test
   public void testLockNotLockableNode() {
-    when(nodeRepository.fetchById(node.getId())).thenReturn(node);
-    node.setAttribute(CMConstants.LOCKABLE, "false");
-    concurrencyControlService.lock(node.getId(), "token123", false, userId);
+    assertThrows(QNodeLockException.class, () -> {
+      when(nodeRepository.fetchById(node.getId())).thenReturn(node);
+      node.setAttribute(CMConstants.LOCKABLE, "false");
+      concurrencyControlService.lock(node.getId(), "token123", false, userId);
+    });
   }
 
-  @Test(expected = QSelectedNodeLockException.class)
+  @Test
   public void testLockNodeConflict() {
-    node.setLockToken("lockToken");
-    when(nodeRepository.fetchById(node.getId())).thenReturn(node);
-    when(nodeMapper.mapToFolderDTO(node, RelativesType.LAZY, false))
-      .thenReturn(nodeDTO);
-    concurrencyControlService.lock(node.getId(), "token123", false, userId);
+    assertThrows(QSelectedNodeLockException.class, () -> {
+      node.setLockToken("lockToken");
+      when(nodeRepository.fetchById(node.getId())).thenReturn(node);
+      when(nodeMapper.mapToFolderDTO(node, RelativesType.LAZY, false))
+              .thenReturn(nodeDTO);
+      concurrencyControlService.lock(node.getId(), "token123", false, userId);
+    });
   }
 
   @Test
@@ -130,29 +133,33 @@ public class ConcurrencyControlServiceTest {
     assertNotNull(node.getAttribute(CMConstants.ATTR_LOCKED_ON).getValue());
   }
 
-  @Test(expected = QAncestorFolderLockException.class)
+  @Test
   public void testLockNodeWithParentConflict() {
-    parent.setLockToken("lockToken");
+    assertThrows(QAncestorFolderLockException.class, () -> {
+      parent.setLockToken("lockToken");
 
-    when(nodeRepository.fetchById(parent.getId())).thenReturn(parent);
-    when(nodeRepository.fetchById(node.getId())).thenReturn(node);
-    when(nodeMapper.mapToFolderDTO(parent, RelativesType.LAZY, false))
-      .thenReturn(parentDTO);
-    concurrencyControlService.lock(node.getId(), "token123", false, userId);
+      when(nodeRepository.fetchById(parent.getId())).thenReturn(parent);
+      when(nodeRepository.fetchById(node.getId())).thenReturn(node);
+      when(nodeMapper.mapToFolderDTO(parent, RelativesType.LAZY, false))
+              .thenReturn(parentDTO);
+      concurrencyControlService.lock(node.getId(), "token123", false, userId);
+    });
   }
 
-  @Test(expected = QDescendantNodeLockException.class)
+  @Test
   public void testLockNodeWithChildConflict() {
-    parent.setLockToken("token123");
-    child.setLockToken(LOCK_TOKEN);
+    assertThrows(QDescendantNodeLockException.class, () -> {
+      parent.setLockToken("token123");
+      child.setLockToken(LOCK_TOKEN);
 
-    node.getChildren().add(child);
+      node.getChildren().add(child);
 
-    when(nodeRepository.fetchById(parent.getId())).thenReturn(parent);
-    when(nodeRepository.fetchById(node.getId())).thenReturn(node);
-    when(nodeMapper.mapToFolderDTO(child, RelativesType.LAZY, false))
-      .thenReturn(childDTO);
-    concurrencyControlService.lock(node.getId(), "token123", false, userId);
+      when(nodeRepository.fetchById(parent.getId())).thenReturn(parent);
+      when(nodeRepository.fetchById(node.getId())).thenReturn(node);
+      when(nodeMapper.mapToFolderDTO(child, RelativesType.LAZY, false))
+              .thenReturn(childDTO);
+      concurrencyControlService.lock(node.getId(), "token123", false, userId);
+    });
   }
 
   @Test
@@ -190,18 +197,20 @@ public class ConcurrencyControlServiceTest {
     verify(nodeRepository, times(1)).saveAndFlush(node);
   }
 
-  @Test(expected = QSelectedNodeLockException.class)
+  @Test
   public void testUnlockWithConflict() {
-    when(nodeRepository.fetchById(node.getId())).thenReturn(node);
-    when(nodeMapper.mapToFolderDTO(node, RelativesType.LAZY, false))
-      .thenReturn(nodeDTO);
-    node.setAttribute(CMConstants.ATTR_LOCKED_ON, anyString());
-    node.setAttribute(CMConstants.ATTR_LOCKED_BY, userId);
-    node.setLockToken(LOCK_TOKEN);
+    assertThrows(QSelectedNodeLockException.class, () -> {
+      when(nodeRepository.fetchById(node.getId())).thenReturn(node);
+      when(nodeMapper.mapToFolderDTO(node, RelativesType.LAZY, false))
+              .thenReturn(nodeDTO);
+      node.setAttribute(CMConstants.ATTR_LOCKED_ON, anyString());
+      node.setAttribute(CMConstants.ATTR_LOCKED_BY, userId);
+      node.setLockToken(LOCK_TOKEN);
 
-    concurrencyControlService.unlock(node.getId(), "438972", false, userId);
+      concurrencyControlService.unlock(node.getId(), "438972", false, userId);
 
-    verify(nodeRepository, times(0)).save(node);
+      verify(nodeRepository, times(0)).save(node);
+    });
   }
 
   @Test

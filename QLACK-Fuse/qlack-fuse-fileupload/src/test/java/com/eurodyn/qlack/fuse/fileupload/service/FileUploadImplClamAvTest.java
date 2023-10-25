@@ -1,5 +1,6 @@
 package com.eurodyn.qlack.fuse.fileupload.service;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -15,15 +16,15 @@ import com.eurodyn.qlack.util.av.api.exception.VirusFoundException;
 import com.eurodyn.qlack.util.av.api.exception.VirusScanException;
 import com.eurodyn.qlack.util.av.api.service.AvService;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class FileUploadImplClamAvTest {
 
   @InjectMocks
@@ -41,7 +42,7 @@ public class FileUploadImplClamAvTest {
 
   private VirusScanDTO virusScanDTO;
 
-  @Before
+  @BeforeEach
   public void test() {
     fileUpload = new FileUploadImpl(dbFileRepository, Optional.of(avService));
     initTestValues = new InitTestValues();
@@ -59,14 +60,16 @@ public class FileUploadImplClamAvTest {
     verify(dbFileRepository, times(1)).save(any(DBFile.class));
   }
 
-  @Test(expected = VirusFoundException.class)
+  @Test
   public void uploadUnsafeFileTest() {
-    ReflectionTestUtils.setField(fileUpload, "isVirusScanEnabled", true);
-    virusScanDTO.setVirusFree(false);
-    when(avService.virusScan(dbFileDTO.getFileData())).thenReturn(virusScanDTO);
-    fileUpload.upload(dbFileDTO);
-    verify(dbFileRepository, times(1))
-      .getChunk(dbFileDTO.getId(), dbFileDTO.getChunkNumber());
+    assertThrows(VirusFoundException.class, () -> {
+      ReflectionTestUtils.setField(fileUpload, "isVirusScanEnabled", true);
+      virusScanDTO.setVirusFree(false);
+      when(avService.virusScan(dbFileDTO.getFileData())).thenReturn(virusScanDTO);
+      fileUpload.upload(dbFileDTO);
+      verify(dbFileRepository, times(1))
+              .getChunk(dbFileDTO.getId(), dbFileDTO.getChunkNumber());
+    });
   }
 
   @Test

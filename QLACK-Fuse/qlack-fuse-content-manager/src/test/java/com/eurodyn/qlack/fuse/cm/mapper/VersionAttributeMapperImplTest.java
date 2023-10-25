@@ -1,8 +1,6 @@
 package com.eurodyn.qlack.fuse.cm.mapper;
 
-import static junit.framework.TestCase.assertNotNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.eurodyn.qlack.fuse.cm.InitTestValues;
 import com.eurodyn.qlack.fuse.cm.dto.VersionAttributeDTO;
@@ -10,13 +8,13 @@ import com.eurodyn.qlack.fuse.cm.model.Version;
 import com.eurodyn.qlack.fuse.cm.model.VersionAttribute;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class VersionAttributeMapperImplTest {
 
   @InjectMocks
@@ -33,7 +31,7 @@ public class VersionAttributeMapperImplTest {
   private List<VersionAttributeDTO> versionAttributeDTOS;
 
 
-  @Before
+  @BeforeEach
   public void init() {
     initTestValues = new InitTestValues();
     versionAttribute = new VersionAttribute();
@@ -46,7 +44,7 @@ public class VersionAttributeMapperImplTest {
   public void mapToDTONullTest() {
     versionAttributeDTO = versionAttributeMapper
       .mapToDTO((VersionAttribute) null);
-    assertEquals(null, versionAttributeDTO);
+    assertNull(versionAttributeDTO);
   }
 
   @Test
@@ -59,7 +57,7 @@ public class VersionAttributeMapperImplTest {
   public void mapToDTOListNullTest() {
     versionAttributeDTOS = versionAttributeMapper
       .mapToDTO((List<VersionAttribute>) null);
-    assertEquals(null, versionAttributeDTOS);
+    assertNull(versionAttributeDTOS);
   }
 
   @Test
@@ -78,7 +76,7 @@ public class VersionAttributeMapperImplTest {
   public void mapToEntityNullTest() {
     versionAttribute = versionAttributeMapper
       .mapToEntity((VersionAttributeDTO) null);
-    assertEquals(null, versionAttribute);
+    assertNull(versionAttribute);
   }
 
   @Test

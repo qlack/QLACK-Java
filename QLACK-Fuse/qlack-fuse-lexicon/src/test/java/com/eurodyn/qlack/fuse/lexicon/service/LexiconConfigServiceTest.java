@@ -1,37 +1,29 @@
 package com.eurodyn.qlack.fuse.lexicon.service;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.eurodyn.qlack.fuse.lexicon.dto.GroupDTO;
 import com.eurodyn.qlack.fuse.lexicon.dto.KeyDTO;
 import com.eurodyn.qlack.fuse.lexicon.dto.LanguageDTO;
 import com.eurodyn.qlack.fuse.lexicon.model.Application;
 import com.eurodyn.qlack.fuse.lexicon.repository.ApplicationRepository;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-//@RunWith(MockitoJUnitRunner.class)
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
 public class LexiconConfigServiceTest {
-/*
+
   @InjectMocks
   private LexiconConfigService lexiconConfigService;
   @Mock
@@ -49,11 +41,11 @@ public class LexiconConfigServiceTest {
   @Mock
   private KeyDTO keyDTO;
 
-  private List<Application> applicationList = new ArrayList<>();
+  final private List<Application> applicationList = new ArrayList<>();
   private URL yamlUrl;
-  private Set<GroupDTO> groupDTOSet = new HashSet<>();
+  final private Set<GroupDTO> groupDTOSet = new HashSet<>();
 
-  @Before
+  @BeforeEach
   public void init() {
     lexiconConfigService = new LexiconConfigService(groupService, languageService, keyService, applicationRepository);
   }
@@ -190,5 +182,5 @@ public class LexiconConfigServiceTest {
     verify(applicationRepository, times(1)).findBySymbolicName(any());
   }
   
- */
+
 }

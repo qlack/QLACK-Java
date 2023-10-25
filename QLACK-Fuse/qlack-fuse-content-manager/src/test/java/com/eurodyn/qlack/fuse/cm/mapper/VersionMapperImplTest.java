@@ -1,8 +1,6 @@
 package com.eurodyn.qlack.fuse.cm.mapper;
 
-import static junit.framework.TestCase.assertNotNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.eurodyn.qlack.fuse.cm.InitTestValues;
 import com.eurodyn.qlack.fuse.cm.dto.VersionAttributeDTO;
@@ -12,13 +10,13 @@ import com.eurodyn.qlack.fuse.cm.model.VersionAttribute;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class VersionMapperImplTest {
 
   @InjectMocks
@@ -42,7 +40,7 @@ public class VersionMapperImplTest {
 
   private List<VersionAttribute> versionAttributeList;
 
-  @Before
+  @BeforeEach
   public void init() {
     initTestValues = new InitTestValues();
     version = initTestValues.createVersion();
@@ -60,7 +58,7 @@ public class VersionMapperImplTest {
   @Test
   public void mapToDTONullTest() {
     versionDTO = versionMapper.mapToDTO((Version) null);
-    assertEquals(null, versionDTO);
+    assertNull(versionDTO);
   }
 
   @Test
@@ -73,7 +71,7 @@ public class VersionMapperImplTest {
   @Test
   public void mapToDTOListNullTest() {
     versionDTOS = versionMapper.mapToDTO((List<Version>) null);
-    assertEquals(null, versionDTOS);
+    assertNull(versionDTOS);
 
   }
 
@@ -86,13 +84,13 @@ public class VersionMapperImplTest {
   @Test
   public void mapToEntityNullTest() {
     version = versionMapper.mapToEntity((VersionDTO) null);
-    assertEquals(null, version);
+    assertNull(version);
   }
 
   @Test
   public void mapToEntityListNullTest() {
     versions = versionMapper.mapToEntity((List<VersionDTO>) null);
-    assertEquals(null, versions);
+    assertNull(versions);
   }
 
   @Test

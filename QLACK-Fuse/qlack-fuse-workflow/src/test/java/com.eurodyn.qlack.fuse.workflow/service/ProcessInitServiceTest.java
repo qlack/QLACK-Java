@@ -1,36 +1,30 @@
 package com.eurodyn.qlack.fuse.workflow.service;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.eurodyn.qlack.fuse.crypto.service.CryptoDigestService;
 import com.eurodyn.qlack.fuse.workflow.InitTestValues;
 import com.eurodyn.qlack.fuse.workflow.model.ProcessFile;
 import com.eurodyn.qlack.fuse.workflow.repository.ProcessFileRepository;
-import java.io.IOException;
-import java.io.InputStream;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.DeploymentBuilder;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.*;
+import org.mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-//@RunWith(PowerMockRunner.class)
-//@PowerMockRunnerDelegate(SpringJUnit4ClassRunner.class)
+import java.io.IOException;
+import java.io.InputStream;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(SpringExtension.class)
 public class ProcessInitServiceTest {
-/*
+
   @InjectMocks
   private ProcessInitService processInitService;
 
@@ -55,7 +49,7 @@ public class ProcessInitServiceTest {
 
   private ProcessFile processFile;
 
-  @Before
+  @BeforeEach
   public void init() throws IOException {
     processInitService = new ProcessInitService(processFileRepository,
       repositoryService, cryptoDigestService);
@@ -128,5 +122,5 @@ public class ProcessInitServiceTest {
         .findOneByFilename(r.getFilename());
     }
   }
-*/
+
 }

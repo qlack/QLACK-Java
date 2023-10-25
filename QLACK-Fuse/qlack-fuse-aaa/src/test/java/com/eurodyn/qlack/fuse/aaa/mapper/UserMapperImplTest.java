@@ -1,8 +1,6 @@
 package com.eurodyn.qlack.fuse.aaa.mapper;
 
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.eurodyn.qlack.fuse.aaa.InitTestValues;
 import com.eurodyn.qlack.fuse.aaa.dto.UserAttributeDTO;
@@ -12,14 +10,14 @@ import com.eurodyn.qlack.fuse.aaa.model.UserAttribute;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class UserMapperImplTest {
 
   @InjectMocks
@@ -43,7 +41,7 @@ public class UserMapperImplTest {
   private List<UserAttribute> userAttributeList;
 
 
-  @Before
+  @BeforeEach
   public void init() {
     initTestValues = new InitTestValues();
     user = initTestValues.createUser();
@@ -58,13 +56,13 @@ public class UserMapperImplTest {
   @Test
   public void mapToDTONullTest() {
     UserDTO userDTO = userMapper.mapToDTO((User) null);
-    assertEquals(null, userDTO);
+    assertNull(userDTO);
   }
 
   @Test
   public void mapToDTOListNullTest() {
     List<UserDTO> userDTOList = userMapper.mapToDTO((List<User>) null);
-    assertEquals(null, userDTOList);
+    assertNull(userDTOList);
   }
 
   @Test
@@ -78,7 +76,7 @@ public class UserMapperImplTest {
   @Test
   public void mapToEntityNullTest() {
     User user = userMapper.mapToEntity((UserDTO) null);
-    assertEquals(null, user);
+    assertNull(user);
   }
 
 
@@ -92,9 +90,9 @@ public class UserMapperImplTest {
 
   @Test
   public void mapToEntityListNullTest() {
-    assertEquals(null, userMapper.mapToEntity((List<UserDTO>) null));
+    assertNull(userMapper.mapToEntity((List<UserDTO>) null));
     List<User> userList = userMapper.mapToEntity((List<UserDTO>) null);
-    assertEquals(null, userList);
+    assertNull(userList);
 
   }
 
@@ -106,7 +104,7 @@ public class UserMapperImplTest {
     User user = initTestValues.createUser();
     user.setUsername(null);
     userMapper.mapToExistingEntity(userDTO, user);
-    assertEquals(null, userDTO.getUsername());
+    assertNull(userDTO.getUsername());
   }
 
   @Test
@@ -114,7 +112,7 @@ public class UserMapperImplTest {
     UserDTO userDTO = initTestValues.createUserDTO();
     userDTO.setUsername(null);
     userMapper.mapToExistingEntity(null, user);
-    assertEquals(null, userDTO.getUsername());
+    assertNull(userDTO.getUsername());
   }
 
   @Test

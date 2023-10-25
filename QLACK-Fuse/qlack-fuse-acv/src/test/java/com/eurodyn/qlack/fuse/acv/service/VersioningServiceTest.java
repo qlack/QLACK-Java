@@ -1,11 +1,11 @@
 package com.eurodyn.qlack.fuse.acv.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mock;
 
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import java.util.Collections;
@@ -20,18 +20,14 @@ import org.javers.core.commit.CommitId;
 import org.javers.core.commit.CommitMetadata;
 import org.javers.repository.jql.JqlQuery;
 import org.javers.shadow.Shadow;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
-@PrepareForTest({Commit.class, CommitId.class})
+@ExtendWith(MockitoExtension.class)
 public class VersioningServiceTest {
 
   @InjectMocks
@@ -61,13 +57,12 @@ public class VersioningServiceTest {
   @Mock
   private Object object1;
 
-  @Before
+  @BeforeEach
   public void init() {
     versioningService = new VersioningService(javers);
-    //PowerMockito.mockStatic(Commit.class);
-    //PowerMockito.mockStatic(CommitId.class);
+
   }
-/*
+
   @Test
   public void createVersionTest() {
     Commit commit = mock(Commit.class);
@@ -78,30 +73,40 @@ public class VersioningServiceTest {
     assertEquals(0,
       versioningService.createVersion("qlack", object1, "change"));
   }
-*/
-  @Test(expected = NullPointerException.class)
+
+  @Test
   public void createVersionNullAuthorTest() {
-    versioningService.createVersion(null, object1, "change");
+    assertThrows(NullPointerException.class, () -> {
+      versioningService.createVersion(null, object1, "change");
+    });
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void createVersionNullObjectTest() {
-    versioningService.createVersion("qlack", null, "change");
+    assertThrows(NullPointerException.class, () -> {
+      versioningService.createVersion("qlack", null, "change");
+    });
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void createVersionWithPropertiesNullAuthorTest() {
-    versioningService.createVersion(null, object1, "change", null);
+    assertThrows(NullPointerException.class, () -> {
+      versioningService.createVersion(null, object1, "change", null);
+    });
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void createVersionWithPropertiesNullObjectTest() {
-    versioningService.createVersion("qlack", null, "change", null);
+    assertThrows(NullPointerException.class, () -> {
+      versioningService.createVersion("qlack", null, "change", null);
+    });
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void createVersionNullPropertiesTest() {
-    versioningService.createVersion("qlack", object1, "change", null);
+    assertThrows(NullPointerException.class, () -> {
+      versioningService.createVersion("qlack", object1, "change", null);
+    });
   }
 
   @Test
@@ -110,9 +115,11 @@ public class VersioningServiceTest {
       versioningService.findVersions(object1));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void findVersionsNullObjectTest() {
-    versioningService.findVersions(null);
+    assertThrows(NullPointerException.class, () -> {
+      versioningService.findVersions(null);
+    });
   }
 
   @Test
@@ -126,9 +133,11 @@ public class VersioningServiceTest {
       versioningService.retrieveVersion(object1, 1L));
   }
 
-  @Test(expected = QDoesNotExistException.class)
+  @Test
   public void retrieveVersionExceptionTest() {
-    versioningService.retrieveVersion(object1, 1L);
+    assertThrows(QDoesNotExistException.class, () -> {
+      versioningService.retrieveVersion(object1, 1L);
+    });
   }
 
   @Test
@@ -140,11 +149,13 @@ public class VersioningServiceTest {
       versioningService.retrieveLatestVersion(object1));
   }
 
-  @Test(expected = QDoesNotExistException.class)
+  @Test
   public void retrieveLatestVersionExceptionTest() {
-    versioningService.retrieveLatestVersion(object1);
+    assertThrows(QDoesNotExistException.class, () -> {
+      versioningService.retrieveLatestVersion(object1);
+    });
   }
-/*
+
   @Test
   public void convertToVersionDTOTest() {
     CommitId commitId = mock(CommitId.class);
@@ -152,5 +163,5 @@ public class VersioningServiceTest {
     when(shadow.getCommitId()).thenReturn(commitId);
     assertNotNull(versioningService.convertToVersionDTO(shadow));
   }
-*/
+
 }

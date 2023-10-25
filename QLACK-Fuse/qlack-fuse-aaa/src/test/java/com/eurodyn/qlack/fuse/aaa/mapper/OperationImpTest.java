@@ -1,19 +1,19 @@
 package com.eurodyn.qlack.fuse.aaa.mapper;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.eurodyn.qlack.fuse.aaa.InitTestValues;
 import com.eurodyn.qlack.fuse.aaa.dto.OperationDTO;
 import com.eurodyn.qlack.fuse.aaa.model.Operation;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class OperationImpTest {
 
   @InjectMocks
@@ -25,7 +25,7 @@ public class OperationImpTest {
 
   private OperationDTO operationDTO;
 
-  @Before
+  @BeforeEach
   public void init() {
     initTestValues = new InitTestValues();
     operation = initTestValues.createOperation();
@@ -35,14 +35,14 @@ public class OperationImpTest {
   @Test
   public void mapToDTONullTest() {
     OperationDTO operationDTO = operationMapper.mapToDTO((Operation) null);
-    assertEquals(null, operationDTO);
+    assertNull(operationDTO);
   }
 
   @Test
   public void mapToDTOListNullTest() {
     List<OperationDTO> operationDTOList = operationMapper
       .mapToDTO((List<Operation>) null);
-    assertEquals(null, operationDTOList);
+    assertNull(operationDTOList);
   }
 
   @Test
@@ -57,7 +57,7 @@ public class OperationImpTest {
   @Test
   public void mapToEntityNullTest() {
     Operation operation = operationMapper.mapToEntity((OperationDTO) null);
-    assertEquals(null, operation);
+    assertNull(operation);
   }
 
 
@@ -72,10 +72,10 @@ public class OperationImpTest {
 
   @Test
   public void mapToEntityListNullTest() {
-    assertEquals(null, operationMapper.mapToEntity((List<OperationDTO>) null));
+    assertNull(operationMapper.mapToEntity((List<OperationDTO>) null));
     List<Operation> operationList = operationMapper
       .mapToEntity((List<OperationDTO>) null);
-    assertEquals(null, operationList);
+    assertNull(operationList);
 
   }
 
@@ -87,7 +87,7 @@ public class OperationImpTest {
     Operation operation = initTestValues.createOperation();
     operation.setDescription(null);
     operationMapper.mapToExistingEntity(operationDTO, operation);
-    assertEquals(null, operationDTO.getDescription());
+    assertNull(operationDTO.getDescription());
   }
 
   @Test
@@ -95,6 +95,6 @@ public class OperationImpTest {
     OperationDTO operationDTO = initTestValues.createOperationDTO();
     operationDTO.setDescription(null);
     operationMapper.mapToExistingEntity(null, operation);
-    assertEquals(null, operationDTO.getDescription());
+    assertNull(operationDTO.getDescription());
   }
 }

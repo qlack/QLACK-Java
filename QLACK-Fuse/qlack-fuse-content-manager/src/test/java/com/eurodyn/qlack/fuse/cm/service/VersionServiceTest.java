@@ -1,8 +1,7 @@
 package com.eurodyn.qlack.fuse.cm.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.AdditionalMatchers.not;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -54,12 +53,14 @@ import org.apache.tika.config.TikaConfig;
 import org.apache.tika.detect.Detector;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -69,7 +70,8 @@ import org.springframework.test.util.ReflectionTestUtils;
  * @author European Dynamics
  */
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class VersionServiceTest {
 
   @InjectMocks
@@ -131,7 +133,7 @@ public class VersionServiceTest {
   private String LOCK_TOKEN;
   private byte[] content;
 
-  @Before
+  @BeforeEach
   public void init() throws TikaException, IOException {
     versionService = new VersionService(concurrencyControlService,
       storageEngineFactory,
@@ -175,35 +177,39 @@ public class VersionServiceTest {
     versionsDTO = initTestValues.createVersionsDTO();
   }
 
-  @Test(expected = QSelectedNodeLockException.class)
+  @Test
   public void testCreateVersionOfConflictingFile() {
-    when(nodeRepository.fetchById(file.getId())).thenReturn(file);
-    when(concurrencyControlService
-      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-      .thenReturn(fileDTO);
+    assertThrows(QSelectedNodeLockException.class, () -> {
+      when(nodeRepository.fetchById(file.getId())).thenReturn(file);
+      when(concurrencyControlService
+              .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+              .thenReturn(fileDTO);
 
-    versionService
-      .createVersion(file.getId(), versionDTO, FILENAME, content, USER_ID,
-        LOCK_TOKEN);
+      versionService
+              .createVersion(file.getId(), versionDTO, FILENAME, content, USER_ID,
+                      LOCK_TOKEN);
 
-    verify(versionRepository, times(0)).save(any());
+      verify(versionRepository, times(0)).save(any());
+    });
   }
 
-  @Test(expected = QAncestorFolderLockException.class)
+  @Test
   public void testCreateVersionWithConflictingParent() {
-    when(nodeRepository.fetchById(file.getId())).thenReturn(file);
-    when(concurrencyControlService
-      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-      .thenReturn(null);
-    when(concurrencyControlService
-      .getAncestorFolderWithLockConflict(parent.getId(), LOCK_TOKEN))
-      .thenReturn(parentDTO);
+    assertThrows(QAncestorFolderLockException.class, () -> {
+      when(nodeRepository.fetchById(file.getId())).thenReturn(file);
+      when(concurrencyControlService
+              .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+              .thenReturn(null);
+      when(concurrencyControlService
+              .getAncestorFolderWithLockConflict(parent.getId(), LOCK_TOKEN))
+              .thenReturn(parentDTO);
 
-    versionService
-      .createVersion(file.getId(), versionDTO, FILENAME, content, USER_ID,
-        LOCK_TOKEN);
+      versionService
+              .createVersion(file.getId(), versionDTO, FILENAME, content, USER_ID,
+                      LOCK_TOKEN);
 
-    verify(versionRepository, times(0)).save(any());
+      verify(versionRepository, times(0)).save(any());
+    });
   }
 
   @Test()
@@ -248,14 +254,16 @@ public class VersionServiceTest {
     verify(versionRepository, times(1)).save(any());
   }
 
-  @Test(expected = QSelectedNodeLockException.class)
+  @Test
   public void testUpdateVersionOfConflictedFile() {
-    when(nodeRepository.fetchById(any())).thenReturn(file);
-    when(concurrencyControlService
-      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-      .thenReturn(fileDTO);
-    versionService
-      .updateVersion(file.getId(), versionDTO, null, USER_ID, true, LOCK_TOKEN);
+    assertThrows(QSelectedNodeLockException.class, () -> {
+      when(nodeRepository.fetchById(any())).thenReturn(file);
+      when(concurrencyControlService
+              .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+              .thenReturn(fileDTO);
+      versionService
+              .updateVersion(file.getId(), versionDTO, null, USER_ID, true, LOCK_TOKEN);
+    });
   }
 
   @Test
@@ -329,13 +337,15 @@ public class VersionServiceTest {
     assertEquals("New Name", version.getName());
   }
 
-  @Test(expected = QSelectedNodeLockException.class)
+  @Test
   public void testDeleteVersionOfConflictedNode() {
-    when(versionRepository.fetchById(version.getId())).thenReturn(version);
-    when(concurrencyControlService
-      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-      .thenReturn(fileDTO);
-    versionService.deleteVersion(version.getId(), LOCK_TOKEN);
+    assertThrows(QSelectedNodeLockException.class, () -> {
+      when(versionRepository.fetchById(version.getId())).thenReturn(version);
+      when(concurrencyControlService
+              .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+              .thenReturn(fileDTO);
+      versionService.deleteVersion(version.getId(), LOCK_TOKEN);
+    });
   }
 
   @Test
@@ -525,18 +535,20 @@ public class VersionServiceTest {
     assertNull(version.getAttribute(CMConstants.ATTR_LAST_MODIFIED_ON));
   }
 
-  @Test(expected = QSelectedNodeLockException.class)
+  @Test
   public void testUpdateAttributeWithoutVersionNameAndConflicted() {
-    when(nodeRepository.fetchById(file.getId())).thenReturn(file);
-    when(concurrencyControlService
-      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-      .thenReturn(fileDTO);
+    assertThrows(QSelectedNodeLockException.class, () -> {
+      when(nodeRepository.fetchById(file.getId())).thenReturn(file);
+      when(concurrencyControlService
+              .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+              .thenReturn(fileDTO);
 
-    versionService
-      .updateAttribute(file.getId(), CMConstants.LOCKABLE, "true", "NEW_USER",
-        LOCK_TOKEN);
+      versionService
+              .updateAttribute(file.getId(), CMConstants.LOCKABLE, "true", "NEW_USER",
+                      LOCK_TOKEN);
 
-    verify(versionRepository, times(0)).save(version);
+      verify(versionRepository, times(0)).save(version);
+    });
   }
 
   @Test
@@ -615,25 +627,27 @@ public class VersionServiceTest {
     assertNotNull(version.getAttribute(CMConstants.ATTR_LAST_MODIFIED_ON));
   }
 
-  @Test(expected = QSelectedNodeLockException.class)
+  @Test
   public void testUpdateAttributesWithVersionNameAndConflicted() {
-    Map<String, String> newAttributes = new HashMap<>();
-    newAttributes.put(CMConstants.LOCKABLE, "true");
-    newAttributes.put(CMConstants.ATTR_CREATED_BY, "Some User");
+    assertThrows(QSelectedNodeLockException.class, () -> {
+      Map<String, String> newAttributes = new HashMap<>();
+      newAttributes.put(CMConstants.LOCKABLE, "true");
+      newAttributes.put(CMConstants.ATTR_CREATED_BY, "Some User");
 
-    version.setAttributes(new ArrayList<>());
+      version.setAttributes(new ArrayList<>());
 
-    when(nodeRepository.fetchById(file.getId())).thenReturn(file);
-    when(concurrencyControlService
-      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-      .thenReturn(fileDTO);
+      when(nodeRepository.fetchById(file.getId())).thenReturn(file);
+      when(concurrencyControlService
+              .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+              .thenReturn(fileDTO);
 
-    versionService
-      .updateAttributes(file.getId(), newAttributes, "NEW_USER", LOCK_TOKEN,
-        version.getName());
+      versionService
+              .updateAttributes(file.getId(), newAttributes, "NEW_USER", LOCK_TOKEN,
+                      version.getName());
 
-    verify(versionRepository, times(0)).save(version);
-    assertEquals(0, version.getAttributes().size());
+      verify(versionRepository, times(0)).save(version);
+      assertEquals(0, version.getAttributes().size());
+    });
   }
 
   @Test
@@ -678,19 +692,21 @@ public class VersionServiceTest {
     assertNull(version.getAttribute(CMConstants.ATTR_LAST_MODIFIED_ON));
   }
 
-  @Test(expected = QSelectedNodeLockException.class)
+  @Test
   public void testDeleteAttributeWithoutVersionNameAndConflicted() {
-    version.setAttribute(CMConstants.LOCKABLE, "true");
+    assertThrows(QSelectedNodeLockException.class, () -> {
+      version.setAttribute(CMConstants.LOCKABLE, "true");
 
-    when(nodeRepository.fetchById(file.getId())).thenReturn(file);
-    when(concurrencyControlService
-      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-      .thenReturn(fileDTO);
+      when(nodeRepository.fetchById(file.getId())).thenReturn(file);
+      when(concurrencyControlService
+              .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+              .thenReturn(fileDTO);
 
-    versionService
-      .deleteAttribute(file.getId(), CMConstants.LOCKABLE, USER_ID, LOCK_TOKEN);
+      versionService
+              .deleteAttribute(file.getId(), CMConstants.LOCKABLE, USER_ID, LOCK_TOKEN);
 
-    verify(versionRepository, times(0)).save(version);
+      verify(versionRepository, times(0)).save(version);
+    });
   }
 
   @Test
@@ -713,22 +729,24 @@ public class VersionServiceTest {
     assertNull(version.getAttribute(CMConstants.LOCKABLE));
   }
 
-  @Test(expected = QSelectedNodeLockException.class)
+  @Test
   public void testDeleteAttributeWithVersionNameConflicted() {
-    version.setAttribute(CMConstants.LOCKABLE, "true");
+    assertThrows(QSelectedNodeLockException.class, () -> {
+      version.setAttribute(CMConstants.LOCKABLE, "true");
 
-    when(nodeRepository.fetchById(file.getId())).thenReturn(file);
-    when(concurrencyControlService
-      .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
-      .thenReturn(fileDTO);
+      when(nodeRepository.fetchById(file.getId())).thenReturn(file);
+      when(concurrencyControlService
+              .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
+              .thenReturn(fileDTO);
 
-    versionService
-      .deleteAttribute(file.getId(), CMConstants.LOCKABLE, "NEW_USER",
-        LOCK_TOKEN,
-        version.getName());
+      versionService
+              .deleteAttribute(file.getId(), CMConstants.LOCKABLE, "NEW_USER",
+                      LOCK_TOKEN,
+                      version.getName());
 
-    verify(versionRepository, times(0)).save(version);
-    assertNotNull(version.getAttribute(CMConstants.LOCKABLE));
+      verify(versionRepository, times(0)).save(version);
+      assertNotNull(version.getAttribute(CMConstants.LOCKABLE));
+    });
   }
 
   @Test
@@ -761,16 +779,18 @@ public class VersionServiceTest {
     verify(versionRepository, times(1)).delete(any(Version.class));
   }
 
-  @Test(expected = QVersionNotFoundException.class)
+  @Test
   public void gGetFileAsZipNoVersionNameNotFoundExceptionTest() {
-    Version latestVersion = versions.get(1);
-    commonMocks();
-    when(versionMapper.mapToEntity(versionsDTO.get(1)))
-      .thenReturn(latestVersion);
-    when(versionRepository.findOne(any(Predicate.class)))
-      .thenReturn(Optional.empty());
+    assertThrows(QVersionNotFoundException.class, () -> {
+      Version latestVersion = versions.get(1);
+      commonMocks();
+      when(versionMapper.mapToEntity(versionsDTO.get(1)))
+              .thenReturn(latestVersion);
+      when(versionRepository.findOne(any(Predicate.class)))
+              .thenReturn(Optional.empty());
 
-    versionService.getFileAsZip(file.getId(), true);
+      versionService.getFileAsZip(file.getId(), true);
+    });
   }
 
   @Test
@@ -867,23 +887,24 @@ public class VersionServiceTest {
     assertEquals("New Name", version.getName());
   }
 
-  @Test(expected = QIOException.class)
-  public void getBinContentWithoutVersionNameExceptionTest()
-    throws IOException {
-    when(nodeRepository.fetchById(file.getId())).thenReturn(file);
-    when(versionRepository.findAll(any(Predicate.class))).thenReturn(versions);
-    when(versionMapper.mapToEntity(any(VersionDTO.class))).thenReturn(version);
-    when(versionMapper.mapToDTO(versions)).thenReturn(versionsDTO);
+  @Test
+  public void getBinContentWithoutVersionNameExceptionTest() {
+    assertThrows(QIOException.class, () -> {
+      when(nodeRepository.fetchById(file.getId())).thenReturn(file);
+      when(versionRepository.findAll(any(Predicate.class))).thenReturn(versions);
+      when(versionMapper.mapToEntity(any(VersionDTO.class))).thenReturn(version);
+      when(versionMapper.mapToDTO(versions)).thenReturn(versionsDTO);
 
-    ReflectionTestUtils
-      .setField(versionService, "storageEngine", storageEngine);
-    when(storageEngine.getVersionContent(anyString()))
-      .thenThrow(new IOException());
+      ReflectionTestUtils
+              .setField(versionService, "storageEngine", storageEngine);
+      when(storageEngine.getVersionContent(anyString()))
+              .thenThrow(new IOException());
 
-    versionService.getBinContent(file.getId());
+      versionService.getBinContent(file.getId());
 
-    verify(versionBinRepository, times(1))
-      .findByVersionOrderByChunkIndex(version);
+      verify(versionBinRepository, times(1))
+              .findByVersionOrderByChunkIndex(version);
+    });
   }
 
   @Test

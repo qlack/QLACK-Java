@@ -1,9 +1,7 @@
 package com.eurodyn.qlack.fuse.fd.service;
 
 import static com.eurodyn.qlack.fuse.fd.util.ThreadStatus.DRAFT;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -25,14 +23,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.extern.java.Log;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
 
 /**
@@ -40,7 +38,7 @@ import org.springframework.data.domain.Sort;
  */
 
 @Log
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ThreadServiceTest {
 
   @InjectMocks
@@ -71,7 +69,7 @@ public class ThreadServiceTest {
   private QThreadMessage qThreadMessage;
 
 
-  @Before
+  @BeforeEach
   public void init() {
     threadService = new ThreadService(repository, mapper, entityManager);
 
@@ -248,7 +246,7 @@ public class ThreadServiceTest {
     List<String> messages = threadService.getThreadTextMessages(foundChild.getId());
     assertTrue(messages.size() > 0);
 //    messages.forEach(log::info);
-    messages.forEach(Assert::assertNotNull);
+    messages.forEach(Assertions::assertNotNull);
   }
 
 

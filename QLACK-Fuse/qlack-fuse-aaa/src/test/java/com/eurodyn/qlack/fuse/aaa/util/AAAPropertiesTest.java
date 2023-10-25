@@ -1,11 +1,9 @@
 package com.eurodyn.qlack.fuse.aaa.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AAAPropertiesTest {
 
@@ -14,7 +12,7 @@ public class AAAPropertiesTest {
   private boolean isFalse;
   private String ldapTest;
 
-  @Before
+  @BeforeEach
   public void init() {
     aaaProperties = new AAAProperties();
     isTrue = true;

@@ -1,7 +1,7 @@
 package com.eurodyn.qlack.fuse.workflow.service;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -14,14 +14,14 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class WorkflowTaskServiceTest {
 
   @InjectMocks
@@ -36,7 +36,7 @@ public class WorkflowTaskServiceTest {
   @Mock
   private Task task;
 
-  @Before
+  @BeforeEach
   public void init() {
     workflowTaskService = new WorkflowTaskService(taskService);
   }
@@ -78,13 +78,15 @@ public class WorkflowTaskServiceTest {
     verify(taskService, times(1)).complete(taskId);
   }
 
-  @Test(expected = QDoesNotExistException.class)
+  @Test
   public void getTasksByProcessInstanceIdActivitiObjectNotFoundExceptionTest() {
-    String taskId = "taskId";
-    doThrow(new ActivitiObjectNotFoundException("ex")).when(taskService)
-      .complete(taskId);
-    workflowTaskService.completeTask(taskId);
-    verify(taskService, times(1)).complete(taskId);
+    assertThrows(QDoesNotExistException.class, () -> {
+      String taskId = "taskId";
+      doThrow(new ActivitiObjectNotFoundException("ex")).when(taskService)
+              .complete(taskId);
+      workflowTaskService.completeTask(taskId);
+      verify(taskService, times(1)).complete(taskId);
+    });
   }
 
 }

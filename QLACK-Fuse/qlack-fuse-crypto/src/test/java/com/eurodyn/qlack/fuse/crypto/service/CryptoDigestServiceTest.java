@@ -1,6 +1,6 @@
 package com.eurodyn.qlack.fuse.crypto.service;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -9,11 +9,11 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import javax.imageio.ImageIO;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CryptoDigestServiceTest {
 
-  private CryptoDigestService cryptoDigestService = new CryptoDigestService();
+  final private CryptoDigestService cryptoDigestService = new CryptoDigestService();
   private String secret;
   private String message;
 

@@ -1,7 +1,6 @@
 package com.eurodyn.qlack.fuse.aaa.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -19,31 +18,31 @@ import com.eurodyn.qlack.fuse.aaa.repository.OpTemplateHasOperationRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.OpTemplateRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.OperationRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.ResourceRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * @author European Dynamics
  */
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class OpTemplateServiceTest {
 
   @InjectMocks
   OpTemplateService opTemplateService;
 
   // Repositories
-  private OpTemplateRepository opTemplateRepository = mock(
+  final private OpTemplateRepository opTemplateRepository = mock(
     OpTemplateRepository.class);
-  private OpTemplateHasOperationRepository opTemplateHasOperationRepository = mock(
+  final private OpTemplateHasOperationRepository opTemplateHasOperationRepository = mock(
     OpTemplateHasOperationRepository.class);
-  private OperationRepository operationRepository = mock(
+  final private OperationRepository operationRepository = mock(
     OperationRepository.class);
-  private ResourceRepository resourceRepository = mock(
+  final private ResourceRepository resourceRepository = mock(
     ResourceRepository.class);
 
   @Spy
@@ -58,7 +57,7 @@ public class OpTemplateServiceTest {
   private OpTemplateHasOperation opTemplateHasOperation;
   private Resource resource;
 
-  @Before
+  @BeforeEach
   public void init() {
     opTemplateService = new OpTemplateService(opTemplateRepository,
       opTemplateHasOperationRepository, operationRepository,

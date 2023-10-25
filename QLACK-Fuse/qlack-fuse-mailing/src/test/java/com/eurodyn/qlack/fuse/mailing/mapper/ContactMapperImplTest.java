@@ -1,19 +1,18 @@
 package com.eurodyn.qlack.fuse.mailing.mapper;
 
-import static org.junit.Assert.assertEquals;
-
+import static org.junit.jupiter.api.Assertions.*;
 import com.eurodyn.qlack.fuse.mailing.InitTestValues;
 import com.eurodyn.qlack.fuse.mailing.dto.ContactDTO;
 import com.eurodyn.qlack.fuse.mailing.model.Contact;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ContactMapperImplTest {
 
   @InjectMocks
@@ -21,7 +20,7 @@ public class ContactMapperImplTest {
 
   private InitTestValues initTestValues;
 
-  @Before
+  @BeforeEach
   public void init() {
     initTestValues = new InitTestValues();
   }
@@ -36,10 +35,10 @@ public class ContactMapperImplTest {
 
   @Test
   public void mapToDTONullTest() {
-    assertEquals(null, contactMapper.mapToDTO((Contact) null));
+    assertNull(contactMapper.mapToDTO((Contact) null));
 
     List<ContactDTO> contactDTOS = contactMapper.mapToDTO((List<Contact>) null);
-    assertEquals(null, contactDTOS);
+    assertNull(contactDTOS);
   }
 
   @Test
@@ -61,10 +60,10 @@ public class ContactMapperImplTest {
 
   @Test
   public void mapToEntityNullTest() {
-    assertEquals(null, contactMapper.mapToEntity((ContactDTO) null));
+    assertNull(contactMapper.mapToEntity((ContactDTO) null));
 
     Contact contact = contactMapper.mapToEntity((ContactDTO) null);
-    assertEquals(null, contact);
+    assertNull(contact);
   }
 
 
@@ -79,9 +78,9 @@ public class ContactMapperImplTest {
 
   @Test
   public void mapToEntityListNullTest() {
-    assertEquals(null, contactMapper.mapToEntity((List<ContactDTO>) null));
+    assertNull(contactMapper.mapToEntity((List<ContactDTO>) null));
     List<Contact> contacts = contactMapper.mapToEntity((List<ContactDTO>) null);
-    assertEquals(null, contacts);
+    assertNull(contacts);
 
   }
 

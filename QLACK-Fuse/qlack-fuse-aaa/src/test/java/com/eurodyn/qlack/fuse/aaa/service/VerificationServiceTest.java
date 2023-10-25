@@ -1,7 +1,6 @@
 package com.eurodyn.qlack.fuse.aaa.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
@@ -15,31 +14,31 @@ import com.eurodyn.qlack.fuse.aaa.model.VerificationToken;
 import com.eurodyn.qlack.fuse.aaa.repository.UserRepository;
 import com.eurodyn.qlack.fuse.aaa.repository.VerificationTokenRepository;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * @author European Dynamics
  */
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class VerificationServiceTest {
 
   @InjectMocks
   private VerificationService verificationService;
 
-  private VerificationTokenRepository verificationTokenRepository = mock(
+  final private VerificationTokenRepository verificationTokenRepository = mock(
     VerificationTokenRepository.class);
-  private UserRepository userRepository = mock(UserRepository.class);
+  final private UserRepository userRepository = mock(UserRepository.class);
   private VerificationToken verificationToken;
   private InitTestValues initTestValues;
   private User user;
   private String userID;
 
-  @Before
+  @BeforeEach
   public void init() {
     verificationService = new VerificationService(verificationTokenRepository,
       userRepository);

@@ -1,19 +1,18 @@
 package com.eurodyn.qlack.fuse.cm.mapper;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.eurodyn.qlack.fuse.cm.InitTestValues;
 import com.eurodyn.qlack.fuse.cm.dto.NodeAttributeDTO;
 import com.eurodyn.qlack.fuse.cm.model.Node;
 import com.eurodyn.qlack.fuse.cm.model.NodeAttribute;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class NodeAttributeMapperTest {
 
   private NodeAttributeMapper nodeAttributeMapper;
@@ -22,7 +21,7 @@ public class NodeAttributeMapperTest {
   private NodeAttributeDTO nodeAttributeDTO;
   private NodeAttribute nodeAttribute;
 
-  @Before
+  @BeforeEach
   public void init() {
     nodeAttributeMapper = new NodeAttributeMapperImpl();
     InitTestValues initTestValues = new InitTestValues();

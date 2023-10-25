@@ -1,20 +1,18 @@
 package com.eurodyn.qlack.fuse.mailing.mapper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
+import static org.junit.jupiter.api.Assertions.*;
 import com.eurodyn.qlack.fuse.mailing.InitTestValues;
 import com.eurodyn.qlack.fuse.mailing.dto.DistributionListDTO;
 import com.eurodyn.qlack.fuse.mailing.model.DistributionList;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DistributionListMapperImplTest {
 
   @InjectMocks
@@ -22,7 +20,7 @@ public class DistributionListMapperImplTest {
 
   private InitTestValues initTestValues;
 
-  @Before
+  @BeforeEach
   public void init() {
     initTestValues = new InitTestValues();
   }
@@ -39,12 +37,11 @@ public class DistributionListMapperImplTest {
 
   @Test
   public void mapToDTONullTest() {
-    assertEquals(null,
-      distributionListMapper.mapToDTO((DistributionList) null));
+    assertNull(distributionListMapper.mapToDTO((DistributionList) null));
 
     List<DistributionListDTO> distributionListDTOS = distributionListMapper
       .mapToDTO((List<DistributionList>) null);
-    assertEquals(null, distributionListDTOS);
+    assertNull(distributionListDTOS);
   }
 
   @Test
@@ -70,12 +67,11 @@ public class DistributionListMapperImplTest {
 
   @Test
   public void mapToEntityNullTest() {
-    assertEquals(null,
-      distributionListMapper.mapToEntity((DistributionListDTO) null));
+    assertNull(distributionListMapper.mapToEntity((DistributionListDTO) null));
 
     DistributionList distributionList = distributionListMapper
       .mapToEntity((DistributionListDTO) null);
-    assertEquals(null, distributionList);
+    assertNull(distributionList);
   }
 
   @Test
@@ -90,11 +86,10 @@ public class DistributionListMapperImplTest {
 
   @Test
   public void mapToEntityListNullTest() {
-    assertEquals(null,
-      distributionListMapper.mapToEntity((List<DistributionListDTO>) null));
+    assertNull(distributionListMapper.mapToEntity((List<DistributionListDTO>) null));
     List<DistributionList> distributionLists = distributionListMapper
       .mapToEntity((List<DistributionListDTO>) null);
-    assertEquals(null, distributionLists);
+    assertNull(distributionLists);
 
   }
 

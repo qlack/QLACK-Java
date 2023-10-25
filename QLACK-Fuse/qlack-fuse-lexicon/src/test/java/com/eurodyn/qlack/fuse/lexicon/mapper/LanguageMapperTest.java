@@ -1,19 +1,19 @@
 package com.eurodyn.qlack.fuse.lexicon.mapper;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.eurodyn.qlack.fuse.lexicon.InitTestValues;
 import com.eurodyn.qlack.fuse.lexicon.dto.LanguageDTO;
 import com.eurodyn.qlack.fuse.lexicon.model.Language;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class LanguageMapperTest {
 
   @InjectMocks
@@ -21,7 +21,7 @@ public class LanguageMapperTest {
 
   private InitTestValues initTestValues;
 
-  @Before
+  @BeforeEach
   public void init() {
     initTestValues = new InitTestValues();
   }
@@ -47,11 +47,10 @@ public class LanguageMapperTest {
 
   @Test
   public void mapToDTONullTest() {
-    assertEquals(null, languageMapper.mapToDTO((Language) null));
-
+    assertNull( languageMapper.mapToDTO((Language) null));
     List<LanguageDTO> languageDTOS = languageMapper.mapToDTO(
       (List<Language>) null);
-    assertEquals(null, languageDTOS);
+    assertNull(languageDTOS);
   }
 
   @Test
@@ -75,11 +74,11 @@ public class LanguageMapperTest {
 
   @Test
   public void mapToEntityNullTest() {
-    assertEquals(null, languageMapper.mapToEntity((LanguageDTO) null));
+    assertNull(languageMapper.mapToEntity((LanguageDTO) null));
 
     List<Language> languages = languageMapper.mapToEntity(
       (List<LanguageDTO>) null);
-    assertEquals(null, languages);
+    assertNull(languages);
   }
 
 }

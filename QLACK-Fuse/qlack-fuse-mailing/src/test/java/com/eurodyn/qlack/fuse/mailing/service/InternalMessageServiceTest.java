@@ -1,6 +1,6 @@
 package com.eurodyn.qlack.fuse.mailing.service;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -24,17 +24,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.Spy;;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * @author European Dynamics
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class InternalMessageServiceTest {
 
   @InjectMocks
@@ -70,7 +70,7 @@ public class InternalMessageServiceTest {
   private final String internalAttachmentId = "0f9a2472-cde0-44a6-ba3d-8e60992904fb";
   private final String userId = "7087e822-c559-42a1-a328-598d490440de";
 
-  @Before
+  @BeforeEach
   public void init() {
     internalMessageService = new InternalMessageService(
       internalMessageRepository,
@@ -301,7 +301,7 @@ public class InternalMessageServiceTest {
   public void testGetMailCountWithUserdId() {
     when(internalMessageRepository.findAll(any(Predicate.class)))
       .thenReturn(internalMessages);
-    long expected = (long) internalMessages.size();
+    long expected = internalMessages.size();
     long actual = internalMessageService.getMailCount(userId, null);
     assertEquals(expected, actual);
   }
@@ -310,7 +310,7 @@ public class InternalMessageServiceTest {
   public void testGetMailCountWithStatusId() {
     when(internalMessageRepository.findAll(any(Predicate.class)))
       .thenReturn(internalMessages);
-    long expected = (long) internalMessages.size();
+    long expected = internalMessages.size();
     long actual = internalMessageService
       .getMailCount(null, MailConstants.EMAIL_STATUS.QUEUED.name());
     assertEquals(expected, actual);
@@ -320,7 +320,7 @@ public class InternalMessageServiceTest {
   public void testGetMailCountWithUserIdAndStatusId() {
     when(internalMessageRepository.findAll(any(Predicate.class)))
       .thenReturn(internalMessages);
-    long expected = (long) internalMessages.size();
+    long expected = internalMessages.size();
     long actual = internalMessageService
       .getMailCount(userId, MailConstants.EMAIL_STATUS.QUEUED.name());
     assertEquals(expected, actual);

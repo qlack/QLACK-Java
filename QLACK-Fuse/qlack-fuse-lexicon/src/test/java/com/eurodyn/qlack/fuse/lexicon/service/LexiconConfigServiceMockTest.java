@@ -1,23 +1,25 @@
 package com.eurodyn.qlack.fuse.lexicon.service;
 
-import static org.mockito.Mockito.when;
+import java.net.URL;
 
 import com.eurodyn.qlack.fuse.lexicon.exception.LexiconYMLProcessingException;
 import com.eurodyn.qlack.fuse.lexicon.repository.ApplicationRepository;
-import java.io.IOException;
-import java.net.URL;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.context.ApplicationContext;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-//@RunWith(MockitoJUnitRunner.class)
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
+
+import java.io.IOException;
+
+@ExtendWith(MockitoExtension.class)
 public class LexiconConfigServiceMockTest {
-/*
+
   @InjectMocks
   private LexiconConfigService lexiconConfigService;
 
@@ -39,7 +41,7 @@ public class LexiconConfigServiceMockTest {
   @Mock
   private URL yamlFile;
 
-  @Before
+  @BeforeEach
   public void init() {
     lexiconConfigService = new LexiconConfigService(groupService,
       languageService, keyService,
@@ -64,10 +66,12 @@ public class LexiconConfigServiceMockTest {
     lexiconConfigService.init();
   }
 
-  @Test(expected = LexiconYMLProcessingException.class)
-  public void initNullYamlFilesTest() throws IOException {
-    when(yamlFile.openStream()).thenThrow(new IOException());
-    lexiconConfigService.updateTranslations(yamlFile, "qlack-lexicon-config.yaml");
+  @Test
+  public void initNullYamlFilesTest(){
+    assertThrows(LexiconYMLProcessingException.class, () -> {
+      when(yamlFile.openStream()).thenThrow(new IOException());
+      lexiconConfigService.updateTranslations(yamlFile, "qlack-lexicon-config.yaml");
+    });
   }
-*/
+
 }

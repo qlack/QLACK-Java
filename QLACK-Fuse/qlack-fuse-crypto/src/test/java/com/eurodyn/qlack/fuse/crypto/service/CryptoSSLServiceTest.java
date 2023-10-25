@@ -1,30 +1,12 @@
 package com.eurodyn.qlack.fuse.crypto.service;
 
-import static org.junit.Assert.assertNotNull;
-
-import com.eurodyn.qlack.fuse.crypto.dto.CreateKeyPairDTO;
-import com.eurodyn.qlack.fuse.crypto.dto.SSLSocketFactoryCertificateDTO;
-import com.eurodyn.qlack.fuse.crypto.dto.SSLSocketFactoryDTO;
-import com.eurodyn.qlack.fuse.crypto.dto.SSLSocketFactoryPrivateKeyDTO;
-import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
-import java.util.List;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CryptoSSLServiceTest {
 
   @InjectMocks
@@ -36,16 +18,16 @@ public class CryptoSSLServiceTest {
   @InjectMocks
   private CryptoAsymmetricService cryptoAsymmetricService;
 
-  @Before
+  @BeforeEach
   public void init() {
     cryptoAsymmetricService = new CryptoAsymmetricService();
     cryptoSSLService = new CryptoSSLService(cryptoCAService,
       cryptoAsymmetricService);
   }
-
+/*
   //TODO fix test
   @Test
-  @Ignore
+  @Disabled
   public void getSocketFactoryTest()
     throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException, IOException,
     KeyManagementException, KeyStoreException, InvalidKeySpecException,
@@ -74,5 +56,5 @@ public class CryptoSSLServiceTest {
 
     assertNotNull(cryptoSSLService.getSocketFactory(sslSocketFactoryDTO));
   }
-
+*/
 }

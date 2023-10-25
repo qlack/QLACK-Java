@@ -1,8 +1,7 @@
 package com.eurodyn.qlack.fuse.crypto.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.eurodyn.qlack.common.exception.QDoesNotExistException;
 import com.eurodyn.qlack.fuse.crypto.dto.CreateKeyPairDTO;
@@ -21,7 +20,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import org.apache.commons.codec.binary.Base64;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CryptoAsymmetricServiceTest {
 
@@ -164,11 +163,10 @@ public class CryptoAsymmetricServiceTest {
       cryptoAsymmetricService.convertKeyToPEM(createKeyPair(), "keytype"));
   }
 
-  @Test(expected = QDoesNotExistException.class)
-  public void verifySignatureNullTest()
-    throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException, IOException {
-    cryptoAsymmetricService
-      .verifySignature(null, "".getBytes(), "", null, null);
+  @Test
+  public void verifySignatureNullTest() {
+    assertThrows(QDoesNotExistException.class, () ->
+      cryptoAsymmetricService.verifySignature(null, "".getBytes(), "", null, null));
   }
 
   @Test
@@ -208,12 +206,12 @@ public class CryptoAsymmetricServiceTest {
         "SHA256withRSA", "RSA"));
   }
 
-  @Test(expected = QDoesNotExistException.class)
-  public void verifySignatureNullWithInputStreamTest()
-    throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException, IOException {
-    cryptoAsymmetricService
-      .verifySignature(null, new ByteArrayInputStream("".getBytes()), "", null,
-        null);
+  @Test
+  public void verifySignatureNullWithInputStreamTest() {
+    assertThrows(QDoesNotExistException.class, () ->
+      cryptoAsymmetricService
+              .verifySignature(null, new ByteArrayInputStream("".getBytes()), "", null,
+                      null));
   }
 
 

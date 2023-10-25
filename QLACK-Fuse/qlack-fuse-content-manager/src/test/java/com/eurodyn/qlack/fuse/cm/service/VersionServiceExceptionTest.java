@@ -1,11 +1,5 @@
 package com.eurodyn.qlack.fuse.cm.service;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.eurodyn.qlack.fuse.cm.InitTestValues;
 import com.eurodyn.qlack.fuse.cm.dto.FileDTO;
 import com.eurodyn.qlack.fuse.cm.dto.FolderDTO;
@@ -13,7 +7,6 @@ import com.eurodyn.qlack.fuse.cm.dto.VersionDTO;
 import com.eurodyn.qlack.fuse.cm.enums.NodeType;
 import com.eurodyn.qlack.fuse.cm.exception.QIOException;
 import com.eurodyn.qlack.fuse.cm.mapper.VersionMapper;
-import com.eurodyn.qlack.fuse.cm.model.Node;
 import com.eurodyn.qlack.fuse.cm.model.Version;
 import com.eurodyn.qlack.fuse.cm.repository.NodeRepository;
 import com.eurodyn.qlack.fuse.cm.repository.VersionBinRepository;
@@ -23,28 +16,31 @@ import com.eurodyn.qlack.fuse.cm.storage.DBStorage;
 import com.eurodyn.qlack.fuse.cm.storage.StorageEngine;
 import com.eurodyn.qlack.fuse.cm.storage.StorageEngineFactory;
 import com.eurodyn.qlack.fuse.cm.util.StreamsUtil;
-import com.querydsl.core.types.Predicate;
+import org.apache.tika.exception.TikaException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.zip.ZipOutputStream;
-import org.apache.tika.exception.TikaException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import com.querydsl.core.types.Predicate;
+import com.eurodyn.qlack.fuse.cm.model.Node;
 
-//@RunWith(PowerMockRunner.class)
-//@PrepareForTest(StreamsUtil.class)
-//@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.dom.*"})
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
 public class VersionServiceExceptionTest {
-/*
+
   @InjectMocks
   private VersionService versionService;
 
@@ -89,9 +85,11 @@ public class VersionServiceExceptionTest {
   private List<Version> versions;
   private List<VersionDTO> versionsDTO;
 
-  private byte[] content = new byte[5];
+  final private byte[] content = new byte[5];
 
-  @Before
+  private MockedStatic<StreamsUtil> mockedStatic;
+
+  @BeforeEach
   public void init() throws TikaException, IOException {
     versionService = new VersionService(concurrencyControlService,
       storageEngineFactory,
@@ -125,23 +123,30 @@ public class VersionServiceExceptionTest {
     versions = initTestValues.createVersions();
     versionsDTO = initTestValues.createVersionsDTO();
 
-    PowerMockito.mockStatic(StreamsUtil.class);
+    mockedStatic = mockStatic(StreamsUtil.class);
   }
 
-  @Test(expected = QIOException.class)
-  public void testGetFileAsZip() throws IOException {
-    version.setAttributes(initTestValues.createVersionAttributes(version));
+  @AfterEach
+  public void close() {
+    mockedStatic.close();
+  }
 
-    when(StreamsUtil.createZipOutputStream(any())).thenReturn(zipOutputStream);
-    doThrow(new IOException()).when(zipOutputStream).close();
+  @Test
+  public void testGetFileAsZip(){
+    assertThrows(QIOException.class, () -> {
+      version.setAttributes(initTestValues.createVersionAttributes(version));
 
-    when(nodeRepository.fetchById(file.getId())).thenReturn(file);
-    when(versionRepository.findAll(any(Predicate.class))).thenReturn(versions);
-    when(versionMapper.mapToDTO(versions)).thenReturn(versionsDTO);
-    when(versionRepository.findOne(any(Predicate.class)))
-      .thenReturn(Optional.of(version));
+      when(StreamsUtil.createZipOutputStream(any())).thenReturn(zipOutputStream);
+      doThrow(new IOException()).when(zipOutputStream).close();
 
-    versionService.getFileAsZip(file.getId(), version.getName(), true);
+      when(nodeRepository.fetchById(file.getId())).thenReturn(file);
+      lenient().when(versionRepository.findAll(any(Predicate.class))).thenReturn(versions);
+      lenient().when(versionMapper.mapToDTO(versions)).thenReturn(versionsDTO);
+      when(versionRepository.findOne(any(Predicate.class)))
+              .thenReturn(Optional.of(version));
+
+      versionService.getFileAsZip(file.getId(), version.getName(), true);
+    });
   }
 
 
@@ -153,5 +158,5 @@ public class VersionServiceExceptionTest {
     versionService.getMimeType(content);
     verify(inputStream, times(1)).close();
   }
-*/
+
 }

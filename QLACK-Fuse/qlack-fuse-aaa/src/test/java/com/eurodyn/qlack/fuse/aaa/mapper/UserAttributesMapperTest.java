@@ -1,19 +1,19 @@
 package com.eurodyn.qlack.fuse.aaa.mapper;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.eurodyn.qlack.fuse.aaa.InitTestValues;
 import com.eurodyn.qlack.fuse.aaa.dto.UserAttributeDTO;
 import com.eurodyn.qlack.fuse.aaa.model.UserAttribute;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class UserAttributesMapperTest {
 
   @InjectMocks
@@ -29,7 +29,7 @@ public class UserAttributesMapperTest {
 
   private List<UserAttributeDTO> userAttributesDTO;
 
-  @Before
+  @BeforeEach
   public void init() {
     initTestValues = new InitTestValues();
     userAttribute = initTestValues.createUserAttribute(null);
@@ -115,33 +115,33 @@ public class UserAttributesMapperTest {
   @Test
   public void mapToDTONullTest() {
     userAttributesDTO = userAttributeMapperImpl.mapToDTO((List<UserAttribute>) null);
-    assertEquals(null, userAttributesDTO);
+    assertNull(userAttributesDTO);
   }
 
   @Test
   public void mapToEntityNullTest() {
     userAttribute = userAttributeMapperImpl.mapToEntity((UserAttributeDTO) null);
-    assertEquals(null, userAttribute);
+    assertNull(userAttribute);
   }
 
   @Test
   public void mapToExistingEntity() {
     userAttributeDTO.setData(null);
     userAttributeMapperImpl.mapToExistingEntity(null, userAttribute);
-    assertEquals(null, userAttributeDTO.getData());
+    assertNull(userAttributeDTO.getData());
   }
 
   @Test
   public void mapUserAttributeToDTONullTest() {
     userAttributes = userAttributeMapperImpl.mapToEntity((List<UserAttributeDTO>) null);
-    assertEquals(null, userAttributes);
+    assertNull(userAttributes);
 
   }
 
   @Test
   public void UserAttributeMapToDTOTest() {
     userAttributeDTO = userAttributeMapperImpl.mapToDTO((UserAttribute) null);
-    assertEquals(null, userAttributeDTO);
+    assertNull(userAttributeDTO);
   }
 
   @Test

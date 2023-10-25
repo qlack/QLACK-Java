@@ -1,20 +1,19 @@
 package com.eurodyn.qlack.fuse.mailing.util;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class MailingPropertiesTest {
 
   @InjectMocks
   private MailingProperties mailingProperties;
 
-  @Before
+  @BeforeEach
   public void init() {
     mailingProperties = new MailingProperties();
   }
@@ -22,7 +21,7 @@ public class MailingPropertiesTest {
   @Test
   public void pollingTest() {
     mailingProperties.setPolling(true);
-    assertEquals(true, mailingProperties.isPolling());
+    assertTrue(mailingProperties.isPolling());
   }
 
 
@@ -36,7 +35,7 @@ public class MailingPropertiesTest {
   @Test
   public void debugTest() {
     mailingProperties.setDebug(true);
-    assertEquals(true, mailingProperties.isDebug());
+    assertTrue(mailingProperties.isDebug());
   }
 
 }

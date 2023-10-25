@@ -1,6 +1,6 @@
 package com.eurodyn.qlack.fuse.aaa.service;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -15,24 +15,24 @@ import com.eurodyn.qlack.fuse.aaa.repository.ResourceRepository;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * @author European Dynamics
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ResourceServiceTest {
 
   @InjectMocks
   private ResourceService resourceService;
 
   private InitTestValues initTestValues;
-  private ResourceRepository resourceRepository = mock(
+  final private ResourceRepository resourceRepository = mock(
     ResourceRepository.class);
   private ResourceDTO resourceDTO;
   private Resource resource;
@@ -41,7 +41,7 @@ public class ResourceServiceTest {
   @Spy
   private ResourceMapper resourceMapper;
 
-  @Before
+  @BeforeEach
   public void init() {
     resourceService = new ResourceService(resourceRepository, resourceMapper);
     initTestValues = new InitTestValues();

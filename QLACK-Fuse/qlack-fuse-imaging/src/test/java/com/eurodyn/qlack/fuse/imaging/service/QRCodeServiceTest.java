@@ -1,18 +1,18 @@
 package com.eurodyn.qlack.fuse.imaging.service;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class QRCodeServiceTest {
 
   private QRCodeService qrCodeService;
 
-  @Before
+  @BeforeEach
   public void init() {
     qrCodeService = new QRCodeService();
   }

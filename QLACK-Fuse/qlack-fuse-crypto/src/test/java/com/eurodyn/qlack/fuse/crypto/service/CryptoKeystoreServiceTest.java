@@ -1,17 +1,17 @@
 package com.eurodyn.qlack.fuse.crypto.service;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.eurodyn.qlack.fuse.crypto.dto.CertificateSignDTO;
 import com.eurodyn.qlack.fuse.crypto.dto.CreateKeyPairDTO;
 import com.google.common.collect.ImmutableSet;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.operator.OperatorCreationException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,7 +30,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CryptoKeystoreServiceTest {
 
   @InjectMocks
@@ -49,7 +49,7 @@ public class CryptoKeystoreServiceTest {
 
   private final String execDir = Paths.get("").toAbsolutePath().toString();
 
-  @Before
+  @BeforeEach
   public void init() throws FileNotFoundException {
     cryptoKeystoreService = new CryptoKeystoreService(cryptoAsymmetricService);
     File initialFile = Paths
@@ -150,7 +150,7 @@ public class CryptoKeystoreServiceTest {
   @Test
   public void saveCertificate()
     throws NoSuchAlgorithmException, CertificateException, NoSuchProviderException, KeyStoreException,
-    IOException, OperatorCreationException, InvalidKeySpecException {
+    IOException, OperatorCreationException {
     final String keystoreType = "PKCS12";
     final String keystoreProvider = "SunJSSE";
 

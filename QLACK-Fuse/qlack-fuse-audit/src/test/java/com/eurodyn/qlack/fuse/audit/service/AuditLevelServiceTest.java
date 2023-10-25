@@ -1,6 +1,7 @@
 package com.eurodyn.qlack.fuse.audit.service;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -13,18 +14,18 @@ import com.eurodyn.qlack.fuse.audit.mapper.AuditLevelMapper;
 import com.eurodyn.qlack.fuse.audit.model.AuditLevel;
 import com.eurodyn.qlack.fuse.audit.repository.AuditLevelRepository;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * @author European Dynamics
  */
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AuditLevelServiceTest {
 
   @InjectMocks
@@ -33,7 +34,7 @@ public class AuditLevelServiceTest {
   @Spy
   private AuditLevelMapper auditLevelMapper;
 
-  private AuditLevelRepository auditLevelRepository = mock(
+  final private AuditLevelRepository auditLevelRepository = mock(
     AuditLevelRepository.class);
 
   private InitTestValues initTestValues;
@@ -42,7 +43,7 @@ public class AuditLevelServiceTest {
   private List<AuditLevel> auditLevels;
   private List<AuditLevelDTO> auditLevelsDTO;
 
-  @Before
+  @BeforeEach
   public void init() {
     auditLevelService = new AuditLevelService(auditLevelRepository,
       auditLevelMapper);
@@ -69,11 +70,13 @@ public class AuditLevelServiceTest {
     verify(auditLevelRepository, times(1)).save(auditLevel);
   }
 
-  @Test(expected = QAlreadyExistsException.class)
+  @Test
   public void testAddExistingLevel() {
-    when(auditLevelRepository.findByName(auditLevelDTO.getName()))
-      .thenReturn(auditLevel);
-    auditLevelService.addLevelIfNotExists(auditLevelDTO);
+    assertThrows(QAlreadyExistsException.class, () -> {
+      when(auditLevelRepository.findByName(auditLevelDTO.getName()))
+              .thenReturn(auditLevel);
+      auditLevelService.addLevelIfNotExists(auditLevelDTO);
+    });
   }
 
   @Test

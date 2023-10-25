@@ -1,15 +1,10 @@
 package com.eurodyn.qlack.fuse.cm.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import com.eurodyn.qlack.fuse.cm.InitTestValues;
 import com.eurodyn.qlack.fuse.cm.dto.FileDTO;
@@ -32,19 +27,19 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * @author European Dynamics
  */
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DocumentServiceTest {
 
   @InjectMocks
@@ -77,7 +72,7 @@ public class DocumentServiceTest {
   private Map<String, String> newAttributes;
   private String LOCK_TOKEN;
 
-  @Before
+  @BeforeEach
   public void init() {
     documentService = new DocumentService(concurrencyControlService,
       versionService, nodeRepository,
@@ -151,20 +146,22 @@ public class DocumentServiceTest {
     verify(nodeRepository, times(1)).save(node);
   }
 
-  @Test(expected = QAncestorFolderLockException.class)
+  @Test
   public void testCreateFolderWithParentConflict() {
-    node.setAttributes(null);
-    String errorMsg = "An ancestor folder is locked and an invalid lock token was passed; the folder cannot be created.";
+    assertThrows(QAncestorFolderLockException.class, () -> {
+      node.setAttributes(null);
+      String errorMsg = "An ancestor folder is locked and an invalid lock token was passed; the folder cannot be created.";
 
-    when(nodeRepository.fetchById(parent.getId())).thenReturn(parent);
-    when(concurrencyControlService
-      .getAncestorFolderWithLockConflict(parent.getId(), node.getLockToken()))
-      .thenReturn(parentDTO);
+      when(nodeRepository.fetchById(parent.getId())).thenReturn(parent);
+      when(concurrencyControlService
+              .getAncestorFolderWithLockConflict(parent.getId(), node.getLockToken()))
+              .thenReturn(parentDTO);
 
-    documentService.createFolder(nodeDTO, userId, node.getLockToken());
+      documentService.createFolder(nodeDTO, userId, node.getLockToken());
 
-    verify(nodeRepository, times(0)).save(any());
-    assertNull(node.getAttributes());
+      verify(nodeRepository, times(0)).save(any());
+      assertNull(node.getAttributes());
+    });
   }
 
   @Test
@@ -176,31 +173,37 @@ public class DocumentServiceTest {
     verify(nodeRepository, times(1)).delete(node);
   }
 
-  @Test(expected = QSelectedNodeLockException.class)
+  @Test
   public void testDeleteFolderWithConflict() {
-    when(nodeRepository.fetchById(nodeDTO.getId())).thenReturn(node);
-    when(concurrencyControlService
-      .getSelectedNodeWithLockConflict(nodeDTO.getId(), node.getLockToken()))
-      .thenReturn(nodeDTO);
-    documentService.deleteFolder(nodeDTO.getId(), node.getLockToken());
+    assertThrows(QSelectedNodeLockException.class, () -> {
+      when(nodeRepository.fetchById(nodeDTO.getId())).thenReturn(node);
+      when(concurrencyControlService
+              .getSelectedNodeWithLockConflict(nodeDTO.getId(), node.getLockToken()))
+              .thenReturn(nodeDTO);
+      documentService.deleteFolder(nodeDTO.getId(), node.getLockToken());
+    });
   }
 
-  @Test(expected = QAncestorFolderLockException.class)
+  @Test
   public void testDeleteFolderWithAncestorConflict() {
-    when(nodeRepository.fetchById(nodeDTO.getId())).thenReturn(node);
-    when(concurrencyControlService
-      .getAncestorFolderWithLockConflict(parent.getId(), node.getLockToken()))
-      .thenReturn(parentDTO);
-    documentService.deleteFolder(nodeDTO.getId(), node.getLockToken());
+      assertThrows(QAncestorFolderLockException.class, () -> {
+        when(nodeRepository.fetchById(nodeDTO.getId())).thenReturn(node);
+        when(concurrencyControlService
+                .getAncestorFolderWithLockConflict(parent.getId(), node.getLockToken()))
+                .thenReturn(parentDTO);
+        documentService.deleteFolder(nodeDTO.getId(), node.getLockToken());
+      });
   }
 
-  @Test(expected = QDescendantNodeLockException.class)
+  @Test
   public void testDeleteFOlderWithDescendantConflict() {
-    when(nodeRepository.fetchById(nodeDTO.getId())).thenReturn(node);
-    when(concurrencyControlService
-      .getDescendantNodeWithLockConflict(node.getId(), node.getLockToken()))
-      .thenReturn(childDTO);
-    documentService.deleteFolder(nodeDTO.getId(), node.getLockToken());
+      assertThrows(QDescendantNodeLockException.class, () -> {
+        when(nodeRepository.fetchById(nodeDTO.getId())).thenReturn(node);
+        when(concurrencyControlService
+                .getDescendantNodeWithLockConflict(node.getId(), node.getLockToken()))
+                .thenReturn(childDTO);
+        documentService.deleteFolder(nodeDTO.getId(), node.getLockToken());
+      });
   }
 
   @Test
@@ -215,17 +218,19 @@ public class DocumentServiceTest {
     assertNotEquals(oldName, newName);
   }
 
-  @Test(expected = QSelectedNodeLockException.class)
+  @Test
   public void testRenameFolderWithConflict() {
-    when(nodeRepository.fetchById(nodeDTO.getId())).thenReturn(node);
-    when(concurrencyControlService
-      .getSelectedNodeWithLockConflict(nodeDTO.getId(), node.getLockToken()))
-      .thenReturn(nodeDTO);
-    documentService
-      .renameFolder(nodeDTO.getId(), "New Name", userId, node.getLockToken());
-    verify(nodeRepository, times(0)).save(node);
-    assertEquals("New Name",
-      node.getAttribute(CMConstants.ATTR_NAME).getValue());
+      assertThrows(QSelectedNodeLockException.class, () -> {
+        when(nodeRepository.fetchById(nodeDTO.getId())).thenReturn(node);
+        when(concurrencyControlService
+                .getSelectedNodeWithLockConflict(nodeDTO.getId(), node.getLockToken()))
+                .thenReturn(nodeDTO);
+        documentService
+                .renameFolder(nodeDTO.getId(), "New Name", userId, node.getLockToken());
+        verify(nodeRepository, times(0)).save(node);
+        assertEquals("New Name",
+                node.getAttribute(CMConstants.ATTR_NAME).getValue());
+      });
   }
 
   @Test
@@ -320,15 +325,17 @@ public class DocumentServiceTest {
     verify(nodeRepository, times(1)).save(fileChild);
   }
 
-  @Test(expected = QAncestorFolderLockException.class)
+  @Test
   public void testCreateFileWithConflictingParent() {
-    fileDTO.setParentId(child.getId());
-    when(nodeRepository.fetchById(child.getId())).thenReturn(child);
-    when(concurrencyControlService
-      .getAncestorFolderWithLockConflict(child.getId(), LOCK_TOKEN))
-      .thenReturn(parentDTO);
-    String fileId = documentService
-      .createFile(fileDTO, fileDTO.getCreatedBy(), LOCK_TOKEN);
+    assertThrows(QAncestorFolderLockException.class, () -> {
+      fileDTO.setParentId(child.getId());
+      when(nodeRepository.fetchById(child.getId())).thenReturn(child);
+      when(concurrencyControlService
+              .getAncestorFolderWithLockConflict(child.getId(), LOCK_TOKEN))
+              .thenReturn(parentDTO);
+      String fileId = documentService
+              .createFile(fileDTO, fileDTO.getCreatedBy(), LOCK_TOKEN);
+    });
   }
 
   @Test
@@ -349,30 +356,34 @@ public class DocumentServiceTest {
     verify(nodeRepository, times(1)).save(fileChild);
   }
 
-  @Test(expected = QSelectedNodeLockException.class)
+  @Test
   public void testDeleteFileWithConflict() {
-    when(nodeRepository.fetchById(fileDTO.getId())).thenReturn(fileChild);
-    when(concurrencyControlService
-      .getSelectedNodeWithLockConflict(fileDTO.getId(), LOCK_TOKEN))
-      .thenReturn(fileDTO);
+    assertThrows(QSelectedNodeLockException.class, () -> {
+      when(nodeRepository.fetchById(fileDTO.getId())).thenReturn(fileChild);
+      when(concurrencyControlService
+              .getSelectedNodeWithLockConflict(fileDTO.getId(), LOCK_TOKEN))
+              .thenReturn(fileDTO);
 
-    documentService.deleteFile(fileDTO.getId(), LOCK_TOKEN);
+      documentService.deleteFile(fileDTO.getId(), LOCK_TOKEN);
 
-    verify(nodeRepository, times(0)).delete(fileChild);
+      verify(nodeRepository, times(0)).delete(fileChild);
+    });
   }
 
-  @Test(expected = QAncestorFolderLockException.class)
+  @Test
   public void testDeleteFileWithParentConflict() {
-    when(nodeRepository.fetchById(fileDTO.getId())).thenReturn(fileChild);
-    when(concurrencyControlService
-      .getSelectedNodeWithLockConflict(fileDTO.getId(), LOCK_TOKEN))
-      .thenReturn(null);
-    when(concurrencyControlService
-      .getAncestorFolderWithLockConflict(child.getId(), LOCK_TOKEN))
-      .thenReturn(parentDTO);
+    assertThrows(QAncestorFolderLockException.class, () -> {
+      when(nodeRepository.fetchById(fileDTO.getId())).thenReturn(fileChild);
+      when(concurrencyControlService
+              .getSelectedNodeWithLockConflict(fileDTO.getId(), LOCK_TOKEN))
+              .thenReturn(null);
+      when(concurrencyControlService
+              .getAncestorFolderWithLockConflict(child.getId(), LOCK_TOKEN))
+              .thenReturn(parentDTO);
 
-    documentService.deleteFile(fileDTO.getId(), LOCK_TOKEN);
-    verify(nodeRepository, times(0)).delete(fileChild);
+      documentService.deleteFile(fileDTO.getId(), LOCK_TOKEN);
+      verify(nodeRepository, times(0)).delete(fileChild);
+    });
   }
 
   @Test
@@ -460,9 +471,8 @@ public class DocumentServiceTest {
     List<Node> allNodes = new ArrayList<>(folderNodes);
     allNodes.add(fileChild);
 
-    allNodes.forEach(n -> {
-      when(nodeRepository.fetchById(n.getId())).thenReturn(n);
-    });
+    allNodes.forEach(n -> when(nodeRepository.fetchById(n.getId())).thenReturn(n));
+
 
     for (int i = 0; i < folderNodes.size(); i++) {
       when(nodeMapper
@@ -482,16 +492,18 @@ public class DocumentServiceTest {
     assertEquals(0, ancestors.size());
   }
 
-  @Test(expected = QSelectedNodeLockException.class)
+  @Test
   public void testCreateAttributeForConflictedNode() {
-    when(nodeRepository.fetchById(node.getId())).thenReturn(node);
-    when(concurrencyControlService
-      .getSelectedNodeWithLockConflict(node.getId(), LOCK_TOKEN))
-      .thenReturn(nodeDTO);
+    assertThrows(QSelectedNodeLockException.class, () -> {
+      when(nodeRepository.fetchById(node.getId())).thenReturn(node);
+      when(concurrencyControlService
+              .getSelectedNodeWithLockConflict(node.getId(), LOCK_TOKEN))
+              .thenReturn(nodeDTO);
 
-    documentService
-      .createAttribute(node.getId(), "TEST_ATTRIBUTE", "test value", "User1",
-        LOCK_TOKEN);
+      documentService
+              .createAttribute(node.getId(), "TEST_ATTRIBUTE", "test value", "User1",
+                      LOCK_TOKEN);
+    });
   }
 
   @Test
@@ -528,16 +540,18 @@ public class DocumentServiceTest {
     assertNotNull(node.getAttribute("TEST_ATTRIBUTE"));
   }
 
-  @Test(expected = QSelectedNodeLockException.class)
+  @Test
   public void testUpdateAttributeForConflictedNode() {
-    when(nodeRepository.fetchById(node.getId())).thenReturn(node);
-    when(concurrencyControlService
-      .getSelectedNodeWithLockConflict(node.getId(), LOCK_TOKEN))
-      .thenReturn(nodeDTO);
+    assertThrows(QSelectedNodeLockException.class, () -> {
+      when(nodeRepository.fetchById(node.getId())).thenReturn(node);
+      when(concurrencyControlService
+              .getSelectedNodeWithLockConflict(node.getId(), LOCK_TOKEN))
+              .thenReturn(nodeDTO);
 
-    documentService
-      .updateAttribute(node.getId(), "TEST_ATTRIBUTE", "new value", "user2",
-        LOCK_TOKEN);
+      documentService
+              .updateAttribute(node.getId(), "TEST_ATTRIBUTE", "new value", "user2",
+                      LOCK_TOKEN);
+    });
   }
 
   @Test
@@ -587,15 +601,17 @@ public class DocumentServiceTest {
     assertEquals("user3", newUser);
   }
 
-  @Test(expected = QSelectedNodeLockException.class)
+  @Test
   public void testUpdateAttributesForConflictingNode() {
-    when(nodeRepository.fetchById(node.getId())).thenReturn(node);
-    when(concurrencyControlService
-      .getSelectedNodeWithLockConflict(node.getId(), LOCK_TOKEN))
-      .thenReturn(nodeDTO);
+    assertThrows(QSelectedNodeLockException.class, () -> {
+      when(nodeRepository.fetchById(node.getId())).thenReturn(node);
+      when(concurrencyControlService
+              .getSelectedNodeWithLockConflict(node.getId(), LOCK_TOKEN))
+              .thenReturn(nodeDTO);
 
-    documentService
-      .updateAttributes(node.getId(), newAttributes, "user3", LOCK_TOKEN);
+      documentService
+              .updateAttributes(node.getId(), newAttributes, "user3", LOCK_TOKEN);
+    });
   }
 
   @Test
@@ -633,16 +649,18 @@ public class DocumentServiceTest {
       node.getAttribute(CMConstants.ATTR_LAST_MODIFIED_BY).getValue());
   }
 
-  @Test(expected = QSelectedNodeLockException.class)
+  @Test
   public void testDeleteAttributeForConflictingNode() {
-    when(nodeRepository.fetchById(any())).thenReturn(node);
-    when(concurrencyControlService
-      .getSelectedNodeWithLockConflict(anyString(), anyString()))
-      .thenReturn(nodeDTO);
+    assertThrows(QSelectedNodeLockException.class, () -> {
+      when(nodeRepository.fetchById(any())).thenReturn(node);
+      when(concurrencyControlService
+              .getSelectedNodeWithLockConflict(anyString(), anyString()))
+              .thenReturn(nodeDTO);
 
-    documentService
-      .deleteAttribute(node.getId(), CMConstants.ATTR_LAST_MODIFIED_BY, "user1",
-        LOCK_TOKEN);
+      documentService
+              .deleteAttribute(node.getId(), CMConstants.ATTR_LAST_MODIFIED_BY, "user1",
+                      LOCK_TOKEN);
+    });
   }
 
   @Test
@@ -682,30 +700,34 @@ public class DocumentServiceTest {
       node.getAttribute(CMConstants.ATTR_LAST_MODIFIED_BY).getValue());
   }
 
-  @Test(expected = QSelectedNodeLockException.class)
+  @Test
   public void testCopyConflictedDestinationNode() {
-    when(nodeRepository.fetchById(child.getId())).thenReturn(child);
-    when(nodeRepository.fetchById(parent.getId())).thenReturn(parent);
-    when(concurrencyControlService
-      .getSelectedNodeWithLockConflict(parent.getId(), LOCK_TOKEN))
-      .thenReturn(parentDTO);
+    assertThrows(QSelectedNodeLockException.class, () -> {
+      when(nodeRepository.fetchById(child.getId())).thenReturn(child);
+      when(nodeRepository.fetchById(parent.getId())).thenReturn(parent);
+      when(concurrencyControlService
+              .getSelectedNodeWithLockConflict(parent.getId(), LOCK_TOKEN))
+              .thenReturn(parentDTO);
 
-    documentService.copy(child.getId(), parent.getId(), userId, LOCK_TOKEN);
+      documentService.copy(child.getId(), parent.getId(), userId, LOCK_TOKEN);
 
-    verify(nodeRepository, times(0)).save(any());
+      verify(nodeRepository, times(0)).save(any());
+    });
   }
 
-  @Test(expected = QInvalidPathException.class)
+  @Test
   public void testCopyCyclicPath() {
-    when(nodeRepository.fetchById(parent.getId())).thenReturn(parent);
-    when(nodeRepository.fetchById(child.getId())).thenReturn(child);
-    when(concurrencyControlService
-      .getSelectedNodeWithLockConflict(child.getId(), LOCK_TOKEN))
-      .thenReturn(null);
+    assertThrows(QInvalidPathException.class, () -> {
+      when(nodeRepository.fetchById(parent.getId())).thenReturn(parent);
+      when(nodeRepository.fetchById(child.getId())).thenReturn(child);
+      when(concurrencyControlService
+              .getSelectedNodeWithLockConflict(child.getId(), LOCK_TOKEN))
+              .thenReturn(null);
 
-    documentService.copy(parent.getId(), child.getId(), userId, LOCK_TOKEN);
+      documentService.copy(parent.getId(), child.getId(), userId, LOCK_TOKEN);
 
-    verify(nodeRepository, times(0)).save(any());
+      verify(nodeRepository, times(0)).save(any());
+    });
   }
 
   @Test
@@ -725,48 +747,54 @@ public class DocumentServiceTest {
     verify(nodeRepository, times(0)).save(child);
   }
 
-  @Test(expected = QSelectedNodeLockException.class)
+  @Test
   public void testMoveNodeWithConflict() {
-    when(nodeRepository.fetchById(child.getId())).thenReturn(child);
-    when(concurrencyControlService
-      .getSelectedNodeWithLockConflict(child.getId(), LOCK_TOKEN))
-      .thenReturn(childDTO);
+    assertThrows(QSelectedNodeLockException.class, () -> {
+      when(nodeRepository.fetchById(child.getId())).thenReturn(child);
+      when(concurrencyControlService
+              .getSelectedNodeWithLockConflict(child.getId(), LOCK_TOKEN))
+              .thenReturn(childDTO);
 
-    documentService.move(child.getId(), parent.getId(), userId, LOCK_TOKEN);
+      documentService.move(child.getId(), parent.getId(), userId, LOCK_TOKEN);
 
-    verify(nodeRepository, times(0)).save(any());
+      verify(nodeRepository, times(0)).save(any());
+    });
   }
 
-  @Test(expected = QAncestorFolderLockException.class)
+  @Test
   public void testMoveNodeToParentWithConflict() {
-    when(nodeRepository.fetchById(child.getId())).thenReturn(child);
-    when(nodeRepository.fetchById(parent.getId())).thenReturn(parent);
-    when(concurrencyControlService
-      .getSelectedNodeWithLockConflict(child.getId(), LOCK_TOKEN))
-      .thenReturn(null);
-    when(concurrencyControlService
-      .getAncestorFolderWithLockConflict(parent.getId(), LOCK_TOKEN))
-      .thenReturn(parentDTO);
+    assertThrows(QAncestorFolderLockException.class, () -> {
+      when(nodeRepository.fetchById(child.getId())).thenReturn(child);
+      when(nodeRepository.fetchById(parent.getId())).thenReturn(parent);
+      when(concurrencyControlService
+              .getSelectedNodeWithLockConflict(child.getId(), LOCK_TOKEN))
+              .thenReturn(null);
+      when(concurrencyControlService
+              .getAncestorFolderWithLockConflict(parent.getId(), LOCK_TOKEN))
+              .thenReturn(parentDTO);
 
-    documentService.move(child.getId(), parent.getId(), userId, LOCK_TOKEN);
+      documentService.move(child.getId(), parent.getId(), userId, LOCK_TOKEN);
 
-    verify(nodeRepository, times(0)).save(any());
+      verify(nodeRepository, times(0)).save(any());
+    });
   }
 
-  @Test(expected = QInvalidPathException.class)
+  @Test
   public void testMoveNodeWithCyclicPath() {
-    when(nodeRepository.fetchById(parent.getId())).thenReturn(parent);
-    when(nodeRepository.fetchById(child.getId())).thenReturn(child);
-    when(concurrencyControlService
-      .getSelectedNodeWithLockConflict(parent.getId(), LOCK_TOKEN))
-      .thenReturn(null);
-    when(concurrencyControlService
-      .getAncestorFolderWithLockConflict(child.getId(), LOCK_TOKEN))
-      .thenReturn(null);
+    assertThrows(QInvalidPathException.class, () -> {
+      when(nodeRepository.fetchById(parent.getId())).thenReturn(parent);
+      when(nodeRepository.fetchById(child.getId())).thenReturn(child);
+      when(concurrencyControlService
+              .getSelectedNodeWithLockConflict(parent.getId(), LOCK_TOKEN))
+              .thenReturn(null);
+      when(concurrencyControlService
+              .getAncestorFolderWithLockConflict(child.getId(), LOCK_TOKEN))
+              .thenReturn(null);
 
-    documentService.move(parent.getId(), child.getId(), userId, LOCK_TOKEN);
+      documentService.move(parent.getId(), child.getId(), userId, LOCK_TOKEN);
 
-    verify(nodeRepository, times(0)).save(any());
+      verify(nodeRepository, times(0)).save(any());
+    });
   }
 
   @Test()
@@ -840,14 +868,16 @@ public class DocumentServiceTest {
     verify(nodeRepository, times(1)).save(any());
   }
 
-  @Test(expected = QDescendantNodeLockException.class)
+  @Test
   public void deleteFolderNoParentTest() {
-    node.setParent(null);
-    when(nodeRepository.fetchById(nodeDTO.getId())).thenReturn(node);
-    when(concurrencyControlService
-      .getDescendantNodeWithLockConflict(node.getId(), node.getLockToken()))
-      .thenReturn(childDTO);
-    documentService.deleteFolder(nodeDTO.getId(), node.getLockToken());
+    assertThrows(QDescendantNodeLockException.class, () -> {
+      node.setParent(null);
+      when(nodeRepository.fetchById(nodeDTO.getId())).thenReturn(node);
+      when(concurrencyControlService
+              .getDescendantNodeWithLockConflict(node.getId(), node.getLockToken()))
+              .thenReturn(childDTO);
+      documentService.deleteFolder(nodeDTO.getId(), node.getLockToken());
+    });
   }
 
   @Test
@@ -883,7 +913,7 @@ public class DocumentServiceTest {
   @Test
   public void getFolderAsZipWithChildrenDeepFalseTest() {
     for (Node n : folderNodes) {
-      when(nodeRepository.fetchById(n.getId())).thenReturn(n);
+      lenient().when(nodeRepository.fetchById(n.getId())).thenReturn(n);
     }
 
     documentService.getFolderAsZip(parentDTO.getId(), false, false);

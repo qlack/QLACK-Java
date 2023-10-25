@@ -1,20 +1,18 @@
 package com.eurodyn.qlack.fuse.mailing.mapper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
+import static org.junit.jupiter.api.Assertions.*;
 import com.eurodyn.qlack.fuse.mailing.InitTestValues;
 import com.eurodyn.qlack.fuse.mailing.dto.InternalAttachmentDTO;
 import com.eurodyn.qlack.fuse.mailing.model.InternalAttachment;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class InternalAttachmentMapperImplTest {
 
   @InjectMocks
@@ -22,7 +20,7 @@ public class InternalAttachmentMapperImplTest {
 
   private InitTestValues initTestValues;
 
-  @Before
+  @BeforeEach
   public void init() {
     initTestValues = new InitTestValues();
   }
@@ -40,12 +38,11 @@ public class InternalAttachmentMapperImplTest {
 
   @Test
   public void mapToDTONullTest() {
-    assertEquals(null,
-      internalAttachmentMapper.mapToDTO((InternalAttachment) null));
+    assertNull(internalAttachmentMapper.mapToDTO((InternalAttachment) null));
 
     List<InternalAttachmentDTO> internalAttachmentDTOS = internalAttachmentMapper
       .mapToDTO((List<InternalAttachment>) null);
-    assertEquals(null, internalAttachmentDTOS);
+    assertNull(internalAttachmentDTOS);
   }
 
   @Test
@@ -71,12 +68,11 @@ public class InternalAttachmentMapperImplTest {
 
   @Test
   public void mapToEntityNullTest() {
-    assertEquals(null,
-      internalAttachmentMapper.mapToEntity((InternalAttachmentDTO) null));
+    assertNull(internalAttachmentMapper.mapToEntity((InternalAttachmentDTO) null));
 
     InternalAttachment internalAttachment = internalAttachmentMapper
       .mapToEntity((InternalAttachmentDTO) null);
-    assertEquals(null, internalAttachment);
+    assertNull(internalAttachment);
   }
 
 
@@ -92,11 +88,10 @@ public class InternalAttachmentMapperImplTest {
 
   @Test
   public void mapToEntityListNullTest() {
-    assertEquals(null,
-      internalAttachmentMapper.mapToEntity((List<InternalAttachmentDTO>) null));
+    assertNull(internalAttachmentMapper.mapToEntity((List<InternalAttachmentDTO>) null));
     List<InternalAttachment> internalAttachments = internalAttachmentMapper
       .mapToEntity((List<InternalAttachmentDTO>) null);
-    assertEquals(null, internalAttachments);
+    assertNull(internalAttachments);
 
   }
 

@@ -1,18 +1,15 @@
 package com.eurodyn.qlack.fuse.lexicon.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
+import static org.junit.jupiter.api.Assertions.*;
 import com.eurodyn.qlack.fuse.lexicon.InitTestValues;
 import com.eurodyn.qlack.fuse.lexicon.criteria.KeySearchCriteria.SortType;
 import com.eurodyn.qlack.fuse.lexicon.service.KeyService.TranslationKV;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class TranslationKVTest {
 
   private TranslationKV translationKVOne;
@@ -27,7 +24,7 @@ public class TranslationKVTest {
 
   private TranslationKV translationKVAllFieldsDesc;
 
-  @Before
+  @BeforeEach
   public void test() {
     translationKVOne = new TranslationKV("key1", "value1");
     translationKVTwo = new TranslationKV("key1", "value2");
@@ -55,12 +52,11 @@ public class TranslationKVTest {
 
   @Test
   public void equalsTest() {
-    assertFalse(translationKVOne.equals(null));
-    assertFalse((translationKVOne.equals(new InitTestValues())));
-    assertFalse((translationKVOne.equals(translationKVDesc)));
-    assertFalse((translationKVDesc.equals(translationKVOne)));
-    assertTrue((translationKVDesc.equals(translationKVAsc)));
-    assertTrue((translationKVOne.equals(translationKVOne)));
+    assertNotNull(translationKVOne);
+    assertNotEquals(new InitTestValues(), translationKVOne);
+    assertNotEquals(translationKVDesc, translationKVOne);
+    assertNotEquals(translationKVOne, translationKVDesc);
+    assertEquals(translationKVAsc, translationKVDesc);
   }
 
   @Test

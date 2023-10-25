@@ -1,8 +1,7 @@
 package com.eurodyn.qlack.fuse.fileupload.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -20,24 +19,24 @@ import com.querydsl.core.types.Predicate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
 
 /**
  * @author European Dynamics
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class FileUploadImplTest {
 
   @InjectMocks
   private FileUploadImpl fileUploadImpl;
 
-  private DBFileRepository dbFileRepository = mock(DBFileRepository.class);
+  final private DBFileRepository dbFileRepository = mock(DBFileRepository.class);
   private InitTestValues initTestValues;
   private DBFile chunk;
   private DBFileDTO dbFileDTO;
@@ -50,7 +49,7 @@ public class FileUploadImplTest {
 
   private List<DBFile> multipleDbFiles;
 
-  @Before
+  @BeforeEach
   public void init() {
     fileUploadImpl = new FileUploadImpl(dbFileRepository, Optional.empty());
     initTestValues = new InitTestValues();
@@ -91,13 +90,15 @@ public class FileUploadImplTest {
     assertEquals(dbFileDTO.getChunkNumber(), dbfDTO.getChunkNumber());
   }
 
-  @Test(expected = QFileNotFoundException.class)
+  @Test
   public void testGetByIDAndChunkFileNotFoundException() {
-    when(dbFileRepository.findAll(any(Predicate.class), any(Sort.class)))
-      .thenReturn(new ArrayList<>());
-    DBFileDTO dbfDTO = fileUploadImpl.getByIDAndChunk(dbFileId, chunkIndex);
-    assertEquals(dbFileDTO.getId(), dbfDTO.getId());
-    assertEquals(dbFileDTO.getChunkNumber(), dbfDTO.getChunkNumber());
+    assertThrows(QFileNotFoundException.class, () -> {
+      when(dbFileRepository.findAll(any(Predicate.class), any(Sort.class)))
+              .thenReturn(new ArrayList<>());
+      DBFileDTO dbfDTO = fileUploadImpl.getByIDAndChunk(dbFileId, chunkIndex);
+      assertEquals(dbFileDTO.getId(), dbfDTO.getId());
+      assertEquals(dbFileDTO.getChunkNumber(), dbfDTO.getChunkNumber());
+    });
   }
 
   @Test
@@ -123,11 +124,12 @@ public class FileUploadImplTest {
     assertEquals(dbFileDTO.getId(), dbFiles.get(0).getDbFilePK().getId());
   }
 
-  @Test(expected = QFileNotFoundException.class)
+  @Test
   public void testGetByIDEmptyDBFilesList() {
-    when(dbFileRepository.findAll()).thenReturn(new ArrayList<>());
-    fileUploadImpl.getByID("ad1f5bb0-e1a9-4960-b0ca-1998fa5a1d6c");
-
+    assertThrows(QFileNotFoundException.class, () -> {
+      when(dbFileRepository.findAll()).thenReturn(new ArrayList<>());
+      fileUploadImpl.getByID("ad1f5bb0-e1a9-4960-b0ca-1998fa5a1d6c");
+    });
   }
 
   @Test
@@ -138,11 +140,13 @@ public class FileUploadImplTest {
     assertEquals(dbFileDTO.getId(), dbFiles.get(0).getDbFilePK().getId());
   }
 
-  @Test(expected = QFileNotCompletedException.class)
+  @Test
   public void testGetByIDIncludeBinaryWithFileNotCompletedException() {
-    when(dbFileRepository.findAll()).thenReturn(dbFiles);
-    dbFiles.forEach(dbFile1 -> dbFile1.setExpectedChunks(2));
-    fileUploadImpl.getByID("ad1f5bb0-e1a9-4960-b0ca-1998fa5a1d6c");
+    assertThrows(QFileNotCompletedException.class, () -> {
+      when(dbFileRepository.findAll()).thenReturn(dbFiles);
+      dbFiles.forEach(dbFile1 -> dbFile1.setExpectedChunks(2));
+      fileUploadImpl.getByID("ad1f5bb0-e1a9-4960-b0ca-1998fa5a1d6c");
+    });
   }
 
   @Test

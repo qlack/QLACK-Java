@@ -1,11 +1,9 @@
-package com.eurodyn.qlack.fuse.mailing.mapper;/**
+package com.eurodyn.qlack.fuse.mailing.mapper;
+/**
  * @author European Dynamics
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
+import static org.junit.jupiter.api.Assertions.*;
 import com.eurodyn.qlack.fuse.mailing.InitTestValues;
 import com.eurodyn.qlack.fuse.mailing.dto.AttachmentDTO;
 import com.eurodyn.qlack.fuse.mailing.dto.EmailDTO;
@@ -14,13 +12,13 @@ import com.eurodyn.qlack.fuse.mailing.model.Email;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class EmailMapperTest {
 
   @InjectMocks
@@ -36,7 +34,7 @@ public class EmailMapperTest {
   private AttachmentDTO attachmentDTO;
   private Set<Attachment> attachmentSet;
 
-  @Before
+  @BeforeEach
   public void init() {
     initTestValues = new InitTestValues();
 

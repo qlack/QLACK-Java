@@ -1,8 +1,7 @@
 package com.eurodyn.qlack.fuse.tokenserver.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -26,15 +25,15 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class TokenServerServiceTest {
 
   @InjectMocks
@@ -54,7 +53,7 @@ public class TokenServerServiceTest {
 
   private TokenDTO tokenDTO;
 
-  @Before
+  @BeforeEach
   public void init() {
     service = new TokenServerService(mapper, repository);
     mockService = spy(service);
@@ -188,16 +187,18 @@ public class TokenServerServiceTest {
 
   }
 
-  @Test(expected = QTokenRevokedException.class)
+  @Test
   public void revokeTokenThrowsExpectedException() {
-    String tokenId = UUID.randomUUID().toString();
+    assertThrows(QTokenRevokedException.class, () -> {
+      String tokenId = UUID.randomUUID().toString();
 
-    Token token = new Token();
-    token.setId(tokenId);
-    token.setRevoked(true);
+      Token token = new Token();
+      token.setId(tokenId);
+      token.setRevoked(true);
 
-    when(repository.fetchById(tokenId)).thenReturn(token);
-    service.revoke(tokenId);
+      when(repository.fetchById(tokenId)).thenReturn(token);
+      service.revoke(tokenId);
+    });
   }
 
   @Test
@@ -213,16 +214,18 @@ public class TokenServerServiceTest {
     assertEquals(expectedValidUntil, token.getValidUntil());
   }
 
-  @Test(expected = QTokenRevokedException.class)
+  @Test
   public void extendTokenValidityThrowsExpectedException() {
-    String tokenId = UUID.randomUUID().toString();
-    Instant expectedValidUntil = token.getValidUntil()
-      .plus(1, ChronoUnit.HOURS);
-    token.setId(tokenId);
-    token.setRevoked(true);
+    assertThrows(QTokenRevokedException.class, () -> {
+      String tokenId = UUID.randomUUID().toString();
+      Instant expectedValidUntil = token.getValidUntil()
+              .plus(1, ChronoUnit.HOURS);
+      token.setId(tokenId);
+      token.setRevoked(true);
 
-    when(repository.fetchById(tokenId)).thenReturn(token);
-    service.extendValidity(tokenId, expectedValidUntil);
+      when(repository.fetchById(tokenId)).thenReturn(token);
+      service.extendValidity(tokenId, expectedValidUntil);
+    });
   }
 
   @Test
@@ -236,15 +239,17 @@ public class TokenServerServiceTest {
     assertEquals(autoExtendUntil, token.getAutoExtendUntil());
   }
 
-  @Test(expected = QTokenRevokedException.class)
+  @Test
   public void extendTokenAutoExtendValidityThrowsExpectedException() {
-    String tokenId = UUID.randomUUID().toString();
-    Instant autoExtendUntil = token.getValidUntil().plus(1, ChronoUnit.HOURS);
-    token.setId(tokenId);
-    token.setRevoked(true);
+    assertThrows(QTokenRevokedException.class, () -> {
+      String tokenId = UUID.randomUUID().toString();
+      Instant autoExtendUntil = token.getValidUntil().plus(1, ChronoUnit.HOURS);
+      token.setId(tokenId);
+      token.setRevoked(true);
 
-    when(repository.fetchById(tokenId)).thenReturn(token);
-    service.extendAutoExtendValidity(tokenId, autoExtendUntil);
+      when(repository.fetchById(tokenId)).thenReturn(token);
+      service.extendAutoExtendValidity(tokenId, autoExtendUntil);
+    });
   }
 
   @Test

@@ -1,7 +1,7 @@
 package com.eurodyn.qlack.fuse.workflow.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -22,14 +22,14 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class WorkflowServiceTest {
 
   @InjectMocks
@@ -62,7 +62,7 @@ public class WorkflowServiceTest {
   @Mock
   private Query query;
 
-  @Before
+  @BeforeEach
   public void init() {
     workflowService = new WorkflowService(runtimeService, historyService,
       entityManager,
@@ -81,14 +81,16 @@ public class WorkflowServiceTest {
       workflowService.startWorkflowInstance(processId, variables));
   }
 
-  @Test(expected = QDoesNotExistException.class)
+  @Test
   public void startWorkflowInstanceActivitiObjectNotFoundExceptionTest() {
-    String processId = "processId";
-    Map<String, Object> variables = new HashMap<>();
-    variables.put("var1", this);
-    when(runtimeService.startProcessInstanceByKey(processId, variables))
-      .thenThrow(new ActivitiObjectNotFoundException("ex"));
-    workflowService.startWorkflowInstance(processId, variables);
+    assertThrows(QDoesNotExistException.class, () -> {
+      String processId = "processId";
+      Map<String, Object> variables = new HashMap<>();
+      variables.put("var1", this);
+      when(runtimeService.startProcessInstanceByKey(processId, variables))
+              .thenThrow(new ActivitiObjectNotFoundException("ex"));
+      workflowService.startWorkflowInstance(processId, variables);
+    });
   }
 
   @Test
@@ -99,12 +101,14 @@ public class WorkflowServiceTest {
       .activateProcessInstanceById(processInstanceId);
   }
 
-  @Test(expected = QDoesNotExistException.class)
+  @Test
   public void resumeWorkflowInstanceActivitiObjectNotFoundExceptionTest() {
-    String processInstanceId = "processInstanceId";
-    doThrow(new ActivitiObjectNotFoundException("ex")).when(runtimeService)
-      .activateProcessInstanceById(processInstanceId);
-    workflowService.resumeWorkflowInstance(processInstanceId);
+    assertThrows(QDoesNotExistException.class, () -> {
+      String processInstanceId = "processInstanceId";
+      doThrow(new ActivitiObjectNotFoundException("ex")).when(runtimeService)
+              .activateProcessInstanceById(processInstanceId);
+      workflowService.resumeWorkflowInstance(processInstanceId);
+    });
   }
 
   @Test
@@ -115,12 +119,14 @@ public class WorkflowServiceTest {
       .suspendProcessInstanceById(processInstanceId);
   }
 
-  @Test(expected = QDoesNotExistException.class)
+  @Test
   public void suspendWorkflowInstanceActivitiObjectNotFoundExceptionTest() {
-    String processInstanceId = "processInstanceId";
-    doThrow(new ActivitiObjectNotFoundException("ex")).when(runtimeService)
-      .suspendProcessInstanceById(processInstanceId);
-    workflowService.suspendWorkflowInstance(processInstanceId);
+    assertThrows(QDoesNotExistException.class, () -> {
+      String processInstanceId = "processInstanceId";
+      doThrow(new ActivitiObjectNotFoundException("ex")).when(runtimeService)
+              .suspendProcessInstanceById(processInstanceId);
+      workflowService.suspendWorkflowInstance(processInstanceId);
+    });
   }
 
   @Test
@@ -132,13 +138,15 @@ public class WorkflowServiceTest {
       .deleteProcessInstance(processInstanceId, reason);
   }
 
-  @Test(expected = QDoesNotExistException.class)
+  @Test
   public void deleteWorkflowInstanceActivitiObjectNotFoundExceptionTest() {
-    String processInstanceId = "processInstanceId";
-    String reason = "reason";
-    doThrow(new ActivitiObjectNotFoundException("ex")).when(runtimeService)
-      .deleteProcessInstance(processInstanceId, reason);
-    workflowService.deleteWorkflowInstance(processInstanceId, reason);
+    assertThrows(QDoesNotExistException.class, () -> {
+      String processInstanceId = "processInstanceId";
+      String reason = "reason";
+      doThrow(new ActivitiObjectNotFoundException("ex")).when(runtimeService)
+              .deleteProcessInstance(processInstanceId, reason);
+      workflowService.deleteWorkflowInstance(processInstanceId, reason);
+    });
   }
 
   @Test

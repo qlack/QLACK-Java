@@ -1,19 +1,19 @@
 package com.eurodyn.qlack.fuse.lexicon.mapper;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.eurodyn.qlack.fuse.lexicon.InitTestValues;
 import com.eurodyn.qlack.fuse.lexicon.dto.GroupDTO;
 import com.eurodyn.qlack.fuse.lexicon.model.Group;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class GroupMapperTest {
 
   @InjectMocks
@@ -21,7 +21,7 @@ public class GroupMapperTest {
 
   private InitTestValues initTestValues;
 
-  @Before
+  @BeforeEach
   public void init() {
     initTestValues = new InitTestValues();
   }
@@ -47,11 +47,11 @@ public class GroupMapperTest {
 
   @Test
   public void mapToDTONullTest() {
-    assertEquals(null, groupMapper.mapToDTO((Group) null));
+    assertNull(groupMapper.mapToDTO((Group) null));
 
     List<GroupDTO> groupDTOS = groupMapper.mapToDTO(
       (List<Group>) null);
-    assertEquals(null, groupDTOS);
+    assertNull(groupDTOS);
   }
 
   @Test
@@ -75,11 +75,11 @@ public class GroupMapperTest {
 
   @Test
   public void mapToEntityNullTest() {
-    assertEquals(null, groupMapper.mapToEntity((GroupDTO) null));
+    assertNull(groupMapper.mapToEntity((GroupDTO) null));
 
     List<Group> groups = groupMapper.mapToEntity(
       (List<GroupDTO>) null);
-    assertEquals(null, groups);
+    assertNull(groups);
   }
 
 }

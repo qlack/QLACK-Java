@@ -1,19 +1,19 @@
 package com.eurodyn.qlack.fuse.aaa.mapper;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.eurodyn.qlack.fuse.aaa.InitTestValues;
 import com.eurodyn.qlack.fuse.aaa.dto.OpTemplateDTO;
 import com.eurodyn.qlack.fuse.aaa.model.OpTemplate;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class OpTemplateMapperImplTest {
 
   @InjectMocks
@@ -29,7 +29,7 @@ public class OpTemplateMapperImplTest {
 
   private List<OpTemplateDTO> opTemplateDTOList;
 
-  @Before
+  @BeforeEach
   public void init() {
     initTestValues = new InitTestValues();
     opTemplate = initTestValues.createOpTemplate();
@@ -48,14 +48,14 @@ public class OpTemplateMapperImplTest {
   @Test
   public void mapToDTONullTest() {
     OpTemplateDTO opTemplateDTO = opTemplateMapper.mapToDTO((OpTemplate) null);
-    assertEquals(null, opTemplateDTO);
+    assertNull(opTemplateDTO);
   }
 
   @Test
   public void mapToDTOListNullTest() {
     List<OpTemplateDTO> opTemplateDTOS = opTemplateMapper
       .mapToDTO((List<OpTemplate>) null);
-    assertEquals(null, opTemplateDTOS);
+    assertNull(opTemplateDTOS);
   }
 
   @Test
@@ -76,7 +76,7 @@ public class OpTemplateMapperImplTest {
   @Test
   public void mapToEntityNullTest() {
     OpTemplate opTemplate = opTemplateMapper.mapToEntity((OpTemplateDTO) null);
-    assertEquals(null, opTemplate);
+    assertNull(opTemplate);
   }
 
 
@@ -90,11 +90,10 @@ public class OpTemplateMapperImplTest {
 
   @Test
   public void mapToEntityListNullTest() {
-    assertEquals(null,
-      opTemplateMapper.mapToEntity((List<OpTemplateDTO>) null));
+    assertNull(opTemplateMapper.mapToEntity((List<OpTemplateDTO>) null));
     List<OpTemplate> opTemplates = opTemplateMapper
       .mapToEntity((List<OpTemplateDTO>) null);
-    assertEquals(null, opTemplates);
+    assertNull(opTemplates);
 
   }
 
@@ -102,7 +101,7 @@ public class OpTemplateMapperImplTest {
   public void mapToExistingEntityTest() {
     opTemplateMapper.mapToExistingEntity(opTemplateDTO, opTemplate);
     opTemplateDTO.setName(null);
-    assertEquals(null, opTemplateDTO.getName());
+    assertNull(opTemplateDTO.getName());
   }
 
   @Test
@@ -110,7 +109,7 @@ public class OpTemplateMapperImplTest {
     OpTemplateDTO opTemplateDTO = initTestValues.createOpTemplateDTO();
     opTemplateDTO.setDescription(null);
     opTemplateMapper.mapToExistingEntity(null, opTemplate);
-    assertEquals(null, opTemplateDTO.getDescription());
+    assertNull(opTemplateDTO.getDescription());
   }
 
 }

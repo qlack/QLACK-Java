@@ -1,6 +1,7 @@
 package com.eurodyn.qlack.fuse.settings.service;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -22,18 +23,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * @author European Dynamics
  */
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SettingsServiceTest {
 
   @InjectMocks
@@ -42,7 +43,7 @@ public class SettingsServiceTest {
   @Spy
   private SettingMapper settingMapper;
 
-  private SettingRepository settingRepository = mock(SettingRepository.class);
+  final private SettingRepository settingRepository = mock(SettingRepository.class);
   private QSetting qSetting;
   private InitTestValues initTestValues;
 
@@ -53,7 +54,7 @@ public class SettingsServiceTest {
   private List<SettingDTO> settingsDTO;
   private Predicate ownerKeyGroupPredicate;
 
-  @Before
+  @BeforeEach
   public void init() {
     settingsService = new SettingsService(settingMapper, settingRepository);
     qSetting = new QSetting("setting");
@@ -111,7 +112,7 @@ public class SettingsServiceTest {
     Predicate predicate = qSetting.owner.eq(setting.getOwner());
 
     List<GroupDTO> groupsDTO = new ArrayList<>();
-    names.stream().forEach(name -> {
+    names.forEach(name -> {
       GroupDTO groupDTO = new GroupDTO();
       groupDTO.setName(name);
       groupsDTO.add(groupDTO);
@@ -136,11 +137,13 @@ public class SettingsServiceTest {
     assertEquals(settingDTO, foundSetting);
   }
 
-  @Test(expected = QDoesNotExistException.class)
+  @Test
   public void testGetSettingException() {
-    SettingDTO foundSetting = settingsService
-      .getSetting(setting.getOwner(), setting.getKey(), setting.getGroup());
-    assertEquals(settingDTO, foundSetting);
+    assertThrows(QDoesNotExistException.class, () -> {
+      SettingDTO foundSetting = settingsService
+              .getSetting(setting.getOwner(), setting.getKey(), setting.getGroup());
+      assertEquals(settingDTO, foundSetting);
+    });
   }
 
   @Test
@@ -168,14 +171,15 @@ public class SettingsServiceTest {
     assertEquals(expectedSettingsDTO, foundGroupSettings);
   }
 
-  @Test(expected = QAlreadyExistsException.class)
+  @Test
   public void testCreateSettingExisting() {
-
-    Optional<Setting> optionalSetting = Optional.of(setting);
-    when(settingRepository.findOne(ownerKeyGroupPredicate))
-      .thenReturn(optionalSetting);
-    when(settingMapper.map(optionalSetting.get())).thenReturn(settingDTO);
-    settingsService.createSetting(settingDTO);
+    assertThrows(QAlreadyExistsException.class, () -> {
+      Optional<Setting> optionalSetting = Optional.of(setting);
+      when(settingRepository.findOne(ownerKeyGroupPredicate))
+              .thenReturn(optionalSetting);
+      when(settingMapper.map(optionalSetting.get())).thenReturn(settingDTO);
+      settingsService.createSetting(settingDTO);
+    });
   }
 
   @Test
@@ -197,10 +201,12 @@ public class SettingsServiceTest {
     verify(settingRepository, times(1)).save(newSetting);
   }
 
-  @Test(expected = QDoesNotExistException.class)
+  @Test
   public void testSetValException() {
-    settingsService.setVal(setting.getOwner(), setting.getKey(), "New Val",
-      setting.getGroup());
+    assertThrows(QDoesNotExistException.class, () -> {
+      settingsService.setVal(setting.getOwner(), setting.getKey(), "New Val",
+              setting.getGroup());
+    });
   }
 
   @Test
@@ -245,12 +251,14 @@ public class SettingsServiceTest {
     assertEquals(newVal, setting.getVal());
   }
 
-  @Test(expected = QMismatchException.class)
+  @Test
   public void setValsExceptionTest() {
-    List<String> keys = new ArrayList<>();
-    keys.add("key");
-    List<String> vals = new ArrayList<>();
+    assertThrows(QMismatchException.class, () -> {
+      List<String> keys = new ArrayList<>();
+      keys.add("key");
+      List<String> vals = new ArrayList<>();
 
-    settingsService.setVals(null, keys, vals, null);
+      settingsService.setVals(null, keys, vals, null);
+    });
   }
 }

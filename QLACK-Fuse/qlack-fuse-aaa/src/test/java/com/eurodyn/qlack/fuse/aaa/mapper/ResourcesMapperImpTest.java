@@ -1,19 +1,19 @@
 package com.eurodyn.qlack.fuse.aaa.mapper;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.eurodyn.qlack.fuse.aaa.InitTestValues;
 import com.eurodyn.qlack.fuse.aaa.dto.ResourceDTO;
 import com.eurodyn.qlack.fuse.aaa.model.Resource;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ResourcesMapperImpTest {
 
   @InjectMocks
@@ -25,7 +25,7 @@ public class ResourcesMapperImpTest {
 
   private ResourceDTO resourceDTO;
 
-  @Before
+  @BeforeEach
   public void init() {
     initTestValues = new InitTestValues();
     resource = initTestValues.createResource();
@@ -35,14 +35,14 @@ public class ResourcesMapperImpTest {
   @Test
   public void mapToDTONullTest() {
     ResourceDTO resourceDTO = resourceMapper.mapToDTO((Resource) null);
-    assertEquals(null, resourceDTO);
+    assertNull(resourceDTO);
   }
 
   @Test
   public void mapToDTOListNullTest() {
     List<ResourceDTO> resourceDTOList = resourceMapper
       .mapToDTO((List<Resource>) null);
-    assertEquals(null, resourceDTOList);
+    assertNull(resourceDTOList);
   }
 
   @Test
@@ -56,7 +56,7 @@ public class ResourcesMapperImpTest {
   @Test
   public void mapToEntityNullTest() {
     Resource resource = resourceMapper.mapToEntity((ResourceDTO) null);
-    assertEquals(null, resource);
+    assertNull(resource);
   }
 
 
@@ -70,10 +70,10 @@ public class ResourcesMapperImpTest {
 
   @Test
   public void mapToEntityListNullTest() {
-    assertEquals(null, resourceMapper.mapToEntity((List<ResourceDTO>) null));
+    assertNull(resourceMapper.mapToEntity((List<ResourceDTO>) null));
     List<Resource> resourceList = resourceMapper
       .mapToEntity((List<ResourceDTO>) null);
-    assertEquals(null, resourceList);
+    assertNull(resourceList);
 
   }
 
@@ -85,7 +85,7 @@ public class ResourcesMapperImpTest {
     Resource resource = initTestValues.createResource();
     resource.setDescription(null);
     resourceMapper.mapToExistingEntity(resourceDTO, resource);
-    assertEquals(null, resourceDTO.getDescription());
+    assertNull(resourceDTO.getDescription());
   }
 
   @Test
@@ -93,6 +93,6 @@ public class ResourcesMapperImpTest {
     ResourceDTO resourceDTO = initTestValues.createResourceDTO();
     resourceDTO.setDescription(null);
     resourceMapper.mapToExistingEntity(null, resource);
-    assertEquals(null, resourceDTO.getDescription());
+    assertNull(resourceDTO.getDescription());
   }
 }

@@ -1,22 +1,21 @@
 package com.eurodyn.qlack.fuse.aaa.mapper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.eurodyn.qlack.fuse.aaa.InitTestValues;
 import com.eurodyn.qlack.fuse.aaa.dto.UserGroupDTO;
 import com.eurodyn.qlack.fuse.aaa.model.UserGroup;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * @author European Dynamics
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class UserGroupMapperTest {
 
   @InjectMocks
@@ -32,7 +31,7 @@ public class UserGroupMapperTest {
 
   private List<UserGroupDTO> userGroupsDTO;
 
-  @Before
+  @BeforeEach
   public void init() {
     initTestValues = new InitTestValues();
     userGroup = initTestValues.createUserGroup();
@@ -156,27 +155,27 @@ public class UserGroupMapperTest {
   @Test
   public void mapToDTONullTest() {
     userGroupDTO = userGroupMapperImpl.mapToDTO((UserGroup) null, false);
-    assertEquals(null, userGroupDTO);
+    assertNull(userGroupDTO);
   }
 
   @Test
   public void mapToDTOListNullTest() {
     userGroupsDTO = userGroupMapperImpl.mapToDTO((List<UserGroup>) null, false);
-    assertEquals(null, userGroupsDTO);
+    assertNull(userGroupsDTO);
 
   }
 
   @Test
   public void mapToEntityNullTest() {
     userGroup = userGroupMapperImpl.mapToEntity((UserGroupDTO) null);
-    assertEquals(null, userGroup);
+    assertNull(userGroup);
 
   }
 
   @Test
   public void mapListToListEntityNullTest() {
     userGroups = userGroupMapperImpl.mapToEntity((List<UserGroupDTO>) null);
-    assertEquals(null, userGroups);
+    assertNull(userGroups);
   }
 
   @Test
@@ -213,11 +212,11 @@ public class UserGroupMapperTest {
   @Test
   public void userGroupDTOSetToUserGroupListTest() {
     UserGroup userGroup = initTestValues.createUserGroup();
-    List<UserGroup> userGroups = initTestValues.createUserGroups();
+    List<UserGroup> userGroups;
     userGroup.setChildren(null);
     userGroupMapperImpl.mapToExistingEntity(userGroupDTO, userGroup);
     userGroups = userGroupMapperImpl.userGroupDTOSetToUserGroupList(null);
-    assertEquals(null, userGroups);
+    assertNull(userGroups);
   }
 
   @Test

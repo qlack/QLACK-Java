@@ -1,7 +1,6 @@
 package com.eurodyn.qlack.fuse.lexicon.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -26,28 +25,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
 
 /**
  * @author European Dynamics
  */
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class GroupServiceTest {
 
   @InjectMocks
   private GroupService groupService;
 
-  private GroupRepository groupRepository = mock(GroupRepository.class);
-  private LanguageRepository languageRepository = mock(
+  final private GroupRepository groupRepository = mock(GroupRepository.class);
+  final private LanguageRepository languageRepository = mock(
     LanguageRepository.class);
-  private DataRepository dataRepository = mock(DataRepository.class);
+  final private DataRepository dataRepository = mock(DataRepository.class);
 
   @Spy
   private GroupMapper groupMapper;
@@ -65,7 +64,7 @@ public class GroupServiceTest {
   private Language language;
   private Data data;
 
-  @Before
+  @BeforeEach
   public void init() {
     groupService = new GroupService(groupRepository, groupMapper,
       languageRepository,
@@ -142,7 +141,7 @@ public class GroupServiceTest {
   @Test
   public void testGetRemainingGroups() {
     List<String> groupNames = groups.stream().map(g -> g.getTitle())
-      .collect(Collectors.toList());
+      .toList();
     List<String> excludedGroupNames = groupNames.stream()
       .filter(gn -> !gn.equals("Application UI"))
       .collect(Collectors.toList());

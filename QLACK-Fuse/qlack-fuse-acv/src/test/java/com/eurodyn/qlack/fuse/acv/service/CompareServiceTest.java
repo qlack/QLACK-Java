@@ -1,8 +1,7 @@
 package com.eurodyn.qlack.fuse.acv.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
@@ -14,14 +13,14 @@ import org.javers.core.diff.changetype.PropertyChangeMetadata;
 import org.javers.core.diff.changetype.PropertyChangeType;
 import org.javers.core.diff.changetype.ValueChange;
 import org.javers.core.metamodel.object.GlobalId;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CompareServiceTest {
 
   @InjectMocks
@@ -48,7 +47,7 @@ public class CompareServiceTest {
   @Mock
   private Object object2;
 
-  @Before
+  @BeforeEach
   public void init() {
     compareService = new CompareService(javers, versioningService);
   }
@@ -80,24 +79,31 @@ public class CompareServiceTest {
     assertTrue(compareService.hasChanges(object1, object2));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void hasChangesNullObj1Test() {
-    compareService.hasChanges(null, object2);
+    assertThrows(NullPointerException.class, () ->
+      compareService.hasChanges(null, object2));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void hasChangesNullObj2Test() {
-    compareService.hasChanges(object1, null);
+    assertThrows(NullPointerException.class, () -> {
+      compareService.hasChanges(object1, null);
+    });
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void compareNullObj1Test() {
-    compareService.compare(null, object2);
+    assertThrows(NullPointerException.class, () -> {
+      compareService.compare(null, object2);
+    });
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void compareNullObj2Test() {
-    compareService.compare(object1, null);
+    assertThrows(NullPointerException.class, () -> {
+      compareService.compare(object1, null);
+    });
   }
 
   @Test
@@ -122,9 +128,7 @@ public class CompareServiceTest {
 
   @Test
   public void convertToChangeDTOTest() {
-//    ValueChange valueChange = new ValueChange(globalId, "property", object1,
-//      object2);
-    // PropertyChangeMetadata metadata, Object leftValue, Object rightValue
+
     PropertyChangeMetadata metadata = new PropertyChangeMetadata(globalId, "property", Optional.empty(),
         PropertyChangeType.PROPERTY_VALUE_CHANGED);
     ValueChange valueChange = new ValueChange(metadata, object1, object2);

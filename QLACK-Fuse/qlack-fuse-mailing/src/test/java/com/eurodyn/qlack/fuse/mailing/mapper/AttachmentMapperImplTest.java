@@ -1,20 +1,19 @@
 package com.eurodyn.qlack.fuse.mailing.mapper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.eurodyn.qlack.fuse.mailing.InitTestValues;
 import com.eurodyn.qlack.fuse.mailing.dto.AttachmentDTO;
 import com.eurodyn.qlack.fuse.mailing.model.Attachment;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AttachmentMapperImplTest {
 
   @InjectMocks
@@ -22,7 +21,7 @@ public class AttachmentMapperImplTest {
 
   private InitTestValues initTestValues;
 
-  @Before
+  @BeforeEach
   public void init() {
     initTestValues = new InitTestValues();
   }
@@ -37,11 +36,10 @@ public class AttachmentMapperImplTest {
 
   @Test
   public void mapToDTONullTest() {
-    assertEquals(null, attachmentMapper.mapToDTO((Attachment) null));
-
+    assertNull(attachmentMapper.mapToDTO((Attachment) null));
     List<AttachmentDTO> attachmentDTOS = attachmentMapper
       .mapToDTO((List<Attachment>) null);
-    assertEquals(null, attachmentDTOS);
+    assertNull(attachmentDTOS);
   }
 
   @Test
@@ -63,10 +61,9 @@ public class AttachmentMapperImplTest {
 
   @Test
   public void mapToEntityNullTest() {
-    assertEquals(null, attachmentMapper.mapToEntity((AttachmentDTO) null));
-
+    assertNull(attachmentMapper.mapToEntity((AttachmentDTO) null));
     Attachment attachment = attachmentMapper.mapToEntity((AttachmentDTO) null);
-    assertEquals(null, attachment);
+    assertNull(attachment);
   }
 
 
@@ -81,11 +78,10 @@ public class AttachmentMapperImplTest {
 
   @Test
   public void mapToEntityListNullTest() {
-    assertEquals(null,
-      attachmentMapper.mapToEntity((List<AttachmentDTO>) null));
+    assertNull(attachmentMapper.mapToEntity((List<AttachmentDTO>) null));
     List<Attachment> attachments = attachmentMapper
       .mapToEntity((List<AttachmentDTO>) null);
-    assertEquals(null, attachments);
+    assertNull(attachments);
 
   }
 

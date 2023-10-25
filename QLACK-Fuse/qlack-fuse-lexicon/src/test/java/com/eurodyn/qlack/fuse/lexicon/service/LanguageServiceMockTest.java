@@ -1,13 +1,5 @@
 package com.eurodyn.qlack.fuse.lexicon.service;
 
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.doThrow;
-
 import com.eurodyn.qlack.fuse.lexicon.InitTestValues;
 import com.eurodyn.qlack.fuse.lexicon.exception.LanguageProcessingException;
 import com.eurodyn.qlack.fuse.lexicon.mapper.LanguageMapper;
@@ -21,14 +13,12 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -39,10 +29,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//@RunWith(PowerMockRunner.class)
-//@PrepareForTest({StringUtils.class, WorkbookUtil.class})
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
 public class LanguageServiceMockTest {
-/*
+
   @InjectMocks
   private LanguageService languageService;
 
@@ -67,23 +62,35 @@ public class LanguageServiceMockTest {
 
   private byte[] lgXl;
 
-  @Before
+  private MockedStatic<WorkbookUtil> mockedStatic;
+  private MockedStatic<StringUtils> mockedStatic2;
+
+  @BeforeEach
   public void init() {
     languageService = new LanguageService(keyService, groupService,
       languageRepository, keyRepository, languageMapper);
     initTestValues = new InitTestValues();
     language = initTestValues.createEnglishLanguage();
     lgXl = initTestValues.getLanguageByteArray();
+
+    mockedStatic2 = mockStatic(StringUtils.class);
+    mockedStatic = mockStatic(WorkbookUtil.class);
+  }
+
+  @AfterEach
+  public void close() {
+
+    mockedStatic.close();
+    mockedStatic2.close();
   }
 
   @Test
   public void uploadLanguageNullGroupsTest() throws IOException {
-    PowerMockito.mockStatic(StringUtils.class);
-    PowerMockito.when(StringUtils.isNotBlank(anyString())).thenAnswer((Boolean) -> false);
+    when(StringUtils.isNotBlank(anyString())).thenAnswer((Boolean) -> false);
     List<Group> groups = initTestValues.createGroups();
     List<String> groupsIds = new ArrayList<>();
     for (Group group : groups) {
-      when(groupService.findByTitle(group.getTitle())).thenReturn(group);
+      lenient().when(groupService.findByTitle(group.getTitle())).thenReturn(group);
       groupsIds.add(group.getId());
     }
     languageService.uploadLanguage(language.getId(), lgXl);
@@ -109,24 +116,24 @@ public class LanguageServiceMockTest {
     }
   }
 
-  @Test(expected = LanguageProcessingException.class)
-  public void downloadLanguageIoExceptionTest() throws Exception {
-    PowerMockito.mockStatic(WorkbookUtil.class);
-    Workbook wb = PowerMockito.mock(HSSFWorkbook.class);
-    PowerMockito.when(WorkbookUtil.createHssfWorkbook()).thenAnswer((HSSFWorkbook) -> wb);
-    doThrow(new IOException()).when(wb).write(any(OutputStream.class));
-    when(languageRepository.fetchById(language.getId())).thenReturn(language);
-    languageService.downloadLanguage(language.getId());
+  @Test
+  public void downloadLanguageIoExceptionTest(){
+    Workbook wb = Mockito.mock(HSSFWorkbook.class);
+    assertThrows(LanguageProcessingException.class, () -> {
+      Mockito.when(WorkbookUtil.createHssfWorkbook()).thenAnswer((HSSFWorkbook) -> wb);
+      doThrow(new IOException()).when(wb).write(any(OutputStream.class));
+      when(languageRepository.fetchById(language.getId())).thenReturn(language);
+      languageService.downloadLanguage(language.getId());
+    });
   }
 
   @Test
   public void downloadLanguageCloseWorkbookIoExceptionTest() throws Exception {
-    PowerMockito.mockStatic(WorkbookUtil.class);
-    Workbook wb = PowerMockito.mock(HSSFWorkbook.class);
-    PowerMockito.when(WorkbookUtil.createHssfWorkbook()).thenAnswer((HSSFWorkbook) -> wb);
+    Workbook wb = Mockito.mock(HSSFWorkbook.class);
+    Mockito.when(WorkbookUtil.createHssfWorkbook()).thenAnswer((HSSFWorkbook) -> wb);
     doThrow(new IOException()).when(wb).close();
     when(languageRepository.fetchById(language.getId())).thenReturn(language);
     assertNotNull(languageService.downloadLanguage(language.getId()));
   }
-*/
+
 }

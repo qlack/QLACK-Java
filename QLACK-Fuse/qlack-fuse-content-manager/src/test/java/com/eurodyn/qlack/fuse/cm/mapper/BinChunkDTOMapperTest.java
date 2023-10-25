@@ -1,18 +1,17 @@
 package com.eurodyn.qlack.fuse.cm.mapper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.eurodyn.qlack.fuse.cm.InitTestValues;
 import com.eurodyn.qlack.fuse.cm.dto.BinChunkDTO;
 import com.eurodyn.qlack.fuse.cm.model.VersionBin;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class BinChunkDTOMapperTest {
 
   private BinChunkDTOMapper binChunkDTOMapper;
@@ -21,7 +20,7 @@ public class BinChunkDTOMapperTest {
   private BinChunkDTO binChunkDTO;
   private List<BinChunkDTO> binChunkDTOList;
 
-  @Before
+  @BeforeEach
   public void init() {
     binChunkDTOMapper = new BinChunkDTOMapperImpl();
     InitTestValues initTestValues = new InitTestValues();

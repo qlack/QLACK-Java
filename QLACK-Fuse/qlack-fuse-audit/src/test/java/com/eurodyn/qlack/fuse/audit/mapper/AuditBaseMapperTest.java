@@ -1,27 +1,27 @@
 package com.eurodyn.qlack.fuse.audit.mapper;
 
-import static junit.framework.TestCase.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.eurodyn.qlack.common.model.QlackBaseModel;
 import com.eurodyn.qlack.fuse.audit.InitTestValues;
 import com.eurodyn.qlack.fuse.audit.dto.AuditBaseDTO;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 
 /**
  * @author European Dynamics
  */
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AuditBaseMapperTest {
 
 
-  private AuditBaseMapper auditBaseMapper = new AuditBaseMapper() {
+  final private AuditBaseMapper auditBaseMapper = new AuditBaseMapper() {
     @Override
     public AuditBaseDTO mapToDTO(QlackBaseModel entity) {
       return null;
@@ -54,7 +54,7 @@ public class AuditBaseMapperTest {
 
   private InitTestValues initTestValues;
 
-  @Before
+  @BeforeEach
   public void init() {
     initTestValues = new InitTestValues();
   }

@@ -1,18 +1,16 @@
 package com.eurodyn.qlack.fuse.crypto.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,13 +24,13 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CryptoSymmetricServiceTest {
 
   @InjectMocks
   private CryptoSymmetricService cryptoSymmetricService;
 
-  @Before
+  @BeforeEach
   public void init() {
     cryptoSymmetricService = new CryptoSymmetricService();
   }
@@ -108,9 +106,9 @@ public class CryptoSymmetricServiceTest {
     // No IV-append test.
     File plainFile = Paths.get(execDir, "src", "test", "resources", "file-binary.jpg").toFile();
     File encryptedFile = File.createTempFile("encrypted", ".bin");
-    System.out.println("Temporary encrypted file: " + encryptedFile.toString());
+    System.out.println("Temporary encrypted file: " + encryptedFile);
     File decryptedFile = File.createTempFile("decrypted", ".jpg");
-    System.out.println("Temporary decrypted file: " + decryptedFile.toString());
+    System.out.println("Temporary decrypted file: " + decryptedFile);
     final byte[] iv = cryptoSymmetricService.generateIV();
     cryptoSymmetricService.encrypt(plainFile, encryptedFile, aesKey, iv, "AES/CBC/PKCS5Padding",
         "AES", false);
@@ -120,9 +118,9 @@ public class CryptoSymmetricServiceTest {
 
     // IV-append test.
     encryptedFile = File.createTempFile("encrypted", ".bin");
-    System.out.println("Temporary encrypted file: " + encryptedFile.toString());
+    System.out.println("Temporary encrypted file: " + encryptedFile);
     decryptedFile = File.createTempFile("decrypted", ".jpg");
-    System.out.println("Temporary decrypted file: " + decryptedFile.toString());
+    System.out.println("Temporary decrypted file: " + decryptedFile);
     cryptoSymmetricService.encrypt(plainFile, encryptedFile, aesKey, "AES/CBC/PKCS5Padding",
         "AES");
     cryptoSymmetricService.decrypt(encryptedFile, decryptedFile, aesKey, "AES/CBC/PKCS5Padding",

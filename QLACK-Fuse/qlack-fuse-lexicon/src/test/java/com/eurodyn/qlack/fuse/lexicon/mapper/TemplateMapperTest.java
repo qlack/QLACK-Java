@@ -1,19 +1,19 @@
 package com.eurodyn.qlack.fuse.lexicon.mapper;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.eurodyn.qlack.fuse.lexicon.InitTestValues;
 import com.eurodyn.qlack.fuse.lexicon.dto.TemplateDTO;
 import com.eurodyn.qlack.fuse.lexicon.model.Template;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class TemplateMapperTest {
 
   @InjectMocks
@@ -21,7 +21,7 @@ public class TemplateMapperTest {
 
   private InitTestValues initTestValues;
 
-  @Before
+  @BeforeEach
   public void init() {
     initTestValues = new InitTestValues();
   }
@@ -47,11 +47,11 @@ public class TemplateMapperTest {
 
   @Test
   public void mapToDTONullTest() {
-    assertEquals(null, templateMapper.mapToDTO((Template) null));
+    assertNull(templateMapper.mapToDTO((Template) null));
 
     List<TemplateDTO> templateDTOS = templateMapper.mapToDTO(
       (List<Template>) null);
-    assertEquals(null, templateDTOS);
+    assertNull(templateDTOS);
   }
 
   @Test
@@ -75,11 +75,11 @@ public class TemplateMapperTest {
 
   @Test
   public void mapToEntityNullTest() {
-    assertEquals(null, templateMapper.mapToEntity((TemplateDTO) null));
+    assertNull(templateMapper.mapToEntity((TemplateDTO) null));
 
     List<Template> templates = templateMapper.mapToEntity(
       (List<TemplateDTO>) null);
-    assertEquals(null, templates);
+    assertNull(templates);
   }
 
 }

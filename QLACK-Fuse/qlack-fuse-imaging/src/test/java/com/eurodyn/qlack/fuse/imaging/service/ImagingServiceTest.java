@@ -1,10 +1,6 @@
 package com.eurodyn.qlack.fuse.imaging.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.eurodyn.qlack.fuse.imaging.dto.ImageFormatHandler;
 import com.eurodyn.qlack.fuse.imaging.dto.ImageInfo;
@@ -20,12 +16,12 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import javax.imageio.ImageIO;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ImagingServiceTest {
 
   private ImagingService imagingService;
@@ -38,7 +34,7 @@ public class ImagingServiceTest {
     return bos.toByteArray();
   }
 
-  @Before
+  @BeforeEach
   public void init() {
     imagingService = new ImagingService();
     imagingService.init();
@@ -84,7 +80,7 @@ public class ImagingServiceTest {
   public void getInfoTest() throws IOException {
     BufferedImage bImage = ImageIO.read(this.getClass().getResource("/image/file-binary.jpg"));
     ImageInfo result = imagingService.getInfo(createByteImage());
-//    assertEquals(bImage.getHeight(), result.getHeight());
+    assertEquals(bImage.getHeight(), result.getHeight());
   }
 
   @Test
@@ -102,9 +98,11 @@ public class ImagingServiceTest {
     assertNotEquals(createByteImage().length, result.length);
   }
 
-  @Test(expected = ImagingException.class)
-  public void convertDstColorspaceTest() throws IOException {
-    imagingService.convert(createByteImage(), "icc", ICCProfile.CGATS21_CRPC1);
+  @Test
+  public void convertDstColorspaceTest(){
+    assertThrows(ImagingException.class, () ->
+      imagingService.convert(createByteImage(), "icc", ICCProfile.CGATS21_CRPC1));
+
   }
 
   @Test

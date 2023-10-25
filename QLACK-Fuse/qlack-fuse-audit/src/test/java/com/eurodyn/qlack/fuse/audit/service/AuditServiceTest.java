@@ -1,6 +1,7 @@
 package com.eurodyn.qlack.fuse.audit.service;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -18,38 +19,34 @@ import com.eurodyn.qlack.fuse.audit.repository.AuditRepository;
 import com.eurodyn.qlack.fuse.audit.util.AuditProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.querydsl.core.types.Predicate;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 /**
  * @author European Dynamics
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AuditServiceTest {
 
   @InjectMocks
   private AuditService auditService;
 
-  private AuditRepository auditRepository = mock(AuditRepository.class);
-  private AuditLevelRepository auditLevelRepository = mock(
+  final private AuditRepository auditRepository = mock(AuditRepository.class);
+  final private AuditLevelRepository auditLevelRepository = mock(
     AuditLevelRepository.class);
-  private AuditProperties auditProperties = mock(AuditProperties.class);
+  final private AuditProperties auditProperties = mock(AuditProperties.class);
 
   @Spy
   private AuditMapper auditMapper;
@@ -65,7 +62,7 @@ public class AuditServiceTest {
   @Mock
   private ObjectMapper objectMapper;
 
-  @Before
+  @BeforeEach
   public void init() {
     auditService = new AuditAsyncService(auditProperties, auditRepository,
       auditMapper,
@@ -132,20 +129,22 @@ public class AuditServiceTest {
     verify(auditRepository, times(1)).save(audit);
   }
 
-  @Test(expected = QAuditException.class)
-  public void auditTraceDataExceptionTest() throws JsonProcessingException {
-    ReflectionTestUtils.setField(auditService, "mapper", objectMapper);
-    when(objectMapper.writeValueAsString(auditDTO.getTrace()))
-      .thenThrow(new JsonProcessingException("") {
-      });
-    when(auditProperties.isTraceData()).thenReturn(true);
-    auditService
-      .audit(auditDTO.getLevel(), auditDTO.getEvent(), auditDTO.getGroupName(),
-        auditDTO.getShortDescription(), auditDTO.getPrinSessionId(),
-        auditDTO.getTrace(),
-        audit.getReferenceId());
+  @Test
+  public void auditTraceDataExceptionTest(){
+    assertThrows(QAuditException.class, () -> {
+      ReflectionTestUtils.setField(auditService, "mapper", objectMapper);
+      when(objectMapper.writeValueAsString(auditDTO.getTrace()))
+              .thenThrow(new JsonProcessingException("") {
+              });
+      when(auditProperties.isTraceData()).thenReturn(true);
+      auditService
+              .audit(auditDTO.getLevel(), auditDTO.getEvent(), auditDTO.getGroupName(),
+                      auditDTO.getShortDescription(), auditDTO.getPrinSessionId(),
+                      auditDTO.getTrace(),
+                      audit.getReferenceId());
 
-    verify(auditRepository, times(1)).save(audit);
+      verify(auditRepository, times(1)).save(audit);
+    });
   }
 
   @Test

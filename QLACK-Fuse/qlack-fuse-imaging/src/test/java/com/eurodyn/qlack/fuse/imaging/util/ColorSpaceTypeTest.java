@@ -1,15 +1,19 @@
 package com.eurodyn.qlack.fuse.imaging.util;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+@ExtendWith(MockitoExtension.class)
 public class ColorSpaceTypeTest {
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void reverseValUnknownTest() {
-    ColorSpaceType.getReverseVal(-9999);
+    assertThrows(IllegalArgumentException.class, () -> ColorSpaceType.getReverseVal(-9999));
+
   }
+
 
 }

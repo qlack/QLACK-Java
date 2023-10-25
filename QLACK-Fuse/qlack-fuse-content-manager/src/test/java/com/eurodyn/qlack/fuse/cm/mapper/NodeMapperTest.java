@@ -1,11 +1,6 @@
 package com.eurodyn.qlack.fuse.cm.mapper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.eurodyn.qlack.fuse.cm.InitTestValues;
 import com.eurodyn.qlack.fuse.cm.dto.FileDTO;
@@ -20,16 +15,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * @author European Dynamics
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class NodeMapperTest {
 
   @InjectMocks
@@ -45,7 +40,7 @@ public class NodeMapperTest {
   private List<NodeAttribute> nodeAttributeList;
   private Set<NodeAttributeDTO> nodeAttributeDTOSet;
 
-  @Before
+  @BeforeEach
   public void init() {
     initTestValues = new InitTestValues();
     nodeDTO = initTestValues.createFolderDTO(null);
