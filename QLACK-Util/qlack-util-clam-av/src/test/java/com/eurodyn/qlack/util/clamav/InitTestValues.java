@@ -9,7 +9,7 @@ import com.eurodyn.qlack.util.clamav.util.ClamAvProperties;
  */
 public class InitTestValues {
 
-  private byte[] data = {80, 65, 78, 75, 65, 74};
+  final private byte[] data = {80, 65, 78, 75, 65, 74};
 
   public byte[] createData() {
     return data;

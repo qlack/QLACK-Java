@@ -462,7 +462,7 @@ public class InitTestValues {
     userHasOperation2.setId("fef0b119-c239-49b8-8ed1-2a63ea11c040");
     userHasOperations.add(userHasOperation2);
 
-    userHasOperations.stream()
+    userHasOperations
       .forEach(
         userHasOperation -> userHasOperation.setOperation(createOperation()));
 

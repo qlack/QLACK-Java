@@ -16,24 +16,24 @@ import lombok.Getter;
 @Getter
 public class InitTestValues {
 
-  private String auditId = "300a084c-1109-4965-b6ba-be2d2199c111";
-  private String auditLevelName = "Front End";
-  private String auditEvent = "Front End Event";
-  private String shortDescription = "Audit short description";
-  private String groupName = "Audit group";
-  private String auditPrinSessionId = "sessionId";
-  private String opt1 = "new users: 3";
-  private String opt2 = "deleted users: 0";
-  private String opt3 = "expired users: 1";
-  private String correlationId = "12345";
-  private String referenceId = "11111";
-  private Long auditCreatedOn = 1625145120000L;
+  final private String auditId = "300a084c-1109-4965-b6ba-be2d2199c111";
+  final private String auditLevelName = "Front End";
+  final private String auditEvent = "Front End Event";
+  final private String shortDescription = "Audit short description";
+  final private String groupName = "Audit group";
+  final private String auditPrinSessionId = "sessionId";
+  final private String opt1 = "new users: 3";
+  final private String opt2 = "deleted users: 0";
+  final private String opt3 = "expired users: 1";
+  final private String correlationId = "12345";
+  final private String referenceId = "11111";
+  final private Long auditCreatedOn = 1625145120000L;
 
-  private String auditLevelId = "8a882f69-147b-4d4c-a39e-76221b408644";
-  private String auditLevelDescription = "Level Description";
+  final private String auditLevelId = "8a882f69-147b-4d4c-a39e-76221b408644";
+  final private String auditLevelDescription = "Level Description";
 
-  private String auditTraceId = "311a084c-1109-4965-b6ba-be2d2199c612";
-  private String auditTraceData = "{\n" +
+  final private String auditTraceId = "311a084c-1109-4965-b6ba-be2d2199c612";
+  final private String auditTraceData = "{\n" +
     "\tcolor: \"red\",\n" +
     "\tvalue: \"#f00\"\n" +
     "}";
