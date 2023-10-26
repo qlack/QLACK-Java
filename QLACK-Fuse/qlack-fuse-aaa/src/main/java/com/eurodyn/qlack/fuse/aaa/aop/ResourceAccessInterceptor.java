@@ -270,7 +270,7 @@ public class ResourceAccessInterceptor {
     Parameter[] params  = ((MethodSignature) joinPoint.getSignature()).getMethod().getParameters();
     for (Parameter param : params) {
       if (WRAPPER_TYPE_LIST.contains(param.getType()) &&
-              param.getAnnotation(ResourceId.class) != null) {
+              param.getAnnotation(ResourceId.class) != null && joinPoint.getArgs()[i] != null) {
         String paramValue = joinPoint.getArgs()[i].toString();
         for (ResourceOperationDTO roDTO : resourceOperations) {
           if (roDTO.getResourceId().equals(paramValue)) {
