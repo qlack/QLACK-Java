@@ -286,7 +286,7 @@ public class VersionService {
    *
    * @param userID the uuid of the user
    * @param version the version object to edit
-   * @param the requested DTO
+   * @param versionDTO requested DTO
    * @return the updated version
    */
   private Version updateVersionExtended(String userID, Version version,
@@ -326,13 +326,11 @@ public class VersionService {
   public void deleteVersion(String versionId, String lockToken) {
     Version version = versionRepository.fetchById(versionId);
     Node file = version.getNode();
-
     checkNodeConflict(file.getId(), lockToken,
       "File is locked and an invalid lock token was passed; the file version attributes cannot be deleted.");
-
     VersionDeleted versionDeleted = new VersionDeleted();
     versionDeleted.setId(versionId);
-
+    versionDeletedRepository.saveAndFlush(versionDeleted);
     versionRepository.delete(version);
   }
 

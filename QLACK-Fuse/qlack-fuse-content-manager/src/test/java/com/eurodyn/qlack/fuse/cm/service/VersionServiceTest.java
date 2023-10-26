@@ -351,13 +351,17 @@ public class VersionServiceTest {
   @Test
   public void testDeleteVersion() {
     when(versionRepository.fetchById(version.getId())).thenReturn(version);
+    VersionDeleted versionDeleted = new VersionDeleted();
+    versionDeleted.setId(version.getId());
+    when(versionDeletedRepository.fetchById(version.getId())).thenReturn(versionDeleted);
     when(concurrencyControlService
       .getSelectedNodeWithLockConflict(file.getId(), LOCK_TOKEN))
       .thenReturn(null);
-
     versionService.deleteVersion(version.getId(), LOCK_TOKEN);
-
     verify(versionRepository, times(1)).delete(version);
+    var getVersionDeleted= versionDeletedRepository.fetchById(version.getId());
+    assertNotNull(getVersionDeleted);
+    assertEquals(version.getId(), getVersionDeleted.getId());
   }
 
   @Test
