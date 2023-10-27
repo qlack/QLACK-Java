@@ -126,7 +126,7 @@ public class ThreadService implements ServiceBase<ThreadMessage, ThreadMessageDT
   @Override
   public ThreadMessageDTO findById(String id) {
     return Optional.ofNullable(findResource(id)).map(mapper::mapToDTO).orElseThrow(
-        () -> new QDoesNotExistException(MessageFormat.format("No Vote Not Found for {0}", id)));
+        () -> new QDoesNotExistException(MessageFormat.format("No Thread found for {0}", id)));
   }
 
   /**

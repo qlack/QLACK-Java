@@ -149,7 +149,7 @@ public class VoteService implements ServiceBase<Vote, VoteDTO> {
   public VoteDTO findById(String id) {
     Vote vote = findResource(id);
     return Optional.ofNullable(vote).map(mapper::mapToDTO).orElseThrow(
-        () -> new QDoesNotExistException(MessageFormat.format("No Vote Not Found for {0}", id)));
+        () -> new QDoesNotExistException(MessageFormat.format("No Vote found for {0}", id)));
   }
 
   /**
