@@ -39,10 +39,4 @@ public interface ThreadMessageRepository extends QlackBaseRepository<ThreadMessa
   @NonNull
   List<ThreadMessage> findAll(@NonNull Predicate predicate, @NonNull Sort sort);
 
-  @Modifying
-  @Query("UPDATE ThreadMessage t " +
-      "SET t.lastUpdate = cast(current_timestamp as instant), t.dbversion = t.dbversion + 1 " +
-      "WHERE t.id = :id")
-  void updateModificationTime(@Param("id") String id);
-
 }

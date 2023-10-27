@@ -350,6 +350,7 @@ public class ThreadService implements ServiceBase<ThreadMessage, ThreadMessageDT
 
   /**
    * Adds a simple text comment on a thread.
+   *
    * @param threadId the root thread id.
    * @param commentText the new comment.
    * @param author the author of the comment.
@@ -363,7 +364,12 @@ public class ThreadService implements ServiceBase<ThreadMessage, ThreadMessageDT
     comment.setBody(commentText);
     comment.setParentThread(parentThread);
     comment.setLastUpdate(Instant.now());
-    repository.updateModificationTime(parentThread.getId());
+    updateThreadModificationTime(comment);
     return create(comment);
+  }
+
+  private void updateThreadModificationTime(ThreadMessageDTO comment) {
+    ThreadMessage root = findResource(findRoot(mapper.mapToEntity(comment)).getId());
+    root.setLastUpdate(Instant.now());
   }
 }
