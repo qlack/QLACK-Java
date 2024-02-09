@@ -23,6 +23,7 @@
     <module>qlack-util-fileutils</module>
     <module>qlack-util-documentation</module>
     <module>qlack-util-validation</module>
+    <module>qlack-util-csrf</module>
   </modules>
 
   <build>
