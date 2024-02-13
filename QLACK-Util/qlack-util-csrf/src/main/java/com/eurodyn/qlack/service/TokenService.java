@@ -29,24 +29,24 @@ public class TokenService {
    * Add or update a token to the cache and return the updated map of tokens
    */
   @CachePut(value = "tokenCache", key = "'allTokens'")
-  public void updateToken(String key, Date date) {
+  public Map<String, Date> updateToken(String key, Date date) {
     tokenMap.put(key, date);
-    getCachedTokens();
+    return getCachedTokens();
   }
 
   /**
    * Remove a token from the cache and return the updated map of tokens
    */
   @CachePut(value = "tokenCache", key = "'allTokens'")
-  public void removeToken(String key) {
+  public Map<String, Date> removeToken(String key) {
     tokenMap.remove(key);
-    getCachedTokens();
+    return getCachedTokens();
   }
 
   /**
    * Clean cache For custom Csrf Cookies
    */
-  @Scheduled(cron = "${customCookieFilter.cookie-cache-clean-timer}")
+  @Scheduled(cron = "${qlack.util.csrf.cookie-cache-clean-timer}")
   public void cleanTokens() {
     Map<String, Date> getAllTokens = getCachedTokens();
     if (!CollectionUtils.isEmpty(getAllTokens)) {

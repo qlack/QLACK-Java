@@ -83,9 +83,9 @@ public final class CustomCookieFilter extends OncePerRequestFilter {
       //we do that for do Not generate tokens every time we have many requests in short of period
       if (tokenTimeDiffSeconds > cookieTimer || jwTtimeDiffSeconds < cookieTimer) {
         putNewTokenToCookie(response, tokenTime);
+        tokenService.updateToken(clientToken,
+            new Date(Instant.now().plus(cookieTimer, ChronoUnit.SECONDS).toEpochMilli()));
       }
-      tokenService.updateToken(clientToken,
-          new Date(Instant.now().plus(cookieTimer, ChronoUnit.SECONDS).toEpochMilli()));
     }
     filterChain.doFilter(request, response);
   }
