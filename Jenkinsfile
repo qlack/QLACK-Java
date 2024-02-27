@@ -77,12 +77,7 @@ pipeline {
             steps{
                 container (name: 'qlack-java-builder'){
                     sh '''
-                        cat > payload.json <<__HERE__
-                        {
-                            "project": "80c8d4aa-11fc-4841-af7e-bdd7b24f2d27",
-                            "bom": "$(cat target/bom.xml |base64 -w 0 -)"
-                        }
-                        __HERE__
+                        echo '{"project": "80c8d4aa-11fc-4841-af7e-bdd7b24f2d27", "bom": "'"$(cat target/bom.xml | base64 -w 0)"'"}' > payload.json
                     '''
 
                     sh '''
