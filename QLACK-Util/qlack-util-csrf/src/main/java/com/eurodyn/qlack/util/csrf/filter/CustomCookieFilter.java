@@ -1,8 +1,8 @@
-package com.eurodyn.qlack.filter;
+package com.eurodyn.qlack.util.csrf.filter;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-import com.eurodyn.qlack.service.TokenService;
+import com.eurodyn.qlack.util.csrf.service.TokenService;
 import com.eurodyn.qlack.util.jwt.config.AppPropertiesUtilJwt;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -55,36 +55,39 @@ public final class CustomCookieFilter extends OncePerRequestFilter {
     //if the path it is the logout ignore filter
     if(request.getServletPath().equals(logoutPath)){
       response.setStatus(200);
+      filterChain.doFilter(request, response);
       return;
     }
     Date tokenTime = new Date(Instant.now().plus(appProperties.getJwtTtlMinutes(),
         ChronoUnit.MINUTES).toEpochMilli());
     //during the login generate the token for first time
-    if (loginPath.equals(request.getServletPath())
-        && "POST".equals(request.getMethod())) {
+    if (loginPath.equals(request.getServletPath())) {
       putNewTokenToCookie(response, tokenTime);
-
     } else {
       String clientToken = extractTokenFromCookie(request);
       boolean invalidToken = invalidToken(clientToken);
-      if (invalidToken) {
+      Date jwtTokenTime = extractTimeFromJwtToken(request, tokenTime);
+      if (jwtTokenTime.before(new Date(Instant.now().toEpochMilli())) || invalidToken) {
         tokenService.removeToken(clientToken);
         response.sendError(HttpServletResponse.SC_FORBIDDEN, "Invalid token");
         return;
       }
-      Date jwTokenTime = extractTimeFromJwtToken(request, tokenTime);
       Map<String, Date> getTokens = tokenService.getCachedTokens();
-      Date tokenExpirationTime = getTokens.get(clientToken);
-      long tokenTimeDiffSeconds =
-          (tokenExpirationTime.getTime() - Date.from(Instant.now()).getTime()) / 1000;
-      long jwTtimeDiffSeconds =
-          (jwTokenTime.getTime() - Date.from(Instant.now()).getTime()) / 1000;
-      //in case that the token timer it is higher than cookie timer, we recreate a token
-      //we do that for do Not generate tokens every time we have many requests in short of period
-      if (tokenTimeDiffSeconds > cookieTimer || jwTtimeDiffSeconds < cookieTimer) {
-        putNewTokenToCookie(response, tokenTime);
+      long jwtTimeDiffSeconds =
+              (jwtTokenTime.getTime() - Date.from(Instant.now()).getTime()) / 1000;
+      boolean createNewToken = false;
+      synchronized (this) {
+        Date tokenExpirationTime = getTokens.get(clientToken);
+        long tokenTimeDiffSeconds =
+                (tokenExpirationTime.getTime() - Date.from(Instant.now()).getTime()) / 1000;
         tokenService.updateToken(clientToken,
-            new Date(Instant.now().plus(cookieTimer, ChronoUnit.SECONDS).toEpochMilli()));
+                new Date(Instant.now().plus(cookieTimer, ChronoUnit.SECONDS).toEpochMilli()));
+        //in case that the token timer it is higher than cookie timer, we recreate a token
+        //we do that for do Not generate tokens every time we have many requests in short of period
+        createNewToken = (tokenTimeDiffSeconds > cookieTimer || jwtTimeDiffSeconds < cookieTimer);
+      }
+      if (createNewToken) {
+        putNewTokenToCookie(response, tokenTime);
       }
     }
     filterChain.doFilter(request, response);

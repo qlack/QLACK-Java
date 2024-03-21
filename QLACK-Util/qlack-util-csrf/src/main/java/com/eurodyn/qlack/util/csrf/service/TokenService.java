@@ -1,4 +1,4 @@
-package com.eurodyn.qlack.service;
+package com.eurodyn.qlack.util.csrf.service;
 
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
