@@ -27,3 +27,5 @@ qlack.util.csrf:
 ```
 
 Ensure these configurations are in place for the filter to function correctly.
+
+In case the token is invalid, a 403 error with the message "Invalid token" will be returned as a response. This should be handled in the frontend of the application in order to display an appropriate message to the user.
