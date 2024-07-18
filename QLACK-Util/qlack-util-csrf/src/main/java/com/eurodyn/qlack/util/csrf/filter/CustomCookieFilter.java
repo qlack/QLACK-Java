@@ -18,10 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * A custom filter where create unique token and validate per request
@@ -38,8 +35,8 @@ public final class CustomCookieFilter extends OncePerRequestFilter {
   @Value("${qlack.util.csrf.login-path}")
   private String loginPath;
 
-  @Value("${qlack.util.csrf.logout-path}")
-  private String logoutPath;
+  @Value("${qlack.util.csrf.ignore-paths:#{null}}")
+  private List<String> ignorePaths;
 
   private final TokenService tokenService;
   private final AppPropertiesUtilJwt appProperties;
@@ -52,8 +49,8 @@ public final class CustomCookieFilter extends OncePerRequestFilter {
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
       FilterChain filterChain) throws ServletException, IOException {
-    //if the path it is the logout ignore filter
-    if(request.getServletPath().equals(logoutPath)){
+    //if the path is contained in the ignorePaths list, ignore filter
+    if(ignorePaths != null && !ignorePaths.isEmpty() && ignorePaths.contains(request.getServletPath())) {
       response.setStatus(200);
       filterChain.doFilter(request, response);
       return;
