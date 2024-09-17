@@ -60,8 +60,8 @@ public class Contact extends MailingModel {
    */
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(name = "mai_distr_list_has_contact", joinColumns = {
-    @JoinColumn(name = "contact_id", nullable = false, updatable = false)}, inverseJoinColumns = {
-    @JoinColumn(name = "distribution_list_id", nullable = false, updatable = false)})
+          @JoinColumn(name = "contact_id", nullable = false, insertable=false , updatable = false)}, inverseJoinColumns = {
+          @JoinColumn(name = "distribution_list_id", nullable = false, insertable = false, updatable = false)})
   private Set<DistributionList> distributionLists = new HashSet<>(0);
 
 }

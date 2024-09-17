@@ -4,7 +4,7 @@
 
   <groupId>com.eurodyn.qlack</groupId>
   <artifactId>qlack</artifactId>
-  <version>3.6.8-SNAPSHOT</version>
+  <version>3.6.8</version>
   <packaging>pom</packaging>
 
   <name>QLACK-Java</name>
@@ -64,7 +64,7 @@
     <maven.jrebel.plugin.version>1.2.0</maven.jrebel.plugin.version>
 
     <!-- Third-party -->
-    <activiti.version>7.1.9</activiti.version>
+    <activiti.version>7.11.1</activiti.version>
     <commons-email.version>1.5</commons-email.version>
     <apache.poi.version>5.2.3</apache.poi.version>
     <apache.tika.version>2.8.0</apache.tika.version>
@@ -86,7 +86,7 @@
     <lombok.version>1.18.28</lombok.version>
     <mapstruct.version>1.5.5.Final</mapstruct.version>
     <sensesecure.version>0.6</sensesecure.version>
-    <spring-boot.version>3.1.1</spring-boot.version>
+    <spring-boot.version>3.3.3</spring-boot.version>
     <squiggly-filter-jackson.version>1.3.18</squiggly-filter-jackson.version>
     <query-dsl.version>5.0.0</query-dsl.version>
 

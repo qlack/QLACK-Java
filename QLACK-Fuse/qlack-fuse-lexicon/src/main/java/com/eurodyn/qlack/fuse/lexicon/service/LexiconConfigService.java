@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 
@@ -111,7 +112,7 @@ public class LexiconConfigService {
       }
 
       Yaml yaml = new Yaml(
-          new CustomClassLoaderConstructor(getClass().getClassLoader()));
+          new CustomClassLoaderConstructor(getClass().getClassLoader(), new LoaderOptions()));
 
       Map<String, Object> contents = yaml.load(yamlUrl.openStream());
 
