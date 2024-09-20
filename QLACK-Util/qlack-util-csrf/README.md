@@ -23,7 +23,7 @@ qlack.util.csrf:
   cookie-timer: 60 # per seconds, the timer for keeping old cookies alive for multiple requests
   cookie-cache-clean-timer: 0 * * ? * * # the time of tge scheduler where we clean cache from non-valid cookies
   login-path: # the uri path of controller for login example: '/users/auth' 
-  ignore-paths: # a comma separated list with paths that should be excluded from the filter, such as the logout-path, example: '/users/logout, public/home'
+  ignore-paths: # a comma separated list with paths that should be excluded from the filter, such as the logout-path, example: '/users/logout, public/home'. Also wildcards are allowed at the end of the path. Eg. /api/component/* or /api/component*
 ```
 
 Ensure these configurations are in place for the filter to function correctly.

@@ -50,7 +50,7 @@ public final class CustomCookieFilter extends OncePerRequestFilter {
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
       FilterChain filterChain) throws ServletException, IOException {
     //if the path is contained in the ignorePaths list, ignore filter
-    if(ignorePaths != null && !ignorePaths.isEmpty() && ignorePaths.contains(request.getServletPath())) {
+    if(ignorePaths != null && !ignorePaths.isEmpty() && (ignorePaths.contains(request.getServletPath()) || validWildcardRequest(ignorePaths, request.getServletPath()))) {
       response.setStatus(200);
       filterChain.doFilter(request, response);
       return;
@@ -89,6 +89,18 @@ public final class CustomCookieFilter extends OncePerRequestFilter {
     }
     filterChain.doFilter(request, response);
   }
+
+  // Accepting wildcards in the end of the ignorePath. eg. /api/component/* or /api/component*
+  private boolean validWildcardRequest(List<String> ignorePaths, String requestPath){
+    for(String path : ignorePaths){
+      if(path.endsWith("*")){
+        String actualPath = path.substring(0, path.length() - 1);
+        return requestPath.startsWith(actualPath);
+      }
+    }
+    return false;
+  }
+
 
   private void putNewTokenToCookie(HttpServletResponse response, Date tokenTime) {
     String generateToken = generateRandomToken();
