@@ -4,7 +4,7 @@
   <parent>
     <artifactId>qlack-fuse</artifactId>
     <groupId>com.eurodyn.qlack.fuse</groupId>
-    <version>3.8.11-SNAPSHOT</version>
+    <version>3.8.11</version>
   </parent>
 
   <artifactId>qlack-fuse-content-manager</artifactId>
