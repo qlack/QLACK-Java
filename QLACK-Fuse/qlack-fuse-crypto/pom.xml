@@ -32,10 +32,6 @@
       <artifactId>bcpkix-jdk18on</artifactId>
       <version>${bouncycastle.version}</version>
     </dependency>
-<!--    <dependency>-->
-<!--      <groupId>javax.validation</groupId>-->
-<!--      <artifactId>validation-api</artifactId>-->
-<!--    </dependency>-->
     <dependency>
       <groupId>com.eurodyn.qlack.common</groupId>
       <artifactId>qlack-common</artifactId>
