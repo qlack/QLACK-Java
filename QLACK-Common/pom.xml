@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.eurodyn.qlack</groupId>
     <artifactId>qlack</artifactId>
-    <version>3.8.12-SNAPSHOT</version>
+    <version>3.9.0</version>
   </parent>
 
   <groupId>com.eurodyn.qlack.common</groupId>
