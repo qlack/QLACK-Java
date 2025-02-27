@@ -11,6 +11,7 @@ import java.util.List;
  */
 public interface EmailRepository extends MailingRepository<Email, String> {
 
-  List<Email> findByAddedOnDateAndStatus(Long date, EMAIL_STATUS... statuses);
+  List<Email> findByAddedOnDateAndStatusIn(Long addedOnDate, List<String> status);
 
+  List<Email> findByAddedOnDateBeforeAndStatusIn(Long addedOnDate, List<String> status);
 }

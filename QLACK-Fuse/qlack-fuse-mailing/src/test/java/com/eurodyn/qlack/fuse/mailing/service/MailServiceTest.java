@@ -67,8 +67,6 @@ public class MailServiceTest {
   private final String distributionListId = "0f9a2472-cde0-44a6-ba3d-8e609929043d";
 
   private final long emailDate = 2121545432165L;
-  final private MailConstants.EMAIL_STATUS[] statuses = {
-    MailConstants.EMAIL_STATUS.QUEUED};
 
   @BeforeEach
   public void init() {
@@ -140,9 +138,9 @@ public class MailServiceTest {
   @Test
   public void testCleanup() {
     when(emailRepository
-      .findByAddedOnDateAndStatus(emailDate, MailConstants.EMAIL_STATUS.QUEUED))
+      .findByAddedOnDateBeforeAndStatusIn(emailDate, Collections.singletonList(MailConstants.EMAIL_STATUS.QUEUED.name())))
       .thenReturn(emails);
-    mailService.cleanup(emailDate, statuses);
+    mailService.cleanup(emailDate, Collections.singletonList(MailConstants.EMAIL_STATUS.QUEUED.name()));
     for (Email email : emails) {
       verify(emailRepository, times(1)).delete(email);
     }
@@ -173,7 +171,7 @@ public class MailServiceTest {
   @Test
   public void testGetByStatus() {
     when(emailRepository
-      .findByAddedOnDateAndStatus(null, MailConstants.EMAIL_STATUS.QUEUED))
+      .findByAddedOnDateAndStatusIn(null, Collections.singletonList(MailConstants.EMAIL_STATUS.QUEUED.name())))
       .thenReturn(emails);
     for (Email e : emails) {
       when(emailMapper.mapToDTO(e))
@@ -183,7 +181,7 @@ public class MailServiceTest {
             .get());
     }
     List<EmailDTO> byStatus = mailService
-      .getByStatus(MailConstants.EMAIL_STATUS.QUEUED);
+      .getByStatus(MailConstants.EMAIL_STATUS.QUEUED.name());
     assertEquals(emails.size(), byStatus.size());
   }
 

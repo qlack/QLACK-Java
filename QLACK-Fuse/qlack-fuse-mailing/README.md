@@ -47,6 +47,14 @@ spring.mail.polling = true
 qlack.fuse.mailing.sendQueuedInitialDelay = 12345
 #The interval between sending queued mails. (Optional - if not set default value is 5000)
 qlack.fuse.mailing.sendQueuedInterval =  1234 
+# Enables cleanup for mail entries in db, default false
+qlack.fuse.mailing.cleanupEnabled=true
+# Before how many days mails should be deleted, default 180 days
+qlack.fuse.mailing.daysBefore=180
+# Only delete messages of the listed statuses. Available values are QUEUED, SENT, FAILED, CANCELED, default CANCELED
+qlack.fuse.mailing.status=FAILED, CANCELED
+# Interval between the re-execution of the cleanup, default every Saturday at 01:00
+qlack.fuse.mailing.cleanupInterval=0 0 1 * * SAT
 ```
 
 ### Add the packages in the Spring boot application main class declaration:

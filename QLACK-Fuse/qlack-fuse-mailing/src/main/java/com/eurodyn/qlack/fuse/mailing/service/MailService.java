@@ -11,15 +11,16 @@ import com.eurodyn.qlack.fuse.mailing.repository.AttachmentRepository;
 import com.eurodyn.qlack.fuse.mailing.repository.EmailRepository;
 import com.eurodyn.qlack.fuse.mailing.util.MailConstants.EMAIL_STATUS;
 import com.eurodyn.qlack.fuse.mailing.validators.EmailValidator;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
 import java.util.stream.Collectors;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -31,6 +32,7 @@ import org.springframework.validation.annotation.Validated;
 @Transactional
 @Service
 @Validated
+@Log
 public class MailService {
 
   private final MailQueueMonitor mailQueueMonitor;
@@ -40,6 +42,15 @@ public class MailService {
 
   private EmailMapper emailMapper;
   private AttachmentMapper attachmentMapper;
+
+  @Value("${qlack.fuse.mailing.cleanupEnabled:false}")
+  private boolean cleanupEnabled;
+
+  @Value("${qlack.fuse.mailing.daysBefore:180}")
+  private Integer daysBefore;
+
+  @Value("${qlack.fuse.mailing.status:CANCELED}")
+  private List<String> statuses;
 
   @Autowired
   public MailService(MailQueueMonitor mailQueueMonitor, EmailMapper emailMapper,
@@ -115,9 +126,9 @@ public class MailService {
    * e-mails of status QUEUED as such e-mails might not have been tried to be
    * delivered yet.
    */
-  public void cleanup(Long date, EMAIL_STATUS[] status) {
+  public void cleanup(Long date, List<String> status) {
     List<Email> emails = emailRepository
-      .findByAddedOnDateAndStatus(date, status);
+      .findByAddedOnDateBeforeAndStatusIn(date, status);
     for (Email email : emails) {
       emailRepository.delete(email);
     }
@@ -161,8 +172,8 @@ public class MailService {
    * @param status the provided status
    * @return a list of email with the provided status
    */
-  public List<EmailDTO> getByStatus(EMAIL_STATUS status) {
-    return emailRepository.findByAddedOnDateAndStatus(null, status).stream()
+  public List<EmailDTO> getByStatus(String status) {
+    return emailRepository.findByAddedOnDateAndStatusIn(null, Collections.singletonList(status)).stream()
       .map(o ->
         emailMapper.mapToDTO(o)).collect(Collectors.toList());
   }
@@ -186,4 +197,14 @@ public class MailService {
     String distributionListId) {
     mailQueueMonitor.sendToDistributionList(emailId, distributionListId);
   }
+
+  @Scheduled(cron = "${qlack.fuse.mailing.cleanupInterval:0 0 1 ? * SAT}")
+  public void cleanupExpired() {
+    if (cleanupEnabled && daysBefore != null && statuses != null && !statuses.isEmpty()) {
+      long date = System.currentTimeMillis() -  (daysBefore * 24 * 60 * 60 * 1000);
+      log.info("Delete mails with statuses " + statuses.toString() + " before " + daysBefore + " days.");
+      cleanup(date, statuses);
+    }
+  }
+
 }
