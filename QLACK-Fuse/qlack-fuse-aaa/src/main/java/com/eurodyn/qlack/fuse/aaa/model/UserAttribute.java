@@ -1,6 +1,5 @@
 package com.eurodyn.qlack.fuse.aaa.model;
 
-import java.util.UUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -58,7 +57,6 @@ public class UserAttribute extends AAAModel {
   private User user;
 
   public UserAttribute() {
-    setId(UUID.randomUUID().toString());
   }
 
 }

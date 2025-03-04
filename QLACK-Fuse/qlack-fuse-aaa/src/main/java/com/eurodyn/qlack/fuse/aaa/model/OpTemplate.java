@@ -2,7 +2,6 @@ package com.eurodyn.qlack.fuse.aaa.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -46,7 +45,6 @@ public class OpTemplate extends AAAModel {
   private List<OpTemplateHasOperation> opTemplateHasOperations;
 
   public OpTemplate() {
-    setId(UUID.randomUUID().toString());
   }
 
   /**

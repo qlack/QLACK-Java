@@ -52,6 +52,5 @@ public class UserHasOperation extends AAAModel {
   private boolean deny;
 
   public UserHasOperation() {
-    setId(UUID.randomUUID().toString());
   }
 }

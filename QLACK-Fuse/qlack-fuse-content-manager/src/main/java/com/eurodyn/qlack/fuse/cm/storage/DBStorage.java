@@ -45,7 +45,6 @@ public class DBStorage implements StorageEngine {
     VersionBin versionBin = new VersionBin();
     versionBin.setBinContent(content);
     versionBin.setChunkIndex(chunkIndex);
-    versionBin.setId(UUID.randomUUID().toString());
     versionBin.setVersion(version);
 
     versionBinRepository.save(versionBin);

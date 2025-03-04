@@ -68,7 +68,6 @@ public class Setting extends QlackBaseModel {
   private long createdOn;
 
   public Setting() {
-    this.setId(UUID.randomUUID().toString());
     this.createdOn = Instant.now().toEpochMilli();
   }
 

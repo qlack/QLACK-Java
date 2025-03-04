@@ -1,7 +1,6 @@
 package com.eurodyn.qlack.fuse.aaa.model;
 
 import java.util.List;
-import java.util.UUID;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -63,7 +62,6 @@ public class Session extends AAAModel {
   private List<SessionAttribute> sessionAttributes;
 
   public Session() {
-    setId(UUID.randomUUID().toString());
   }
 
 }

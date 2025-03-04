@@ -6,7 +6,7 @@ import jakarta.persistence.MappedSuperclass;
 import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UuidGenerator;
 
 /**
  * Superclass that contains common fields for QLACK entities.
@@ -22,7 +22,6 @@ public abstract class QlackBaseModel implements Serializable {
    * the auto-generated uuid of the entity
    */
   @Id
-  @GeneratedValue(generator = "uuid")
-  @GenericGenerator(name = "uuid", strategy = "uuid2")
+  @UuidGenerator
   private String id;
 }

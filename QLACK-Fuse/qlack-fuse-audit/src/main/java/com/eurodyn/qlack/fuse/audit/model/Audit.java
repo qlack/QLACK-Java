@@ -98,6 +98,5 @@ public class Audit extends QlackBaseModel {
   private String opt3;
 
   public Audit() {
-    setId(java.util.UUID.randomUUID().toString());
   }
 }

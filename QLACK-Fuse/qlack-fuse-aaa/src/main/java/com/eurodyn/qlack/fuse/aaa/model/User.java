@@ -2,7 +2,6 @@ package com.eurodyn.qlack.fuse.aaa.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -100,7 +99,6 @@ public class User extends AAAModel {
   private List<VerificationToken> verificationTokens;
 
   public User() {
-    setId(UUID.randomUUID().toString());
   }
 
   /**

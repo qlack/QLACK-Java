@@ -32,6 +32,5 @@ public class AuditTrace extends QlackBaseModel {
   private Audit audit;
 
   public AuditTrace() {
-    setId(java.util.UUID.randomUUID().toString());
   }
 }

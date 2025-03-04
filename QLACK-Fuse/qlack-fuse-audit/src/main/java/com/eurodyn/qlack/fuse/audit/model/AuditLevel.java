@@ -1,8 +1,6 @@
 package com.eurodyn.qlack.fuse.audit.model;
 
 import com.eurodyn.qlack.common.model.QlackBaseModel;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -45,6 +43,5 @@ public class AuditLevel extends QlackBaseModel {
   private Long createdOn;
 
   public AuditLevel() {
-    setId(java.util.UUID.randomUUID().toString());
   }
 }

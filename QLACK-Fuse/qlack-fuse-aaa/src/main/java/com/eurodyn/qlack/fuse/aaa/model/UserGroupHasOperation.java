@@ -1,6 +1,5 @@
 package com.eurodyn.qlack.fuse.aaa.model;
 
-import java.util.UUID;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -55,7 +54,6 @@ public class UserGroupHasOperation extends AAAModel {
   private boolean deny;
 
   public UserGroupHasOperation() {
-    setId(UUID.randomUUID().toString());
   }
 
 }

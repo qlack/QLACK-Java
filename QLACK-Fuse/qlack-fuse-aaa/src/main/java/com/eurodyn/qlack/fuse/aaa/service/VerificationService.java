@@ -7,7 +7,6 @@ import com.eurodyn.qlack.fuse.aaa.repository.VerificationTokenRepository;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
-import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +43,6 @@ public class VerificationService {
       vt.setData(data);
     }
     vt.setExpiresOn(expiresOn);
-    vt.setId(UUID.randomUUID().toString());
     verificationTokenRepository.save(vt);
 
     return vt.getId();
