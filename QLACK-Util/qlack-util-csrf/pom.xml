@@ -3,14 +3,14 @@
   <parent>
     <artifactId>qlack-util</artifactId>
     <groupId>com.eurodyn.qlack.util</groupId>
-    <version>3.9.3</version>
+    <version>3.9.4-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>qlack-util-csrf</artifactId>
 
   <properties>
-    <qlack.version>3.9.3</qlack.version>
+    <qlack.version>3.9.4-SNAPSHOT</qlack.version>
   </properties>
 
   <dependencies>
