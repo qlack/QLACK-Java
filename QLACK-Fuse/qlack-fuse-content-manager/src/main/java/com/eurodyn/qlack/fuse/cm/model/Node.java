@@ -36,7 +36,7 @@ public class Node extends QlackBaseModel {
   private Node parent;
   @Column(name = "created_on")
   private long createdOn;
-  @OneToMany(mappedBy = "parent")
+  @OneToMany(mappedBy = "parent", orphanRemoval = true)
   private List<Node> children;
   @Column(name = "lock_token")
   private String lockToken;
