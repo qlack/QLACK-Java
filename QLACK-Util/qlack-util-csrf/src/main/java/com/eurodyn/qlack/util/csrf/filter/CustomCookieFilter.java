@@ -95,7 +95,9 @@ public final class CustomCookieFilter extends OncePerRequestFilter {
     for(String path : ignorePaths){
       if(path.endsWith("*")){
         String actualPath = path.substring(0, path.length() - 1);
-        return requestPath.startsWith(actualPath);
+        if(requestPath.startsWith(actualPath)){
+          return true;
+        }
       }
     }
     return false;
