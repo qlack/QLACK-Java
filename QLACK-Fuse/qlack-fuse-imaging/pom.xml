@@ -10,8 +10,8 @@
   <artifactId>qlack-fuse-imaging</artifactId>
 
   <properties>
-    <twelvemonkeys.version>3.3.2</twelvemonkeys.version>
-    <batik.version>1.14</batik.version>
+    <twelvemonkeys.version>3.12.0</twelvemonkeys.version>
+    <batik.version>1.19</batik.version>
   </properties>
 
   <dependencies>
@@ -186,5 +186,4 @@
       </exclusions>
     </dependency>
   </dependencies>
-
 </project>
