@@ -23,6 +23,7 @@ pipeline {
                 securityContext:
                     runAsUser: 0
                     runAsGroup: 0
+                    fsGroup: 0
                 priorityClassName: "jenkins-low-priority"
                 containers:
                 - name: qlack-java-builder
@@ -35,7 +36,6 @@ pipeline {
                   securityContext:
                     privileged: true
                     runAsUser: 0
-                    fsGroup: 0
                 imagePullSecrets:
                 - name: regcred
                 volumes:
