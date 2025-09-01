@@ -33,12 +33,6 @@
     <url>https://github.com/qlack/QLACK-Java</url>
     <tag>HEAD</tag>
   </scm>
-  <distributionManagement>
-    <snapshotRepository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
-  </distributionManagement>
 
   <modules>
     <module>QLACK-Common</module>
