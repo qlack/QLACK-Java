@@ -70,7 +70,7 @@
     <activiti.version>8.7.0</activiti.version>
     <commons-email.version>1.6.0</commons-email.version>
     <apache.poi.version>5.4.0</apache.poi.version>
-    <apache.tika.version>3.1.0</apache.tika.version>
+    <apache.tika.version>3.2.2</apache.tika.version>
     <beanshell.version>2.0b6</beanshell.version>
     <bouncycastle.version>1.80</bouncycastle.version>
     <commons-io.version>2.18.0</commons-io.version>
