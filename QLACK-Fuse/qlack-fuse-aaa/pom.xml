@@ -9,8 +9,8 @@
 
   <artifactId>qlack-fuse-aaa</artifactId>
 
-
-
+  <name>QLACK Fuse AAA</name>
+  <description>Authentication & Authorization module of QLACK.</description>
 
   <dependencies>
     <!-- QLACK dependencies -->
