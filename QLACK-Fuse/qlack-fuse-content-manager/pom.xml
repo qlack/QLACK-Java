@@ -8,6 +8,9 @@
   </parent>
 
   <artifactId>qlack-fuse-content-manager</artifactId>
+  <name>QLACK Fuse Content Manager</name>
+  <description>Content management services for QLACK projects</description>
+
 
   <dependencies>
     <!-- QLACK dependencies -->

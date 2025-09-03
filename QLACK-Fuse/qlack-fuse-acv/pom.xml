@@ -8,6 +8,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>qlack-fuse-acv</artifactId>
+  <name>QLACK Fuse ACV</name>
+  <description>Access Control and Validation module for QLACK applications</description>
+
 
   <properties>
     <javers.version>5.15.0</javers.version>

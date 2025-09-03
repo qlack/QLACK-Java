@@ -8,6 +8,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>qlack-util-fileutils</artifactId>
+  <name>QLACK Util File Utilities</name>
+  <description>File handling and manipulation utilities for QLACK modules</description>
+
   <dependencies>
     <dependency>
       <groupId>org.projectlombok</groupId>

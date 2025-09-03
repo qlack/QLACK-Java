@@ -8,6 +8,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>qlack-fuse-mailing</artifactId>
+  <name>QLACK Fuse Mailing</name>
+  <description>Email and messaging services for QLACK-based applications</description>
+
 
   <dependencies>
     <!-- QLACK dependencies -->

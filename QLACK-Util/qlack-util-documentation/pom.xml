@@ -8,4 +8,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>qlack-util-documentation</artifactId>
+
+  <name>QLACK Util Documentation</name>
+  <description>Documentation and API support module for QLACK projects</description>
+
 </project>

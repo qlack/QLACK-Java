@@ -8,6 +8,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>qlack-fuse-token-server</artifactId>
+  <name>QLACK Fuse Token Server</name>
+  <description>Secure token management and authentication services for QLACK</description>
+
 
   <dependencies>
     <!-- QLACK dependencies -->

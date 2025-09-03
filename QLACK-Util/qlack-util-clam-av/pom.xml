@@ -8,6 +8,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>qlack-util-clam-av</artifactId>
+
+  <name>QLACK Util ClamAV</name>
+  <description>ClamAV antivirus integration utilities for QLACK projects</description>
+
   <dependencies>
     <!-- QLACK dependencies -->
     <dependency>

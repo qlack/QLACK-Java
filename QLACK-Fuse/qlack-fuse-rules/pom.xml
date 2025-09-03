@@ -8,6 +8,9 @@
   <modelVersion>4.0.0</modelVersion>
 
     <artifactId>qlack-fuse-rules</artifactId>
+    <name>QLACK Fuse Rules</name>
+    <description>Business rule execution and management support for QLACK</description>
+
 
     <dependencies>
         <!-- QLACK dependencies -->

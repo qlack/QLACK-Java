@@ -8,6 +8,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>qlack-util-validation</artifactId>
+  <name>QLACK Util Validation</name>
+  <description>Data validation utilities for QLACK applications</description>
+
 
   <dependencies>
     <!-- Spring dependencies -->

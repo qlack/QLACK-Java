@@ -8,6 +8,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>qlack-fuse-settings</artifactId>
+  <name>QLACK Fuse Settings</name>
+  <description>Application and system configuration management for QLACK</description>
+
 
   <dependencies>
     <!-- QLACK dependencies -->

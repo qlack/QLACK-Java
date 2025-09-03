@@ -8,6 +8,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>qlack-util-logger</artifactId>
+  <name>QLACK Util Logger</name>
+  <description>Logging utilities and helpers for QLACK applications</description>
+
 
   <dependencies>
     <dependency>

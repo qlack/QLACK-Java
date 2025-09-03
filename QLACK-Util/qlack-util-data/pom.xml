@@ -8,6 +8,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>qlack-util-data</artifactId>
+  <name>QLACK Util Data</name>
+  <description>Core data utilities supporting QLACK modules and applications</description>
+
 
   <dependencies>
     <!-- QLACK dependencies -->

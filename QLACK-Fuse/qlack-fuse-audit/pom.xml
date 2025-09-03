@@ -8,6 +8,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>qlack-fuse-audit</artifactId>
+  <name>QLACK Fuse Audit</name>
+  <description>Auditing and event logging module for QLACK-based systems</description>
+
 
   <dependencies>
     <!-- QLACK dependencies -->

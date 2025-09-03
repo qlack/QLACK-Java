@@ -9,6 +9,9 @@
 
 
   <artifactId>qlack-fuse-feature-dashboard</artifactId>
+  <name>QLACK Fuse Feature Dashboard</name>
+  <description>Feature monitoring and dashboarding module for QLACK applications</description>
+
   <dependencies>
     <!-- QLACK dependencies -->
     <dependency>
