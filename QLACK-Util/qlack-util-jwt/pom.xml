@@ -8,6 +8,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>qlack-util-jwt</artifactId>
+  <name>QLACK Util JWT</name>
+  <description>Utilities for creating and validating JSON Web Tokens in QLACK applications</description>
+
 
   <dependencies>
     <dependency>
