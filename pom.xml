@@ -119,10 +119,12 @@
       <dependency>
         <groupId>com.eurodyn.qlack.common</groupId>
         <artifactId>qlack-common</artifactId>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>com.eurodyn.qlack.util</groupId>
         <artifactId>qlack-util-querydsl</artifactId>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>commons-collections</groupId>
