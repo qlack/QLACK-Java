@@ -3,7 +3,7 @@
   <parent>
     <artifactId>qlack-util</artifactId>
     <groupId>com.eurodyn.qlack.util</groupId>
-    <version>3.9.7-SNAPSHOT</version>
+    <version>3.9.7</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -13,7 +13,7 @@
 
 
   <properties>
-    <qlack.version>3.9.7-SNAPSHOT</qlack.version>
+    <qlack.version>3.9.7</qlack.version>
   </properties>
 
   <dependencies>
