@@ -9,6 +9,9 @@
 
   <groupId>com.eurodyn.qlack.fuse</groupId>
   <artifactId>qlack-fuse</artifactId>
+  <name>QLACK Fuse</name>
+  <description>Set of modular services for the QLACK ecosystem, providing enterprise features such as authentication, audit, crypto, content management, mailing, rules, scheduler and more</description>
+
   <packaging>pom</packaging>
 
   <modules>
