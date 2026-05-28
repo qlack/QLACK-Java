@@ -8,14 +8,6 @@ pipeline {
                 name: qlack-java
                 namespace: jenkins
               spec:
-                tolerations:
-                - key: "jenkins"
-                  operator: "Equal"
-                  value: "agent"
-                  effect: "NoSchedule"
-                nodeSelector:
-                  jenkins-agent: "true"
-                priorityClassName: jenkins-low-priority
                 securityContext:
                     runAsUser: 0
                     runAsGroup: 0
@@ -27,6 +19,8 @@ pipeline {
                   - name: maven
                     mountPath: /root/.m2/
                     subPath: qlack-java
+                  - name: sonar-scanner
+                    mountPath: /root/sonar-scanner
                   tty: true
                   securityContext:
                     privileged: true
@@ -37,6 +31,10 @@ pipeline {
                 - name: maven
                   persistentVolumeClaim:
                     claimName: maven-nfs-pvc
+                - name: sonar-scanner
+                  persistentVolumeClaim:
+                    claimName: sonar-scanner-nfs-pvc
+
             '''
             workspaceVolume persistentVolumeClaimWorkspaceVolume(claimName: 'workspace-nfs-pvc', readOnly: false)
         }
@@ -57,7 +55,10 @@ pipeline {
             steps {
                 container (name: 'qlack-java-builder'){
                     withSonarQubeEnv('sonar'){
-                        sh 'mvn sonar:sonar -Dsonar.projectName=Qlack-Java -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.token=${SONAR_GLOBAL_KEY} -Dsonar.working.directory="/tmp"'
+                        sh """
+                            PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+                            /root/sonar-scanner/sonar-scanner/bin/sonar-scanner -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.token=${SONAR_GLOBAL_KEY} -Dsonar.projectVersion=${PROJECT_VERSION} -Dsonar.working.directory="/tmp"
+                        """
                     }
                 }
             }
