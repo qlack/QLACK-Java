@@ -55,10 +55,10 @@ pipeline {
             steps {
                 container (name: 'qlack-java-builder'){
                     withSonarQubeEnv('sonar'){
-                        sh """
+                        sh '''
                             PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
                             /root/sonar-scanner/sonar-scanner/bin/sonar-scanner -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.token=${SONAR_GLOBAL_KEY} -Dsonar.projectVersion=${PROJECT_VERSION} -Dsonar.working.directory="/tmp"
-                        """
+                        '''
                     }
                 }
             }
