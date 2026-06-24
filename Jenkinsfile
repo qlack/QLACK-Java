@@ -1,6 +1,7 @@
 pipeline {
     agent {
         kubernetes {
+            inheritFrom 'cicd-agent'
             yaml '''
               apiVersion: v1
               kind: Pod
@@ -25,6 +26,13 @@ pipeline {
                   securityContext:
                     privileged: true
                     runAsUser: 0
+                  resources:
+                    requests:
+                      cpu: "1"
+                      memory: "1Gi"
+                    limits:
+                      cpu: "2"
+                      memory: "2Gi"
                 imagePullSecrets:
                 - name: regcred
                 volumes:
