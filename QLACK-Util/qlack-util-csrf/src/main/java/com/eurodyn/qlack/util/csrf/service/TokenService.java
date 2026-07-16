@@ -4,25 +4,25 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
+
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class TokenService {
 
   // Maintain a map to store tokens
-  private final Map<String, Date> tokenMap = new HashMap<>();
+  private final Map<String, Date> tokenMap = new ConcurrentHashMap<>();
 
   /**
    * This method will retrieve the entire map of tokens without altering it
    */
   @Cacheable(value = "tokenCache", key = "'allTokens'")
   public Map<String, Date> getCachedTokens() {
-    return Collections.unmodifiableMap(tokenMap);
+    return Collections.unmodifiableMap(new HashMap<>(tokenMap));
   }
 
   /**
@@ -48,16 +48,8 @@ public class TokenService {
    */
   @Scheduled(cron = "${qlack.util.csrf.cookie-cache-clean-timer}")
   public void cleanTokens() {
-    Map<String, Date> getAllTokens = getCachedTokens();
-    if (!CollectionUtils.isEmpty(getAllTokens)) {
-      Date now = new Date(Instant.now().toEpochMilli());
-      List<String> removeKeyList = getAllTokens.entrySet().stream()
-          .filter(entry -> entry.getValue().before(now))
-          .map(Map.Entry::getKey).toList();
-      if (!CollectionUtils.isEmpty(removeKeyList)) {
-        removeKeyList.forEach(this::removeToken);
-      }
-    }
+    Date now = new Date(Instant.now().toEpochMilli());
+    tokenMap.entrySet().removeIf(entry -> entry.getValue().before(now));
   }
 
 }

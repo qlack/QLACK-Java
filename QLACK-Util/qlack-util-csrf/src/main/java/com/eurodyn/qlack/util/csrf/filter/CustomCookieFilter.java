@@ -5,6 +5,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import com.eurodyn.qlack.util.csrf.service.TokenService;
 import com.eurodyn.qlack.util.jwt.config.AppPropertiesUtilJwt;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -64,7 +65,9 @@ public final class CustomCookieFilter extends OncePerRequestFilter {
       String clientToken = extractTokenFromCookie(request);
       boolean invalidToken = invalidToken(clientToken);
       Date jwtTokenTime = extractTimeFromJwtToken(request, tokenTime);
-      if (jwtTokenTime.before(new Date(Instant.now().toEpochMilli())) || invalidToken) {
+      if (Objects.isNull(jwtTokenTime)
+          || jwtTokenTime.before(new Date(Instant.now().toEpochMilli()))
+          || invalidToken) {
         tokenService.removeToken(clientToken);
         response.sendError(HttpServletResponse.SC_FORBIDDEN, "Invalid token");
         return;
@@ -75,6 +78,11 @@ public final class CustomCookieFilter extends OncePerRequestFilter {
       boolean createNewToken = false;
       synchronized (this) {
         Date tokenExpirationTime = getTokens.get(clientToken);
+        if (Objects.isNull(tokenExpirationTime)) {
+          tokenService.removeToken(clientToken);
+          response.sendError(HttpServletResponse.SC_FORBIDDEN, "Invalid token");
+          return;
+        }
         long tokenTimeDiffSeconds =
                 (tokenExpirationTime.getTime() - Date.from(Instant.now()).getTime()) / 1000;
         tokenService.updateToken(clientToken,
@@ -115,13 +123,19 @@ public final class CustomCookieFilter extends OncePerRequestFilter {
   private Date extractTimeFromJwtToken(HttpServletRequest request, Date tokenTime) {
     String userAuthorizationHeaderJwt = request.getHeader(AUTHORIZATION);
     //get remaining time off jwt token
-    if (Objects.nonNull(userAuthorizationHeaderJwt)) {
+    if (Objects.nonNull(userAuthorizationHeaderJwt)
+        && userAuthorizationHeaderJwt.startsWith("Bearer ")
+        && userAuthorizationHeaderJwt.length() > 7) {
       String jwt = userAuthorizationHeaderJwt.substring(7);
       byte[] apiKeySecretBytes2 = appProperties.getJwtSecret().getBytes();
-      Claims claims = Jwts.parser()
-          .setSigningKey(apiKeySecretBytes2)
-          .parseClaimsJws(jwt).getBody();
-      tokenTime = claims.getExpiration();
+      try {
+        Claims claims = Jwts.parser()
+            .setSigningKey(apiKeySecretBytes2)
+            .parseClaimsJws(jwt).getBody();
+        tokenTime = claims.getExpiration();
+      } catch (JwtException | IllegalArgumentException ex) {
+        return null;
+      }
     }
     return tokenTime;
   }
