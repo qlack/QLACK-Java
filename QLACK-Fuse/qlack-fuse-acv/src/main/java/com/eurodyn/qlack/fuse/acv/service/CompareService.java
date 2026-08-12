@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import lombok.NonNull;
 import org.javers.core.Javers;
 import org.javers.core.diff.Diff;
+import org.javers.core.diff.changetype.InitialValueChange;
+import org.javers.core.diff.changetype.TerminalValueChange;
 import org.javers.core.diff.changetype.ValueChange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,10 +58,30 @@ public class CompareService {
     Diff result = javers.compare(obj1, obj2);
 
     List<ChangeDTO> changes = result.getChangesByType(ValueChange.class)
-      .parallelStream()
-      .map(this::convertToChangeDTO).collect(Collectors.toList());
+            .parallelStream()
+            .filter(CompareService::isValueChange)
+            .map(this::convertToChangeDTO).collect(Collectors.toList());
 
     return Collections.unmodifiableList(changes);
+  }
+
+  /**
+   * Keeps only real, before/after property value changes.
+   * <br><br>
+   * Javers 7 reports the whole state of an added or a removed object as
+   * {@link InitialValueChange} and {@link TerminalValueChange}. Both extend
+   * {@link ValueChange}, so they are also returned by
+   * {@link Diff#getChangesByType(Class)}, which would add one entry per
+   * property of every added/removed object, each having either the "from" or
+   * the "to" side always null. Such entries were not produced by earlier Javers
+   * versions and are filtered out here.
+   *
+   * @param change the change to examine
+   * @return true if the change is a plain value change, else false
+   */
+  private static boolean isValueChange(ValueChange change) {
+    return !(change instanceof InitialValueChange)
+            && !(change instanceof TerminalValueChange);
   }
 
   /**
@@ -74,10 +96,10 @@ public class CompareService {
    * @return a list with the changes between the two comparing objects
    */
   public List<ChangeDTO> compareVersions(Object object, long version1,
-    long version2) {
+                                         long version2) {
 
     return compare(versioningService.retrieveVersion(object, version1),
-      versioningService.retrieveVersion(object, version2));
+            versioningService.retrieveVersion(object, version2));
   }
 
   /**

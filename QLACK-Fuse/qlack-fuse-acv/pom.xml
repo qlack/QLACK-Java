@@ -13,7 +13,7 @@
 
 
   <properties>
-    <javers.version>5.15.0</javers.version>
+    <javers.version>7.11.7</javers.version>
   </properties>
 
   <dependencies>
