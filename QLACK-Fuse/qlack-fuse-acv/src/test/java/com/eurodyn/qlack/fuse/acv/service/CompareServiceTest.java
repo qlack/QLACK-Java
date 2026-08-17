@@ -4,13 +4,17 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
+import com.eurodyn.qlack.fuse.acv.dto.ChangeDTO;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.javers.core.Javers;
 import org.javers.core.diff.Diff;
+import org.javers.core.diff.changetype.InitialValueChange;
 import org.javers.core.diff.changetype.PropertyChangeMetadata;
 import org.javers.core.diff.changetype.PropertyChangeType;
+import org.javers.core.diff.changetype.TerminalValueChange;
 import org.javers.core.diff.changetype.ValueChange;
 import org.javers.core.metamodel.object.GlobalId;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,7 +73,7 @@ public class CompareServiceTest {
     when(diff.getChangesByType(ValueChange.class)).thenReturn(valueChangeList);
 
     assertEquals(Collections.emptyList(),
-      compareService.compareVersions(object1, 1L, 2L));
+            compareService.compareVersions(object1, 1L, 2L));
   }
 
   @Test
@@ -82,7 +86,7 @@ public class CompareServiceTest {
   @Test
   public void hasChangesNullObj1Test() {
     assertThrows(NullPointerException.class, () ->
-      compareService.hasChanges(null, object2));
+            compareService.hasChanges(null, object2));
   }
 
   @Test
@@ -113,7 +117,7 @@ public class CompareServiceTest {
     when(diff.getChangesByType(ValueChange.class)).thenReturn(valueChangeList);
 
     assertEquals(Collections.emptyList(),
-      compareService.compareObjectWithVersion(object1, 1L));
+            compareService.compareObjectWithVersion(object1, 1L));
   }
 
   @Test
@@ -123,16 +127,48 @@ public class CompareServiceTest {
     when(diff.getChangesByType(ValueChange.class)).thenReturn(valueChangeList);
 
     assertEquals(Collections.emptyList(),
-      compareService.compareObjectWithLatestVersion(object1));
+            compareService.compareObjectWithLatestVersion(object1));
   }
 
   @Test
   public void convertToChangeDTOTest() {
 
     PropertyChangeMetadata metadata = new PropertyChangeMetadata(globalId, "property", Optional.empty(),
-        PropertyChangeType.PROPERTY_VALUE_CHANGED);
+            PropertyChangeType.PROPERTY_VALUE_CHANGED);
     ValueChange valueChange = new ValueChange(metadata, object1, object2);
     assertNotNull(compareService.convertToChangeDTO(valueChange));
+  }
+
+  /**
+   * Since Javers 7, {@link Diff#getChangesByType(Class)} also returns the
+   * {@link InitialValueChange} and {@link TerminalValueChange} subtypes, which
+   * describe the state of added/removed objects rather than an actual
+   * before/after change. Those must not end up in the reported changes.
+   */
+  @Test
+  public void compareSkipsInitialAndTerminalValueChangesTest() {
+    ValueChange valueChange = new ValueChange(
+            propertyChangeMetadata("property"), object1, object2);
+    InitialValueChange initialValueChange = new InitialValueChange(
+            propertyChangeMetadata("addedProperty"), object2);
+    TerminalValueChange terminalValueChange = new TerminalValueChange(
+            propertyChangeMetadata("removedProperty"), object1);
+
+    when(javers.compare(object1, object2)).thenReturn(diff);
+    when(diff.getChangesByType(ValueChange.class)).thenReturn(
+            Arrays.asList(initialValueChange, valueChange, terminalValueChange));
+
+    List<ChangeDTO> changes = compareService.compare(object1, object2);
+
+    assertEquals(1, changes.size());
+    assertEquals("property", changes.get(0).getPropertyName());
+    assertEquals(object1, changes.get(0).getFrom());
+    assertEquals(object2, changes.get(0).getTo());
+  }
+
+  private PropertyChangeMetadata propertyChangeMetadata(String propertyName) {
+    return new PropertyChangeMetadata(globalId, propertyName, Optional.empty(),
+            PropertyChangeType.PROPERTY_VALUE_CHANGED);
   }
 
 }

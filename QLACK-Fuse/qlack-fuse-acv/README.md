@@ -3,17 +3,20 @@
 This module provides Object Auditing, Comparison and Versioning operations.
 
 ## Integration
-Add following property in your projects application.properties file, in order to persist the 
+Add following property in your projects application.properties file, in order to persist the
 object versions in the database used by your application.
-`javers.sqlSchema.sqlSchemaManagementEnabled=true`
+`javers.sqlSchemaManagementEnabled=true`
+
+This is Javers' default, so the property only needs to be set explicitly when it has been
+disabled elsewhere.
 
 ### Add qlack-fuse-acv dependency to your pom.xml:
 ```xml
     <dependency>
-        <groupId>com.eurodyn.qlack.fuse</groupId>
-        <artifactId>qlack-fuse-acv</artifactId>
-        <version>${qlack.version}</version>
-    </dependency>
+    <groupId>com.eurodyn.qlack.fuse</groupId>
+    <artifactId>qlack-fuse-acv</artifactId>
+    <version>${qlack.version}</version>
+</dependency>
 ```
 
 ### Add the packages in the Spring boot application main class declaration:
