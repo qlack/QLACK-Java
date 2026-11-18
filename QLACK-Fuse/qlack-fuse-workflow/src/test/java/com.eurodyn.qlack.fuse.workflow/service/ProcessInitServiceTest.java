@@ -51,6 +51,8 @@ public class ProcessInitServiceTest {
 
   @BeforeEach
   public void init() throws IOException {
+    // Spring Boot 4 no longer initializes @Mock fields for SpringExtension tests.
+    MockitoAnnotations.openMocks(this);
     processInitService = new ProcessInitService(processFileRepository,
       repositoryService, cryptoDigestService);
     resources = applicationContext.getResources("/processes/*.xml");
