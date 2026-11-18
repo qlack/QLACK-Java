@@ -1,5 +1,6 @@
 package com.eurodyn.qlack.fuse.fileupload.rest;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -60,9 +62,10 @@ public class FileUploadRestTemplateTest {
 
   @Test
   public void uploadExceptionTest() {
-    when(multipartHttpServletRequest.getParameter("flowChunkNumber"))
+    lenient().when(multipartHttpServletRequest.getParameter("flowChunkNumber"))
       .thenReturn("null");
-    fileUploadRestTemplate.upload(multipartHttpServletRequest);
+    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR,
+      fileUploadRestTemplate.upload(multipartHttpServletRequest).getStatusCode());
     verify(fileUpload, times(0)).upload(any(DBFileDTO.class));
   }
 

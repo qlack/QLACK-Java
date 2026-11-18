@@ -6,7 +6,7 @@ import dev.nicklasw.squiggly.context.provider.SimpleSquigglyContextProvider;
 import dev.nicklasw.squiggly.filter.SquigglyPropertyFilter;
 import dev.nicklasw.squiggly.filter.SquigglyPropertyFilterMixin;
 import dev.nicklasw.squiggly.parser.SquigglyParser;
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.boot.jackson2.autoconfigure.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

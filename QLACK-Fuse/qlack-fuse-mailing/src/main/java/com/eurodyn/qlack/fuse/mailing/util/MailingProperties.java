@@ -2,7 +2,7 @@ package com.eurodyn.qlack.fuse.mailing.util;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.boot.autoconfigure.mail.MailProperties;
+import org.springframework.boot.mail.autoconfigure.MailProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
