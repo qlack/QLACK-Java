@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
-import org.springframework.lang.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Repository;
 
 /**

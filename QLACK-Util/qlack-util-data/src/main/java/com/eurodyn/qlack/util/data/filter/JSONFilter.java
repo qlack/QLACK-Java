@@ -13,9 +13,9 @@ public class JSONFilter {
 
   private static ObjectMapper defaultObjectMapper = new ObjectMapper();
   private static ObjectMapper nonEmptyObjectMapper =
-    new ObjectMapper().setSerializationInclusion(Include.NON_EMPTY);
+    new ObjectMapper().setDefaultPropertyInclusion(Include.NON_EMPTY);
   private static ObjectMapper nonNullObjectMapper =
-    new ObjectMapper().setSerializationInclusion(Include.NON_NULL);
+    new ObjectMapper().setDefaultPropertyInclusion(Include.NON_NULL);
 
   /**
    * Private Constructor
@@ -40,7 +40,7 @@ public class JSONFilter {
 
   /**
    * Filter using an {@link ObjectMapper} initialised with
-   * setSerializationInclusion(Include.NON_EMPTY).
+   * setDefaultPropertyInclusion(Include.NON_EMPTY).
    *
    * @param object The object to filter.
    * @param filter The filter to apply.
@@ -55,7 +55,7 @@ public class JSONFilter {
 
   /**
    * Filter using an {@link ObjectMapper} initialised with
-   * setSerializationInclusion(Include.NON_NULL).
+   * setDefaultPropertyInclusion(Include.NON_NULL).
    *
    * @param object The object to filter.
    * @param filter The filter to apply.
