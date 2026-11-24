@@ -13,8 +13,8 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticatedPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.saml2.provider.service.authentication.DefaultSaml2AuthenticatedPrincipal;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.*;
@@ -112,8 +112,8 @@ public class ResourceAccessInterceptor {
     User user = null;
     if (principal instanceof String) {
       user = resourceAccessInterceptorService.findUser((String) principal);
-    } else if (principal instanceof DefaultSaml2AuthenticatedPrincipal) {
-      user = resourceAccessInterceptorService.findByUsername((String) ((DefaultSaml2AuthenticatedPrincipal) principal).getName());
+    } else if (principal instanceof AuthenticatedPrincipal authenticatedPrincipal) {
+      user = resourceAccessInterceptorService.findByUsername(authenticatedPrincipal.getName());
     }
     if (user != null) {
       authorizeUser(user, joinPoint,

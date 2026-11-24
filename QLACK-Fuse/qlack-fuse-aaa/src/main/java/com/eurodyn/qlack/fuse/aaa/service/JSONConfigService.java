@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Enumeration;
@@ -56,8 +57,8 @@ public class JSONConfigService {
 
     // Parse the JSON file.
     JSONConfig config;
-    try {
-      config = mapper.readValue(configFileURL, JSONConfig.class);
+    try (InputStream configStream = configFileURL.openStream()) {
+      config = mapper.readValue(configStream, JSONConfig.class);
     } catch (IOException e) {
       LOGGER.log(Level.SEVERE, MessageFormat.format(
         "Could not parse configuration file {0}.",
